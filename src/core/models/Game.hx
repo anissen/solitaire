@@ -12,7 +12,7 @@ enum Action {
 enum Event {
     Draw(card :Array<Card>);
     NewQuest(card :Array<Card>);
-    Placed(card :Card, x :Int, y :Int);
+    ChangedTile(x :Int, y :Int, card :Card);
     Selected(x :Int, y :Int);
     Collected(cards :Array<Card>); // or maybe Array<{ x: Int, y :Int }> ?
     Stacked(cards :Array<Card>); // or maybe Array<{ x: Int, y :Int }> ?
@@ -26,7 +26,7 @@ class Game {
     var quests :Array<Array<Card>>;
     var hand :Array<Card>;
 
-    var collecting :Array<{ x: Int, y :Int }>;
+    // var collecting :Array<{ x: Int, y :Int }>;
 
     var score :Int;
 
@@ -48,7 +48,7 @@ class Game {
 
         quests = [];
         hand = [];
-        collecting = [];
+        // collecting = [];
 
         score = 0;
 
@@ -92,8 +92,7 @@ class Game {
         // var card = hand.splice(index, 1)[0];
         hand.remove(card);
 
-        grid.set_tile(x, y, card);
-        messageSystem.emit(Placed(card, x, y));
+        change_tile({ x: x, y: y }, card);
         //grid.set_tile(x, y, { suit: card.suit, stacked: false });
 
         if (hand.length == 0) {
@@ -134,7 +133,7 @@ class Game {
 
             trace('Matched quest: $quest');
             quests.remove(quest);
-            for (c in collecting) grid.set_tile(c.x, c.y, null);
+            for (tile in tiles) remove_tile(tile);
             update_score(cards, quest);
             messageSystem.emit(Collected(cards));
             return true;
@@ -157,13 +156,22 @@ class Game {
         }
 
         trace('Made a stack');
-        for (i in 0 ... tiles.length - 1) grid.set_tile(tiles[i].x, tiles[i].y, null);
+        for (i in 0 ... tiles.length - 1) remove_tile(tiles[i]);
         var last = tiles[tiles.length - 1];
         var last_card = cards[cards.length - 1];
-        grid.set_tile(last.x, last.y, { suit: last_card.suit, stacked: true });
+        change_tile(last, { suit: last_card.suit, stacked: true });
 
         messageSystem.emit(Stacked(cards));
         return true;
+    }
+
+    function remove_tile(pos :{ x :Int, y :Int }) {
+        change_tile(pos, null);
+    }
+
+    function change_tile(pos :{ x :Int, y :Int }, card :Card) {
+        grid.set_tile(pos.x, pos.y, card);
+        messageSystem.emit(ChangedTile(pos.x, pos.y, card));
     }
 
     public function handle_selection(tiles :Array<{ x :Int, y :Int }>) {
@@ -293,9 +301,9 @@ class Game {
             for (tile in row) {
                 if (x == 0) str += '\033[1;40;30m$y\033[0m ';
                 var tile_str = deck.get_card_string(tile);
-                if (tile != null && is_collecting(x, y)) {
+                if /* (tile != null && is_collecting(x, y)) {
                     str += '[$tile_str]';
-                } else if (tile != null && tile.stacked) {
+                } else if */ (tile != null && tile.stacked) {
                     str += '($tile_str)';
                 } else {
                     str += ' $tile_str ';
@@ -308,6 +316,7 @@ class Game {
         return str;
     }
 
+    /*
     function is_collecting(x :Int, y :Int) {
         return (Lambda.find(collecting, function(c) {
             return c.x == x && c.y == y;
@@ -318,6 +327,7 @@ class Game {
         // }
         // return false;
     }
+    */
 
     public function game_over() {
         return false;

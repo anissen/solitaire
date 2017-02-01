@@ -27,6 +27,7 @@ class PlayState extends State {
     var tile_size = 64;
     var margin = 8;
 
+    var quests :Array<Tile>;
     var tiles :Array<Tile>;
 
     var selection :Array<{ x :Int, y :Int }>;
@@ -37,6 +38,7 @@ class PlayState extends State {
         game.listen(handle_event);
         selection = [];
         tiles = [];
+        quests = [];
     }
 
     override function init() {
@@ -47,7 +49,7 @@ class PlayState extends State {
         for (x in 0 ... tiles_x) {
             for (y in 0 ... tiles_y) {
                 var tile = new Tile({
-                    pos: get_pos(x, y + 2),
+                    pos: get_pos(x, y + 4),
                     size: tile_size,
                     color: new Color(0.3, 0.3, 0.3)
                 });
@@ -71,7 +73,7 @@ class PlayState extends State {
         return switch (event) {
             case Draw(cards): handle_draw(cards);
             case NewQuest(quest): handle_new_quest(quest);
-            case Placed(card, x, y): trace('Placed! $x $y'); Promise.resolve();
+            case ChangedTile(x, y, card): handle_changed_tile(x, y, card); Promise.resolve();
             case Selected(x, y): trace('Selected! $x $y'); Promise.resolve();
             case Collected(cards): handle_collected(cards); Promise.resolve();
             case Stacked(cards): handle_stacked(cards); Promise.resolve();
@@ -83,7 +85,7 @@ class PlayState extends State {
         var x = 0;
         for (card in cards) {
             var tile = new Tile({
-                pos: get_pos(x, tiles_y + 2 + 1),
+                pos: get_pos(x, tiles_y + 4 + 1),
                 size: tile_size,
                 color: switch (card.suit) {
                     case 0: new Color(1.0, 0.0, 0.0);
@@ -105,8 +107,9 @@ class PlayState extends State {
     function handle_new_quest(quest :Array<Card>) {
         var x = 0;
         for (card in quest) {
+            var y = Math.floor(quests.length / 3);
             var tile = new Tile({
-                pos: get_pos(x, 0),
+                pos: get_pos(x, y),
                 size: tile_size,
                 color: switch (card.suit) {
                     case 0: new Color(1.0, 0.0, 0.0);
@@ -117,6 +120,7 @@ class PlayState extends State {
                 },
                 card: card
             });
+            quests.push(tile);
             x++;
         }
         return Promise.resolve();
@@ -125,22 +129,41 @@ class PlayState extends State {
     function handle_collected(cards :Array<Card>) {
         trace('Collected! $cards');
         // maybe use selection variable
-        for (tile in tiles) {
-            if (cards.indexOf(tile.card) != -1) {
-                tiles.remove(tile);
-                tile.destroy();
-            }
-        }
+        // for (tile in tiles) {
+        //     if (cards.indexOf(tile.card) != -1) {
+        //         tiles.remove(tile);
+        //         tile.destroy();
+        //     }
+        // }
     }
 
     function handle_stacked(cards :Array<Card>) {
         trace('Stacked! $cards');
+
+        var stacked_card = cards.pop();
+        stacked_card.stacked = true;
+
         // maybe use selection variable
-        for (i in 0 ... tiles.length - 1) {
-            var tile = tiles[i];
-            if (cards.indexOf(tile.card) != -1) {
-                tiles.remove(tile);
-                tile.destroy();
+        // for (tile in tiles) {
+        //     if (cards.indexOf(tile.card) != -1) {
+        //         tiles.remove(tile);
+        //         tile.destroy();
+        //     }
+        // }
+    }
+
+    function handle_changed_tile(x :Int, y :Int, card :Card) {
+        trace('handle_changed_tile: $x $y $card');
+        for (tile in tiles) {
+            if (tile.grid_pos == null) continue;
+            if (tile.grid_pos.x == x && tile.grid_pos.y == y) {
+                trace('found tile: $tile');
+                if (card == null) {
+                    tiles.remove(tile);
+                    tile.destroy();
+                } else {
+                    tile.card = card;
+                }
             }
         }
     }
@@ -193,7 +216,7 @@ class PlayState extends State {
             });
         }
         for (tile in selection) {
-            var pos = get_pos(tile.x, tile.y + 2);
+            var pos = get_pos(tile.x, tile.y + 4);
             Luxe.draw.box({
                 x: pos.x - 32 - 5,
                 y: pos.y - 32 - 5,
@@ -204,13 +227,24 @@ class PlayState extends State {
                 immediate: true
             });
         }
+        for (quest in quests) {
+            if (!quest.card.stacked) continue;
+            Luxe.draw.circle({
+                x: quest.pos.x,
+                y: quest.pos.y,
+                r: 20,
+                color: new Color(0.2, 0.7, 0.2, 0.8),
+                depth: 3,
+                immediate: true
+            });
+        }
         for (tile in tiles) {
             if (!tile.card.stacked) continue;
             Luxe.draw.circle({
-                x: -5 + tile.pos.x - 32,
-                y: -5 + tile.pos.y - 32,
+                x: tile.pos.x,
+                y: tile.pos.y,
                 r: 20,
-                color: new Color(0.2, 0.7, 0.2, 0.4),
+                color: new Color(0.2, 0.7, 0.2, 0.8),
                 depth: 3,
                 immediate: true
             });
