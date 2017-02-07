@@ -15,7 +15,7 @@ import core.models.Game;
 
 /*
 TODO:
-- make a unique id for cards, quests (other solution?)
+- maybe: make it possible to pass Tile into game as an generic argument to be used as a core model, e.g. SetCardOnGrid(x, y, tile) where tile has suit, stacked
 */
 
 // TODO: Stuff
@@ -31,7 +31,6 @@ class PlayState extends State {
     var margin = 8;
 
     var quests :Map<Int, Tile>;
-    var tiles :Array<Tile>;
 
     var selection :Array<{ x :Int, y :Int }>;
 
@@ -40,7 +39,6 @@ class PlayState extends State {
         game = new Game();
         game.listen(handle_event);
         selection = [];
-        tiles = [];
         quests = new Map();
     }
 
@@ -76,7 +74,7 @@ class PlayState extends State {
         return switch (event) {
             case Draw(cards): handle_draw(cards);
             case NewQuest(quest): handle_new_quest(quest);
-            case ChangedTile(x, y, card): handle_changed_tile(x, y, card); Promise.resolve();
+            case TileRemoved(card): handle_tile_removed(card); Promise.resolve();
             case Selected(x, y): trace('Selected! $x $y'); Promise.resolve();
             case Collected(cards, quest): handle_collected(cards, quest); Promise.resolve();
             case Stacked(cards): handle_stacked(cards); Promise.resolve();
@@ -101,7 +99,7 @@ class PlayState extends State {
                 depth: 2
             });
             tile.add(new Clickable(tile_clicked));
-            tiles.push(tile);
+            card.tile = tile;
             x++;
         }
         return Promise.resolve();
@@ -136,7 +134,7 @@ class PlayState extends State {
     }
 
     function handle_collected(cards :Array<Card>, quest :Array<Card>) {
-        trace('Collected! $cards');
+        // trace('Collected! $cards');
 
         for (quest_card in quest) {
             var tile = quests.get(quest_card.id);
@@ -148,66 +146,20 @@ class PlayState extends State {
             quests.remove(quest_card.id);
         }
         for (card in cards) {
-            for (tile in tiles) {
-                if (tile.card.id == card.id) {
-                    tiles.remove(tile);
-                    tile.destroy();
-                    break;
-                }
-            }
+            card.tile.destroy();
         }
-        // maybe use selection variable
-        // for (tile in tiles) {
-        //     if (cards.indexOf(tile.card) != -1) {
-        //         tiles.remove(tile);
-        //         tile.destroy();
-        //     }
-        // }
-
-        // for (tile in quests) {
-        //     var match = false;
-        //     for (card in cards) {
-        //         if (tile.card.stacked == card.stacked && tile.card.suit == card.suit) {
-        //             match = true;
-        //             break;
-        //         }
-        //     }
-        //     if (!match) continue;
-        //
-        //     quests.remove(tile);
-        //     tile.destroy();
-        // }
     }
 
     function handle_stacked(cards :Array<Card>) {
-        trace('Stacked! $cards');
+        // trace('Stacked! $cards');
 
         var stacked_card = cards.pop();
         stacked_card.stacked = true;
-
-        // maybe use selection variable
-        // for (tile in tiles) {
-        //     if (cards.indexOf(tile.card) != -1) {
-        //         tiles.remove(tile);
-        //         tile.destroy();
-        //     }
-        // }
     }
 
-    function handle_changed_tile(x :Int, y :Int, card :Card) {
-        trace('handle_changed_tile: $x $y $card');
-        for (tile in tiles) {
-            if (tile.grid_pos == null) continue;
-            if (tile.grid_pos.x == x && tile.grid_pos.y == y) {
-                trace('found tile: $tile');
-                if (card == null) {
-                    tiles.remove(tile);
-                    tile.destroy();
-                } else {
-                    tile.card = card;
-                }
-            }
-        }
+    function handle_tile_removed(card :Card) {
+        //trace('handle_changed_tile: $x $y $card');
+        card.tile.destroy();
     }
 
     function grid_clicked(sprite :Sprite) {
@@ -280,17 +232,17 @@ class PlayState extends State {
                 immediate: true
             });
         }
-        for (tile in tiles) {
-            if (!tile.card.stacked) continue;
-            Luxe.draw.circle({
-                x: tile.pos.x,
-                y: tile.pos.y,
-                r: 20,
-                color: new Color(0.2, 0.7, 0.2, 0.8),
-                depth: 3,
-                immediate: true
-            });
-        }
+        // for (tile in tiles) {
+        //     if (!tile.card.stacked) continue;
+        //     Luxe.draw.circle({
+        //         x: tile.pos.x,
+        //         y: tile.pos.y,
+        //         r: 20,
+        //         color: new Color(0.2, 0.7, 0.2, 0.8),
+        //         depth: 3,
+        //         immediate: true
+        //     });
+        // }
     }
 
     override function update(dt :Float) {

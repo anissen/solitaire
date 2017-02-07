@@ -12,7 +12,7 @@ enum Action {
 enum Event {
     Draw(card :Array<Card>);
     NewQuest(card :Array<Card>);
-    ChangedTile(x :Int, y :Int, card :Card);
+    TileRemoved(card :Card);
     Selected(x :Int, y :Int);
     Collected(cards :Array<Card>, quest :Array<Card>); // or maybe Array<{ x: Int, y :Int }> ?
     Stacked(cards :Array<Card>); // or maybe Array<{ x: Int, y :Int }> ?
@@ -26,13 +26,7 @@ class Game {
     var quests :Array<Array<Card>>;
     var hand :Array<Card>;
 
-    // var collecting :Array<{ x: Int, y :Int }>;
-
     var score :Int;
-
-    // var actions :MessageQueue<Action>;
-    // var events :PromiseQueue<Event>;
-    // var listeners :List<EventListenerFunction>;
 
     var messageSystem :MessageSystem<Action, Event>;
 
@@ -54,7 +48,6 @@ class Game {
 
         quests = [];
         hand = [];
-        // collecting = [];
 
         score = 0;
 
@@ -172,12 +165,13 @@ class Game {
     }
 
     function remove_tile(pos :{ x :Int, y :Int }) {
+        messageSystem.emit(TileRemoved(grid.get_tile(pos.x, pos.y)));
         change_tile(pos, null);
     }
 
     function change_tile(pos :{ x :Int, y :Int }, card :Card) {
         grid.set_tile(pos.x, pos.y, card);
-        messageSystem.emit(ChangedTile(pos.x, pos.y, card));
+        // messageSystem.emit(ChangedTile(pos.x, pos.y, card));
     }
 
     public function handle_selection(tiles :Array<{ x :Int, y :Int }>) {
@@ -185,62 +179,6 @@ class Game {
         if (complete_quest(tiles)) return;
         if (make_stack(tiles)) return;
     }
-
-    /*
-    function handle_select(x :Int, y :Int) {
-        // TODO: test that collected tiles are adjacent
-        if (collecting.length > 0) {
-            var last_col = collecting[collecting.length - 1];
-            if (Math.abs(last_col.x - x) + Math.abs(last_col.y - y) != 1) {
-                trace('Collected cards must be adjacent');
-                return;
-            }
-        }
-
-        if (grid.get_tile(x, y) == null) {
-            trace('No card to be collected here');
-            return;
-        }
-
-        collecting.push({ x: x, y: y });
-        if (collecting.length == 3) {
-            // test if collection is a quest
-            var cards_collected = [ for (c in collecting) grid.get_tile(c.x, c.y) ];
-            for (quest in quests) {
-                if (cards_matching(cards_collected, quest)) {
-                    trace('Matched quest: $quest');
-                    quests.remove(quest);
-                    for (c in collecting) grid.set_tile(c.x, c.y, null);
-                    update_score(cards_collected, quest);
-                    collecting = [];
-                    messageSystem.emit(Collected(cards_collected));
-                    return;
-                }
-            }
-
-            // test if collection is a merge
-            for (i in 0 ... collecting.length - 1) {
-                var this_col = collecting[i];
-                var next_col = collecting[i + 1];
-                var this_card = grid.get_tile(this_col.x, this_col.y);
-                var next_card = grid.get_tile(next_col.x, next_col.y);
-                if (this_card == null || next_card == null || this_card.suit != next_card.suit || this_card.stacked || next_card.stacked) {
-                    trace('No match for collected cards');
-                    collecting = [];
-                    return;
-                }
-            }
-            trace('Made a stack');
-            for (i in 0 ... collecting.length - 1) grid.set_tile(collecting[i].x, collecting[i].y, null);
-            var last_col = collecting[collecting.length - 1];
-            var last_card = grid.get_tile(last_col.x, last_col.y);
-            grid.set_tile(last_col.x, last_col.y, { suit: last_card.suit, stacked: true });
-            collecting = [];
-            messageSystem.emit(Stacked(cards_collected));
-            return;
-        }
-    }
-    */
 
     function update_score(cards :Array<Card>, quest :Array<Card>) {
         for (i in 0 ... cards.length) {
@@ -320,22 +258,5 @@ class Game {
             str += '\n';
         }
         return str;
-    }
-
-    /*
-    function is_collecting(x :Int, y :Int) {
-        return (Lambda.find(collecting, function(c) {
-            return c.x == x && c.y == y;
-        }) != null);
-        //return (collecting.indexOf({ x: x, y: y }) > -1);
-        // for (col in collecting) {
-        //     if (col.x == x && col.y == y) return true;
-        // }
-        // return false;
-    }
-    */
-
-    public function game_over() {
-        return false;
     }
 }

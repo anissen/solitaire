@@ -42,13 +42,20 @@ class Card {
     @:isVar public var id(default, null) :Int;
     @:isVar public var suit(default, null) :Int;
     @:isVar public var stacked(default, default) :Bool;
+    public var tile :game.entities.Tile;
 
     public function new(suit :Int, stacked :Bool) {
         this.id = Card.Id++;
         this.suit = suit;
         this.stacked = stacked;
+        this.tile = null;
     }
 }
+
+// interface ICard {
+//     function get_suit() :Int;
+//     function get_stacked() :Bool;
+// }
 
 /*
 @:structInit
