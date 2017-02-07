@@ -3,7 +3,7 @@ package core.models;
 
 using core.tools.ArrayTools;
 
-typedef Card = { suit :Int, stacked :Bool /* value :Int */ };
+//typedef Card = { suit :Int, stacked :Bool /* value :Int */ };
 
 // TODO: Handle random seed
 
@@ -23,9 +23,11 @@ class GenericDeck<T> {
         return cards.splice(0, count);
     }
 
+    /*
     public inline function get_cards() {
         return cards.copy();
     }
+    */
 
     public inline function count() {
         return cards.length;
@@ -34,13 +36,42 @@ class GenericDeck<T> {
 
 // TODO: Maybe simply have the data structure be an Array and have a class of static extensions
 
+@:structInit
+class Card {
+    static var Id :Int = 0;
+    @:isVar public var id(default, null) :Int;
+    @:isVar public var suit(default, null) :Int;
+    @:isVar public var stacked(default, default) :Bool;
+
+    public function new(suit :Int, stacked :Bool) {
+        this.id = Card.Id++;
+        this.suit = suit;
+        this.stacked = stacked;
+    }
+}
+
+/*
+@:structInit
+class Set {
+    static var Id :Int = 0;
+    var id :Int;
+    @:isVar public var cards(default, null) :Array<Card>;
+
+    public function new(cards :Array<Card>) {
+        this.id = Set.Id++;
+        this.cards = cards;
+    }
+
+    public function equals(other :Set) {
+        return (id == other.id);
+    }
+}
+*/
+
 class Deck extends GenericDeck<Card> {
-	public function new() {
+	public function new(cards :Array<Card>) {
         super();
-        cards = [
-            for (suit in 0...3)
-            	for (value in 0...13) { suit: suit, stacked: value >= 10 }
-        ];
+        this.cards = cards;
         shuffle();
         //print_cards(cards);
         // print_cards(take(3));
@@ -51,6 +82,12 @@ class Deck extends GenericDeck<Card> {
             trace(get_card_string(c));
         }
     }
+
+    /*
+    public function take_set(count :Int) :Set {
+        return { cards: take(count) };
+    }
+    */
 
     public function get_card_string(card :Card) {
         if (card == null) {

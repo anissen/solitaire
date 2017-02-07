@@ -4,7 +4,6 @@ package game.entities;
 import luxe.Vector;
 import luxe.Sprite;
 import luxe.Color;
-import luxe.Text;
 
 typedef TileOptions = {
     pos :Vector,

@@ -1,48 +1,51 @@
 
 package game.states;
 
-import luxe.Input.MouseEvent;
 import luxe.States.State;
 import luxe.Vector;
 import luxe.Sprite;
-import luxe.tween.Actuate;
 import luxe.Color;
-import luxe.Text;
 
 import game.entities.Tile;
 import game.components.Clickable;
 
 import snow.api.Promise;
 import core.models.Deck.Card;
+import core.models.Game;
 
-using Lambda;
+/*
+TODO:
+- make a unique id for cards, quests (other solution?)
+*/
+
+// TODO: Stuff
 
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var selected_tile :Tile = null;
-    var game :core.models.Game; // TODO: Don't aggregate Game here! Reference it from a static context
+    var game :Game; // TODO: Don't aggregate Game here! Reference it from a static context
 
     var tiles_x = 4;
     var tiles_y = 3;
     var tile_size = 64;
     var margin = 8;
 
-    var quests :Array<Tile>;
+    var quests :Map<Int, Tile>;
     var tiles :Array<Tile>;
 
     var selection :Array<{ x :Int, y :Int }>;
 
     public function new() {
         super({ name: StateId });
-        game = new core.models.Game();
+        game = new Game();
         game.listen(handle_event);
         selection = [];
         tiles = [];
-        quests = [];
+        quests = new Map();
     }
 
     override function init() {
-
+        
     }
 
     override function onenter(_) {
@@ -75,7 +78,7 @@ class PlayState extends State {
             case NewQuest(quest): handle_new_quest(quest);
             case ChangedTile(x, y, card): handle_changed_tile(x, y, card); Promise.resolve();
             case Selected(x, y): trace('Selected! $x $y'); Promise.resolve();
-            case Collected(cards): handle_collected(cards); Promise.resolve();
+            case Collected(cards, quest): handle_collected(cards, quest); Promise.resolve();
             case Stacked(cards): handle_stacked(cards); Promise.resolve();
         }
     }
@@ -105,9 +108,14 @@ class PlayState extends State {
     }
 
     function handle_new_quest(quest :Array<Card>) {
+        var count = 0;
+        for (tile in quests) {
+            tile.pos = get_pos(count % 3, Math.floor(count / 3));
+            count++;
+        }
         var x = 0;
         for (card in quest) {
-            var y = Math.floor(quests.length / 3);
+            var y = Math.floor(count / 3);
             var tile = new Tile({
                 pos: get_pos(x, y),
                 size: tile_size,
@@ -120,20 +128,54 @@ class PlayState extends State {
                 },
                 card: card
             });
-            quests.push(tile);
+            // trace('storing quest tile with id ${card.id}');
+            quests[card.id] = tile;
             x++;
         }
         return Promise.resolve();
     }
 
-    function handle_collected(cards :Array<Card>) {
+    function handle_collected(cards :Array<Card>, quest :Array<Card>) {
         trace('Collected! $cards');
+
+        for (quest_card in quest) {
+            var tile = quests.get(quest_card.id);
+            if (tile == null) {
+                trace('Cannot locate quest tile for $quest_card');
+                continue;
+            }
+            tile.destroy();
+            quests.remove(quest_card.id);
+        }
+        for (card in cards) {
+            for (tile in tiles) {
+                if (tile.card.id == card.id) {
+                    tiles.remove(tile);
+                    tile.destroy();
+                    break;
+                }
+            }
+        }
         // maybe use selection variable
         // for (tile in tiles) {
         //     if (cards.indexOf(tile.card) != -1) {
         //         tiles.remove(tile);
         //         tile.destroy();
         //     }
+        // }
+
+        // for (tile in quests) {
+        //     var match = false;
+        //     for (card in cards) {
+        //         if (tile.card.stacked == card.stacked && tile.card.suit == card.suit) {
+        //             match = true;
+        //             break;
+        //         }
+        //     }
+        //     if (!match) continue;
+        //
+        //     quests.remove(tile);
+        //     tile.destroy();
         // }
     }
 

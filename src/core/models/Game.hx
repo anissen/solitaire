@@ -14,7 +14,7 @@ enum Event {
     NewQuest(card :Array<Card>);
     ChangedTile(x :Int, y :Int, card :Card);
     Selected(x :Int, y :Int);
-    Collected(cards :Array<Card>); // or maybe Array<{ x: Int, y :Int }> ?
+    Collected(cards :Array<Card>, quest :Array<Card>); // or maybe Array<{ x: Int, y :Int }> ?
     Stacked(cards :Array<Card>); // or maybe Array<{ x: Int, y :Int }> ?
 }
 
@@ -42,8 +42,14 @@ class Game {
     }
 
     public function new_game() {
-        deck = new Deck();
-        quest_deck = new Deck();
+        deck = new Deck([
+            for (suit in 0...3)
+            	for (value in 0...13) { suit: suit, stacked: false }
+        ]);
+        quest_deck = new Deck([
+            for (suit in 0...3)
+            	for (value in 0...13) { suit: suit, stacked: value >= 10 }
+        ]);
         grid = new Grid(4, 3);
 
         quests = [];
@@ -83,11 +89,11 @@ class Game {
             quests.push(newQuest);
             messageSystem.emit(NewQuest(newQuest));
         }
-        hand = deck.take(3).map(function(card) { return { suit: card.suit, stacked: false }; });
+        hand = deck.take(3); // TODO: Hand should be a Set
         messageSystem.emit(Draw(hand));
     }
 
-    function handle_place(card, x :Int, y :Int) {
+    function handle_place(card :Card, x :Int, y :Int) {
         // if (hand.length < index) return;
         // var card = hand.splice(index, 1)[0];
         hand.remove(card);
@@ -135,7 +141,7 @@ class Game {
             quests.remove(quest);
             for (tile in tiles) remove_tile(tile);
             update_score(cards, quest);
-            messageSystem.emit(Collected(cards));
+            messageSystem.emit(Collected(cards, quest));
             return true;
         }
         return false;
@@ -244,7 +250,7 @@ class Game {
     }
 
     function cards_matching(cards1 :Array<Card>, cards2 :Array<Card>) {
-        var test = cards2.copy();
+        var test = cards2.copy(); // TODO: This is not good!
         for (a in cards1) {
             var match = false;
             for (b in test) {
