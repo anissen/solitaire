@@ -36,6 +36,6 @@ class PromiseQueue<T> {
         idle = false;
         return handler(element)
             .then(handle_next_element)
-            .error(function(e) { trace('Error: $e'); }).then(function() {trace('test');});
+            .error(function(e) { trace('Error: $e'); });
     }
 }

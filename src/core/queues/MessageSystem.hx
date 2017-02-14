@@ -3,8 +3,6 @@ package core.queues;
 
 import snow.api.Promise;
 
-typedef EventListenerFunction = core.models.Game.Event -> Promise;
-
 class MessageSystem<TAction, TEvent> {
     var actions :MessageQueue<TAction>;
     var events :PromiseQueue<TEvent>;

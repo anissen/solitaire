@@ -30,7 +30,7 @@ class PlayState extends State {
 
     var quests :Map<Int, Tile>;
 
-    var selection :Array<{ x :Int, y :Int }>;
+    var selection :Array<Card>;
 
     public function new() {
         super({ name: StateId });
@@ -45,24 +45,62 @@ class PlayState extends State {
     }
 
     override function onenter(_) {
-        var tiles :Array<core.models.Deck.ICard> = [];
         for (x in 0 ... tiles_x) {
             for (y in 0 ... tiles_y) {
-                var tile = new Tile({
+                var sprite = new Sprite({
                     pos: get_pos(x, y + 4),
-                    size: tile_size,
-                    color: new Color(0.3, 0.3, 0.3),
-                    suit: tiles_x,
-                    stacked: false
+                    size: new Vector(tile_size, tile_size),
+                    color: new Color(0.3, 0.3, 0.3)
                 });
-                tile.grid_pos = { x: x, y: y };
-                tile.add(new Clickable(grid_clicked));
-                // tile.add(new Clickable(tile_selected));
+                sprite.add(new Clickable(grid_clicked));
+            }
+        }
+
+        var tiles = [];
+        for (suit in 0 ... 4) {
+            for (value in 0 ... 13) {
+                var tile = new Tile({
+                    pos: get_pos(0, tiles_y + 4 + 1),
+                    size: tile_size,
+                    color: switch (suit) {
+                        case 0: new Color(1.0, 0.0, 0.0);
+                        case 1: new Color(0.0, 1.0, 0.0);
+                        case 2: new Color(0.0, 0.0, 1.0);
+                        case 3: new Color(0.0, 1.0, 1.0);
+                        case _: new Color();
+                    },
+                    suit: suit,
+                    stacked: false,
+                    depth: 2
+                });
+                tile.visible = false;
                 tiles.push(tile);
             }
         }
 
-        game.new_game(tiles, []); // TODO: Add quest cards
+        var quests = [];
+        for (suit in 0 ... 4) {
+            for (value in 0 ... 13) {
+                var tile = new Tile({
+                    pos: get_pos(0, tiles_y + 4 + 1),
+                    size: tile_size,
+                    color: switch (suit) {
+                        case 0: new Color(1.0, 0.0, 0.0);
+                        case 1: new Color(0.0, 1.0, 0.0);
+                        case 2: new Color(0.0, 0.0, 1.0);
+                        case 3: new Color(0.0, 1.0, 1.0);
+                        case _: new Color();
+                    },
+                    suit: suit,
+                    stacked: false,
+                    depth: 2
+                });
+                tile.visible = false;
+                quests.push(tile);
+            }
+        }
+
+        game.new_game(tiles, quests);
     }
 
     function get_pos(tile_x :Int, tile_y :Int) {
@@ -85,24 +123,11 @@ class PlayState extends State {
     function handle_draw(cards :Array<Card>) {
         trace('handle_draw: $cards');
         var x = 0;
-        // for (card in cards) {
-        //     var tile = new Tile({
-        //         pos: get_pos(x, tiles_y + 4 + 1),
-        //         size: tile_size,
-        //         color: switch (card.suit) {
-        //             case 0: new Color(1.0, 0.0, 0.0);
-        //             case 1: new Color(0.0, 1.0, 0.0);
-        //             case 2: new Color(0.0, 0.0, 1.0);
-        //             case 3: new Color(0.0, 1.0, 1.0);
-        //             case _: new Color();
-        //         },
-        //         card: card,
-        //         depth: 2
-        //     });
-        //     tile.add(new Clickable(tile_clicked));
-        //     card.tile = tile;
-        //     x++;
-        // }
+        for (card in cards) {
+            card.visible = true;
+            card.pos = get_pos(x++, tiles_y + 4 + 1);
+            card.add(new Clickable(tile_clicked));
+        }
         return Promise.resolve();
     }
 
@@ -113,24 +138,11 @@ class PlayState extends State {
             count++;
         }
         var x = 0;
-        // for (card in quest) {
-        //     var y = Math.floor(count / 3);
-        //     var tile = new Tile({
-        //         pos: get_pos(x, y),
-        //         size: tile_size,
-        //         color: switch (card.suit) {
-        //             case 0: new Color(1.0, 0.0, 0.0);
-        //             case 1: new Color(0.0, 1.0, 0.0);
-        //             case 2: new Color(0.0, 0.0, 1.0);
-        //             case 3: new Color(0.0, 1.0, 1.0);
-        //             case _: new Color();
-        //         },
-        //         card: card
-        //     });
-        //     // trace('storing quest tile with id ${card.id}');
-        //     quests[card.id] = tile;
-        //     x++;
-        // }
+        for (card in quest) {
+            card.visible = true;
+            card.pos = get_pos(x, Math.floor(x / 3));
+            x++;
+        }
         return Promise.resolve();
     }
 
@@ -167,18 +179,18 @@ class PlayState extends State {
         if (selected_tile != null) {
             var tile :Tile = cast sprite;
             selected_tile.pos = tile.pos.clone();
-            selected_tile.grid_pos = tile.grid_pos;
+            //selected_tile.grid_pos = tile.grid_pos;
             selected_tile.remove('Clickable');
             // selected_tile.add(new Clickable(tile_selected));
             // var card = selected_tile.card;
             selected_tile = null;
 
-            game.do_action(Place(tile, tile.grid_pos.x, tile.grid_pos.y));
+            game.do_action(Place(tile, 1, 1)); // TODO: Use grid.get_point()
         } else {
             var tile :Tile = cast sprite;
-            selection.push(tile.grid_pos);
+            selection.push(tile);
             if (selection.length == 3) {
-                game.do_action(Select(selection));
+                game.do_action(Collect(selection));
                 selection = [];
             }
         }
@@ -211,7 +223,7 @@ class PlayState extends State {
             });
         }
         for (tile in selection) {
-            var pos = get_pos(tile.x, tile.y + 4);
+            var pos = get_pos(tile.grid_pos.x, tile.grid_pos.y + 4);
             Luxe.draw.box({
                 x: pos.x - 32 - 5,
                 y: pos.y - 32 - 5,

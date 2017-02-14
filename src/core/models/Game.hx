@@ -7,7 +7,7 @@ import core.queues.MessageSystem;
 enum Action {
     Noop;
     Place(card :Card, x :Int, y :Int);
-    Select(tiles :Array<{x :Int, y :Int}>);
+    Collect(tiles :Array<Card>);
 }
 
 enum Event {
@@ -36,7 +36,7 @@ class Game {
         messageSystem.on_action(handle_action);
     }
 
-    public function new_game(deck_cards :Array<ICard>, quest_cards :Array<ICard>) {
+    public function new_game(deck_cards :Array<Card>, quest_cards :Array<Card>) {
         deck = new Deck(deck_cards /*[
             for (suit in 0...3)
                 for (value in 0...13) { suit: suit, stacked: false }
@@ -73,7 +73,7 @@ class Game {
         switch (action) {
             case Noop:
             case Place(card, x, y): handle_place(card, x, y);
-            case Select(tiles): handle_selection(tiles); //handle_select(x, y);
+            case Collect(tiles): handle_collecting(tiles);
         }
     }
 
@@ -100,14 +100,14 @@ class Game {
         }
     }
 
-    function is_collection_valid(tiles :Array<{ x :Int, y :Int }>) {
+    function is_collection_valid(tiles :Array<Card>) {
         if (tiles.length != 3) {
             trace('Only ${tiles.length} tiles selected');
             return false;
         }
 
         for (tile in tiles) {
-            if (grid.get_tile(tile.x, tile.y) == null) {
+            if (grid.get_tile(tile.grid_pos.x, tile.grid_pos.y) == null) {
                 trace('Empty tile selected');
                 return false;
             }
@@ -117,7 +117,7 @@ class Game {
             var previous = tiles[i - 1];
             var current = tiles[i];
 
-            if (Math.abs(current.x - previous.x) + Math.abs(current.y - previous.y) != 1) {
+            if (Math.abs(current.grid_pos.x - previous.grid_pos.x) + Math.abs(current.grid_pos.y - previous.grid_pos.y) != 1) {
                 trace('Collected cards must be adjacent');
                 return false;
             }
@@ -126,8 +126,8 @@ class Game {
         return true;
     }
 
-    function complete_quest(tiles :Array<{ x :Int, y :Int }>) {
-        var cards = [ for (t in tiles) grid.get_tile(t.x, t.y) ];
+    function complete_quest(tiles :Array<Card>) {
+        var cards = [ for (t in tiles) grid.get_tile(t.grid_pos.x, t.grid_pos.y) ];
         for (quest in quests) {
             if (!cards_matching(cards, quest)) continue;
 
@@ -141,9 +141,9 @@ class Game {
         return false;
     }
 
-    function make_stack(tiles :Array<{ x :Int, y :Int }>) {
+    function make_stack(tiles :Array<Card>) {
         // test if collection is a merge
-        var cards = [ for (t in tiles) grid.get_tile(t.x, t.y) ];
+        var cards = [ for (t in tiles) grid.get_tile(t.grid_pos.x, t.grid_pos.y) ];
         var first_card = cards[0];
         if (first_card.stacked) return false;
 
@@ -165,12 +165,12 @@ class Game {
         return true;
     }
 
-    function remove_tile(pos :{ x :Int, y :Int }) {
-        messageSystem.emit(TileRemoved(grid.get_tile(pos.x, pos.y)));
-        grid.set_tile(pos.x, pos.y, null);
+    function remove_tile(card :Card) {
+        messageSystem.emit(TileRemoved(grid.get_tile(card.grid_pos.x, card.grid_pos.y)));
+        grid.set_tile(card.grid_pos.x, card.grid_pos.y, null);
     }
 
-    public function handle_selection(tiles :Array<{ x :Int, y :Int }>) {
+    public function handle_collecting(tiles :Array<Card>) {
         if (!is_collection_valid(tiles)) return;
         if (complete_quest(tiles)) return;
         if (make_stack(tiles)) return;
@@ -199,60 +199,60 @@ class Game {
         return true;
     }
 
-    public function print_game() {
-        var str = '\n';
-        // str += '\033[1;40;30m===  GRID ===\033[0m\n';
-        str += print_grid();
+    // public function print_game() {
+    //     var str = '\n';
+    //     // str += '\033[1;40;30m===  GRID ===\033[0m\n';
+    //     str += print_grid();
 
-        str += '\033[1;40;30m=== QUESTS ===\033[0m\n';
-        for (quest in quests) str += print_cards(quest);
+    //     str += '\033[1;40;30m=== QUESTS ===\033[0m\n';
+    //     for (quest in quests) str += print_cards(quest);
 
-        str += '\033[1;40;30m===  HAND  ===\033[0m\n';
-        str += print_cards(hand);
+    //     str += '\033[1;40;30m===  HAND  ===\033[0m\n';
+    //     str += print_cards(hand);
 
-        str += 'Score: $score';
+    //     str += 'Score: $score';
 
-        trace(str);
-    }
+    //     trace(str);
+    // }
 
-    function print_cards(cards :Array<Card>) {
-        var str = '';
-        for (card in cards) {
-            var card_str = deck.get_card_string(card);
-            if (card.stacked) {
-                str += '($card_str)';
-            } else {
-                str += ' $card_str ';
-            }
-        }
-        return str + '\n';
-    }
+    // function print_cards(cards :Array<Card>) {
+    //     var str = '';
+    //     for (card in cards) {
+    //         var card_str = deck.get_card_string(card);
+    //         if (card.stacked) {
+    //             str += '($card_str)';
+    //         } else {
+    //             str += ' $card_str ';
+    //         }
+    //     }
+    //     return str + '\n';
+    // }
 
-    function print_grid() {
-        var str = '';
-        var y = 0;
-        for (row in grid.get_tiles()) {
-            if (y == 0) {
-                str += '  ';
-                for (x in 0 ... row.length) str += ' \033[1;40;30m$x\033[0m ';
-                str += '\n';
-            }
-            var x = 0;
-            for (tile in row) {
-                if (x == 0) str += '\033[1;40;30m$y\033[0m ';
-                var tile_str = deck.get_card_string(tile);
-                if /* (tile != null && is_collecting(x, y)) {
-                    str += '[$tile_str]';
-                } else if */ (tile != null && tile.stacked) {
-                    str += '($tile_str)';
-                } else {
-                    str += ' $tile_str ';
-                }
-                x++;
-            }
-            y++;
-            str += '\n';
-        }
-        return str;
-    }
+    // function print_grid() {
+    //     var str = '';
+    //     var y = 0;
+    //     for (row in grid.get_tiles()) {
+    //         if (y == 0) {
+    //             str += '  ';
+    //             for (x in 0 ... row.length) str += ' \033[1;40;30m$x\033[0m ';
+    //             str += '\n';
+    //         }
+    //         var x = 0;
+    //         for (tile in row) {
+    //             if (x == 0) str += '\033[1;40;30m$y\033[0m ';
+    //             var tile_str = deck.get_card_string(tile);
+    //             if /* (tile != null && is_collecting(x, y)) {
+    //                 str += '[$tile_str]';
+    //             } else if */ (tile != null && tile.stacked) {
+    //                 str += '($tile_str)';
+    //             } else {
+    //                 str += ' $tile_str ';
+    //             }
+    //             x++;
+    //         }
+    //         y++;
+    //         str += '\n';
+    //     }
+    //     return str;
+    // }
 }
