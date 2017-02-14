@@ -20,7 +20,7 @@ TODO:
 
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
-    var selected_tile :Tile = null;
+    var grabbed_card :Tile = null;
     var game :Game; // TODO: Don't aggregate Game here! Reference it from a static context
 
     var tiles_x = 4;
@@ -28,16 +28,17 @@ class PlayState extends State {
     var tile_size = 64;
     var margin = 8;
 
-    var quests :Map<Int, Tile>;
-
-    var selection :Array<Card>;
+    var quests :Array<Card>;
+    var tiles :Array<Card>;
+    var collection :Array<Card>;
 
     public function new() {
         super({ name: StateId });
         game = new Game();
         game.listen(handle_event);
-        selection = [];
-        quests = new Map();
+        collection = [];
+        quests = [];
+        tiles = [];
     }
 
     override function init() {
@@ -56,8 +57,8 @@ class PlayState extends State {
             }
         }
 
-        var tiles = [];
-        for (suit in 0 ... 4) {
+        var tile_deck = [];
+        for (suit in 0 ... 2) {
             for (value in 0 ... 13) {
                 var tile = new Tile({
                     pos: get_pos(0, tiles_y + 4 + 1),
@@ -74,12 +75,12 @@ class PlayState extends State {
                     depth: 2
                 });
                 tile.visible = false;
-                tiles.push(tile);
+                tile_deck.push(tile);
             }
         }
 
-        var quests = [];
-        for (suit in 0 ... 4) {
+        var quest_deck = [];
+        for (suit in 0 ... 2) {
             for (value in 0 ... 13) {
                 var tile = new Tile({
                     pos: get_pos(0, tiles_y + 4 + 1),
@@ -96,11 +97,11 @@ class PlayState extends State {
                     depth: 2
                 });
                 tile.visible = false;
-                quests.push(tile);
+                quest_deck.push(tile);
             }
         }
 
-        game.new_game(tiles, quests);
+        game.new_game(tile_deck, quest_deck);
     }
 
     function get_pos(tile_x :Int, tile_y :Int) {
@@ -126,7 +127,8 @@ class PlayState extends State {
         for (card in cards) {
             card.visible = true;
             card.pos = get_pos(x++, tiles_y + 4 + 1);
-            card.add(new Clickable(tile_clicked));
+            card.add(new Clickable(card_clicked));
+            tiles.push(card);
         }
         return Promise.resolve();
     }
@@ -134,64 +136,68 @@ class PlayState extends State {
     function handle_new_quest(quest :Array<Card>) {
         var count = 0;
         for (tile in quests) {
+            trace('handle_new_quest ${count % 3}, ${Math.floor(count / 3)}');
             tile.pos = get_pos(count % 3, Math.floor(count / 3));
             count++;
         }
-        var x = 0;
         for (card in quest) {
             card.visible = true;
-            card.pos = get_pos(x, Math.floor(x / 3));
-            x++;
+            card.pos = get_pos(count % 3, Math.floor(count / 3));
+            quests.push(card);
+            count++;
         }
         return Promise.resolve();
     }
 
     function handle_collected(cards :Array<Card>, quest :Array<Card>) {
-        trace('Collected! $cards');
+        trace('Collected!');
         for (card in quest) {
+            quests.remove(card);
             card.destroy();
         }
-        for (card in cards) {
-            card.destroy();
-        }
+        // for (card in cards) {
+        //     tiles.remove(card);
+        //     card.destroy();
+        // }
     }
 
     function handle_stacked(card :Card) {
-        trace('Stacked! $card');
+        trace('Stacked!');
         card.stacked = true;
     }
 
     function handle_tile_removed(card :Card) {
-        trace('handle_changed_tile: $card');
+        trace('handle_changed_tile:');
         card.destroy();
     }
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
-        if (selected_tile != null) {
+        if (grabbed_card != null) {
             var tile :Tile = cast sprite;
-            selected_tile.pos = tile.pos.clone();
-            selected_tile.grid_pos = { x: x, y: y };
-            selected_tile.remove('Clickable');
-            // selected_tile.add(new Clickable(tile_selected));
-            // var card = selected_tile.card;
-            var grabbed_card = selected_tile;
-
-            selected_tile = null;
-
+            grabbed_card.pos = tile.pos.clone();
+            grabbed_card.grid_pos = { x: x, y: y };
+            grabbed_card.remove('Clickable');
             game.do_action(Place(grabbed_card, x, y));
-        } else {
-            var tile :Tile = cast sprite;
-            trace('select card $tile');
-            selection.push(tile);
-            if (selection.length == 3) {
-                game.do_action(Collect(selection));
-                selection = [];
-            }
+            var grabbed_card_copy = grabbed_card;
+            Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
+                grabbed_card_copy.add(new Clickable(tile_clicked));
+            });
+            grabbed_card = null;
         }
     }
 
     function tile_clicked(sprite :Sprite) {
-        selected_tile = cast sprite;
+        var tile :Tile = cast sprite;
+        trace('select tile $tile');
+        collection.push(tile);
+        if (collection.length == 3) {
+            game.do_action(Collect(collection));
+            collection = [];
+        }
+    }
+
+    function card_clicked(sprite :Sprite) {
+        grabbed_card = cast sprite;
     }
 
     override function onleave(_) {
@@ -199,25 +205,24 @@ class PlayState extends State {
     }
 
     override function onmousemove(event :luxe.Input.MouseEvent) {
-        if (selected_tile != null) {
-            selected_tile.pos = event.pos.clone();
+        if (grabbed_card != null) {
+            grabbed_card.pos = event.pos.clone();
         }
     }
 
     override function onrender() {
-        if (selected_tile != null) {
+        if (grabbed_card != null) {
             Luxe.draw.box({
-                x: -5 + selected_tile.pos.x - 32,
-                y: -5 + selected_tile.pos.y - 32,
+                x: -5 + grabbed_card.pos.x - 32,
+                y: -5 + grabbed_card.pos.y - 32,
                 h: 64 + 10,
                 w: 64 + 10,
                 color: new Color(1, 1, 1, 1),
-                depth: selected_tile.depth - 1,
+                depth: grabbed_card.depth - 1,
                 immediate: true
             });
         }
-        for (tile in selection) {
-            //var pos = get_pos(tile.grid_pos.x, tile.grid_pos.y + 4);
+        for (tile in collection) {
             Luxe.draw.box({
                 x: tile.pos.x - 32 - 5,
                 y: tile.pos.y - 32 - 5,
@@ -239,17 +244,17 @@ class PlayState extends State {
                 immediate: true
             });
         }
-        // for (tile in tiles) {
-        //     if (!tile.card.stacked) continue;
-        //     Luxe.draw.circle({
-        //         x: tile.pos.x,
-        //         y: tile.pos.y,
-        //         r: 20,
-        //         color: new Color(0.2, 0.7, 0.2, 0.8),
-        //         depth: 3,
-        //         immediate: true
-        //     });
-        // }
+        for (tile in tiles) {
+            if (!tile.stacked) continue;
+            Luxe.draw.circle({
+                x: tile.pos.x,
+                y: tile.pos.y,
+                r: 20,
+                color: new Color(0.2, 0.7, 0.2, 0.8),
+                depth: 3,
+                immediate: true
+            });
+        }
     }
 
     override function update(dt :Float) {
