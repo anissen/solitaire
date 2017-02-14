@@ -18,8 +18,6 @@ TODO:
 - maybe: make it possible to pass Tile into game as an generic argument to be used as a core model, e.g. SetCardOnGrid(x, y, tile) where tile has suit, stacked
 */
 
-// TODO: Stuff
-
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var selected_tile :Tile = null;
@@ -47,20 +45,24 @@ class PlayState extends State {
     }
 
     override function onenter(_) {
+        var tiles :Array<core.models.Deck.ICard> = [];
         for (x in 0 ... tiles_x) {
             for (y in 0 ... tiles_y) {
                 var tile = new Tile({
                     pos: get_pos(x, y + 4),
                     size: tile_size,
-                    color: new Color(0.3, 0.3, 0.3)
+                    color: new Color(0.3, 0.3, 0.3),
+                    suit: tiles_x,
+                    stacked: false
                 });
                 tile.grid_pos = { x: x, y: y };
                 tile.add(new Clickable(grid_clicked));
                 // tile.add(new Clickable(tile_selected));
+                tiles.push(tile);
             }
         }
 
-        game.new_game();
+        game.new_game(tiles, []); // TODO: Add quest cards
     }
 
     function get_pos(tile_x :Int, tile_y :Int) {
@@ -75,33 +77,32 @@ class PlayState extends State {
             case Draw(cards): handle_draw(cards);
             case NewQuest(quest): handle_new_quest(quest);
             case TileRemoved(card): handle_tile_removed(card); Promise.resolve();
-            case Selected(x, y): trace('Selected! $x $y'); Promise.resolve();
             case Collected(cards, quest): handle_collected(cards, quest); Promise.resolve();
-            case Stacked(cards): handle_stacked(cards); Promise.resolve();
+            case Stacked(card): handle_stacked(card); Promise.resolve();
         }
     }
 
     function handle_draw(cards :Array<Card>) {
         trace('handle_draw: $cards');
         var x = 0;
-        for (card in cards) {
-            var tile = new Tile({
-                pos: get_pos(x, tiles_y + 4 + 1),
-                size: tile_size,
-                color: switch (card.suit) {
-                    case 0: new Color(1.0, 0.0, 0.0);
-                    case 1: new Color(0.0, 1.0, 0.0);
-                    case 2: new Color(0.0, 0.0, 1.0);
-                    case 3: new Color(0.0, 1.0, 1.0);
-                    case _: new Color();
-                },
-                card: card,
-                depth: 2
-            });
-            tile.add(new Clickable(tile_clicked));
-            card.tile = tile;
-            x++;
-        }
+        // for (card in cards) {
+        //     var tile = new Tile({
+        //         pos: get_pos(x, tiles_y + 4 + 1),
+        //         size: tile_size,
+        //         color: switch (card.suit) {
+        //             case 0: new Color(1.0, 0.0, 0.0);
+        //             case 1: new Color(0.0, 1.0, 0.0);
+        //             case 2: new Color(0.0, 0.0, 1.0);
+        //             case 3: new Color(0.0, 1.0, 1.0);
+        //             case _: new Color();
+        //         },
+        //         card: card,
+        //         depth: 2
+        //     });
+        //     tile.add(new Clickable(tile_clicked));
+        //     card.tile = tile;
+        //     x++;
+        // }
         return Promise.resolve();
     }
 
@@ -112,54 +113,54 @@ class PlayState extends State {
             count++;
         }
         var x = 0;
-        for (card in quest) {
-            var y = Math.floor(count / 3);
-            var tile = new Tile({
-                pos: get_pos(x, y),
-                size: tile_size,
-                color: switch (card.suit) {
-                    case 0: new Color(1.0, 0.0, 0.0);
-                    case 1: new Color(0.0, 1.0, 0.0);
-                    case 2: new Color(0.0, 0.0, 1.0);
-                    case 3: new Color(0.0, 1.0, 1.0);
-                    case _: new Color();
-                },
-                card: card
-            });
-            // trace('storing quest tile with id ${card.id}');
-            quests[card.id] = tile;
-            x++;
-        }
+        // for (card in quest) {
+        //     var y = Math.floor(count / 3);
+        //     var tile = new Tile({
+        //         pos: get_pos(x, y),
+        //         size: tile_size,
+        //         color: switch (card.suit) {
+        //             case 0: new Color(1.0, 0.0, 0.0);
+        //             case 1: new Color(0.0, 1.0, 0.0);
+        //             case 2: new Color(0.0, 0.0, 1.0);
+        //             case 3: new Color(0.0, 1.0, 1.0);
+        //             case _: new Color();
+        //         },
+        //         card: card
+        //     });
+        //     // trace('storing quest tile with id ${card.id}');
+        //     quests[card.id] = tile;
+        //     x++;
+        // }
         return Promise.resolve();
     }
 
     function handle_collected(cards :Array<Card>, quest :Array<Card>) {
         // trace('Collected! $cards');
 
-        for (quest_card in quest) {
-            var tile = quests.get(quest_card.id);
-            if (tile == null) {
-                trace('Cannot locate quest tile for $quest_card');
-                continue;
-            }
-            tile.destroy();
-            quests.remove(quest_card.id);
-        }
-        for (card in cards) {
-            card.tile.destroy();
-        }
+        // for (quest_card in quest) {
+        //     var tile = quests.get(quest_card.id);
+        //     if (tile == null) {
+        //         trace('Cannot locate quest tile for $quest_card');
+        //         continue;
+        //     }
+        //     tile.destroy();
+        //     quests.remove(quest_card.id);
+        // }
+        // for (card in cards) {
+        //     card.tile.destroy();
+        // }
     }
 
-    function handle_stacked(cards :Array<Card>) {
+    function handle_stacked(card :Card) {
         // trace('Stacked! $cards');
 
-        var stacked_card = cards.pop();
-        stacked_card.stacked = true;
+        var stacked_card = card;
+        // stacked_card.stacked = true;
     }
 
     function handle_tile_removed(card :Card) {
         //trace('handle_changed_tile: $x $y $card');
-        card.tile.destroy();
+        // card.tile.destroy();
     }
 
     function grid_clicked(sprite :Sprite) {
@@ -169,10 +170,10 @@ class PlayState extends State {
             selected_tile.grid_pos = tile.grid_pos;
             selected_tile.remove('Clickable');
             // selected_tile.add(new Clickable(tile_selected));
-            var card = selected_tile.card;
+            // var card = selected_tile.card;
             selected_tile = null;
 
-            game.do_action(Place(card, tile.grid_pos.x, tile.grid_pos.y));
+            game.do_action(Place(tile, tile.grid_pos.x, tile.grid_pos.y));
         } else {
             var tile :Tile = cast sprite;
             selection.push(tile.grid_pos);
@@ -222,7 +223,7 @@ class PlayState extends State {
             });
         }
         for (quest in quests) {
-            if (!quest.card.stacked) continue;
+            if (!quest.stacked) continue;
             Luxe.draw.circle({
                 x: quest.pos.x,
                 y: quest.pos.y,

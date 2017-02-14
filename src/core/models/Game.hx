@@ -1,5 +1,6 @@
 package core.models;
 
+import core.models.Deck.ICard;
 import core.models.Deck.Card;
 import core.queues.MessageSystem;
 
@@ -13,9 +14,9 @@ enum Event {
     Draw(card :Array<Card>);
     NewQuest(card :Array<Card>);
     TileRemoved(card :Card);
-    Selected(x :Int, y :Int);
+    // StackTile(card :Card);
     Collected(cards :Array<Card>, quest :Array<Card>); // or maybe Array<{ x: Int, y :Int }> ?
-    Stacked(cards :Array<Card>); // or maybe Array<{ x: Int, y :Int }> ?
+    Stacked(card :Card); // or maybe Array<{ x: Int, y :Int }> ?
 }
 
 class Game {
@@ -35,15 +36,15 @@ class Game {
         messageSystem.on_action(handle_action);
     }
 
-    public function new_game() {
-        deck = new Deck([
+    public function new_game(deck_cards :Array<ICard>, quest_cards :Array<ICard>) {
+        deck = new Deck(deck_cards /*[
             for (suit in 0...3)
-            	for (value in 0...13) { suit: suit, stacked: false }
-        ]);
-        quest_deck = new Deck([
+                for (value in 0...13) { suit: suit, stacked: false }
+        ]*/);
+        quest_deck = new Deck(quest_cards/*[
             for (suit in 0...3)
-            	for (value in 0...13) { suit: suit, stacked: value >= 10 }
-        ]);
+                for (value in 0...13) { suit: suit, stacked: value >= 10 }
+        ]*/);
         grid = new Grid(4, 3);
 
         quests = [];
@@ -91,8 +92,8 @@ class Game {
         // var card = hand.splice(index, 1)[0];
         hand.remove(card);
 
-        change_tile({ x: x, y: y }, card);
-        //grid.set_tile(x, y, { suit: card.suit, stacked: false });
+        //change_tile({ x: x, y: y }, card);
+        grid.set_tile(x, y, card);
 
         if (hand.length == 0) {
             new_turn();
@@ -156,22 +157,17 @@ class Game {
 
         trace('Made a stack');
         for (i in 0 ... tiles.length - 1) remove_tile(tiles[i]);
-        var last = tiles[tiles.length - 1];
+        // var last = tiles[tiles.length - 1];
         var last_card = cards[cards.length - 1];
-        change_tile(last, { suit: last_card.suit, stacked: true });
+        //change_tile(last, { suit: last_card.suit, stacked: true });
 
-        messageSystem.emit(Stacked(cards));
+        messageSystem.emit(Stacked(last_card));
         return true;
     }
 
     function remove_tile(pos :{ x :Int, y :Int }) {
         messageSystem.emit(TileRemoved(grid.get_tile(pos.x, pos.y)));
-        change_tile(pos, null);
-    }
-
-    function change_tile(pos :{ x :Int, y :Int }, card :Card) {
-        grid.set_tile(pos.x, pos.y, card);
-        // messageSystem.emit(ChangedTile(pos.x, pos.y, card));
+        grid.set_tile(pos.x, pos.y, null);
     }
 
     public function handle_selection(tiles :Array<{ x :Int, y :Int }>) {

@@ -19,7 +19,10 @@
     build : {
       dependencies : {
         luxe : '*'
-      }
+      },
+      defines : [
+        'absolute-path'
+      ]
     },
 
       //Copies over all the assets to the output

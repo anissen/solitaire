@@ -36,6 +36,13 @@ class GenericDeck<T> {
 
 // TODO: Maybe simply have the data structure be an Array and have a class of static extensions
 
+interface ICard {
+    var suit(default, null) :Int;
+    var stacked(default, null) :Bool;
+}
+typedef Card = ICard;
+
+/*
 @:structInit
 class Card {
     static var Id :Int = 0;
@@ -51,6 +58,7 @@ class Card {
         this.tile = null;
     }
 }
+*/
 
 // interface ICard {
 //     function get_suit() :Int;

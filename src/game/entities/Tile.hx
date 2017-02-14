@@ -8,14 +8,21 @@ import luxe.Color;
 typedef TileOptions = {
     pos :Vector,
     size :Float,
-    ?card :core.models.Deck.Card,
+    //?card :core.models.Deck.Card,
+    suit :Int,
+    stacked :Bool,
     ?depth :Int,
     ?color :Color
 }
 
-class Tile extends Sprite {
+class Tile extends Sprite implements core.models.Deck.ICard {
+    //static var Id :Int = 0;
+    //@:isVar public var id(default, null) :Int;
+    @:isVar public var suit(default, null) :Int;
+    @:isVar public var stacked(default, null) :Bool;
+    
     public var grid_pos :{ x :Int, y :Int } = null;
-    public var card :core.models.Deck.Card;
+    // public var card :core.models.Deck.Card;
 
     public function new(options :TileOptions) {
         super({
@@ -24,6 +31,8 @@ class Tile extends Sprite {
             color: ((options.color == null) ? Color.random() : options.color),
             depth: ((options.depth == null) ? 0 : options.depth)
         });
-        card = options.card;
+        //card = options.card;
+        suit = options.suit;
+        stacked = options.stacked;
     }
 }
