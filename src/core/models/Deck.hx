@@ -38,7 +38,7 @@ class GenericDeck<T> {
 
 interface ICard {
     var suit(default, null) :Int;
-    var stacked(default, null) :Bool;
+    var stacked(default, default) :Bool;
     var grid_pos(default, null) :{ x :Int, y :Int };
 }
 typedef Card = game.entities.Tile; // TODO: HACK

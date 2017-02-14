@@ -11,6 +11,7 @@ typedef TileOptions = {
     //?card :core.models.Deck.Card,
     suit :Int,
     stacked :Bool,
+    ?grid_pos :{ x :Int, y :Int },
     ?depth :Int,
     ?color :Color
 }
@@ -19,7 +20,7 @@ class Tile extends Sprite implements core.models.Deck.ICard {
     //static var Id :Int = 0;
     //@:isVar public var id(default, null) :Int;
     @:isVar public var suit(default, null) :Int;
-    @:isVar public var stacked(default, null) :Bool;
+    @:isVar public var stacked(default, default) :Bool;
     
     public var grid_pos :{ x :Int, y :Int } = null;
     // public var card :core.models.Deck.Card;
@@ -34,5 +35,6 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         //card = options.card;
         suit = options.suit;
         stacked = options.stacked;
+        grid_pos = options.grid_pos;
     }
 }

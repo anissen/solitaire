@@ -52,7 +52,7 @@ class PlayState extends State {
                     size: new Vector(tile_size, tile_size),
                     color: new Color(0.3, 0.3, 0.3)
                 });
-                sprite.add(new Clickable(grid_clicked));
+                sprite.add(new Clickable(grid_clicked.bind(x, y)));
             }
         }
 
@@ -147,47 +147,41 @@ class PlayState extends State {
     }
 
     function handle_collected(cards :Array<Card>, quest :Array<Card>) {
-        // trace('Collected! $cards');
-
-        // for (quest_card in quest) {
-        //     var tile = quests.get(quest_card.id);
-        //     if (tile == null) {
-        //         trace('Cannot locate quest tile for $quest_card');
-        //         continue;
-        //     }
-        //     tile.destroy();
-        //     quests.remove(quest_card.id);
-        // }
-        // for (card in cards) {
-        //     card.tile.destroy();
-        // }
+        trace('Collected! $cards');
+        for (card in quest) {
+            card.destroy();
+        }
+        for (card in cards) {
+            card.destroy();
+        }
     }
 
     function handle_stacked(card :Card) {
-        // trace('Stacked! $cards');
-
-        var stacked_card = card;
-        // stacked_card.stacked = true;
+        trace('Stacked! $card');
+        card.stacked = true;
     }
 
     function handle_tile_removed(card :Card) {
-        //trace('handle_changed_tile: $x $y $card');
-        // card.tile.destroy();
+        trace('handle_changed_tile: $card');
+        card.destroy();
     }
 
-    function grid_clicked(sprite :Sprite) {
+    function grid_clicked(x :Int, y :Int, sprite :Sprite) {
         if (selected_tile != null) {
             var tile :Tile = cast sprite;
             selected_tile.pos = tile.pos.clone();
-            //selected_tile.grid_pos = tile.grid_pos;
+            selected_tile.grid_pos = { x: x, y: y };
             selected_tile.remove('Clickable');
             // selected_tile.add(new Clickable(tile_selected));
             // var card = selected_tile.card;
+            var grabbed_card = selected_tile;
+
             selected_tile = null;
 
-            game.do_action(Place(tile, 1, 1)); // TODO: Use grid.get_point()
+            game.do_action(Place(grabbed_card, x, y));
         } else {
             var tile :Tile = cast sprite;
+            trace('select card $tile');
             selection.push(tile);
             if (selection.length == 3) {
                 game.do_action(Collect(selection));
@@ -223,10 +217,10 @@ class PlayState extends State {
             });
         }
         for (tile in selection) {
-            var pos = get_pos(tile.grid_pos.x, tile.grid_pos.y + 4);
+            //var pos = get_pos(tile.grid_pos.x, tile.grid_pos.y + 4);
             Luxe.draw.box({
-                x: pos.x - 32 - 5,
-                y: pos.y - 32 - 5,
+                x: tile.pos.x - 32 - 5,
+                y: tile.pos.y - 32 - 5,
                 h: 64 + 10,
                 w: 64 + 10,
                 color: new Color(1, 0, 1, 1),

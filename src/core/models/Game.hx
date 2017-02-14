@@ -90,7 +90,8 @@ class Game {
     function handle_place(card :Card, x :Int, y :Int) {
         // if (hand.length < index) return;
         // var card = hand.splice(index, 1)[0];
-        hand.remove(card);
+        var res = hand.remove(card);
+        trace('could remove card: $res');
 
         //change_tile({ x: x, y: y }, card);
         grid.set_tile(x, y, card);
@@ -107,6 +108,11 @@ class Game {
         }
 
         for (tile in tiles) {
+            if (tile.grid_pos == null) {
+                trace('Tile has no grid_pos -- how?');
+                return false;
+            }
+
             if (grid.get_tile(tile.grid_pos.x, tile.grid_pos.y) == null) {
                 trace('Empty tile selected');
                 return false;
