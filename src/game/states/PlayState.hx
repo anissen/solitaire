@@ -93,7 +93,7 @@ class PlayState extends State {
                         case _: new Color();
                     },
                     suit: suit,
-                    stacked: false,
+                    stacked: (value >= 10),
                     depth: 2
                 });
                 tile.visible = false;
@@ -168,6 +168,7 @@ class PlayState extends State {
 
     function handle_tile_removed(card :Card) {
         trace('handle_changed_tile:');
+        tiles.remove(card);
         card.destroy();
     }
 
