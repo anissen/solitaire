@@ -1,6 +1,5 @@
 package core.models;
 
-import core.models.Deck.ICard;
 import core.models.Deck.Card;
 import core.queues.MessageSystem;
 
@@ -14,9 +13,8 @@ enum Event {
     Draw(card :Array<Card>);
     NewQuest(card :Array<Card>);
     TileRemoved(card :Card);
-    // StackTile(card :Card);
-    Collected(cards :Array<Card>, quest :Array<Card>); // or maybe Array<{ x: Int, y :Int }> ?
-    Stacked(card :Card); // or maybe Array<{ x: Int, y :Int }> ?
+    Collected(cards :Array<Card>, quest :Array<Card>);
+    Stacked(card :Card);
 }
 
 class Game {
@@ -37,14 +35,8 @@ class Game {
     }
 
     public function new_game(deck_cards :Array<Card>, quest_cards :Array<Card>) {
-        deck = new Deck(deck_cards /*[
-            for (suit in 0...3)
-                for (value in 0...13) { suit: suit, stacked: false }
-        ]*/);
-        quest_deck = new Deck(quest_cards/*[
-            for (suit in 0...3)
-                for (value in 0...13) { suit: suit, stacked: value >= 10 }
-        ]*/);
+        deck = new Deck(deck_cards);
+        quest_deck = new Deck(quest_cards);
         grid = new Grid(4, 3);
 
         quests = [];
@@ -53,12 +45,6 @@ class Game {
         score = 0;
 
         new_turn();
-
-        // for testing purposes:
-        // var i = 0;
-        // for (card in deck.take(4)) {
-        //     grid.set_tile(i++, 1, card);
-        // }
     }
 
     public function do_action(action :Action) {
@@ -83,19 +69,14 @@ class Game {
             quests.push(newQuest);
             messageSystem.emit(NewQuest(newQuest));
         }
-        hand = deck.take(3); // TODO: Hand should be a Set
+        hand = deck.take(3);
         messageSystem.emit(Draw(hand));
     }
 
     function handle_place(card :Card, x :Int, y :Int) {
-        // if (hand.length < index) return;
-        // var card = hand.splice(index, 1)[0];
-        var res = hand.remove(card);
-        trace('could remove card: $res');
-
-        //change_tile({ x: x, y: y }, card);
         grid.set_tile(x, y, card);
 
+        hand.remove(card);
         if (hand.length == 0) {
             new_turn();
         }
@@ -163,9 +144,7 @@ class Game {
 
         trace('Made a stack');
         for (i in 0 ... tiles.length - 1) remove_tile(tiles[i]);
-        // var last = tiles[tiles.length - 1];
         var last_card = cards[cards.length - 1];
-        //change_tile(last, { suit: last_card.suit, stacked: true });
 
         messageSystem.emit(Stacked(last_card));
         return true;
@@ -204,61 +183,4 @@ class Game {
         }
         return true;
     }
-
-    // public function print_game() {
-    //     var str = '\n';
-    //     // str += '\033[1;40;30m===  GRID ===\033[0m\n';
-    //     str += print_grid();
-
-    //     str += '\033[1;40;30m=== QUESTS ===\033[0m\n';
-    //     for (quest in quests) str += print_cards(quest);
-
-    //     str += '\033[1;40;30m===  HAND  ===\033[0m\n';
-    //     str += print_cards(hand);
-
-    //     str += 'Score: $score';
-
-    //     trace(str);
-    // }
-
-    // function print_cards(cards :Array<Card>) {
-    //     var str = '';
-    //     for (card in cards) {
-    //         var card_str = deck.get_card_string(card);
-    //         if (card.stacked) {
-    //             str += '($card_str)';
-    //         } else {
-    //             str += ' $card_str ';
-    //         }
-    //     }
-    //     return str + '\n';
-    // }
-
-    // function print_grid() {
-    //     var str = '';
-    //     var y = 0;
-    //     for (row in grid.get_tiles()) {
-    //         if (y == 0) {
-    //             str += '  ';
-    //             for (x in 0 ... row.length) str += ' \033[1;40;30m$x\033[0m ';
-    //             str += '\n';
-    //         }
-    //         var x = 0;
-    //         for (tile in row) {
-    //             if (x == 0) str += '\033[1;40;30m$y\033[0m ';
-    //             var tile_str = deck.get_card_string(tile);
-    //             if /* (tile != null && is_collecting(x, y)) {
-    //                 str += '[$tile_str]';
-    //             } else if */ (tile != null && tile.stacked) {
-    //                 str += '($tile_str)';
-    //             } else {
-    //                 str += ' $tile_str ';
-    //             }
-    //             x++;
-    //         }
-    //         y++;
-    //         str += '\n';
-    //     }
-    //     return str;
-    // }
 }

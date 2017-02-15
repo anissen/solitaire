@@ -13,11 +13,6 @@ import snow.api.Promise;
 import core.models.Deck.Card;
 import core.models.Game;
 
-/*
-TODO:
-- maybe: make it possible to pass Tile into game as an generic argument to be used as a core model, e.g. SetCardOnGrid(x, y, tile) where tile has suit, stacked
-*/
-
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var grabbed_card :Tile = null;
