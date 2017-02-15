@@ -27,6 +27,8 @@ class PlayState extends State {
     var tiles :Array<Card>;
     var collection :Array<Card>;
 
+    var scoreText :luxe.Text;
+
     public function new() {
         super({ name: StateId });
         game = new Game();
@@ -96,6 +98,12 @@ class PlayState extends State {
             }
         }
 
+        scoreText = new luxe.Text({
+            pos: new Vector(Luxe.screen.mid.x, Luxe.screen.height - 128),
+            align: center,
+            text: 'Score: 0'
+        });
+
         game.new_game(tile_deck, quest_deck);
     }
 
@@ -113,11 +121,12 @@ class PlayState extends State {
             case TileRemoved(card): handle_tile_removed(card); Promise.resolve();
             case Collected(cards, quest): handle_collected(cards, quest); Promise.resolve();
             case Stacked(card): handle_stacked(card); Promise.resolve();
+            case Score(score): handle_score(score); Promise.resolve();
         }
     }
 
     function handle_draw(cards :Array<Card>) {
-        trace('handle_draw: $cards');
+        // trace('handle_draw: $cards');
         var x = 0;
         for (card in cards) {
             card.visible = true;
@@ -131,7 +140,7 @@ class PlayState extends State {
     function handle_new_quest(quest :Array<Card>) {
         var count = 0;
         for (tile in quests) {
-            trace('handle_new_quest ${count % 3}, ${Math.floor(count / 3)}');
+            // trace('handle_new_quest ${count % 3}, ${Math.floor(count / 3)}');
             tile.pos = get_pos(count % 3, Math.floor(count / 3));
             count++;
         }
@@ -145,7 +154,7 @@ class PlayState extends State {
     }
 
     function handle_collected(cards :Array<Card>, quest :Array<Card>) {
-        trace('Collected!');
+        // trace('Collected!');
         for (card in quest) {
             quests.remove(card);
             card.destroy();
@@ -157,14 +166,18 @@ class PlayState extends State {
     }
 
     function handle_stacked(card :Card) {
-        trace('Stacked!');
+        // trace('Stacked!');
         card.stacked = true;
     }
 
     function handle_tile_removed(card :Card) {
-        trace('handle_changed_tile:');
+        // trace('handle_changed_tile:');
         tiles.remove(card);
         card.destroy();
+    }
+
+    function handle_score(score :Int) {
+        scoreText.text = 'Score: $score';
     }
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
@@ -184,7 +197,7 @@ class PlayState extends State {
 
     function tile_clicked(sprite :Sprite) {
         var tile :Tile = cast sprite;
-        trace('select tile $tile');
+        // trace('select tile $tile');
         collection.push(tile);
         if (collection.length == 3) {
             game.do_action(Collect(collection));

@@ -15,6 +15,7 @@ enum Event {
     TileRemoved(card :Card);
     Collected(cards :Array<Card>, quest :Array<Card>);
     Stacked(card :Card);
+    Score(score :Int);
 }
 
 class Game {
@@ -118,7 +119,7 @@ class Game {
         for (quest in quests) {
             if (!cards_matching(cards, quest)) continue;
 
-            trace('Matched quest: $quest');
+            // trace('Matched quest: $quest');
             quests.remove(quest);
             for (tile in tiles) remove_tile(tile);
             update_score(cards, quest);
@@ -142,7 +143,7 @@ class Game {
             }
         }
 
-        trace('Made a stack');
+        // trace('Made a stack');
         for (i in 0 ... tiles.length - 1) remove_tile(tiles[i]);
         var last_card = cards[cards.length - 1];
 
@@ -162,10 +163,17 @@ class Game {
     }
 
     function update_score(cards :Array<Card>, quest :Array<Card>) {
-        for (i in 0 ... cards.length) {
-            score += (cards[i].stacked ? 5 : 1);
-            score += (cards[i].suit == quest[i].suit ? 1 : 0);
+        for (card in cards) {
+            score += (card.stacked ? 5 : 1);
         }
+        var matchingSuits = true;
+        var matchingSuitsReverse = true;
+        for (i in 0 ... cards.length) {
+            if (cards[i].suit != quest[i].suit) matchingSuits = false;
+            if (cards[i].suit != quest[cards.length - i - 1].suit) matchingSuitsReverse = false;
+        }
+        if (cards.length > 0 && (matchingSuits || matchingSuitsReverse)) score += 3;
+        messageSystem.emit(Score(score));
     }
 
     function cards_matching(cards1 :Array<Card>, cards2 :Array<Card>) {
