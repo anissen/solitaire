@@ -8,6 +8,8 @@ import luxe.Color;
 
 import game.entities.Tile;
 import game.components.Clickable;
+import game.components.MouseUp;
+import game.components.DragOver;
 
 import snow.api.Promise;
 import core.models.Deck.Card;
@@ -50,7 +52,7 @@ class PlayState extends State {
                     size: new Vector(tile_size, tile_size),
                     color: new Color(0.3, 0.3, 0.3)
                 });
-                sprite.add(new Clickable(grid_clicked.bind(x, y)));
+                sprite.add(new MouseUp(grid_clicked.bind(x, y)));
             }
         }
 
@@ -182,16 +184,27 @@ class PlayState extends State {
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
         if (grabbed_card != null) {
-            var tile :Tile = cast sprite;
-            grabbed_card.pos = tile.pos.clone();
+            grabbed_card.pos = sprite.pos.clone();
             grabbed_card.grid_pos = { x: x, y: y };
             grabbed_card.remove('Clickable');
             game.do_action(Place(grabbed_card, x, y));
             var grabbed_card_copy = grabbed_card;
             Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
                 grabbed_card_copy.add(new Clickable(tile_clicked));
+                grabbed_card_copy.add(new DragOver(tile_dragover));
             });
             grabbed_card = null;
+        }
+    }
+
+    function tile_dragover(sprite :Sprite) {
+        var tile :Tile = cast sprite;
+        if (grabbed_card == null && collection.length > 0 && collection.indexOf(tile) == -1) {
+            collection.push(tile);
+            if (collection.length == 3) {
+                game.do_action(Collect(collection));
+                collection = [];
+            }
         }
     }
 

@@ -4,12 +4,12 @@ import luxe.Sprite;
 import luxe.Component;
 import luxe.Input.MouseEvent;
 
-class DragOver extends Component {
+class MouseUp extends Component {
     var sprite :Sprite;
     var callback :Sprite->Void;
 
     public function new(callback :Sprite->Void) {
-        super({ name: 'DragOver' });
+        super({ name: 'MouseUp' });
         this.callback = callback;
     }
 
@@ -17,19 +17,8 @@ class DragOver extends Component {
         sprite = cast entity;
     }
 
-    /*
-    override function onmousedown(event :MouseEvent) {
-        mouse_down = ;
-    }
-
     override function onmouseup(event :MouseEvent) {
-        mouse_down = false;
-    }
-    */
-
-    override function onmousemove(event :MouseEvent) {
-        if (Luxe.input.mousedown(luxe.Input.MouseButton.left) && sprite.point_inside(event.pos)) {
-        //     Luxe.events.fire('dragging', sprite);
+        if (sprite.point_inside(event.pos)) {
             callback(sprite);
         }
     }
