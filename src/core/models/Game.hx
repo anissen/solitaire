@@ -67,8 +67,10 @@ class Game {
     function new_turn() {
         if (quests.length < 3) {
             var newQuest = quest_deck.take(3);
-            quests.push(newQuest);
-            messageSystem.emit(NewQuest(newQuest));
+            if (newQuest.length == 3) {
+                quests.push(newQuest);
+                messageSystem.emit(NewQuest(newQuest));
+            }
         }
         hand = deck.take(3);
         messageSystem.emit(Draw(hand));
