@@ -10,10 +10,10 @@ class Main extends luxe.Game {
 
     override function config(config:GameConfig) {
         config.window.title = 'luxe game';
-        // config.window.width = 316;
-        // config.window.height = 476;
         config.window.width = 316;
-        config.window.height = 676;
+        config.window.height = 476;
+        // config.window.width = 240;
+        // config.window.height = 576;
         config.window.fullscreen = false;
         return config;
     }

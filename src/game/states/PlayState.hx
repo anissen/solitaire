@@ -20,7 +20,7 @@ class PlayState extends State {
     var grabbed_card :Tile = null;
     var game :Game; // TODO: Don't aggregate Game here! Reference it from a static context
 
-    var tiles_x = 4;
+    var tiles_x = 3;
     var tiles_y = 3;
     var tile_size = 64;
     var margin = 8;
@@ -48,7 +48,7 @@ class PlayState extends State {
         for (x in 0 ... tiles_x) {
             for (y in 0 ... tiles_y) {
                 var sprite = new Sprite({
-                    pos: get_pos(x, y + 4),
+                    pos: get_pos(x, y + 2),
                     size: new Vector(tile_size, tile_size),
                     color: new Color(0.3, 0.3, 0.3)
                 });
@@ -57,10 +57,10 @@ class PlayState extends State {
         }
 
         var tile_deck = [];
-        for (suit in 0 ... 2) {
+        for (suit in 0 ... 4) {
             for (value in 0 ... 13) {
                 var tile = new Tile({
-                    pos: get_pos(0, tiles_y + 4 + 1),
+                    pos: get_pos(0, tiles_y + 3),
                     size: tile_size,
                     color: switch (suit) {
                         case 0: new Color(1.0, 0.0, 0.0);
@@ -78,12 +78,20 @@ class PlayState extends State {
             }
         }
 
+        for (x in 0 ... 3) {
+            new Sprite({
+                pos: get_pos(x, 0.5),
+                size: new Vector(tile_size, tile_size * 2),
+                color: new Color(0.5, 0.5, 0.5)
+            });
+        }
+
         var quest_deck = [];
-        for (suit in 0 ... 2) {
+        for (suit in 0 ... 4) {
             for (value in 0 ... 13) {
                 var tile = new Tile({
-                    pos: get_pos(0, tiles_y + 4 + 1),
-                    size: tile_size,
+                    pos: get_pos(0, tiles_y + 3),
+                    size: tile_size / 2,
                     color: switch (suit) {
                         case 0: new Color(1.0, 0.0, 0.0);
                         case 1: new Color(0.0, 1.0, 0.0);
@@ -101,15 +109,16 @@ class PlayState extends State {
         }
 
         scoreText = new luxe.Text({
-            pos: new Vector(Luxe.screen.mid.x, Luxe.screen.height - 128),
+            // pos: new Vector(Luxe.screen.mid.x, Luxe.screen.height - 64),
+            pos: new Vector(Luxe.screen.width - 48, 64),
             align: center,
-            text: 'Score: 0'
+            text: '0'
         });
 
-        game.new_game(tile_deck, quest_deck);
+        game.new_game(tiles_x, tiles_y, tile_deck, quest_deck);
     }
 
-    function get_pos(tile_x :Int, tile_y :Int) {
+    function get_pos(tile_x :Float, tile_y :Float) {
         return new Vector(
             16 + tile_size / 2 + tile_x * (tile_size + margin),
             16 + tile_size / 2 + tile_y * (tile_size + margin)
@@ -132,7 +141,7 @@ class PlayState extends State {
         var x = 0;
         for (card in cards) {
             card.visible = true;
-            card.pos = get_pos(x++, tiles_y + 4 + 1);
+            card.pos = get_pos(x++, tiles_y + 2);
             card.add(new Clickable(card_clicked));
             tiles.push(card);
         }
@@ -143,12 +152,12 @@ class PlayState extends State {
         var count = 0;
         for (tile in quests) {
             // trace('handle_new_quest ${count % 3}, ${Math.floor(count / 3)}');
-            tile.pos = get_pos(count % 3, Math.floor(count / 3));
+            tile.pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
             count++;
         }
         for (card in quest) {
             card.visible = true;
-            card.pos = get_pos(count % 3, Math.floor(count / 3));
+            card.pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
             quests.push(card);
             count++;
         }
@@ -179,7 +188,7 @@ class PlayState extends State {
     }
 
     function handle_score(score :Int) {
-        scoreText.text = 'Score: $score';
+        scoreText.text = '$score';
     }
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
@@ -233,6 +242,18 @@ class PlayState extends State {
     }
 
     override function onrender() {
+        for (tile in tiles) {
+            if (tile.grid_pos != null) continue; // hack to find cards, not tiles
+            Luxe.draw.box({
+                x: tile.pos.x - 32 - 2,
+                y: tile.pos.y - 32 - 2,
+                h: 64 + 4,
+                w: 64 + 4,
+                color: new Color(1, 1, 1, 1),
+                depth: 1,
+                immediate: true
+            });
+        }
         if (grabbed_card != null) {
             Luxe.draw.box({
                 x: -5 + grabbed_card.pos.x - 32,
@@ -260,7 +281,7 @@ class PlayState extends State {
             Luxe.draw.circle({
                 x: quest.pos.x,
                 y: quest.pos.y,
-                r: 20,
+                r: 10,
                 color: new Color(0.2, 0.7, 0.2, 0.8),
                 depth: 3,
                 immediate: true

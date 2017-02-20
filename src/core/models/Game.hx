@@ -35,10 +35,10 @@ class Game {
         messageSystem.on_action(handle_action);
     }
 
-    public function new_game(deck_cards :Array<Card>, quest_cards :Array<Card>) {
+    public function new_game(grid_width :Int, grid_height :Int, deck_cards :Array<Card>, quest_cards :Array<Card>) {
         deck = new Deck(deck_cards);
         quest_deck = new Deck(quest_cards);
-        grid = new Grid(4, 3);
+        grid = new Grid(grid_width, grid_height);
 
         quests = [];
         hand = [];
