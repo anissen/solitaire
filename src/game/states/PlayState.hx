@@ -202,6 +202,7 @@ class PlayState extends State {
                 grabbed_card_copy.add(new Clickable(tile_clicked));
                 grabbed_card_copy.add(new DragOver(tile_dragover));
             });
+            grabbed_card.depth = 2;
             grabbed_card = null;
         }
     }
@@ -229,6 +230,7 @@ class PlayState extends State {
 
     function card_clicked(sprite :Sprite) {
         grabbed_card = cast sprite;
+        grabbed_card.depth = 3;
     }
 
     override function onleave(_) {
