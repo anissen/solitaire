@@ -86,11 +86,6 @@ class Game {
     }
 
     function is_collection_valid(tiles :Array<Card>) {
-        if (tiles.length != 3) {
-            trace('Only ${tiles.length} tiles selected');
-            return false;
-        }
-
         for (tile in tiles) {
             if (tile.grid_pos == null) {
                 trace('Tile has no grid_pos -- how?');
@@ -157,9 +152,36 @@ class Game {
         messageSystem.emit(TileRemoved(grid.get_tile(card.grid_pos.x, card.grid_pos.y)));
         grid.set_tile(card.grid_pos.x, card.grid_pos.y, null);
     }
+    
+    /*
+    public function get_matching_quest_parts(tiles :Array<Card>) {
+        if (!is_collection_valid(tiles)) return [];
+
+        var matchingQuestParts = [];
+
+        // Only look at the quests in normal order (not reversed)
+        //var cards = [ for (t in tiles) grid.get_tile(t.grid_pos.x, t.grid_pos.y) ];
+        for (quest in quests) {
+            for (quest_card in quest) {
+                var matches = [];
+                for (tile in tiles) {
+                    if (tile.suit == quest_card.suit && tile.stacked == quest_card.stacked) {
+                        matches.push(quest_card);
+                    }
+                }
+            }
+            if (matches.length > 0) matchingQuestParts.push(matches);
+        }
+        return matchingQuestParts;
+    }
+    */
 
     public function handle_collecting(tiles :Array<Card>) {
         if (!is_collection_valid(tiles)) return;
+        if (tiles.length != 3) {
+            trace('Only ${tiles.length} tiles selected');
+            return;
+        }
         if (complete_quest(tiles)) return;
         if (make_stack(tiles)) return;
     }
