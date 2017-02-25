@@ -12,5 +12,14 @@
         ["bin/web.build/build.hxml"],
         ["bin/web.build/snow.hxml"],
         ["tests.hxml"]
-    ]
+    ],
+
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "bin": true,
+        "android.project": true
+    }
 }

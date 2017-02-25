@@ -3,16 +3,20 @@
   project : {
 
       //These first two are required
-    name : 'empty',
-    version : '1.0.0',
-    author : 'luxeengine',
+    name : 'solitaire',
+    version : '0.1.0',
+    author : 'Anders Nissen',
 
       //This configures your app.
       //The package is important, it's used 
       //for save locations, initializing mobile project files etc
     app : {
-      name : 'luxe_empty',
-      package : 'com.luxeengine.empty'
+      name : 'solitaire',
+      package : 'com.anissen.solitaire',
+
+      mobile: {
+        orientation: portrait
+      }
     },
 
       //This configures the build process
@@ -21,6 +25,7 @@
         luxe : '*'
       },
       defines : [
+        'NO_PRECOMPILED_HEADERS',
         'absolute-path'
       ]
     },
