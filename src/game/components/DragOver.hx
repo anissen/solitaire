@@ -28,7 +28,9 @@ class DragOver extends Component {
     */
 
     override function onmousemove(event :MouseEvent) {
-        if (Luxe.input.mousedown(luxe.Input.MouseButton.left) && sprite.point_inside(event.pos)) {
+        if (!Luxe.input.mousedown(luxe.Input.MouseButton.left)) return;
+        var world_pos = Luxe.camera.screen_point_to_world(event.pos);
+        if (sprite.point_inside(world_pos)) {
         //     Luxe.events.fire('dragging', sprite);
             callback(sprite);
         }

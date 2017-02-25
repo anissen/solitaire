@@ -18,7 +18,8 @@ class MouseUp extends Component {
     }
 
     override function onmouseup(event :MouseEvent) {
-        if (sprite.point_inside(event.pos)) {
+        var world_pos = Luxe.camera.screen_point_to_world(event.pos);
+        if (sprite.point_inside(world_pos)) {
             callback(sprite);
         }
     }

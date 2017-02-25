@@ -239,7 +239,8 @@ class PlayState extends State {
 
     override function onmousemove(event :luxe.Input.MouseEvent) {
         if (grabbed_card != null) {
-            grabbed_card.pos = event.pos.clone();
+            var world_pos = Luxe.camera.screen_point_to_world(event.pos);
+            grabbed_card.pos = world_pos;
         }
     }
 
