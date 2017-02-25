@@ -25,6 +25,10 @@ class PlayState extends State {
     var tile_size = 64;
     var margin = 8;
 
+    var suits = 4;
+    var quest_values = 13;
+    var card_values = 10;
+
     var quests :Array<Card>;
     var tiles :Array<Card>;
     var collection :Array<Card>;
@@ -45,6 +49,16 @@ class PlayState extends State {
     }
 
     override function onenter(_) {
+        // quest backgrounds
+        for (x in 0 ... 3) {
+            new Sprite({
+                pos: get_pos(x, 0.5),
+                size: new Vector(tile_size, tile_size * 2),
+                color: new Color(0.5, 0.5, 0.5)
+            });
+        }
+        
+        // board grid
         for (x in 0 ... tiles_x) {
             for (y in 0 ... tiles_y) {
                 var sprite = new Sprite({
@@ -67,8 +81,8 @@ class PlayState extends State {
         }
 
         var tile_deck = [];
-        for (suit in 0 ... 4) {
-            for (value in 0 ... 13) {
+        for (suit in 0 ... suits {
+            for (value in 0 ... card_values) {
                 var tile = new Tile({
                     pos: get_pos(0, tiles_y + 3),
                     size: tile_size,
@@ -88,17 +102,9 @@ class PlayState extends State {
             }
         }
 
-        for (x in 0 ... 3) {
-            new Sprite({
-                pos: get_pos(x, 0.5),
-                size: new Vector(tile_size, tile_size * 2),
-                color: new Color(0.5, 0.5, 0.5)
-            });
-        }
-
         var quest_deck = [];
-        for (suit in 0 ... 4) {
-            for (value in 0 ... 13) {
+        for (suit in 0 ... suits) {
+            for (value in 0 ... quest_values) {
                 var tile = new Tile({
                     pos: get_pos(0, tiles_y + 3),
                     size: tile_size / 2,
@@ -202,19 +208,21 @@ class PlayState extends State {
     }
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
-        if (grabbed_card != null) {
-            grabbed_card.pos = sprite.pos.clone();
-            grabbed_card.grid_pos = { x: x, y: y };
-            grabbed_card.remove('Clickable');
-            game.do_action(Place(grabbed_card, x, y));
-            var grabbed_card_copy = grabbed_card;
-            Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
-                grabbed_card_copy.add(new Clickable(tile_clicked));
-                grabbed_card_copy.add(new DragOver(tile_dragover));
-            });
-            grabbed_card.depth = 2;
-            grabbed_card = null;
-        }
+        if (grabbed_card == null) return;
+
+        grabbed_card.pos = sprite.pos.clone();
+        grabbed_card.grid_pos = { x: x, y: y };
+        grabbed_card.remove('Clickable');
+        game.do_action(Place(grabbed_card, x, y));
+        var grabbed_card_copy = grabbed_card;
+        Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
+            grabbed_card_copy.add(new Clickable(tile_clicked));
+            grabbed_card_copy.add(new DragOver(tile_dragover));
+        });
+        grabbed_card.depth = 2;
+        grabbed_card = null;
+    }
+
     function card_grid_clicked(sprite :Sprite) {
         if (grabbed_card == null) return;
         grabbed_card.pos = sprite.pos.clone();
@@ -224,17 +232,16 @@ class PlayState extends State {
     function tile_dragover(sprite :Sprite) {
         var tile :Tile = cast sprite;
         if (grabbed_card == null && collection.length > 0 && collection.indexOf(tile) == -1) {
-            collection.push(tile);
-            if (collection.length == 3) {
-                game.do_action(Collect(collection));
-                collection = [];
-            }
+            add_to_collection(tile);
         }
     }
 
     function tile_clicked(sprite :Sprite) {
         var tile :Tile = cast sprite;
-        // trace('select tile $tile');
+        add_to_collection(tile);
+    }
+
+    function add_to_collection(tile :Tile) {
         collection.push(tile);
         if (collection.length == 3) {
             game.do_action(Collect(collection));
@@ -245,6 +252,7 @@ class PlayState extends State {
     function card_clicked(sprite :Sprite) {
         grabbed_card = cast sprite;
         grabbed_card.depth = 3;
+        collection = [];
     }
 
     override function onleave(_) {
