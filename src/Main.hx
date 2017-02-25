@@ -15,6 +15,12 @@ class Main extends luxe.Game {
         // config.window.width = 240;
         // config.window.height = 576;
         config.window.fullscreen = false;
+
+        // var icons = ['bread.png', 'cheese-wedge.png', 'dripping-honey.png', 'grain.png', 'grapes.png', 'honeypot.png', 'milk-carton.png', 'wine-glass.png'];
+        // for (icon in icons) config.preload.textures.push({ id: 'assets/images/' + icon });
+        var icons = ['clubs.png', 'diamonds.png', 'hearts.png', 'spades.png'];
+        for (icon in icons) config.preload.textures.push({ id: 'assets/images/suits/' + icon });
+
         return config;
     }
 

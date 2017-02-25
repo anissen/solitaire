@@ -83,21 +83,7 @@ class PlayState extends State {
         var tile_deck = [];
         for (suit in 0 ... suits) {
             for (value in 0 ... card_values) {
-                var tile = new Tile({
-                    pos: get_pos(0, tiles_y + 3),
-                    size: tile_size,
-                    color: switch (suit) {
-                        case 0: new Color(1.0, 0.0, 0.0);
-                        case 1: new Color(0.0, 1.0, 0.0);
-                        case 2: new Color(0.0, 0.0, 1.0);
-                        case 3: new Color(0.0, 1.0, 1.0);
-                        case _: new Color();
-                    },
-                    suit: suit,
-                    stacked: false,
-                    depth: 2
-                });
-                tile.visible = false;
+                var tile = create_tile(suit, value, false, tile_size);
                 tile_deck.push(tile);
             }
         }
@@ -105,33 +91,56 @@ class PlayState extends State {
         var quest_deck = [];
         for (suit in 0 ... suits) {
             for (value in 0 ... quest_values) {
-                var tile = new Tile({
-                    pos: get_pos(0, tiles_y + 3),
-                    size: tile_size / 2,
-                    color: switch (suit) {
-                        case 0: new Color(1.0, 0.0, 0.0);
-                        case 1: new Color(0.0, 1.0, 0.0);
-                        case 2: new Color(0.0, 0.0, 1.0);
-                        case 3: new Color(0.0, 1.0, 1.0);
-                        case _: new Color();
-                    },
-                    suit: suit,
-                    stacked: (value >= 10),
-                    depth: 2
-                });
-                tile.visible = false;
+                var tile = create_tile(suit, value, (value >= 10), tile_size / 2);
                 quest_deck.push(tile);
             }
         }
 
         scoreText = new luxe.Text({
             // pos: new Vector(Luxe.screen.mid.x, Luxe.screen.height - 64),
-            pos: new Vector(Luxe.screen.width - 48, 64),
+            pos: new Vector(Luxe.camera.viewport.w - 48, 64),
             align: center,
             text: '0'
         });
 
         game.new_game(tiles_x, tiles_y, tile_deck, quest_deck);
+    }
+
+    function create_tile(suit :Int, value :Int, stacked :Bool, size :Float) {
+        var tile = new Tile({
+            pos: get_pos(0, tiles_y + 3),
+            size: size,
+            color: new Color().rgb(switch (suit) { 
+                // http://www.colourlovers.com/palette/1630898/i_eat_the_rainbow
+                // case 0: 0x2b5166;
+                // case 1: 0xfab243;
+                // case 2: 0x429867;
+                // case 3: 0xe02130;
+                // case _: 0x482344;
+                // http://www.colourlovers.com/palette/434904/espresso_rainbow
+                case 0: 0x0db8b5; // blue
+                case 1: 0xffe433; // yellow
+                case 2: 0x6fcc43; // green
+                case 3: 0xd92727; // red
+                case _: 0xfc8f12; // orange
+            }),
+            texture: Luxe.resources.texture('assets/images/suits/' + switch (suit) { // TODO: Test! Maybe it's better with symbolic icons!
+                // case 0: (stacked ? 'honeypot.png' : 'dripping-honey.png');
+                // case 1: (stacked ? 'cheese-wedge.png' : 'milk-carton.png');
+                // case 2: (stacked ? 'bread.png' : 'grain.png');
+                // case 3: (stacked ? 'wine-glass.png' : 'grapes.png');
+                case 0: 'clubs.png';
+                case 1: 'diamonds.png';
+                case 2: 'hearts.png';
+                case 3: 'spades.png';
+                case _: throw 'invalid enum';
+            }),
+            suit: suit,
+            stacked: stacked,
+            depth: 2
+        });
+        tile.visible = false;
+        return tile;
     }
 
     function get_pos(tile_x :Float, tile_y :Float) {
@@ -301,28 +310,28 @@ class PlayState extends State {
                 immediate: true
             });
         }
-        for (quest in quests) {
-            if (!quest.stacked) continue;
-            Luxe.draw.circle({
-                x: quest.pos.x,
-                y: quest.pos.y,
-                r: 10,
-                color: new Color(0.2, 0.7, 0.2, 0.8),
-                depth: 3,
-                immediate: true
-            });
-        }
-        for (tile in tiles) {
-            if (!tile.stacked) continue;
-            Luxe.draw.circle({
-                x: tile.pos.x,
-                y: tile.pos.y,
-                r: 20,
-                color: new Color(0.2, 0.7, 0.2, 0.8),
-                depth: 3,
-                immediate: true
-            });
-        }
+        // for (quest in quests) {
+        //     if (!quest.stacked) continue;
+        //     Luxe.draw.circle({
+        //         x: quest.pos.x,
+        //         y: quest.pos.y,
+        //         r: 10,
+        //         color: new Color(0.2, 0.7, 0.2, 0.8),
+        //         depth: 3,
+        //         immediate: true
+        //     });
+        // }
+        // for (tile in tiles) {
+        //     if (!tile.stacked) continue;
+        //     Luxe.draw.circle({
+        //         x: tile.pos.x,
+        //         y: tile.pos.y,
+        //         r: 20,
+        //         color: new Color(0.2, 0.7, 0.2, 0.8),
+        //         depth: 3,
+        //         immediate: true
+        //     });
+        // }
     }
 
     override function update(dt :Float) {
