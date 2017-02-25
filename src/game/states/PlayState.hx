@@ -81,7 +81,7 @@ class PlayState extends State {
         }
 
         var tile_deck = [];
-        for (suit in 0 ... suits {
+        for (suit in 0 ... suits) {
             for (value in 0 ... card_values) {
                 var tile = new Tile({
                     pos: get_pos(0, tiles_y + 3),
