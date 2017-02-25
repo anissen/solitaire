@@ -56,6 +56,16 @@ class PlayState extends State {
             }
         }
 
+        // card grid
+        for (x in 0 ... 3) {
+            var sprite = new Sprite({
+                pos: get_pos(x, tiles_y + 2),
+                size: new Vector(tile_size, tile_size),
+                color: new Color(0.9, 0.9, 0.9)
+            });
+            sprite.add(new MouseUp(card_grid_clicked));
+        }
+
         var tile_deck = [];
         for (suit in 0 ... 4) {
             for (value in 0 ... 13) {
@@ -205,6 +215,10 @@ class PlayState extends State {
             grabbed_card.depth = 2;
             grabbed_card = null;
         }
+    function card_grid_clicked(sprite :Sprite) {
+        if (grabbed_card == null) return;
+        grabbed_card.pos = sprite.pos.clone();
+        grabbed_card = null;
     }
 
     function tile_dragover(sprite :Sprite) {
