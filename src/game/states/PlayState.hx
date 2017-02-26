@@ -58,6 +58,12 @@ class PlayState extends State {
             });
         }
         
+        new Sprite({
+            pos: get_pos(1, 3),
+            size: new Vector((tile_size + margin) * 3, (tile_size + margin) * 3),
+            color: new Color(0.2, 0.2, 0.2)
+        });
+
         // board grid
         for (x in 0 ... tiles_x) {
             for (y in 0 ... tiles_y) {
@@ -73,7 +79,7 @@ class PlayState extends State {
         // card grid
         for (x in 0 ... 3) {
             var sprite = new Sprite({
-                pos: get_pos(x, tiles_y + 2),
+                pos: get_pos(x, tiles_y + 2 + 0.1),
                 size: new Vector(tile_size, tile_size),
                 color: new Color(0.9, 0.9, 0.9)
             });
@@ -91,14 +97,14 @@ class PlayState extends State {
         var quest_deck = [];
         for (suit in 0 ... suits) {
             for (value in 0 ... quest_values) {
-                var tile = create_tile(suit, value, (value >= 10), tile_size / 2);
+                var tile = create_tile(suit, value, (value >= 10), tile_size * 0.5);
                 quest_deck.push(tile);
             }
         }
 
         scoreText = new luxe.Text({
             // pos: new Vector(Luxe.screen.mid.x, Luxe.screen.height - 64),
-            pos: new Vector(Luxe.camera.viewport.w - 48, 64),
+            pos: get_pos(tiles_x, 0),
             align: center,
             text: '0'
         });
@@ -129,16 +135,17 @@ class PlayState extends State {
                 // case 1: (stacked ? 'cheese-wedge.png' : 'milk-carton.png');
                 // case 2: (stacked ? 'bread.png' : 'grain.png');
                 // case 3: (stacked ? 'wine-glass.png' : 'grapes.png');
-                case 0: 'clubs.png';
+                case 0: 'spades.png';
                 case 1: 'diamonds.png';
-                case 2: 'hearts.png';
-                case 3: 'spades.png';
+                case 2: 'clubs.png';
+                case 3: 'hearts.png';
                 case _: throw 'invalid enum';
             }),
             suit: suit,
             stacked: stacked,
             depth: 2
         });
+        // tile.set_visible(false);
         tile.visible = false;
         return tile;
     }
@@ -165,8 +172,9 @@ class PlayState extends State {
         // trace('handle_draw: $cards');
         var x = 0;
         for (card in cards) {
+            // card.set_visible(true);
             card.visible = true;
-            card.pos = get_pos(x++, tiles_y + 2);
+            card.pos = get_pos(x++, tiles_y + 2 + 0.1);
             card.add(new Clickable(card_clicked));
             tiles.push(card);
         }
@@ -181,6 +189,7 @@ class PlayState extends State {
             count++;
         }
         for (card in quest) {
+            // card.set_visible(true);
             card.visible = true;
             card.pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
             quests.push(card);

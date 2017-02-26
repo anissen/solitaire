@@ -57,4 +57,9 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         }
         return value;
     }
+
+    override public function set_visible(value :Bool) {
+        bg.visible = value;
+        return (super.visible = value);
+    }
 }
