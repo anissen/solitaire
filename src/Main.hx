@@ -15,11 +15,13 @@ class Main extends luxe.Game {
         // config.window.width = 240;
         // config.window.height = 576;
         config.window.fullscreen = false;
+        config.render.antialiasing = 4;
 
         // var icons = ['bread.png', 'cheese-wedge.png', 'dripping-honey.png', 'grain.png', 'grapes.png', 'honeypot.png', 'milk-carton.png', 'wine-glass.png'];
         // for (icon in icons) config.preload.textures.push({ id: 'assets/images/' + icon });
-        var icons = ['clubs.png', 'diamonds.png', 'hearts.png', 'spades.png'];
-        for (icon in icons) config.preload.textures.push({ id: 'assets/images/suits/' + icon });
+        // var icons = ['clubs.png', 'diamonds.png', 'hearts.png', 'spades.png'];
+        var icons = ['candlebright.png', 'curled-leaf.png', 'drop.png', 'fluffy-cloud.png'];
+        for (icon in icons) config.preload.textures.push({ id: 'assets/images/elements/' + icon });
 
         return config;
     }

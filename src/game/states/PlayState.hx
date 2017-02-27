@@ -130,15 +130,19 @@ class PlayState extends State {
                 case 3: 0xd92727; // red
                 case _: 0xfc8f12; // orange
             }),
-            texture: Luxe.resources.texture('assets/images/suits/' + switch (suit) { // TODO: Test! Maybe it's better with symbolic icons!
+            texture: Luxe.resources.texture('assets/images/elements/' + switch (suit) { // TODO: Test! Maybe it's better with symbolic icons!
                 // case 0: (stacked ? 'honeypot.png' : 'dripping-honey.png');
                 // case 1: (stacked ? 'cheese-wedge.png' : 'milk-carton.png');
                 // case 2: (stacked ? 'bread.png' : 'grain.png');
                 // case 3: (stacked ? 'wine-glass.png' : 'grapes.png');
-                case 0: 'spades.png';
-                case 1: 'diamonds.png';
-                case 2: 'clubs.png';
-                case 3: 'hearts.png';
+                // case 0: 'spades.png';
+                // case 1: 'diamonds.png';
+                // case 2: 'clubs.png';
+                // case 3: 'hearts.png';
+                case 0: 'drop.png';
+                case 1: 'fluffy-cloud.png';
+                case 2: 'curled-leaf.png';
+                case 3: 'candlebright.png';
                 case _: throw 'invalid enum';
             }),
             suit: suit,
