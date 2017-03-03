@@ -1,7 +1,13 @@
 {
+    "displayName": "▶︎ Web application",
+    "description": "flow run web",
+    "command": "flow",
+    "args": [
+        "run",
+        "web",
+        "--debug"
+    ],
     "version": "0.1.0",
-    "command": "haxe",
-    "args": ["flow.hxml"],
     "problemMatcher": {
         "owner": "haxe",
         "pattern": {
@@ -14,5 +20,6 @@
             "severity": 6,
             "message": 7
         }
-    }
+    },
+    "chooserIndex": 1
 }
