@@ -22,8 +22,8 @@ class PlayState extends State {
 
     var tiles_x = 3;
     var tiles_y = 3;
-    var tile_size = 64;
-    var margin = 8;
+    var tile_size = 60;
+    var margin = 10;
 
     var suits = 4;
     var quest_values = 13;
@@ -104,7 +104,7 @@ class PlayState extends State {
 
         scoreText = new luxe.Text({
             // pos: new Vector(Luxe.screen.mid.x, Luxe.screen.height - 64),
-            pos: get_pos(tiles_x, 0),
+            pos: get_pos(1, -1),
             align: center,
             text: '0'
         });
@@ -160,8 +160,8 @@ class PlayState extends State {
 
     function get_pos(tile_x :Float, tile_y :Float) {
         return new Vector(
-            16 + tile_size / 2 + tile_x * (tile_size + margin),
-            16 + tile_size / 2 + tile_y * (tile_size + margin)
+            35 + tile_size / 2 + tile_x * (tile_size + margin),
+            50 + tile_size / 2 + tile_y * (tile_size + margin)
         );
     }
 
