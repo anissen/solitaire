@@ -38,6 +38,7 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         bg = new Sprite({
             pos: Vector.Multiply(size, 0.5),
             size: size,
+            texture: Luxe.resources.texture('assets/images/symbols/tile.png'),
             // color: (options.stacked ? options.color : new Color(1, 1, 1, 1)),
             depth: depth - 0.1,
             parent: this

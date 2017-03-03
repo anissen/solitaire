@@ -45,7 +45,7 @@ class PlayState extends State {
     }
 
     override function init() {
-        
+
     }
 
     override function onenter(_) {
@@ -54,14 +54,14 @@ class PlayState extends State {
             new Sprite({
                 pos: get_pos(x, 0.5),
                 size: new Vector(tile_size, tile_size * 2),
-                color: new Color(0.5, 0.5, 0.5)
+                color: new Color(0.5, 0.5, 0.5, 0.5)
             });
         }
         
         new Sprite({
             pos: get_pos(1, 3),
             size: new Vector((tile_size + margin) * 3, (tile_size + margin) * 3),
-            color: new Color(0.2, 0.2, 0.2)
+            color: new Color(0.2, 0.2, 0.2, 0.5)
         });
 
         // board grid
@@ -70,7 +70,7 @@ class PlayState extends State {
                 var sprite = new Sprite({
                     pos: get_pos(x, y + 2),
                     size: new Vector(tile_size, tile_size),
-                    color: new Color(0.3, 0.3, 0.3)
+                    color: new Color(0.3, 0.3, 0.3, 0.5)
                 });
                 sprite.add(new MouseUp(grid_clicked.bind(x, y)));
             }
@@ -81,7 +81,7 @@ class PlayState extends State {
             var sprite = new Sprite({
                 pos: get_pos(x, tiles_y + 2 + 0.1),
                 size: new Vector(tile_size, tile_size),
-                color: new Color(0.9, 0.9, 0.9)
+                color: new Color(0.9, 0.9, 0.9, 0.1)
             });
             sprite.add(new MouseUp(card_grid_clicked));
         }
@@ -115,7 +115,7 @@ class PlayState extends State {
     function create_tile(suit :Int, value :Int, stacked :Bool, size :Float) {
         var tile = new Tile({
             pos: get_pos(0, tiles_y + 3),
-            size: size,
+            size: size * 1.25, // HACK
             color: new Color().rgb(switch (suit) { 
                 // http://www.colourlovers.com/palette/1630898/i_eat_the_rainbow
                 // case 0: 0x2b5166;
@@ -130,7 +130,7 @@ class PlayState extends State {
                 case 3: 0xd92727; // red
                 case _: 0xfc8f12; // orange
             }),
-            texture: Luxe.resources.texture('assets/images/elements/' + switch (suit) { // TODO: Test! Maybe it's better with symbolic icons!
+            texture: Luxe.resources.texture('assets/images/symbols/' + switch (suit) { // TODO: Test! Maybe it's better with symbolic icons!
                 // case 0: (stacked ? 'honeypot.png' : 'dripping-honey.png');
                 // case 1: (stacked ? 'cheese-wedge.png' : 'milk-carton.png');
                 // case 2: (stacked ? 'bread.png' : 'grain.png');
@@ -139,10 +139,14 @@ class PlayState extends State {
                 // case 1: 'diamonds.png';
                 // case 2: 'clubs.png';
                 // case 3: 'hearts.png';
-                case 0: 'drop.png';
-                case 1: 'fluffy-cloud.png';
-                case 2: 'curled-leaf.png';
-                case 3: 'candlebright.png';
+                // case 0: 'drop.png';
+                // case 1: 'fluffy-cloud.png';
+                // case 2: 'curled-leaf.png';
+                // case 3: 'candlebright.png';
+                case 0: 'square.png';
+                case 1: 'circle.png';
+                case 2: 'triangle.png';
+                case 3: 'diamond.png';
                 case _: throw 'invalid enum';
             }),
             suit: suit,
@@ -289,36 +293,36 @@ class PlayState extends State {
     }
 
     override function onrender() {
-        for (tile in tiles) {
-            if (tile.grid_pos != null) continue; // hack to find cards, not tiles
-            Luxe.draw.box({
-                x: tile.pos.x - 32 - 2,
-                y: tile.pos.y - 32 - 2,
-                h: 64 + 4,
-                w: 64 + 4,
-                color: new Color(1, 1, 1, 1),
-                depth: 1,
-                immediate: true
-            });
-        }
-        if (grabbed_card != null) {
-            Luxe.draw.box({
-                x: -5 + grabbed_card.pos.x - 32,
-                y: -5 + grabbed_card.pos.y - 32,
-                h: 64 + 10,
-                w: 64 + 10,
-                color: new Color(1, 1, 1, 1),
-                depth: grabbed_card.depth - 1,
-                immediate: true
-            });
-        }
+        // for (tile in tiles) {
+        //     if (tile.grid_pos != null) continue; // hack to find cards, not tiles
+        //     Luxe.draw.box({
+        //         x: tile.pos.x - 32 - 2,
+        //         y: tile.pos.y - 32 - 2,
+        //         h: 64 + 4,
+        //         w: 64 + 4,
+        //         color: new Color(1, 1, 1, 1),
+        //         depth: 1,
+        //         immediate: true
+        //     });
+        // }
+        // if (grabbed_card != null) {
+        //     Luxe.draw.box({
+        //         x: -5 + grabbed_card.pos.x - 32,
+        //         y: -5 + grabbed_card.pos.y - 32,
+        //         h: 64 + 10,
+        //         w: 64 + 10,
+        //         color: new Color(1, 1, 1, 1),
+        //         depth: grabbed_card.depth - 1,
+        //         immediate: true
+        //     });
+        // }
         for (tile in collection) {
             Luxe.draw.box({
                 x: tile.pos.x - 32 - 5,
                 y: tile.pos.y - 32 - 5,
                 h: 64 + 10,
                 w: 64 + 10,
-                color: new Color(1, 0, 1, 1),
+                color: new Color(1, 0, 1, 0.2),
                 depth: 1,
                 immediate: true
             });
