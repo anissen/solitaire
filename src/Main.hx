@@ -31,6 +31,8 @@ class Main extends luxe.Game {
         Luxe.camera.size = new luxe.Vector(270, 480);
         Luxe.renderer.clear_color.set(0.7, 0.8, 0.8);
 
+        luxe.tween.Actuate.defaultEase = luxe.tween.easing.Quad.easeIn;
+
         states = new States({ name: 'state_machine' });
         states.add(new PlayState());
         states.set(PlayState.StateId);

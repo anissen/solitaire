@@ -15,6 +15,8 @@ import snow.api.Promise;
 import core.models.Deck.Card;
 import core.models.Game;
 
+using game.tools.TweenTools;
+
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var grabbed_card :Tile = null;
@@ -34,6 +36,7 @@ class PlayState extends State {
     var collection :Array<Card>;
 
     var scoreText :luxe.Text;
+    var score :Int;
 
     public function new() {
         super({ name: StateId });
@@ -90,6 +93,7 @@ class PlayState extends State {
         for (suit in 0 ... suits) {
             for (value in 0 ... card_values) {
                 var tile = create_tile(suit, value, false, tile_size);
+                tile.pos = get_pos(1, tiles_y + 3);
                 tile_deck.push(tile);
             }
         }
@@ -98,6 +102,7 @@ class PlayState extends State {
         for (suit in 0 ... suits) {
             for (value in 0 ... quest_values) {
                 var tile = create_tile(suit, value, (value >= 10), tile_size * 0.5);
+                tile.pos = get_pos(1, -2);
                 quest_deck.push(tile);
             }
         }
@@ -108,6 +113,7 @@ class PlayState extends State {
             align: center,
             text: '0'
         });
+        score = 0;
 
         game.new_game(tiles_x, tiles_y, tile_deck, quest_deck);
     }
@@ -172,38 +178,55 @@ class PlayState extends State {
             case TileRemoved(card): handle_tile_removed(card); Promise.resolve();
             case Collected(cards, quest): handle_collected(cards, quest); Promise.resolve();
             case Stacked(card): handle_stacked(card); Promise.resolve();
-            case Score(score): handle_score(score); Promise.resolve();
+            case Score(score): handle_score(score);
         }
     }
 
     function handle_draw(cards :Array<Card>) {
         // trace('handle_draw: $cards');
         var x = 0;
+        var tween = null;
         for (card in cards) {
             // card.set_visible(true);
             card.visible = true;
-            card.pos = get_pos(x++, tiles_y + 2 + 0.1);
+            var new_pos = get_pos(x, tiles_y + 2 + 0.1);
+            tween = tween_pos(card, new_pos).delay(x * 0.1);
             card.add(new Clickable(card_clicked));
             tiles.push(card);
+            x++;
         }
-        return Promise.resolve();
+        return (tween != null ? tween.toPromise() : Promise.resolve());
     }
 
     function handle_new_quest(quest :Array<Card>) {
         var count = 0;
+        var delay_count = 0;
+        var tween = null;
         for (tile in quests) {
             // trace('handle_new_quest ${count % 3}, ${Math.floor(count / 3)}');
-            tile.pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
+            var new_pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
+            if (Math.abs(tile.pos.x - new_pos.x) > 0.1 || Math.abs(tile.pos.y - new_pos.y) > 0.1) { // hack to skip already positioned tiles
+                tween = tween_pos(tile, new_pos).delay(delay_count * 0.1);
+                delay_count++;
+            }
+            // tile.pos;
             count++;
         }
         for (card in quest) {
             // card.set_visible(true);
             card.visible = true;
-            card.pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
+            //card.pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
+            var new_pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
+            tween = tween_pos(card, new_pos).delay(delay_count * 0.1);
             quests.push(card);
+            delay_count++;
             count++;
         }
-        return Promise.resolve();
+        return (tween != null ? tween.toPromise() : Promise.resolve());
+    }
+
+    function tween_pos(sprite :Sprite, pos :Vector, duration :Float = 0.2) {
+        return luxe.tween.Actuate.tween(sprite.pos, 0.2, { x: pos.x, y: pos.y }).onUpdate(function() { sprite.transform.dirty = true; });
     }
 
     function handle_collected(cards :Array<Card>, quest :Array<Card>) {
@@ -230,7 +253,10 @@ class PlayState extends State {
     }
 
     function handle_score(score :Int) {
-        scoreText.text = '$score';
+        var scoreDiff = score - this.score;
+        var tween = luxe.tween.Actuate.tween(this, scoreDiff * 0.05, { score: score }).onUpdate(function() { scoreText.text = '${Std.int(this.score)}'; });
+        // scoreText.text = '$score';
+        return tween.toPromise();
     }
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
