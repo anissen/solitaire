@@ -136,19 +136,7 @@ class PlayState extends State {
                 case 3: 0xd92727; // red
                 case _: 0xfc8f12; // orange
             }),
-            texture: Luxe.resources.texture('assets/images/symbols/' + switch (suit) { // TODO: Test! Maybe it's better with symbolic icons!
-                // case 0: (stacked ? 'honeypot.png' : 'dripping-honey.png');
-                // case 1: (stacked ? 'cheese-wedge.png' : 'milk-carton.png');
-                // case 2: (stacked ? 'bread.png' : 'grain.png');
-                // case 3: (stacked ? 'wine-glass.png' : 'grapes.png');
-                // case 0: 'spades.png';
-                // case 1: 'diamonds.png';
-                // case 2: 'clubs.png';
-                // case 3: 'hearts.png';
-                // case 0: 'drop.png';
-                // case 1: 'fluffy-cloud.png';
-                // case 2: 'curled-leaf.png';
-                // case 3: 'candlebright.png';
+            texture: Luxe.resources.texture('assets/images/symbols/' + switch (suit) {
                 case 0: 'square.png';
                 case 1: 'circle.png';
                 case 2: 'triangle.png';
@@ -176,7 +164,7 @@ class PlayState extends State {
             case Draw(cards): handle_draw(cards);
             case NewQuest(quest): handle_new_quest(quest);
             case TileRemoved(card): handle_tile_removed(card); Promise.resolve();
-            case Collected(cards, quest): handle_collected(cards, quest); Promise.resolve();
+            case Collected(cards, quest): handle_collected(cards, quest);
             case Stacked(card): handle_stacked(card); Promise.resolve();
             case Score(score): handle_score(score);
         }
@@ -226,19 +214,38 @@ class PlayState extends State {
     }
 
     function tween_pos(sprite :Sprite, pos :Vector, duration :Float = 0.2) {
-        return luxe.tween.Actuate.tween(sprite.pos, 0.2, { x: pos.x, y: pos.y }).onUpdate(function() { sprite.transform.dirty = true; });
+        return luxe.tween.Actuate.tween(sprite.pos, 0.2, { x: pos.x, y: pos.y }).onUpdate(function() {
+            if (sprite != null && sprite.transform != null) {
+                sprite.transform.dirty = true;
+            }
+        });
     }
 
     function handle_collected(cards :Array<Card>, quest :Array<Card>) {
-        // trace('Collected!');
+        // var count = 0;
+        // var tween = null;
+        // for (card in cards) {
+        //     var quest_card = quest[count]; // hack
+        //     var new_pos = quest_card.pos.clone();
+        //     tween = luxe.tween.Actuate.tween(card.pos, 1.2, { x: new_pos.x, y: new_pos.y }).onUpdate(function() {
+        //         card.transform.dirty = true;
+        //     }).onComplete(function() {
+        //         tiles.remove(card);
+        //         card.destroy();
+
+        //         quest.remove(quest_card);
+        //         quest_card.destroy();
+        //     }).delay(count * 1.1);
+        //     count++;
+        // }
+
+        // return (tween != null ? tween.toPromise() : Promise.resolve());
+
         for (card in quest) {
             quests.remove(card);
             card.destroy();
         }
-        // for (card in cards) {
-        //     tiles.remove(card);
-        //     card.destroy();
-        // }
+        return Promise.resolve();
     }
 
     function handle_stacked(card :Card) {
@@ -294,6 +301,13 @@ class PlayState extends State {
     }
 
     function add_to_collection(tile :Tile) {
+        // var count = 1;
+        // for (c in collection) { // move collected tiles to the last collected tile
+        //     var new_pos = new Vector(tile.pos.x, tile.pos.y - count * 6);
+        //     tween_pos(c, new_pos);
+        //     c.depth = tile.depth + 1;
+        //     count++;
+        // }
         collection.push(tile);
         if (collection.length == 3) {
             game.do_action(Collect(collection));

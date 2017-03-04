@@ -63,4 +63,9 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         bg.visible = value;
         return (super.visible = value);
     }
+
+    override public function set_depth(value :Float) {
+        if (bg != null) bg.depth = value - 0.1;
+        return (super.depth = value);
+    }
 }
