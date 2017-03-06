@@ -56,24 +56,28 @@ class PlayState extends State {
         for (x in 0 ... 3) {
             new Sprite({
                 pos: get_pos(x, 0.5),
-                size: new Vector(tile_size, tile_size * 2),
-                color: new Color(0.5, 0.5, 0.5, 0.5)
+                texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
+                size: new Vector(tile_size, tile_size * 2.6),
+                // color: new Color(0.5, 0.5, 0.5, 0.5)
+                color: new Color().rgb(0xBBBBBB)
             });
         }
         
-        new Sprite({
-            pos: get_pos(1, 3),
-            size: new Vector((tile_size + margin) * 3, (tile_size + margin) * 3),
-            color: new Color(0.2, 0.2, 0.2, 0.5)
-        });
+        // new Sprite({
+        //     pos: get_pos(1, 3),
+        //     size: new Vector((tile_size + margin) * 3, (tile_size + margin) * 3),
+        //     color: new Color(0.2, 0.2, 0.2, 0.5)
+        // });
 
         // board grid
         for (x in 0 ... tiles_x) {
             for (y in 0 ... tiles_y) {
                 var sprite = new Sprite({
                     pos: get_pos(x, y + 2),
-                    size: new Vector(tile_size, tile_size),
-                    color: new Color(0.3, 0.3, 0.3, 0.5)
+                    texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
+                    size: new Vector(tile_size * 1.15, tile_size * 1.15),
+                    // color: new Color().rgb(0x2A2A2A)
+                    color: new Color().rgb(0xDDDDDD)
                 });
                 sprite.add(new MouseUp(grid_clicked.bind(x, y)));
             }
@@ -83,8 +87,10 @@ class PlayState extends State {
         for (x in 0 ... 3) {
             var sprite = new Sprite({
                 pos: get_pos(x, tiles_y + 2 + 0.1),
-                size: new Vector(tile_size, tile_size),
-                color: new Color(0.9, 0.9, 0.9, 0.1)
+                texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
+                size: new Vector(tile_size * 1.4, tile_size * 1.4),
+                color: new Color().rgb(0xCCCCCC)
+                // color: new Color(0.9, 0.9, 0.9, 0.1)
             });
             sprite.add(new MouseUp(card_grid_clicked));
         }
@@ -378,14 +384,14 @@ class PlayState extends State {
         //         immediate: true
         //     });
         // }
-        // for (tile in tiles) {
-        //     if (!tile.stacked) continue;
-        //     Luxe.draw.circle({
-        //         x: tile.pos.x,
-        //         y: tile.pos.y,
-        //         r: 20,
-        //         color: new Color(0.2, 0.7, 0.2, 0.8),
-        //         depth: 3,
+        // for (card in tiles) {
+        //     if (card.grid_pos != null) continue;
+        //     Luxe.draw.texture({
+        //         texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
+        //         pos: Vector.Subtract(card.pos, Vector.Multiply(card.size, 0.55)),
+        //         size: Vector.Multiply(card.size, 1.1),
+        //         color: new Color().rgb(0xBBBBBB),
+        //         depth: 0,
         //         immediate: true
         //     });
         // }

@@ -23,6 +23,9 @@ class Tile extends Sprite implements core.models.Deck.ICard {
     public var grid_pos :{ x :Int, y :Int } = null;
 
     var original_color :Color;
+    // var original_size :Float;
+    // var size_tween :luxe.tween.actuators.GenericActuator.IGenericActuator;
+
     var bg :Sprite;
 
     public function new(options :TileOptions) {
@@ -37,6 +40,7 @@ class Tile extends Sprite implements core.models.Deck.ICard {
 
         bg = new Sprite({
             pos: Vector.Multiply(size, 0.5),
+            // origin: Vector.Multiply(size, 0.5),
             size: size,
             texture: Luxe.resources.texture('assets/images/symbols/tile.png'),
             // color: (options.stacked ? options.color : new Color(1, 1, 1, 1)),
@@ -45,9 +49,17 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         });
 
         original_color = options.color;
+        // original_size = options.size;
         suit = options.suit;
         stacked = options.stacked;
         grid_pos = options.grid_pos;
+
+        // var new_size = new Vector(original_size * 0.9, original_size * 0.9);
+        // size_tween = luxe.tween.Actuate.tween(new_size, 1.0, { /*rotation_z: 5 */ x: original_size * 1.1, y: original_size * 1.1 }).reflect().repeat().onUpdate(function() { 
+        //     this.size = new_size;
+        //     this.bg.size = new_size;
+        //     this.bg.pos = Vector.Multiply(new_size, 0.5);
+        // });
     }
 
     function set_stacked(value :Bool) {

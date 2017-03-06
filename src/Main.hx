@@ -21,7 +21,7 @@ class Main extends luxe.Game {
         // for (icon in icons) config.preload.textures.push({ id: 'assets/images/' + icon });
         // var icons = ['clubs.png', 'diamonds.png', 'hearts.png', 'spades.png'];
         // var icons = ['candlebright.png', 'curled-leaf.png', 'drop.png', 'fluffy-cloud.png'];
-        var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'tile.png'];
+        var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'tile.png', 'tile_bg.png'];
         for (icon in icons) config.preload.textures.push({ id: 'assets/images/symbols/' + icon });
 
         return config;
@@ -29,7 +29,8 @@ class Main extends luxe.Game {
 
     override function ready() {
         Luxe.camera.size = new luxe.Vector(270, 480);
-        Luxe.renderer.clear_color.set(0.7, 0.8, 0.8);
+        // Luxe.renderer.clear_color.rgb(0x222222);
+        Luxe.renderer.clear_color.rgb(0xD5D5D5);
 
         luxe.tween.Actuate.defaultEase = luxe.tween.easing.Quad.easeIn;
 
