@@ -278,6 +278,7 @@ class PlayState extends State {
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
         if (grabbed_card == null) return;
+        if (!game.is_placement_valid(x, y)) return; // TODO: Some indication hereof
 
         grabbed_card.pos = sprite.pos.clone();
         grabbed_card.grid_pos = { x: x, y: y };
@@ -376,22 +377,22 @@ class PlayState extends State {
         // }
         for (tile in collection) {
             Luxe.draw.box({
-                x: tile.pos.x - 32 - 5,
-                y: tile.pos.y - 32 - 5,
-                h: 64 + 10,
-                w: 64 + 10,
-                color: new Color(1, 0, 1, 0.2),
+                x: tile.pos.x - (tile_size / 2) - 4,
+                y: tile.pos.y - (tile_size / 2) - 4,
+                h: tile_size + 8 + 4,
+                w: tile_size + 8,
+                color: new Color(1, 0, 1, 0.4),
                 depth: 1,
                 immediate: true
             });
         }
         for (tile in quest_matches) {
             Luxe.draw.box({
-                x: tile.pos.x - 16 - 3,
-                y: tile.pos.y - 16 - 3,
-                h: 32 + 6,
-                w: 32 + 6,
-                color: new Color(1, 0, 1, 0.2),
+                x: tile.pos.x - (tile_size / 4) - 2,
+                y: tile.pos.y - (tile_size / 4) - 2,
+                h: tile_size / 2 + 4 + 2,
+                w: tile_size / 2 + 4,
+                color: new Color(1, 0, 1, 0.4),
                 depth: 1,
                 immediate: true
             });

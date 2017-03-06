@@ -85,6 +85,10 @@ class Game {
         }
     }
 
+    public function is_placement_valid(x :Int, y :Int) {
+        return (grid.get_tile(x, y) == null);
+    }
+
     public function is_collection_valid(tiles :Array<Card>) {
         for (tile in tiles) {
             if (tile.grid_pos == null) {
