@@ -28,4 +28,8 @@ class ArrayTools {
         }
         return result;
     }
+
+    static public function append<T>(array :Array<T>, other :Array<T>) :Array<T> {
+        return (array = array.concat(other));
+    }
 }

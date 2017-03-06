@@ -38,6 +38,8 @@ class PlayState extends State {
     var scoreText :luxe.Text;
     var score :Int;
 
+    var quest_matches :Array<Card>;
+
     public function new() {
         super({ name: StateId });
         game = new Game();
@@ -45,6 +47,7 @@ class PlayState extends State {
         collection = [];
         quests = [];
         tiles = [];
+        quest_matches = [];
     }
 
     override function init() {
@@ -246,6 +249,7 @@ class PlayState extends State {
         // }
 
         // return (tween != null ? tween.toPromise() : Promise.resolve());
+        quest_matches = [];
 
         for (card in quest) {
             quests.remove(card);
@@ -315,9 +319,17 @@ class PlayState extends State {
         //     count++;
         // }
         collection.push(tile);
+        if (!game.is_collection_valid(collection)) {
+            collection = [];
+            quest_matches = [];
+            return;
+        }
+
         if (collection.length == 3) {
             game.do_action(Collect(collection));
             collection = [];
+        } else {
+            quest_matches = game.get_matching_quest_parts(collection);
         }
     }
 
@@ -368,6 +380,17 @@ class PlayState extends State {
                 y: tile.pos.y - 32 - 5,
                 h: 64 + 10,
                 w: 64 + 10,
+                color: new Color(1, 0, 1, 0.2),
+                depth: 1,
+                immediate: true
+            });
+        }
+        for (tile in quest_matches) {
+            Luxe.draw.box({
+                x: tile.pos.x - 16 - 3,
+                y: tile.pos.y - 16 - 3,
+                h: 32 + 6,
+                w: 32 + 6,
                 color: new Color(1, 0, 1, 0.2),
                 depth: 1,
                 immediate: true

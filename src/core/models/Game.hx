@@ -85,7 +85,7 @@ class Game {
         }
     }
 
-    function is_collection_valid(tiles :Array<Card>) {
+    public function is_collection_valid(tiles :Array<Card>) {
         for (tile in tiles) {
             if (tile.grid_pos == null) {
                 trace('Tile has no grid_pos -- how?');
@@ -95,6 +95,16 @@ class Game {
             if (grid.get_tile(tile.grid_pos.x, tile.grid_pos.y) == null) {
                 trace('Empty tile selected');
                 return false;
+            }
+        }
+
+        for (i in 0 ... tiles.length) {
+            for (j in 0 ... tiles.length) {
+                if (i == j) continue;
+                if (tiles[i] == tiles[j]) {
+                    trace('Two of the same card selected');
+                    return false;
+                }
             }
         }
 
@@ -145,6 +155,11 @@ class Game {
         var last_card = cards[cards.length - 1];
 
         messageSystem.emit(Stacked(last_card));
+
+        // TODO: This is a test!
+        // score += 1;
+        // messageSystem.emit(Score(score));
+
         return true;
     }
 
@@ -153,28 +168,51 @@ class Game {
         grid.set_tile(card.grid_pos.x, card.grid_pos.y, null);
     }
     
-    /*
     public function get_matching_quest_parts(tiles :Array<Card>) {
         if (!is_collection_valid(tiles)) return [];
 
-        var matchingQuestParts = [];
+        // var matchingQuestParts = [];
+        var matches = [];
 
         // Only look at the quests in normal order (not reversed)
         //var cards = [ for (t in tiles) grid.get_tile(t.grid_pos.x, t.grid_pos.y) ];
         for (quest in quests) {
-            for (quest_card in quest) {
-                var matches = [];
-                for (tile in tiles) {
+            // var tiles_copy = [ for (tile in tiles) { suit: tile.suit, stacked: tile.stacked } ];
+            var quest_copy = [ for (tile in quest) { suit: tile.suit, stacked: tile.stacked, tile: tile } ];
+            var quest_matches = [];
+
+            for (tile in tiles) {
+                var match = false;
+                for (quest_card in quest_copy) {
                     if (tile.suit == quest_card.suit && tile.stacked == quest_card.stacked) {
-                        matches.push(quest_card);
+                        quest_matches.push(quest_card.tile);
+                        quest_copy.remove(quest_card);
+                        match = true;
+                        break;
                     }
                 }
+                if (!match) {
+                    quest_matches = [];
+                    break;
+                }
             }
-            if (matches.length > 0) matchingQuestParts.push(matches);
+
+            // for (quest_card in quest) {
+            //     for (tile in tiles_copy) {
+            //         if (tile.suit == quest_card.suit && tile.stacked == quest_card.stacked) {
+            //             tiles_copy.remove(tile);
+            //             quest_matches.push(quest_card);
+            //             break;
+            //         }
+            //         quest_matches = [];
+            //         break;
+            //     }
+            // }
+            if (quest_matches.length > 0) matches = matches.concat(quest_matches); // TODO: Replace with tool function
         }
-        return matchingQuestParts;
+        // return matchingQuestParts;
+        return matches;
     }
-    */
 
     public function handle_collecting(tiles :Array<Card>) {
         if (!is_collection_valid(tiles)) return;
