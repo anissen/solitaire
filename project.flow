@@ -32,7 +32,9 @@
 
       //Copies over all the assets to the output
     files : {
-      assets : 'assets/'
+        config : 'config.json',
+        assets : 'assets/',
+        index : { path: 'index.html => index.html' }
     }
 
   } //project
