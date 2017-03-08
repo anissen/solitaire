@@ -24,6 +24,10 @@ class GenericDeck<T> {
     public inline function count() {
         return cards.length;
     }
+
+    public inline function empty() {
+        return count() == 0;
+    }
 }
 
 interface ICard {

@@ -3,6 +3,8 @@ package core.models;
 import core.models.Deck.Card;
 import core.queues.MessageSystem;
 
+using Lambda;
+
 enum Action {
     Noop;
     Place(card :Card, x :Int, y :Int);
@@ -16,6 +18,7 @@ enum Event {
     Collected(cards :Array<Card>, quest :Array<Card>);
     Stacked(card :Card);
     Score(score :Int);
+    GameOver();
 }
 
 class Game {
@@ -83,6 +86,93 @@ class Game {
         if (hand.length == 0) {
             new_turn();
         }
+
+        if (is_game_over()) {
+            messageSystem.emit(GameOver);
+        }
+    }
+
+    public function is_game_over() {
+        var last_turn = deck.empty();
+        var empty_hand = hand.empty();
+        if (last_turn && empty_hand) return true;
+        
+        var board_full = is_board_full();
+        if (!board_full) return false;
+
+        var board_stackable = is_board_stackable();
+        if (board_stackable) return false;
+
+        // TODO: Is board full and not stackable + cards in hand
+        // TODO: Is board not stackable + no cards in hand + deck
+
+        return true;
+    }
+
+    function is_board_full() {
+        for (x in 0 ... grid.get_width()) {
+            for (y in 0 ... grid.get_height()) {
+                if (grid.get_tile(x, y) == null) return false;
+            }
+        }
+        return true;
+    }
+
+    function is_collectable(cards :Array<Card>) {
+        if (cards.empty()) throw 'Nonsense!';
+
+        // var candidates = [];
+        // for (x in 0 ... grid.get_width()) {
+        //     for (y in 0 ... grid.get_height()) {
+        //         var tile = grid.get_tile(x, y);
+        //         if (tile != null && cards.exists(function(c) { return c.suit == tile.suit && c.stacked == tile.stacked; })) {
+        //             candidates.push(tile);
+        //         }
+        //     }
+        // }
+
+        // var firsts = candidates.filter(function(c) { return c.suit == cards[0].suit && c.stacked == cards[0].stacked; });
+        // if (firsts.empty()) return false;
+        
+        function find_subset(x :Int, y :Int, subset :Array<Card>) {
+            if (subset.empty()) return false;
+            
+            var tile = grid.get_tile(x, y);
+            var match = (subset[0].suit == tile.suit && subset[0].stacked == tile.stacked);
+            if (!match) return false;
+            
+            subset.shift();
+            
+            if (x > 0 && find_subset(x - 1, y, subset)) return true;
+            if (x < grid.get_width() - 1 && find_subset(x + 1, y, subset)) return true;
+            if (y < 0 && find_subset(x, y - 1, subset)) return true;
+            if (y > grid.get_height() - 1 && find_subset(x, y + 1, subset)) return true;
+            return false;
+        }
+
+        for (x in 0 ... grid.get_width()) {
+            for (y in 0 ... grid.get_height()) {
+                if (find_subset(x, y, cards)) return true;
+            }
+        }
+
+        return false;
+    }
+
+    function is_board_stackable() {
+        var suit_map = new Map<Int, Card>();
+        for (x in 0 ... grid.get_width()) {
+            for (y in 0 ... grid.get_height()) {
+                var tile = grid.get_tile(x, y);
+                if (tile != null && !tile.stacked) {
+                    suit_map[tile.suit] = tile;
+                }
+            }
+        }
+        for (s in suit_map) {
+            if (is_collectable([s, s, s])) return true;
+        }
+        return false;
     }
 
     public function is_placement_valid(x :Int, y :Int) {

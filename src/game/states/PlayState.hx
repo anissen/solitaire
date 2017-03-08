@@ -176,6 +176,7 @@ class PlayState extends State {
             case Collected(cards, quest): handle_collected(cards, quest);
             case Stacked(card): handle_stacked(card); Promise.resolve();
             case Score(score): handle_score(score);
+            case GameOver: handle_game_over();
         }
     }
 
@@ -272,6 +273,12 @@ class PlayState extends State {
     function handle_score(score :Int) {
         var scoreDiff = score - this.score;
         var tween = luxe.tween.Actuate.tween(this, scoreDiff * 0.05, { score: score }).onUpdate(function() { scoreText.text = '${Std.int(this.score)}'; });
+        // scoreText.text = '$score';
+        return tween.toPromise();
+    }
+
+    function handle_game_over() {
+        var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.0, b: 0.9 });
         // scoreText.text = '$score';
         return tween.toPromise();
     }
