@@ -224,7 +224,7 @@ class PlayState extends State {
     }
 
     function tween_pos(sprite :Sprite, pos :Vector, duration :Float = 0.2) {
-        return luxe.tween.Actuate.tween(sprite.pos, 0.2, { x: pos.x, y: pos.y }).onUpdate(function() {
+        return luxe.tween.Actuate.tween(sprite.pos, duration, { x: pos.x, y: pos.y }).onUpdate(function() {
             if (sprite != null && sprite.transform != null) {
                 sprite.transform.dirty = true;
             }
