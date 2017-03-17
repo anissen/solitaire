@@ -95,17 +95,33 @@ class Game {
     public function is_game_over() {
         var last_turn = deck.empty();
         var empty_hand = hand.empty();
-        if (last_turn && empty_hand) return true;
+        if (last_turn && empty_hand) {
+            trace('game over: last turn + hand empty');
+            return true;
+        }
+
+        var quest_completable = is_quest_completable();
+        if (quest_completable) {
+            trace('one or more quests can be completed');
+            return false;
+        }
         
         var board_full = is_board_full();
-        if (!board_full) return false;
+        if (!board_full) {
+            trace('board is not full');
+            return false;
+        }
 
         var board_stackable = is_board_stackable();
-        if (board_stackable) return false;
+        if (board_stackable) {
+            trace('board is stackable');
+            return false;
+        }
 
         // TODO: Is board full and not stackable + cards in hand
         // TODO: Is board not stackable + no cards in hand + deck
 
+        trace('game over: board is full and not stackable');
         return true;
     }
 
@@ -135,18 +151,20 @@ class Game {
         // if (firsts.empty()) return false;
         
         function find_subset(x :Int, y :Int, subset :Array<Card>) {
-            if (subset.empty()) return false;
+            if (subset.empty()) return true;
             
             var tile = grid.get_tile(x, y);
+            if (tile == null) return false;
             var match = (subset[0].suit == tile.suit && subset[0].stacked == tile.stacked);
             if (!match) return false;
             
-            subset.shift();
-            
-            if (x > 0 && find_subset(x - 1, y, subset)) return true;
-            if (x < grid.get_width() - 1 && find_subset(x + 1, y, subset)) return true;
-            if (y < 0 && find_subset(x, y - 1, subset)) return true;
-            if (y > grid.get_height() - 1 && find_subset(x, y + 1, subset)) return true;
+            var new_subset = subset.copy();
+            new_subset.shift();
+
+            if (x > 0 && find_subset(x - 1, y, new_subset)) return true;
+            if (x < grid.get_width() - 1 && find_subset(x + 1, y, new_subset)) return true;
+            if (y > 0 && find_subset(x, y - 1, new_subset)) return true;
+            if (y < grid.get_height() - 1 && find_subset(x, y + 1, new_subset)) return true;
             return false;
         }
 
@@ -171,6 +189,14 @@ class Game {
         }
         for (s in suit_map) {
             if (is_collectable([s, s, s])) return true;
+        }
+        return false;
+    }
+
+    function is_quest_completable() {
+        for (quest in quests) {
+            if (quest.empty()) continue;
+            if (is_collectable(quest)) return true; // TODO: Try all permutations
         }
         return false;
     }

@@ -1,52 +1,55 @@
-package ;
+package;
 
-class RunTests {
+import core.models.Game;
 
-  static function main() {
-    trace('it works');
-    #if flash
-      flash.system.System.exit(0); //Don't forget to exit on flash!
-    #end
-  }
+@:structInit
+class TestCard implements core.models.Deck.Card {
+    @:isVar public var suit(default, null) :Int;
+    @:isVar public var stacked(default, set) :Bool;
+    
+    public var grid_pos :{ x :Int, y :Int } = null;
 
-  /*
-  class MyTests extends haxe.unit.TestCase {
-    var deck = new Deck();
-
-    override public function setup() {
-
+    function set_stacked(value :Bool) {
+        return (stacked = value);
     }
 
-    // Every test function name has to start with 'test'
-
-    public function testShuffle() {
-        var cardsBefore = deck.get_cards();
-        var countBefore = deck.count();
-        deck.shuffle();
-        assertTrue(deck.count() == countBefore);
-
-        var changed = false;
-        var cards = deck.get_cards();
-        for (i in 0 ... cards.length) {
-        	if (cardsBefore[i] != cards[i]) {
-            	changed = true;
-            	break;
-        	}
-        }
-
-        assertTrue(changed);
-        //print_cards(cards);
-        //trace('3 top cards');
-        //print_cards(take(3));
-    }
-
-    public function testMath1() {
-        assertTrue(true);
-    }
-
-    public function testMath2() {
-        assertFalse(false);
+	public function new(suit :Int, stacked :Bool) {
+        this.suit = suit;
+        this.stacked = stacked;
     }
 }
-    */
+
+class MyTests extends haxe.unit.TestCase {
+    // var deck = new Deck();
+    var game = new Game();
+
+    override public function setup() {
+        var card :TestCard = { suit: 0, stacked: false };
+        game.new_game(4, 4, [ card ], []);
+    }
+
+    public function testGameBoard() {
+        assertFalse(game.is_game_over());
+        for (x in 0 ... 4) {
+            for (y in 0 ... 4) {
+                assertTrue(game.is_placement_valid(x, y));
+                var card :TestCard = { suit: 0, stacked: false };
+                game.do_action(core.models.Action.Place(card, x, y));
+                assertFalse(game.is_placement_valid(x, y));
+                assertFalse(game.is_game_over());
+            }
+        }
+    }
+}
+
+class RunTests extends haxe.unit.TestRunner {
+    static function main() {
+        new RunTests();
+    }
+
+    public function new() {
+        super();
+        add(new MyTests());
+        run();
+    }
 }

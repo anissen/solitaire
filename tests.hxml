@@ -1,2 +1,5 @@
--cp tests
+-cp test
+-cp src
+-lib snow
 -main RunTests
+--interp

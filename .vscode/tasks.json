@@ -1,11 +1,9 @@
 {
-    "displayName": "▶︎ Web application",
-    "description": "flow run web",
-    "command": "flow",
+    "displayName": "Test",
+    "description": "haxe test",
+    "command": "haxe",
     "args": [
-        "run",
-        "web",
-        "--debug"
+        "tests.hxml"
     ],
     "version": "0.1.0",
     "problemMatcher": {
@@ -21,5 +19,5 @@
             "message": 7
         }
     },
-    "chooserIndex": 1
+    "chooserIndex": 2
 }

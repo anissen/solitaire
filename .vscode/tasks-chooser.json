@@ -12,6 +12,12 @@
             "description": "flow run web",
             "command": "flow",
             "args": ["run", "web", "--debug"]
+        },
+        {
+            "displayName": "Test",
+            "description": "haxe test",
+            "command": "haxe",
+            "args": ["tests.hxml"]
         }
     ],
     "baseItem": {
