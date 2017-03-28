@@ -338,6 +338,7 @@ class PlayState extends State {
         if (collection.length == 3) {
             game.do_action(Collect(collection));
             collection = [];
+            quest_matches = [];
         } else {
             quest_matches = game.get_matching_quest_parts(collection);
         }
@@ -347,6 +348,7 @@ class PlayState extends State {
         grabbed_card = cast sprite;
         grabbed_card.depth = 3;
         collection = [];
+        quest_matches = [];
     }
 
     override function onleave(_) {
