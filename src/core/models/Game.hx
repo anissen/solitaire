@@ -118,9 +118,6 @@ class Game {
             return false;
         }
 
-        // TODO: Is board full and not stackable + cards in hand
-        // TODO: Is board not stackable + no cards in hand + deck
-
         trace('game over: board is full and not stackable');
         return true;
     }
@@ -196,7 +193,13 @@ class Game {
     function is_quest_completable() {
         for (quest in quests) {
             if (quest.empty()) continue;
-            if (is_collectable(quest)) return true; // TODO: Try all permutations
+            // if (is_collectable(quest)) return true;
+            if (is_collectable([ quest[0], quest[1], quest[2] ])) return true;
+            if (is_collectable([ quest[0], quest[2], quest[1] ])) return true;
+            if (is_collectable([ quest[1], quest[0], quest[2] ])) return true;
+            if (is_collectable([ quest[1], quest[2], quest[0] ])) return true;
+            if (is_collectable([ quest[2], quest[0], quest[1] ])) return true;
+            if (is_collectable([ quest[2], quest[1], quest[0] ])) return true;
         }
         return false;
     }

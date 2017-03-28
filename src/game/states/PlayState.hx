@@ -12,10 +12,12 @@ import game.components.MouseUp;
 import game.components.DragOver;
 
 import snow.api.Promise;
-import core.models.Deck.Card;
+// import core.models.Deck.ICard;
 import core.models.Game;
 
 using game.tools.TweenTools;
+
+typedef Card = Tile;
 
 class PlayState extends State {
     static public var StateId :String = 'PlayState';

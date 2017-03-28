@@ -1,5 +1,6 @@
 -cp test
 -cp src
--lib snow
+-lib snow # hack
+-D testing=true # hack
 -main RunTests
 --interp

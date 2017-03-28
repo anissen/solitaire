@@ -36,8 +36,11 @@ interface ICard {
     var grid_pos(default, null) :{ x :Int, y :Int };
 }
 
-//typedef Card = ICard; //game.entities.Tile;
+#if testing
+typedef Card = ICard;
+#else
 typedef Card = game.entities.Tile; // TODO: Hack!
+#end
 
 class Deck extends GenericDeck<Card> {
 	public function new(cards :Array<Card>) {
