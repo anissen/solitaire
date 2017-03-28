@@ -100,15 +100,15 @@ class Game {
             return true;
         }
 
-        var quest_completable = is_quest_completable();
-        if (quest_completable) {
-            trace('one or more quests can be completed');
-            return false;
-        }
-        
         var board_full = is_board_full();
         if (!board_full) {
             trace('board is not full');
+            return false;
+        }
+
+        var quest_completable = is_quest_completable();
+        if (quest_completable) {
+            trace('one or more quests can be completed');
             return false;
         }
 
@@ -147,27 +147,31 @@ class Game {
         // var firsts = candidates.filter(function(c) { return c.suit == cards[0].suit && c.stacked == cards[0].stacked; });
         // if (firsts.empty()) return false;
         
-        function find_subset(x :Int, y :Int, subset :Array<Card>) {
+        function find_subset(x :Int, y :Int, subset :Array<Card>, visited :Array<Card>) {
             if (subset.empty()) return true;
             
             var tile = grid.get_tile(x, y);
             if (tile == null) return false;
+            if (visited.indexOf(tile) != -1) return false;
             var match = (subset[0].suit == tile.suit && subset[0].stacked == tile.stacked);
             if (!match) return false;
+
+            var new_visited = visited.copy();
+            new_visited.push(tile);
             
             var new_subset = subset.copy();
             new_subset.shift();
 
-            if (x > 0 && find_subset(x - 1, y, new_subset)) return true;
-            if (x < grid.get_width() - 1 && find_subset(x + 1, y, new_subset)) return true;
-            if (y > 0 && find_subset(x, y - 1, new_subset)) return true;
-            if (y < grid.get_height() - 1 && find_subset(x, y + 1, new_subset)) return true;
+            if (x > 0 && find_subset(x - 1, y, new_subset, new_visited)) return true;
+            if (x < grid.get_width() - 1 && find_subset(x + 1, y, new_subset, new_visited)) return true;
+            if (y > 0 && find_subset(x, y - 1, new_subset, new_visited)) return true;
+            if (y < grid.get_height() - 1 && find_subset(x, y + 1, new_subset, new_visited)) return true;
             return false;
         }
 
         for (x in 0 ... grid.get_width()) {
             for (y in 0 ... grid.get_height()) {
-                if (find_subset(x, y, cards)) return true;
+                if (find_subset(x, y, cards, [])) return true;
             }
         }
 

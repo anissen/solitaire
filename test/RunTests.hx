@@ -43,30 +43,18 @@ class MyTests extends haxe.unit.TestCase {
         }
     }
 
-    // public function testQuestOnGameBoard() {
-    //     var card1 :TestCard = { suit: 0, stacked: false };
-    //     var card2 :TestCard = { suit: 1, stacked: false };
-    //     var card3 :TestCard = { suit: 2, stacked: false };
-    //     game.new_game(3, 3, [], [ card1, card2, card3 ]);
+    public function testUnstackableGameBoard() {
+        var card :TestCard = { suit: 0, stacked: false };
+        game.new_game(3, 3, [ card ], []);
 
-    //     /*
-    //     Board:
-    //     0·1·2
-    //     1·2·3
-    //     2·3·4
-    //     */
-
-    //     assertFalse(game.is_game_over());
-    //     for (x in 0 ... 3) {
-    //         for (y in 0 ... 3) {
-    //             assertTrue(game.is_placement_valid(x, y));
-    //             var card :TestCard = { suit: (x + y), stacked: false };
-    //             game.do_action(core.models.Action.Place(card, x, y));
-    //             assertFalse(game.is_placement_valid(x, y));
-    //             assertFalse(game.is_game_over());
-    //         }
-    //     }
-    // }
+        for (x in 0 ... 3) {
+            for (y in 0 ... 3) {
+                var card :TestCard = { suit: (x + y), stacked: false };
+                game.do_action(core.models.Action.Place(card, x, y));
+            }
+        }
+        assertTrue(game.is_game_over());
+    }
 }
 
 class QuestCompletionTests extends haxe.unit.TestCase {
