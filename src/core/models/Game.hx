@@ -305,7 +305,7 @@ class Game {
                 }
             }
 
-            if (quest_matches.length > 0) matches = matches.concat(quest_matches); // TODO: Replace with tool function
+            if (quest_matches.length > 0) matches.append(quest_matches);
         }
         return matches;
     }
