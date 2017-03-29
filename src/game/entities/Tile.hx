@@ -23,8 +23,6 @@ class Tile extends Sprite implements core.models.Deck.ICard {
     public var grid_pos :{ x :Int, y :Int } = null;
 
     var original_color :Color;
-    // var original_size :Float;
-    // var size_tween :luxe.tween.actuators.GenericActuator.IGenericActuator;
 
     var bg :Sprite;
 
@@ -32,34 +30,22 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         super({
             pos: options.pos,
             size: new Vector(options.size, options.size),
-            // color: ((options.color == null) ? Color.random() : options.color),
-            // color: (options.stacked ? new Color(1, 1, 1, 1) : options.color),
             depth: ((options.depth == null) ? 0 : options.depth),
             texture: options.texture
         });
 
         bg = new Sprite({
             pos: Vector.Multiply(size, 0.5),
-            // origin: Vector.Multiply(size, 0.5),
             size: size,
             texture: Luxe.resources.texture('assets/images/symbols/tile.png'),
-            // color: (options.stacked ? options.color : new Color(1, 1, 1, 1)),
             depth: depth - 0.1,
             parent: this
         });
 
         original_color = options.color;
-        // original_size = options.size;
         suit = options.suit;
         stacked = options.stacked;
         grid_pos = options.grid_pos;
-
-        // var new_size = new Vector(original_size * 0.9, original_size * 0.9);
-        // size_tween = luxe.tween.Actuate.tween(new_size, 1.0, { /*rotation_z: 5 */ x: original_size * 1.1, y: original_size * 1.1 }).reflect().repeat().onUpdate(function() { 
-        //     this.size = new_size;
-        //     this.bg.size = new_size;
-        //     this.bg.pos = Vector.Multiply(new_size, 0.5);
-        // });
     }
 
     function set_stacked(value :Bool) {

@@ -96,29 +96,29 @@ class Game {
         var last_turn = deck.empty();
         var empty_hand = hand.empty();
         if (last_turn && empty_hand) {
-            trace('game over: last turn + hand empty');
+            // trace('game over: last turn + hand empty');
             return true;
         }
 
         var board_full = is_board_full();
         if (!board_full) {
-            trace('board is not full');
+            // trace('board is not full');
             return false;
         }
 
         var quest_completable = is_quest_completable();
         if (quest_completable) {
-            trace('one or more quests can be completed');
+            // trace('one or more quests can be completed');
             return false;
         }
 
         var board_stackable = is_board_stackable();
         if (board_stackable) {
-            trace('board is stackable');
+            // trace('board is stackable');
             return false;
         }
 
-        trace('game over: board is full and not stackable');
+        // trace('game over: board is full and not stackable');
         return true;
     }
 
@@ -133,19 +133,6 @@ class Game {
 
     function is_collectable(cards :Array<Card>) {
         if (cards.empty()) throw 'Nonsense!';
-
-        // var candidates = [];
-        // for (x in 0 ... grid.get_width()) {
-        //     for (y in 0 ... grid.get_height()) {
-        //         var tile = grid.get_tile(x, y);
-        //         if (tile != null && cards.exists(function(c) { return c.suit == tile.suit && c.stacked == tile.stacked; })) {
-        //             candidates.push(tile);
-        //         }
-        //     }
-        // }
-
-        // var firsts = candidates.filter(function(c) { return c.suit == cards[0].suit && c.stacked == cards[0].stacked; });
-        // if (firsts.empty()) return false;
         
         function find_subset(x :Int, y :Int, subset :Array<Card>, visited :Array<Card>) {
             if (subset.empty()) return true;
@@ -197,7 +184,6 @@ class Game {
     function is_quest_completable() {
         for (quest in quests) {
             if (quest.empty()) continue;
-            // if (is_collectable(quest)) return true;
             if (is_collectable([ quest[0], quest[1], quest[2] ])) return true;
             if (is_collectable([ quest[0], quest[2], quest[1] ])) return true;
             if (is_collectable([ quest[1], quest[0], quest[2] ])) return true;
@@ -253,7 +239,6 @@ class Game {
         for (quest in quests) {
             if (!cards_matching(cards, quest)) continue;
 
-            // trace('Matched quest: $quest');
             quests.remove(quest);
             for (tile in tiles) remove_tile(tile);
             update_score(cards, quest);
@@ -277,7 +262,6 @@ class Game {
             }
         }
 
-        // trace('Made a stack');
         for (i in 0 ... tiles.length - 1) remove_tile(tiles[i]);
         var last_card = cards[cards.length - 1];
 
@@ -298,13 +282,10 @@ class Game {
     public function get_matching_quest_parts(tiles :Array<Card>) {
         if (!is_collection_valid(tiles)) return [];
 
-        // var matchingQuestParts = [];
         var matches = [];
 
         // Only look at the quests in normal order (not reversed)
-        //var cards = [ for (t in tiles) grid.get_tile(t.grid_pos.x, t.grid_pos.y) ];
         for (quest in quests) {
-            // var tiles_copy = [ for (tile in tiles) { suit: tile.suit, stacked: tile.stacked } ];
             var quest_copy = [ for (tile in quest) { suit: tile.suit, stacked: tile.stacked, tile: tile } ];
             var quest_matches = [];
 
@@ -324,20 +305,8 @@ class Game {
                 }
             }
 
-            // for (quest_card in quest) {
-            //     for (tile in tiles_copy) {
-            //         if (tile.suit == quest_card.suit && tile.stacked == quest_card.stacked) {
-            //             tiles_copy.remove(tile);
-            //             quest_matches.push(quest_card);
-            //             break;
-            //         }
-            //         quest_matches = [];
-            //         break;
-            //     }
-            // }
             if (quest_matches.length > 0) matches = matches.concat(quest_matches); // TODO: Replace with tool function
         }
-        // return matchingQuestParts;
         return matches;
     }
 
