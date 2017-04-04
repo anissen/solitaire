@@ -1,6 +1,7 @@
 package core.models;
 
 import core.models.Deck.Card;
+import core.models.Deck.InfiniteDeck;
 import core.queues.MessageSystem;
 
 using Lambda;
@@ -22,8 +23,8 @@ enum Event {
 }
 
 class Game {
-    var quest_deck :Deck;
-    var deck :Deck;
+    var quest_deck :InfiniteDeck;
+    var deck :InfiniteDeck;
     var grid :Grid<Card>;
 
     var quests :Array<Array<Card>>;
@@ -38,9 +39,9 @@ class Game {
         messageSystem.on_action(handle_action);
     }
 
-    public function new_game(grid_width :Int, grid_height :Int, deck_cards :Array<Card>, quest_cards :Array<Card>) {
-        deck = new Deck(deck_cards);
-        quest_deck = new Deck(quest_cards);
+    public function new_game(grid_width :Int, grid_height :Int, deck :InfiniteDeck, quest_deck :InfiniteDeck) {
+        this.deck = deck;
+        this.quest_deck = quest_deck;
         grid = new Grid(grid_width, grid_height);
 
         quests = [];

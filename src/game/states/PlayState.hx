@@ -1,6 +1,7 @@
 
 package game.states;
 
+import core.models.Deck.InfiniteDeck;
 import luxe.States.State;
 import luxe.Vector;
 import luxe.Sprite;
@@ -31,6 +32,7 @@ class PlayState extends State {
     var suits = 4;
     var quest_values = 13;
     var card_values = 10;
+    // var black_cards_per_deck = 2;
 
     var quests :Array<Card>;
     var tiles :Array<Card>;
@@ -90,21 +92,35 @@ class PlayState extends State {
             sprite.add(new MouseUp(card_grid_clicked));
         }
 
-        var tile_deck = [];
+        // var tile_deck = [];
+        // for (suit in 0 ... suits) {
+        //     for (value in 0 ... card_values) {
+        //         var tile = create_tile(suit, value, false, tile_size);
+        //         tile.pos = get_pos(1, tiles_y + 3);
+        //         tile_deck.push(tile);
+        //     }
+        // }
+
+        // var quest_deck = [];
+        // for (suit in 0 ... suits) {
+        //     for (value in 0 ... quest_values) {
+        //         var tile = create_tile(suit, value, (value >= 10), tile_size * 0.5);
+        //         tile.pos = get_pos(1, -2);
+        //         quest_deck.push(tile);
+        //     }
+        // }
+
+        var deck_cards = [];
         for (suit in 0 ... suits) {
             for (value in 0 ... card_values) {
-                var tile = create_tile(suit, value, false, tile_size);
-                tile.pos = get_pos(1, tiles_y + 3);
-                tile_deck.push(tile);
+                deck_cards.push({ suit: suit, stacked: (value >= 10) });
             }
         }
 
-        var quest_deck = [];
+        var quest_cards = [];
         for (suit in 0 ... suits) {
             for (value in 0 ... quest_values) {
-                var tile = create_tile(suit, value, (value >= 10), tile_size * 0.5);
-                tile.pos = get_pos(1, -2);
-                quest_deck.push(tile);
+                quest_cards.push({ suit: suit, stacked: (value >= 10) });
             }
         }
 
@@ -115,10 +131,20 @@ class PlayState extends State {
         });
         score = 0;
 
-        game.new_game(tiles_x, tiles_y, tile_deck, quest_deck);
+        var deck = new InfiniteDeck(deck_cards, function(data) {
+            var tile = create_tile(data.suit, data.stacked, tile_size);
+            tile.pos = get_pos(1, tiles_y + 3);
+            return tile;
+        });
+        var quest_deck = new InfiniteDeck(quest_cards, function(data) {
+            var tile = create_tile(data.suit, data.stacked, tile_size * 0.5);
+            tile.pos = get_pos(1, -2);
+            return tile;
+        });
+        game.new_game(tiles_x, tiles_y, deck, quest_deck);
     }
 
-    function create_tile(suit :Int, value :Int, stacked :Bool, size :Float) {
+    function create_tile(suit :Int, stacked :Bool, size :Float) {
         var tile = new Tile({
             pos: get_pos(0, tiles_y + 3),
             size: size * 1.25, // HACK
