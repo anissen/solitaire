@@ -60,6 +60,7 @@ typedef Card = game.entities.Tile; // TODO: Hack!
 class InfiniteDeck extends GenericDeck<CardData> {
     var all_cards :Array<CardData>;
     var instatiate_func :CardData->Card;
+    public var on_reshuffling :Void->Void = null;
 
 	public function new(cards :Array<CardData>, instantiate_func :CardData->Card) {
         all_cards = cards.copy();
@@ -68,7 +69,12 @@ class InfiniteDeck extends GenericDeck<CardData> {
         shuffle();
     }
 
+    public function add_cards(cards :Array<CardData>) {
+        all_cards.append(cards);
+    }
+
     public inline function reshuffle() {
+        if (on_reshuffling != null) on_reshuffling();
         cards.clear();
         cards.append(all_cards.shuffle());
         return this;

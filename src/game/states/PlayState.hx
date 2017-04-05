@@ -29,9 +29,10 @@ class PlayState extends State {
     var tile_size = 60;
     var margin = 10;
 
-    var suits = 4;
+    var suits = 3;
     var quest_values = 13;
     var card_values = 10;
+    var reshuffle_count :Int;
 
     var quests :Array<Card>;
     var tiles :Array<Card>;
@@ -50,6 +51,7 @@ class PlayState extends State {
         quests = [];
         tiles = [];
         quest_matches = [];
+        reshuffle_count = 0;
     }
 
     override function init() {
@@ -140,6 +142,18 @@ class PlayState extends State {
             tile.pos = get_pos(1, -2);
             return tile;
         });
+        deck.on_reshuffling = function() {
+            reshuffle_count++;
+            if (reshuffle_count == 1) {
+                deck.add_cards([ for (value in 0 ... card_values) { suit: 3, stacked: (value >= 10) } ]);
+                quest_deck.add_cards([ for (value in 0 ... quest_values) { suit: 3, stacked: (value >= 10) } ]);
+                quest_deck.reshuffle();
+            } else if (reshuffle_count == 2) {
+                deck.add_cards([ for (value in 0 ... card_values) { suit: 4, stacked: (value >= 10) } ]);
+                quest_deck.add_cards([ for (value in 0 ... quest_values) { suit: 4, stacked: (value >= 10) } ]);
+                quest_deck.reshuffle();
+            }
+        };
         game.new_game(tiles_x, tiles_y, deck, quest_deck);
     }
 
@@ -151,15 +165,17 @@ class PlayState extends State {
                 // http://www.colourlovers.com/palette/434904/espresso_rainbow
                 case 0: 0x0db8b5; // blue
                 case 1: 0xffe433; // yellow
-                case 2: 0x6fcc43; // green
-                case 3: 0xd92727; // red
-                case _: 0xfc8f12; // orange
+                case 2: 0xd92727; // red
+                case 3: 0x6fcc43; // green
+                case 4: 0xfc8f12; // orange
+                case _: throw 'invalid enum';
             }),
             texture: Luxe.resources.texture('assets/images/symbols/' + switch (suit) {
                 case 0: 'square.png';
                 case 1: 'circle.png';
                 case 2: 'triangle.png';
                 case 3: 'diamond.png';
+                case 4: 'diamond.png'; // TODO: Make a new shape
                 case _: throw 'invalid enum';
             }),
             suit: suit,
