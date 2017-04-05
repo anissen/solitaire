@@ -94,12 +94,12 @@ class Game {
     }
 
     public function is_game_over() {
-        var last_turn = deck.empty();
-        var empty_hand = hand.empty();
-        if (last_turn && empty_hand) {
-            // trace('game over: last turn + hand empty');
-            return true;
-        }
+        // var last_turn = deck.empty();
+        // var empty_hand = hand.empty();
+        // if (last_turn && empty_hand) {
+        //     // trace('game over: last turn + hand empty');
+        //     return true;
+        // }
 
         var board_full = is_board_full();
         if (!board_full) {

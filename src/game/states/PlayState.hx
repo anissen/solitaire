@@ -32,7 +32,6 @@ class PlayState extends State {
     var suits = 4;
     var quest_values = 13;
     var card_values = 10;
-    // var black_cards_per_deck = 2;
 
     var quests :Array<Card>;
     var tiles :Array<Card>;

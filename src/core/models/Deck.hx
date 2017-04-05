@@ -69,7 +69,8 @@ class InfiniteDeck extends GenericDeck<CardData> {
     }
 
     public inline function reshuffle() {
-        cards = all_cards.copy().shuffle();
+        cards.clear();
+        cards.append(all_cards.shuffle());
         return this;
     }
 
@@ -82,8 +83,12 @@ class InfiniteDeck extends GenericDeck<CardData> {
         trace('taken_cards: ${taken_cards.length}, cards_missing: $cards_missing, cards left: ${cards.length}');
         if (cards_missing > 0) {
             reshuffle();
-            taken_cards.append(cards.splice(0, cards_missing));
-            trace('RESHUFFLED: taken_cards: ${taken_cards.length}, cards left: ${cards.length}');
+            var new_cards = cards.splice(0, cards_missing);
+            trace('RESHUFFLED:');
+            taken_cards.append(new_cards);
+            // taken_cards = taken_cards.concat(new_cards);
+            trace('new_cards: ${new_cards.length}, taken_cards: ${taken_cards.length}, cards left: ${cards.length}');
+            for (c in new_cards) trace('::::: $c');
         }
         return [ for (card in taken_cards) instatiate_func(card) ];
     }

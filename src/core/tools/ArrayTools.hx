@@ -30,6 +30,12 @@ class ArrayTools {
     }
 
     static public function append<T>(array :Array<T>, other :Array<T>) :Array<T> {
-        return (array = array.concat(other));
+        for (e in other) array.push(e);
+        return array;
+    }
+
+    static public function clear<T>(array :Array<T>) {
+        array.splice(0, array.length);
+        return array;
     }
 }
