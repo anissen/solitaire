@@ -34,7 +34,15 @@ class ArrayTools {
         return array;
     }
 
-    static public function clear<T>(array :Array<T>) {
+    static public function first<T>(array :Array<T>) :T {
+        return array[0];
+    }
+
+    static public function last<T>(array :Array<T>) :T {
+        return array[array.length - 1];
+    }
+
+    static public function clear<T>(array :Array<T>) :Array<T> {
         array.splice(0, array.length);
         return array;
     }
