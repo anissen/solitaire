@@ -30,8 +30,8 @@ class PlayState extends State {
     var margin = 10;
 
     var suits = 3;
-    var quest_values = 13;
-    var card_values = 10;
+    var quest_values = 12; // 13
+    var card_values  = 8;  // 10
     var reshuffle_count :Int;
 
     var quests :Array<Card>;
@@ -167,7 +167,8 @@ class PlayState extends State {
                 case 1: 0xffe433; // yellow
                 case 2: 0xd92727; // red
                 case 3: 0x6fcc43; // green
-                case 4: 0xfc8f12; // orange
+                // case 4: 0xfc8f12; // orange
+                case 4: 0xd00fc3; // purple
                 case _: throw 'invalid enum';
             }),
             texture: Luxe.resources.texture('assets/images/symbols/' + switch (suit) {
@@ -175,7 +176,7 @@ class PlayState extends State {
                 case 1: 'circle.png';
                 case 2: 'triangle.png';
                 case 3: 'diamond.png';
-                case 4: 'diamond.png'; // TODO: Make a new shape
+                case 4: 'star.png'; // TODO: Make a new shape
                 case _: throw 'invalid enum';
             }),
             suit: suit,
@@ -276,7 +277,7 @@ class PlayState extends State {
     }
 
     function handle_game_over() {
-        var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.0, b: 0.9 });
+        var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
         return tween.toPromise();
     }
 

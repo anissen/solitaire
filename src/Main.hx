@@ -16,7 +16,7 @@ class Main extends luxe.Game {
         config.window.fullscreen = false;
         config.render.antialiasing = 4;
 
-        var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'tile.png', 'tile_bg.png'];
+        var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'star.png', 'tile.png', 'tile_bg.png'];
         for (icon in icons) config.preload.textures.push({ id: 'assets/images/symbols/' + icon });
 
         return config;
