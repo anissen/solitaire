@@ -87,9 +87,10 @@ class InfiniteDeck extends GenericDeck<CardData> {
         var taken_cards = cards.splice(0, count);
         var cards_missing = (count - taken_cards.length);
         trace('taken_cards: ${taken_cards.length}, cards_missing: $cards_missing, cards left: ${cards.length}');
-        if (cards_missing > 0) {
+        while (cards_missing > 0) {
             reshuffle();
             var new_cards = cards.splice(0, cards_missing);
+            cards_missing -= new_cards.length;
             trace('RESHUFFLED:');
             taken_cards.append(new_cards);
             // taken_cards = taken_cards.concat(new_cards);
