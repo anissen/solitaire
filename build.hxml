@@ -28,6 +28,7 @@
 -lib linc_openal
 -lib snow
 -lib luxe
+-lib hxnodejs # temp!
 --macro snow.Set.assets("snow.core.web.assets.Assets")
 --macro snow.Set.audio("snow.modules.webaudio.Audio")
 --macro snow.Set.runtime("snow.core.web.Runtime")
