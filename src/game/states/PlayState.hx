@@ -117,7 +117,7 @@ class PlayState extends State {
 
         var deck = new InfiniteDeck(deck_cards, function(data) {
             var tile = create_tile(data.suit, data.stacked, tile_size);
-            tile.pos = get_pos(1, tiles_y + 3);
+            tile.pos = get_pos(1, tiles_y + 3.5);
             return tile;
         });
         var quest_deck = new InfiniteDeck(quest_cards, function(data) {
@@ -286,7 +286,7 @@ class PlayState extends State {
 
     function tile_dragover(sprite :Sprite) {
         var tile :Tile = cast sprite;
-        if (grabbed_card == null && collection.length > 0 && collection.indexOf(tile) == -1) {
+        if (grabbed_card == null && collection.length > 0 && !collection.has(tile)) {
             add_to_collection(tile);
         }
     }

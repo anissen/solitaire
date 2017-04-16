@@ -4,8 +4,6 @@ import core.models.Deck.Card;
 import core.models.Deck.InfiniteDeck;
 import core.queues.MessageSystem;
 
-using Lambda;
-
 enum Action {
     Noop;
     Place(card :Card, x :Int, y :Int);
@@ -140,7 +138,7 @@ class Game {
             
             var tile = grid.get_tile(x, y);
             if (tile == null) return false;
-            if (visited.indexOf(tile) != -1) return false;
+            if (visited.has(tile)) return false;
             var match = (subset[0].suit == tile.suit && subset[0].stacked == tile.stacked);
             if (!match) return false;
 
@@ -202,12 +200,12 @@ class Game {
     public function is_collection_valid(tiles :Array<Card>) {
         for (tile in tiles) {
             if (tile.grid_pos == null) {
-                trace('Tile has no grid_pos -- how?');
+                // trace('Tile has no grid_pos -- how?');
                 return false;
             }
 
             if (grid.get_tile(tile.grid_pos.x, tile.grid_pos.y) == null) {
-                trace('Empty tile selected');
+                // trace('Empty tile selected');
                 return false;
             }
         }
@@ -216,7 +214,7 @@ class Game {
             for (j in 0 ... tiles.length) {
                 if (i == j) continue;
                 if (tiles[i] == tiles[j]) {
-                    trace('Two of the same card selected');
+                    // trace('Two of the same card selected');
                     return false;
                 }
             }
@@ -227,7 +225,7 @@ class Game {
             var current = tiles[i];
 
             if (Math.abs(current.grid_pos.x - previous.grid_pos.x) + Math.abs(current.grid_pos.y - previous.grid_pos.y) != 1) {
-                trace('Collected cards must be adjacent');
+                // trace('Collected cards must be adjacent');
                 return false;
             }
         }
@@ -258,7 +256,7 @@ class Game {
         for (i in 1 ... cards.length) {
             var card = cards[i];
             if (card.stacked || card.suit != first_card.suit) {
-                trace('No match for collected cards');
+                // trace('No match for collected cards');
                 return false;
             }
         }
@@ -314,7 +312,7 @@ class Game {
     public function handle_collecting(tiles :Array<Card>) {
         if (!is_collection_valid(tiles)) return;
         if (tiles.length != 3) {
-            trace('Only ${tiles.length} tiles selected');
+            // trace('Only ${tiles.length} tiles selected');
             return;
         }
         if (complete_quest(tiles)) return;
