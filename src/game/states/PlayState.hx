@@ -6,6 +6,7 @@ import luxe.States.State;
 import luxe.Vector;
 import luxe.Sprite;
 import luxe.Color;
+import luxe.tween.Actuate;
 
 import game.entities.Tile;
 import game.components.Clickable;
@@ -93,24 +94,6 @@ class PlayState extends State {
             sprite.add(new MouseUp(card_grid_clicked));
         }
 
-        // var tile_deck = [];
-        // for (suit in 0 ... suits) {
-        //     for (value in 0 ... card_values) {
-        //         var tile = create_tile(suit, value, false, tile_size);
-        //         tile.pos = get_pos(1, tiles_y + 3);
-        //         tile_deck.push(tile);
-        //     }
-        // }
-
-        // var quest_deck = [];
-        // for (suit in 0 ... suits) {
-        //     for (value in 0 ... quest_values) {
-        //         var tile = create_tile(suit, value, (value >= 10), tile_size * 0.5);
-        //         tile.pos = get_pos(1, -2);
-        //         quest_deck.push(tile);
-        //     }
-        // }
-
         var deck_cards = [];
         for (suit in 0 ... suits) {
             for (value in 0 ... card_values) {
@@ -176,14 +159,13 @@ class PlayState extends State {
                 case 1: 'circle.png';
                 case 2: 'triangle.png';
                 case 3: 'diamond.png';
-                case 4: 'star.png'; // TODO: Make a new shape
+                case 4: 'star.png';
                 case _: throw 'invalid enum';
             }),
             suit: suit,
             stacked: stacked,
             depth: 2
         });
-        tile.visible = false;
         return tile;
     }
 
@@ -210,7 +192,6 @@ class PlayState extends State {
         var x = 0;
         var tween = null;
         for (card in cards) {
-            card.visible = true;
             var new_pos = get_pos(x, tiles_y + 2 + 0.1);
             tween = tween_pos(card, new_pos).delay(x * 0.1);
             card.add(new Clickable(card_clicked));
@@ -233,7 +214,6 @@ class PlayState extends State {
             count++;
         }
         for (card in quest) {
-            card.visible = true;
             var new_pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
             tween = tween_pos(card, new_pos).delay(delay_count * 0.1);
             quests.push(card);
@@ -244,7 +224,7 @@ class PlayState extends State {
     }
 
     function tween_pos(sprite :Sprite, pos :Vector, duration :Float = 0.2) {
-        return luxe.tween.Actuate.tween(sprite.pos, duration, { x: pos.x, y: pos.y }).onUpdate(function() {
+        return Actuate.tween(sprite.pos, duration, { x: pos.x, y: pos.y }).onUpdate(function() {
             if (sprite != null && sprite.transform != null) {
                 sprite.transform.dirty = true;
             }
@@ -272,7 +252,7 @@ class PlayState extends State {
 
     function handle_score(score :Int) {
         var scoreDiff = score - this.score;
-        var tween = luxe.tween.Actuate.tween(this, scoreDiff * 0.05, { score: score }).onUpdate(function() { scoreText.text = '${Std.int(this.score)}'; });
+        var tween = Actuate.tween(this, scoreDiff * 0.05, { score: score }).onUpdate(function() { scoreText.text = '${Std.int(this.score)}'; });
         return tween.toPromise();
     }
 
@@ -283,7 +263,7 @@ class PlayState extends State {
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
         if (grabbed_card == null) return;
-        if (!game.is_placement_valid(x, y)) return; // TODO: Some indication hereof
+        if (!game.is_placement_valid(x, y)) return; // TODO: Some indication hereof!
 
         grabbed_card.pos = sprite.pos.clone();
         grabbed_card.grid_pos = { x: x, y: y };
