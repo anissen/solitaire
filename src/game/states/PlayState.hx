@@ -23,7 +23,7 @@ typedef Card = Tile;
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var grabbed_card :Tile = null;
-    var game :Game; // TODO: Don't aggregate Game here! Reference it from a static context
+    //var game :Game; // TODO: Don't aggregate Game here! Reference it from a static context
 
     var tiles_x = 3;
     var tiles_y = 3;
@@ -40,19 +40,22 @@ class PlayState extends State {
     var collection :Array<Card>;
 
     var scoreText :luxe.Text;
+    var counting_score :Float;
     var score :Int;
 
     var quest_matches :Array<Card>;
 
     public function new() {
         super({ name: StateId });
-        game = new Game();
-        game.listen(handle_event);
+        // game = new Game();
+        Game.Instance.listen(handle_event);
         collection = [];
         quests = [];
         tiles = [];
         quest_matches = [];
         reshuffle_count = 0;
+        score = 0;
+        counting_score = 0;
     }
 
     override function init() {
@@ -109,8 +112,9 @@ class PlayState extends State {
         }
 
         scoreText = new luxe.Text({
-            pos: get_pos(1, -1),
+            pos: get_pos(1, -0.75),
             align: center,
+            align_vertical: center,
             text: '0'
         });
         score = 0;
@@ -137,7 +141,7 @@ class PlayState extends State {
                 quest_deck.reshuffle();
             }
         };
-        game.new_game(tiles_x, tiles_y, deck, quest_deck);
+        Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
     }
 
     function create_tile(suit :Int, stacked :Bool, size :Float) {
@@ -250,20 +254,32 @@ class PlayState extends State {
         card.destroy();
     }
 
-    function handle_score(score :Int, card :Card) {
-        var scoreDiff = score - this.score;
-        var tween = Actuate.tween(this, scoreDiff * 0.05, { score: score }).onUpdate(function() { scoreText.text = '${Std.int(this.score)}'; });
-
-        var s = new Sprite({
+    function handle_score(card_score :Int, card :Card) {
+        var duration = 0.3;
+        var delay = game.entities.Particle.Count * 0.1;
+        var p = new game.entities.Particle({
             pos: card.pos.clone(),
             texture: card.texture,
-            size: new Vector(tile_size * 0.5, tile_size * 0.5),
+            size: new Vector(tile_size, tile_size),
             color: card.color.clone(),
-            depth: 100
+            depth: 100,
+
+            target: scoreText.pos,
+            duration: duration,
+            delay: delay
         });
-        //Actuate.tween(s.pos, 5.0, { x: scoreText.pos.x, y: scoreText.pos.y });
-        tween_pos(s, scoreText.pos, 0.3).onComplete(s.destroy.bind(true)); // TODO: Make this into custom particles instead
-        // return tween.toPromise();
+        Actuate.tween(p.size, duration, { x: tile_size * 0.25, y: tile_size * 0.25 }).delay(delay).onComplete(function() {
+            p.destroy(true);
+            score += card_score;
+            // scoreText.text = '${Std.int(this.score)}';
+            var textScale = scoreText.scale.x;
+            if (textScale < 1.5) {
+                textScale += 0.2 * card_score;
+                scoreText.scale.set_xy(textScale, textScale);
+            }
+            Actuate.tween(this, (score - counting_score) * 0.05, { counting_score: score }, true).onUpdate(function() { scoreText.text = '${Std.int(counting_score)}'; });
+        });
+
         return Promise.resolve();
     }
 
@@ -274,12 +290,12 @@ class PlayState extends State {
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
         if (grabbed_card == null) return;
-        if (!game.is_placement_valid(x, y)) return; // TODO: Some indication hereof!
+        if (!Game.Instance.is_placement_valid(x, y)) return; // TODO: Some indication hereof!
 
         grabbed_card.pos = sprite.pos.clone();
         grabbed_card.grid_pos = { x: x, y: y };
         grabbed_card.remove('Clickable');
-        game.do_action(Place(grabbed_card, x, y));
+        Game.Instance.do_action(Place(grabbed_card, x, y));
         var grabbed_card_copy = grabbed_card;
         Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
             grabbed_card_copy.add(new Clickable(tile_clicked));
@@ -309,18 +325,18 @@ class PlayState extends State {
 
     function add_to_collection(tile :Tile) {
         collection.push(tile);
-        if (!game.is_collection_valid(collection)) {
+        if (!Game.Instance.is_collection_valid(collection)) {
             collection = [];
             quest_matches = [];
             return;
         }
 
         if (collection.length == 3) {
-            game.do_action(Collect(collection));
+            Game.Instance.do_action(Collect(collection));
             collection = [];
             quest_matches = [];
         } else {
-            quest_matches = game.get_matching_quest_parts(collection);
+            quest_matches = Game.Instance.get_matching_quest_parts(collection);
         }
     }
 
@@ -368,6 +384,7 @@ class PlayState extends State {
     }
 
     override function update(dt :Float) {
-
+        var textScale = scoreText.scale.x; 
+        if (textScale > 1) scoreText.scale.set_xy(textScale - dt, textScale - dt);
     }
 }

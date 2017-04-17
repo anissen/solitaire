@@ -21,6 +21,8 @@ enum Event {
 }
 
 class Game {
+    public static var Instance(default, null) :Game = new Game();
+
     var quest_deck :InfiniteDeck;
     var deck :InfiniteDeck;
     var grid :Grid<Card>;
@@ -30,7 +32,7 @@ class Game {
 
     var messageSystem :MessageSystem<Action, Event>;
 
-    public function new() {
+    function new() {
         messageSystem = new MessageSystem();
         messageSystem.on_action(handle_action);
     }
