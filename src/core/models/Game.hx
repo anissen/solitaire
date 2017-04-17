@@ -16,7 +16,7 @@ enum Event {
     TileRemoved(card :Card);
     Collected(cards :Array<Card>, quest :Array<Card>);
     Stacked(card :Card);
-    Score(score :Int);
+    Score(score :Int, card :Card);
     GameOver();
 }
 
@@ -27,8 +27,6 @@ class Game {
 
     var quests :Array<Array<Card>>;
     var hand :Array<Card>;
-
-    var score :Int;
 
     var messageSystem :MessageSystem<Action, Event>;
 
@@ -44,8 +42,6 @@ class Game {
 
         quests = [];
         hand = [];
-
-        score = 0;
 
         new_turn();
     }
@@ -239,8 +235,8 @@ class Game {
             if (!cards_matching(cards, quest)) continue;
 
             quests.remove(quest);
-            for (tile in tiles) remove_tile(tile);
             update_score(cards, quest);
+            for (tile in tiles) remove_tile(tile);
             messageSystem.emit(Collected(cards, quest));
             return true;
         }
@@ -261,14 +257,14 @@ class Game {
             }
         }
 
+        for (card in cards) {
+            messageSystem.emit(Score(1, card));
+        }
+
         for (i in 0 ... tiles.length - 1) remove_tile(tiles[i]);
         var last_card = cards[cards.length - 1];
 
         messageSystem.emit(Stacked(last_card));
-
-        // TODO: This is a test!
-        // score += 1;
-        // messageSystem.emit(Score(score));
 
         return true;
     }
@@ -320,17 +316,18 @@ class Game {
     }
 
     function update_score(cards :Array<Card>, quest :Array<Card>) {
-        for (card in cards) {
-            score += (card.stacked ? 5 : 1);
-        }
         var matchingSuits = true;
         var matchingSuitsReverse = true;
         for (i in 0 ... cards.length) {
             if (cards[i].suit != quest[i].suit) matchingSuits = false;
             if (cards[i].suit != quest[cards.length - i - 1].suit) matchingSuitsReverse = false;
         }
-        if (cards.length > 0 && (matchingSuits || matchingSuitsReverse)) score += 3;
-        messageSystem.emit(Score(score));
+        var matchingOrder = (cards.length > 0 && (matchingSuits || matchingSuitsReverse));
+
+        for (card in cards) {
+            var card_score = (card.stacked ? 3 : 1) + (matchingOrder ? 1 : 0);
+            messageSystem.emit(Score(card_score, card));
+        }
     }
 
     function cards_matching(cards1 :Array<Card>, cards2 :Array<Card>) {

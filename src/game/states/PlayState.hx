@@ -183,7 +183,7 @@ class PlayState extends State {
             case TileRemoved(card): handle_tile_removed(card); Promise.resolve();
             case Collected(cards, quest): handle_collected(cards, quest);
             case Stacked(card): handle_stacked(card); Promise.resolve();
-            case Score(score): handle_score(score);
+            case Score(score, card): handle_score(score, card);
             case GameOver: handle_game_over();
         }
     }
@@ -250,10 +250,21 @@ class PlayState extends State {
         card.destroy();
     }
 
-    function handle_score(score :Int) {
+    function handle_score(score :Int, card :Card) {
         var scoreDiff = score - this.score;
         var tween = Actuate.tween(this, scoreDiff * 0.05, { score: score }).onUpdate(function() { scoreText.text = '${Std.int(this.score)}'; });
-        return tween.toPromise();
+
+        var s = new Sprite({
+            pos: card.pos.clone(),
+            texture: card.texture,
+            size: new Vector(tile_size * 0.5, tile_size * 0.5),
+            color: card.color.clone(),
+            depth: 100
+        });
+        //Actuate.tween(s.pos, 5.0, { x: scoreText.pos.x, y: scoreText.pos.y });
+        tween_pos(s, scoreText.pos, 0.3).onComplete(s.destroy.bind(true)); // TODO: Make this into custom particles instead
+        // return tween.toPromise();
+        return Promise.resolve();
     }
 
     function handle_game_over() {
