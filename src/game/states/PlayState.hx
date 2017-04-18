@@ -324,27 +324,42 @@ class PlayState extends State {
     }
 
     function add_to_collection(tile :Tile) {
+        tile.set_highlight(true);
         collection.push(tile);
         if (!Game.Instance.is_collection_valid(collection)) {
-            collection = [];
-            quest_matches = [];
+            clear_collection();
             return;
         }
 
         if (collection.length == 3) {
             Game.Instance.do_action(Collect(collection));
-            collection = [];
-            quest_matches = [];
+            clear_collection();
         } else {
+            for (tile in quest_matches) {
+                tile.set_highlight(false);
+            }
             quest_matches = Game.Instance.get_matching_quest_parts(collection);
+            for (tile in quest_matches) {
+                tile.set_highlight(true);
+            }
         }
+    }
+
+    function clear_collection() {
+        for (tile in collection) {
+            tile.set_highlight(false);
+        }
+        for (tile in quest_matches) {
+            tile.set_highlight(false);
+        }
+        collection = [];
+        quest_matches = [];
     }
 
     function card_clicked(sprite :Sprite) {
         grabbed_card = cast sprite;
         grabbed_card.depth = 3;
-        collection = [];
-        quest_matches = [];
+        clear_collection();
     }
 
     override function onleave(_) {
@@ -359,28 +374,7 @@ class PlayState extends State {
     }
 
     override function onrender() {
-        for (tile in collection) {
-            Luxe.draw.box({
-                x: tile.pos.x - (tile_size / 2) - 4,
-                y: tile.pos.y - (tile_size / 2) - 4,
-                h: tile_size + 8 + 4,
-                w: tile_size + 8,
-                color: new Color(1, 0, 1, 0.4),
-                depth: 1,
-                immediate: true
-            });
-        }
-        for (tile in quest_matches) {
-            Luxe.draw.box({
-                x: tile.pos.x - (tile_size / 4) - 2,
-                y: tile.pos.y - (tile_size / 4) - 2,
-                h: tile_size / 2 + 4 + 2,
-                w: tile_size / 2 + 4,
-                color: new Color(1, 0, 1, 0.4),
-                depth: 1,
-                immediate: true
-            });
-        }
+
     }
 
     override function update(dt :Float) {

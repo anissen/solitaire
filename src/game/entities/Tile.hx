@@ -25,6 +25,7 @@ class Tile extends Sprite implements core.models.Deck.ICard {
     var original_color :Color;
 
     var bg :Sprite;
+    var highlighted :Bool;
 
     public function new(options :TileOptions) {
         super({
@@ -46,15 +47,21 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         suit = options.suit;
         stacked = options.stacked;
         grid_pos = options.grid_pos;
+        highlighted = false;
     }
 
     function set_stacked(value :Bool) {
         stacked = value;
         if (bg != null) {
             color = (value ? new Color(0, 0, 0, 1) : original_color);
-            bg.color = (value ? original_color : new Color(1, 1, 1, 1));
+            bg.color = (highlighted ? new Color().rgb(0x001f3f) : (value ? original_color : new Color(1, 1, 1, 1)));
         }
         return value;
+    }
+
+    public function set_highlight(value :Bool) {
+        highlighted = value;
+        bg.color = (highlighted ? new Color().rgb(0x7FDBFF) : (stacked ? original_color : new Color(1, 1, 1, 1)));
     }
 
     override public function set_visible(value :Bool) {
