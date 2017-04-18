@@ -154,8 +154,8 @@ class PlayState extends State {
                 case 1: 0xffe433; // yellow
                 case 2: 0xd92727; // red
                 case 3: 0x6fcc43; // green
-                // case 4: 0xfc8f12; // orange
-                case 4: 0xd00fc3; // purple
+                case 4: 0xfc8f12; // orange
+                // case 4: 0xd00fc3; // purple
                 case _: throw 'invalid enum';
             }),
             texture: Luxe.resources.texture('assets/images/symbols/' + switch (suit) {
@@ -163,7 +163,7 @@ class PlayState extends State {
                 case 1: 'circle.png';
                 case 2: 'triangle.png';
                 case 3: 'diamond.png';
-                case 4: 'star.png';
+                case 4: 'hex.png';
                 case _: throw 'invalid enum';
             }),
             suit: suit,
@@ -274,7 +274,7 @@ class PlayState extends State {
             // scoreText.text = '${Std.int(this.score)}';
             var textScale = scoreText.scale.x;
             if (textScale < 1.5) {
-                textScale += 0.2 * card_score;
+                textScale += 0.1 * card_score;
                 scoreText.scale.set_xy(textScale, textScale);
             }
             Actuate.tween(this, (score - counting_score) * 0.05, { counting_score: score }, true).onUpdate(function() { scoreText.text = '${Std.int(counting_score)}'; });
