@@ -3,7 +3,6 @@
 
 Need:
 * Better stacking animations
-* Animation for scoring points
 * Make better graphics for quest background
 * Use seeded random
 * Add sounds

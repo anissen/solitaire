@@ -332,12 +332,12 @@ class Game {
     }
 
     function cards_matching(cards1 :Array<Card>, cards2 :Array<Card>) {
-        var test = cards2.copy(); // TODO: This is not good!
+        var cards2_copy = [ for (card in cards2) { suit: card.suit, stacked: card.stacked } ];
         for (a in cards1) {
             var match = false;
-            for (b in test) {
+            for (b in cards2_copy) {
                 if (a.suit == b.suit && a.stacked == b.stacked) {
-                    test.remove(b);
+                    cards2_copy.remove(b);
                     match = true;
                     break;
                 }
