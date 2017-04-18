@@ -277,7 +277,7 @@ class PlayState extends State {
                 textScale += 0.1 * card_score;
                 scoreText.scale.set_xy(textScale, textScale);
             }
-            Actuate.tween(this, (score - counting_score) * 0.05, { counting_score: score }, true).onUpdate(function() { scoreText.text = '${Std.int(counting_score)}'; });
+            Actuate.tween(this, (score - counting_score) * 0.02, { counting_score: score }, true).onUpdate(function() { scoreText.text = '${Std.int(counting_score)}'; });
         });
 
         return Promise.resolve();

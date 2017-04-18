@@ -259,14 +259,13 @@ class Game {
             }
         }
 
-        for (card in cards) {
-            messageSystem.emit(Score(1, card));
+        for (i in 0 ... cards.length - 1) {
+            messageSystem.emit(Score(1, cards[i]));
         }
 
         for (i in 0 ... tiles.length - 1) remove_tile(tiles[i]);
-        var last_card = cards[cards.length - 1];
 
-        messageSystem.emit(Stacked(last_card));
+        messageSystem.emit(Stacked(cards.last()));
 
         return true;
     }
@@ -327,7 +326,7 @@ class Game {
         var matchingOrder = (cards.length > 0 && (matchingSuits || matchingSuitsReverse));
 
         for (card in cards) {
-            var card_score = (card.stacked ? 3 : 1) + (matchingOrder ? 1 : 0);
+            var card_score = (card.stacked ? 3 : 1) * (matchingOrder ? 2 : 1);
             messageSystem.emit(Score(card_score, card));
         }
     }
