@@ -4,6 +4,7 @@
 Need:
 * Better stacking animations
 * Make better graphics for quest background
+* Better background graphics
 * Use seeded random
 * Add sounds
 * Add main screen (or make an overlay menu)

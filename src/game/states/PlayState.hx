@@ -23,7 +23,7 @@ typedef Card = Tile;
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var grabbed_card :Tile = null;
-    //var game :Game; // TODO: Don't aggregate Game here! Reference it from a static context
+    var grabbed_card_origin :Vector;
 
     var tiles_x = 3;
     var tiles_y = 3;
@@ -290,7 +290,11 @@ class PlayState extends State {
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
         if (grabbed_card == null) return;
-        if (!Game.Instance.is_placement_valid(x, y)) return; // TODO: Some indication hereof!
+        if (!Game.Instance.is_placement_valid(x, y)) {
+            tween_pos(grabbed_card, grabbed_card_origin);
+            grabbed_card = null;
+            return;
+        }
 
         grabbed_card.pos = sprite.pos.clone();
         grabbed_card.grid_pos = { x: x, y: y };
@@ -358,6 +362,7 @@ class PlayState extends State {
 
     function card_clicked(sprite :Sprite) {
         grabbed_card = cast sprite;
+        grabbed_card_origin = sprite.pos.clone();
         grabbed_card.depth = 3;
         clear_collection();
     }
