@@ -24,6 +24,7 @@ class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var grabbed_card :Tile = null;
     var grabbed_card_origin :Vector;
+    var grabbed_card_offset :Vector;
 
     var tiles_x = 3;
     var tiles_y = 3;
@@ -363,6 +364,7 @@ class PlayState extends State {
     function card_clicked(sprite :Sprite) {
         grabbed_card = cast sprite;
         grabbed_card_origin = sprite.pos.clone();
+        grabbed_card_offset = Vector.Subtract(Luxe.screen.cursor.pos, Luxe.camera.world_point_to_screen(sprite.pos));
         grabbed_card.depth = 3;
         clear_collection();
     }
@@ -373,7 +375,7 @@ class PlayState extends State {
 
     override function onmousemove(event :luxe.Input.MouseEvent) {
         if (grabbed_card != null) {
-            var world_pos = Luxe.camera.screen_point_to_world(event.pos);
+            var world_pos = Luxe.camera.screen_point_to_world(Vector.Subtract(event.pos, grabbed_card_offset));
             grabbed_card.pos = world_pos;
         }
     }
