@@ -1,5 +1,10 @@
 package core.tools;
 
+@:forward(length, concat, join, toString, indexOf, lastIndexOf, copy, iterator, map, filter)
+abstract ImmutableArray<T>(Array<T>) from Array<T> to Iterable<T> {
+	@:arrayAccess @:extern inline public function arrayAccess(key:Int):T return this[key];
+}
+
 class ArrayTools {
     static inline function random_value(value :Int, ?random :Int->Int) {
         return (random != null ? random(value) : Std.random(value));
@@ -10,7 +15,7 @@ class ArrayTools {
     }
 
     static public function empty<T>(array :Array<T>) :Bool {
-        return (array.length == 0);
+        return (array == null || array.length == 0);
     }
 
     static public function has<T>(array :Array<T>, value :T) :Bool {
@@ -34,16 +39,20 @@ class ArrayTools {
         return array;
     }
 
-    static public function first<T>(array :Array<T>) :T {
+    static public function first<T>(array :Array<T>) :Null<T> {
         return array[0];
     }
 
-    static public function last<T>(array :Array<T>) :T {
+    static public function last<T>(array :Array<T>) :Null<T> {
         return array[array.length - 1];
     }
 
     static public function clear<T>(array :Array<T>) :Array<T> {
         array.splice(0, array.length);
         return array;
+    }
+
+    static public function to_immutable<T>(array :Array<T>) :ImmutableArray<T> {
+        return cast array;
     }
 }
