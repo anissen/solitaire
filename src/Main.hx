@@ -5,12 +5,13 @@ import luxe.Input;
 import luxe.States;
 
 import game.states.PlayState;
+import game.states.GameOverState;
 
 class Main extends luxe.Game {
-    var states :States;
+    static public var states :States;
 
     override function config(config:GameConfig) {
-        config.window.title = 'luxe game';
+        config.window.title = 'Solitaire';
         config.window.width = 360;
         config.window.height = 640;
         config.window.fullscreen = false;
@@ -30,6 +31,7 @@ class Main extends luxe.Game {
 
         states = new States({ name: 'state_machine' });
         states.add(new PlayState());
+        states.add(new GameOverState());
         states.set(PlayState.StateId);
     }
 
