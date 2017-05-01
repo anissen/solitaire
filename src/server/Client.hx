@@ -2,10 +2,9 @@ package server;
 
 class Client {
     static function get_highscores() {
-        var http = new haxe.Http("http://localhost:1337/set_highscore");
+        var http = new haxe.Http("http://localhost:1337/highscore");
         http.addParameter('name', 'Anders');
         http.addParameter('score', '37');
-        http.addParameter('blah', '66');
         http.onError = function(data) {
             trace('error: $data');
         }

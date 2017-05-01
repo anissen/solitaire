@@ -82,6 +82,44 @@ class GameOverState extends State {
     override function onenabled(d :Dynamic) {
         var data :{ score :Int, name :String } = cast d;
 
+        var http = new haxe.Http("http://localhost:1337/highscore");
+        http.addParameter('name', data.name);
+        http.addParameter('score', '${data.score}');
+        http.onError = function(data) {
+            trace('error: $data');
+            var text = new luxe.Text({
+                pos: new Vector(20, Luxe.screen.mid.y - 100),
+                text: 'Error: $data',
+                point_size: 32,
+                align: left,
+                align_vertical: center,
+                color: new Color(0.6, 0.6, 0.6, 0.0),
+                depth: 101
+            });
+        }
+        http.onStatus = function(data) {
+            trace('status: $data');
+        }
+        http.onData = function(data) {
+            trace('data: $data');
+            var scores :Array<{ score :Int, name :String }> = [];
+            try {
+                scores = haxe.Json.parse(data);
+            } catch (e :Dynamic) {
+                trace('Error parsing data: $e');
+            }
+
+            scores.sort(function(a, b) { return b.score - a.score; });
+
+            var count = 0;
+            for (score in scores) {
+                count++;
+                var highscore = new HighscoreLine(count, score.score, score.name, count * 50);
+                Actuate.tween(highscore, 0.3, { y: count * 50 - 20, alpha: 1.0 }).delay(count / 2);
+            }
+        }
+        http.request();
+
         var bg = new luxe.Sprite({
             pos: Luxe.screen.mid.clone(),
             size: Luxe.screen.size.clone(),
@@ -89,6 +127,7 @@ class GameOverState extends State {
             depth: 100
         });
 
+        /*
         var scores = [
             { rank: 999, score: 999, name: 'Blah' },
             { rank: 4, score: 234, name: 'Blah' },
@@ -104,6 +143,7 @@ class GameOverState extends State {
             var highscore = new HighscoreLine(score.rank, score.score, score.name, y += 50);
             Actuate.tween(highscore, 0.3, { y: y - 20, alpha: 1.0 }).delay(y / 100);
         }
+        */
 
         // var text = new luxe.Text({
         //     pos: new Vector(20, Luxe.screen.mid.y - 100),
