@@ -11,6 +11,8 @@ class HighscoreLine {
     var rankText :Text;
     var scoreText :Text;
     var nameText :Text;
+    public var y(get, set) :Float;
+    public var alpha(get, set) :Float;
 
     public function new(rank :Int, score :Int, name :String, y :Float) {
         rankText = new luxe.Text({
@@ -42,16 +44,27 @@ class HighscoreLine {
         });
     }
 
-    public function set_y(y :Float) {
+    function set_y(y :Float) {
         rankText.pos.y = y;
         scoreText.pos.y = y;
         nameText.pos.y = y;
+        return y;
+    }
+    
+    function get_y() {
+        return rankText.pos.y;
     }
 
-    public function set_alpha(alpha :Float) {
+
+    function set_alpha(alpha :Float) {
         rankText.color.a = alpha;
         scoreText.color.a = alpha;
         nameText.color.a = alpha;
+        return alpha;
+    }
+
+    function get_alpha() {
+        return rankText.color.a;
     }
 }
 
@@ -67,6 +80,7 @@ class GameOverState extends State {
     }
 
     override function onenabled(d :Dynamic) {
+        var data :{ score :Int, name :String } = cast d;
 
         var bg = new luxe.Sprite({
             pos: Luxe.screen.mid.clone(),
@@ -75,7 +89,6 @@ class GameOverState extends State {
             depth: 100
         });
 
-        var data :{ score :Int /*, bg :phoenix.Texture */ } = cast d;
         var scores = [
             { rank: 999, score: 999, name: 'Blah' },
             { rank: 4, score: 234, name: 'Blah' },
@@ -89,7 +102,7 @@ class GameOverState extends State {
         var y = 50;
         for (score in scores) {
             var highscore = new HighscoreLine(score.rank, score.score, score.name, y += 50);
-            // Actuate.tween(highscore, 1.0, { y: Luxe.screen.mid.y });
+            Actuate.tween(highscore, 0.3, { y: y - 20, alpha: 1.0 }).delay(y / 100);
         }
 
         // var text = new luxe.Text({

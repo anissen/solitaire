@@ -285,8 +285,11 @@ class PlayState extends State {
     }
 
     function handle_game_over() {
-        var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
-        return tween.toPromise();
+        //var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
+        //return tween.toPromise();
+        Main.states.enable(GameOverState.StateId, { score: score, name: 'Name' });
+
+        return Promise.resolve();
     }
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
@@ -387,5 +390,11 @@ class PlayState extends State {
     override function update(dt :Float) {
         var textScale = scoreText.scale.x; 
         if (textScale > 1) scoreText.scale.set_xy(textScale - dt, textScale - dt);
+    }
+
+    override function onkeyup(event :luxe.Input.KeyEvent) {
+        if (event.keycode == luxe.Input.Key.key_k) {
+            handle_game_over();     
+        }
     }
 }
