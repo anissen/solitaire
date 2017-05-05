@@ -12,6 +12,7 @@ Need:
 * Add game over screen
 * Add main screen (or make an overlay menu)
 * Tutorial
+* App icon
 
 Nice:
 * Move the general-purpose parts out of core and into turnabout (and reference it)

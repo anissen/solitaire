@@ -5,8 +5,6 @@ import js.node.http.ServerResponse;
 import js.node.http.IncomingMessage;
 import js.node.Url;
 
-using Lambda;
-
 typedef Highscore = { name :String, score :Int /*, seed :String, time :Date */ };
 
 class Server {
@@ -17,7 +15,7 @@ class Server {
         var server = Http.createServer(function(request :IncomingMessage, response :ServerResponse) {
             function send(data :Dynamic, status :Int) {
                 response.setHeader("Content-Type","text/json");
-                response.setHeader("Access-Control-Allow-Origin","*");
+                response.setHeader("Access-Control-Allow-Origin","*"); // TODO: Remove this
                 response.writeHead(status);
                 response.end(haxe.Json.stringify(data));
             }
@@ -29,11 +27,12 @@ class Server {
             
             switch (params.pathname) {
                 case '/highscore' if (query.exists('score') && query.exists('name')):
+                    ok(highscores); // returning highscores list *without* new score
+
                     trace('setting highscore: ${query.get('score')} for ${query.get('name')}');
 
                     highscores.push({ name: query.get('name'), score: Std.parseInt(query.get('score')) /*, seed: query.get('seed'), time:  Date.fromString(query.get('time')) */ });
                     sys.io.File.saveContent(highscore_file, haxe.Json.stringify(highscores));
-                    ok(highscores);
                 case _: error({ error: 'Unknown endpoint "${params.pathname}"'});
             }
             trace('You got served!');
