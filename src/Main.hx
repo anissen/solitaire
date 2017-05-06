@@ -32,12 +32,20 @@ class Main extends luxe.Game {
         states = new States({ name: 'state_machine' });
         states.add(new PlayState());
         states.add(new GameOverState());
+        NewGame();
+    }
+
+    static public function NewGame() {
+        if (states.enabled(GameOverState.StateId)) states.disable(GameOverState.StateId);
+        states.unset();
         states.set(PlayState.StateId);
     }
 
+    #if sys
     override function onkeyup(event:KeyEvent) {
         if (event.keycode == Key.escape) {
             Luxe.shutdown();
         }
     }
+    #end
 }

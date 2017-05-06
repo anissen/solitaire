@@ -163,4 +163,10 @@ class GameOverState extends State {
     //     if (my_highscore_line.y <= )
     //     my_highscore_line.y -= dt;
     // }
+
+    override function onmouseup(event :luxe.Input.MouseEvent) {
+        if (event.button == luxe.Input.MouseButton.left) {
+            Main.NewGame();
+        }
+    }
 }

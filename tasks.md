@@ -13,6 +13,8 @@ Need:
 * Add main screen (or make an overlay menu)
 * Tutorial
 * App icon
+* Remove debug hooks, debug view
+* Add some analytics
 
 Nice:
 * Move the general-purpose parts out of core and into turnabout (and reference it)

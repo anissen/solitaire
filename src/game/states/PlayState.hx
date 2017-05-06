@@ -50,13 +50,6 @@ class PlayState extends State {
         super({ name: StateId });
         // game = new Game();
         Game.Instance.listen(handle_event);
-        collection = [];
-        quests = [];
-        tiles = [];
-        quest_matches = [];
-        reshuffle_count = 0;
-        score = 0;
-        counting_score = 0;
     }
 
     override function init() {
@@ -64,6 +57,29 @@ class PlayState extends State {
     }
 
     override function onenter(_) {
+        collection = [];
+        quests = [];
+        tiles = [];
+        quest_matches = [];
+        reshuffle_count = 0;
+        score = 0;
+        counting_score = 0;
+
+        // var bg_texture = Luxe.resources.texture('assets/images/symbols/wool.png');
+        // bg_texture.clamp_s = phoenix.Texture.ClampType.repeat;
+        // bg_texture.clamp_t = phoenix.Texture.ClampType.repeat;
+        // bg_texture.width = Luxe.screen.w * 2;
+        // bg_texture.height = Luxe.screen.h * 2;
+
+        // new Sprite({
+        //     centered: true,
+        //     pos: Luxe.screen.mid.clone(),
+        //     texture: bg_texture,
+        //     depth: -1
+        // });
+        
+        
+
         // quest backgrounds
         for (x in 0 ... 3) {
             new Sprite({
@@ -84,6 +100,7 @@ class PlayState extends State {
                     color: new Color().rgb(0xDDDDDD)
                 });
                 sprite.add(new MouseUp(grid_clicked.bind(x, y)));
+                // tween_pos(sprite, get_pos(x+3, y + 2), 10);
             }
         }
 
@@ -287,7 +304,7 @@ class PlayState extends State {
     function handle_game_over() {
         //var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
         //return tween.toPromise();
-        Main.states.enable(GameOverState.StateId, { score: score, name: 'Name' });
+        Main.states.enable(GameOverState.StateId, { score: Math.floor(1000 * Math.random()), name: 'Name' + Math.floor(1000 * Math.random()) });
 
         return Promise.resolve();
     }
@@ -373,7 +390,7 @@ class PlayState extends State {
     }
 
     override function onleave(_) {
-
+        Luxe.scene.empty();
     }
 
     override function onmousemove(event :luxe.Input.MouseEvent) {
@@ -392,9 +409,13 @@ class PlayState extends State {
         if (textScale > 1) scoreText.scale.set_xy(textScale - dt, textScale - dt);
     }
 
+    #if debug // TODO: Remove before release
     override function onkeyup(event :luxe.Input.KeyEvent) {
-        if (event.keycode == luxe.Input.Key.key_k) {
-            handle_game_over();     
+        trace('onkeyup: ${event.keycode}');
+        switch (event.keycode) {
+            case luxe.Input.Key.key_k: handle_game_over();
+            case luxe.Input.Key.key_n: Main.NewGame();
         }
     }
+    #end
 }
