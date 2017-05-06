@@ -20,6 +20,15 @@ using game.tools.TweenTools;
 
 typedef Card = Tile;
 
+/*
+    Stuff to be saved:
+    * Deck list
+    * Hand list
+    * Board
+    * Score
+    * Game seed (for this instant in the game!)
+*/
+
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var grabbed_card :Tile = null;
@@ -64,6 +73,7 @@ class PlayState extends State {
         reshuffle_count = 0;
         score = 0;
         counting_score = 0;
+        Luxe.utils.random.initial = 42;        
 
         // var bg_texture = Luxe.resources.texture('assets/images/symbols/wool.png');
         // bg_texture.clamp_s = phoenix.Texture.ClampType.repeat;
@@ -78,8 +88,6 @@ class PlayState extends State {
         //     depth: -1
         // });
         
-        
-
         // quest backgrounds
         for (x in 0 ... 3) {
             new Sprite({
@@ -135,18 +143,17 @@ class PlayState extends State {
             align_vertical: center,
             text: '0'
         });
-        score = 0;
 
         var deck = new InfiniteDeck(deck_cards, function(data) {
             var tile = create_tile(data.suit, data.stacked, tile_size);
             tile.pos = get_pos(1, tiles_y + 3.5);
             return tile;
-        });
+        }, random_func);
         var quest_deck = new InfiniteDeck(quest_cards, function(data) {
             var tile = create_tile(data.suit, data.stacked, tile_size * 0.5);
             tile.pos = get_pos(1, -2);
             return tile;
-        });
+        }, random_func);
         deck.on_reshuffling = function() {
             reshuffle_count++;
             if (reshuffle_count == 1) {
@@ -160,6 +167,10 @@ class PlayState extends State {
             }
         };
         Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
+    }
+
+    function random_func(v :Int) {
+        return Luxe.utils.random.int(v);
     }
 
     function create_tile(suit :Int, stacked :Bool, size :Float) {

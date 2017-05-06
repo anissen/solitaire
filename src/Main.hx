@@ -1,7 +1,6 @@
 package;
 
 import luxe.GameConfig;
-import luxe.Input;
 import luxe.States;
 
 import game.states.PlayState;

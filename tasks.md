@@ -2,10 +2,8 @@
 # Tasks:
 
 Need:
-* Better stacking animations
 * Make better graphics for quest background
 * Better background graphics
-* Use seeded random
 * Add sounds
 * Automatic save and resume games
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
