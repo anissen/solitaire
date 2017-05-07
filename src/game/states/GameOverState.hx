@@ -122,16 +122,20 @@ class GameOverState extends State {
             var count = 0;
             for (score in scores) {
                 count++;
-                var highscore_line = new HighscoreLine('$count', score.score, score.name, count * 50);
-                Actuate.tween(highscore_line, 0.3, { y: count * 50 - 20, alpha: 1.0 }).delay(1.0);
+                var highscore_line = new HighscoreLine('$count', score.score, score.name, count * 50 + 20);
+                Actuate.tween(highscore_line, 0.3, { y: count * 50, alpha: 1.0 }).delay(1.0);
                 if (score.client == highscore.client) {
                     highscore_line.color = new Color(0.4, 0.4, 0.4, 0.0);
-                    Actuate.tween(Luxe.camera.view.center, 5.0, { y: count * 50 }, true).onUpdate( function() {
-                        Luxe.camera.transform.pos.set_xy(Luxe.camera.view.pos.x, Luxe.camera.view.pos.y);
+                    Actuate.tween(Luxe.camera.view.center, 2.0, { y: count * 50 }, true).onUpdate( function() {
+                        Luxe.camera.transform.pos.set_xy(Luxe.camera.view.pos.x, Luxe.camera.view.pos.y); // TODO: Clamp to pan viewport
                     });
                 }
             }
             Luxe.camera.transform.pos.y = count * 50;
+            var pan = new game.components.CameraPan({ name: 'CameraPan' });
+            pan.y_top = -50; // ???
+            pan.y_bottom = count * 50 - Luxe.screen.h + 50;
+            Luxe.camera.add(pan);
         }
         http.request();
 
@@ -153,11 +157,12 @@ class GameOverState extends State {
     }
 
     override function ondisabled(_) {
+        Luxe.camera.remove('CameraPan');
         Luxe.scene.empty();
     }
 
     override function onmouseup(event :luxe.Input.MouseEvent) {
-        if (event.button == luxe.Input.MouseButton.left) {
+        if (event.button == luxe.Input.MouseButton.right) {
             Main.NewGame();
         }
     }

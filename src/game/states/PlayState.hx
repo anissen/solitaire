@@ -53,6 +53,8 @@ class PlayState extends State {
     var counting_score :Float;
     var score :Int;
 
+    var game_over :Bool;
+
     var quest_matches :Array<Card>;
 
     public function new() {
@@ -73,6 +75,7 @@ class PlayState extends State {
         reshuffle_count = 0;
         score = 0;
         counting_score = 0;
+        game_over = false;
         Luxe.utils.random.initial = 42;     
 
         Luxe.camera.center = Vector.Multiply(Luxe.camera.size, 0.5);   
@@ -315,6 +318,7 @@ class PlayState extends State {
     }
 
     function handle_game_over() {
+        game_over = true;
         //var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
         //return tween.toPromise();
         Main.states.enable(GameOverState.StateId, {
@@ -327,6 +331,7 @@ class PlayState extends State {
     }
 
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
+        if (game_over) return;
         if (grabbed_card == null) return;
         if (!Game.Instance.is_placement_valid(x, y)) {
             tween_pos(grabbed_card, grabbed_card_origin);
@@ -348,6 +353,7 @@ class PlayState extends State {
     }
 
     function card_grid_clicked(sprite :Sprite) {
+        if (game_over) return;
         if (grabbed_card == null) return;
         tween_pos(grabbed_card, grabbed_card_origin);
         grabbed_card = null;
@@ -361,6 +367,7 @@ class PlayState extends State {
     }
 
     function tile_clicked(sprite :Sprite) {
+        if (game_over) return;
         var tile :Tile = cast sprite;
         add_to_collection(tile);
     }
@@ -399,6 +406,7 @@ class PlayState extends State {
     }
 
     function card_clicked(sprite :Sprite) {
+        if (game_over) return;
         grabbed_card = cast sprite;
         grabbed_card_origin = sprite.pos.clone();
         grabbed_card_offset = Vector.Subtract(Luxe.screen.cursor.pos, Luxe.camera.world_point_to_screen(sprite.pos));
@@ -411,6 +419,7 @@ class PlayState extends State {
     }
 
     override function onmousemove(event :luxe.Input.MouseEvent) {
+        if (game_over) return;
         if (grabbed_card != null) {
             var world_pos = Luxe.camera.screen_point_to_world(Vector.Subtract(event.pos, grabbed_card_offset));
             grabbed_card.pos = world_pos;
@@ -428,7 +437,6 @@ class PlayState extends State {
 
     #if debug // TODO: Remove before release
     override function onkeyup(event :luxe.Input.KeyEvent) {
-        trace('onkeyup: ${event.keycode}');
         switch (event.keycode) {
             case luxe.Input.Key.key_k: handle_game_over();
             case luxe.Input.Key.key_n: Main.NewGame();
