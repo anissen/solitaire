@@ -343,7 +343,7 @@ class PlayState extends State {
 
     function card_grid_clicked(sprite :Sprite) {
         if (grabbed_card == null) return;
-        grabbed_card.pos = sprite.pos.clone();
+        tween_pos(grabbed_card, grabbed_card_origin);
         grabbed_card = null;
     }
 
