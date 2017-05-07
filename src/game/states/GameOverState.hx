@@ -13,8 +13,9 @@ class HighscoreLine {
     var nameText :Text;
     public var y(get, set) :Float;
     public var alpha(get, set) :Float;
+    public var color(get, set) :Color;
 
-    public function new(rank :Int, score :Int, name :String, y :Float) {
+    public function new(rank :String, score :Int, name :String, y :Float) {
         rankText = new luxe.Text({
             pos: new Vector(60, y),
             text: '$rank.',
@@ -55,7 +56,6 @@ class HighscoreLine {
         return rankText.pos.y;
     }
 
-
     function set_alpha(alpha :Float) {
         rankText.color.a = alpha;
         scoreText.color.a = alpha;
@@ -66,15 +66,23 @@ class HighscoreLine {
     function get_alpha() {
         return rankText.color.a;
     }
+
+    function set_color(color :Color) {
+        rankText.color = color;
+        scoreText.color = color;
+        nameText.color = color;
+        return color;
+    }
+
+    function get_color() {
+        return rankText.color;
+    }
 }
 
-typedef Highscore = { score :Int, name :String };
+typedef Highscore = { client :String, score :Int, name :String };
 
 class GameOverState extends State {
     static public var StateId :String = 'GameOverState';
-    // var my_highscore_line :HighscoreLine;
-    // var highscore_lines :Array<HighscoreLine>;
-    // var scrolling :Bool;
 
     public function new() {
         super({ name: StateId });
@@ -86,17 +94,15 @@ class GameOverState extends State {
 
     override function onenabled(data :Dynamic) {
         var highscore :Highscore = cast data;
-        var highscores_count = 0;
-        // scrolling = false;
-        // highscore_lines = [];
-        var my_highscore_rank = 1;
 
         var http = new haxe.Http("http://localhost:1337/highscore");
+        http.addParameter('client', highscore.client);
         http.addParameter('name', highscore.name);
         http.addParameter('score', '${highscore.score}');
         http.onError = function(data) {
             trace('error: $data');
 
+            new HighscoreLine('?', highscore.score, highscore.name, 320 /* TODO: Don't hardcode */);
             // TODO: Show not-connected icon
         }
         http.onStatus = function(data) {
@@ -113,16 +119,19 @@ class GameOverState extends State {
 
             scores.sort(function(a, b) { return b.score - a.score; });
             
+            var count = 0;
             for (score in scores) {
-                if (score.score <= highscore.score && my_highscore_rank == 1) {
-                    my_highscore_rank = highscores_count;
-                    highscores_count++;
+                count++;
+                var highscore_line = new HighscoreLine('$count', score.score, score.name, count * 50);
+                Actuate.tween(highscore_line, 0.3, { y: count * 50 - 20, alpha: 1.0 }).delay(1.0);
+                if (score.client == highscore.client) {
+                    highscore_line.color = new Color(0.4, 0.4, 0.4, 0.0);
+                    Actuate.tween(Luxe.camera.view.center, 5.0, { y: count * 50 }, true).onUpdate( function() {
+                        Luxe.camera.transform.pos.set_xy(Luxe.camera.view.pos.x, Luxe.camera.view.pos.y);
+                    });
                 }
-                highscores_count++;
-                var highscore_line = new HighscoreLine(highscores_count, score.score, score.name, highscores_count * 50);
-                Actuate.tween(highscore_line, 0.3, { y: highscores_count * 50 - 20, alpha: 1.0 }); //.delay(count / 2);
-                // highscore_lines.push(highscore_line);
             }
+            Luxe.camera.transform.pos.y = count * 50;
         }
         http.request();
 
@@ -134,35 +143,18 @@ class GameOverState extends State {
         });
 
         Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {
-            var my_highscore_line = new HighscoreLine(my_highscore_rank, highscore.score, highscore.name, highscores_count * 50 + 620);
-            Actuate.tween(my_highscore_line, 0.3, { alpha: 1 }).onComplete(function() {
-                Actuate.tween(my_highscore_line, 5.0, { y: my_highscore_rank * 50 - 20 }).onUpdate(function() {
-                    Luxe.camera.transform.pos.y = my_highscore_line.y;
-                });
-            });
+        //     var my_highscore_line = new HighscoreLine('$my_highscore_rank', highscore.score, highscore.name, highscores_count * 50 + 620);
+        //     Actuate.tween(my_highscore_line, 0.3, { alpha: 1 }).onComplete(function() {
+        //         Actuate.tween(my_highscore_line, 5.0, { y: my_highscore_rank * 50 - 20 }).onUpdate(function() {
+        //             Luxe.camera.transform.pos.y = my_highscore_line.y;
+        //         });
+        //     });
         });
     }
-
-    /*
-    function show_highscores(scores :Array<Highscore>) {
-        var count = 0;
-        for (score in scores) {
-            count++;
-            var highscore = new HighscoreLine(count, score.score, score.name, count * 50);
-            Actuate.tween(highscore, 0.3, { y: count * 50 - 20, alpha: 1.0 }).delay(count / 2);
-        }
-    }
-    */
 
     override function ondisabled(_) {
         Luxe.scene.empty();
     }
-
-    // override function update(dt :Float) {
-    //     if (!scrolling) return;
-    //     if (my_highscore_line.y <= )
-    //     my_highscore_line.y -= dt;
-    // }
 
     override function onmouseup(event :luxe.Input.MouseEvent) {
         if (event.button == luxe.Input.MouseButton.left) {

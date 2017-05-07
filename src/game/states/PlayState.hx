@@ -73,7 +73,9 @@ class PlayState extends State {
         reshuffle_count = 0;
         score = 0;
         counting_score = 0;
-        Luxe.utils.random.initial = 42;        
+        Luxe.utils.random.initial = 42;     
+
+        Luxe.camera.center = Vector.Multiply(Luxe.camera.size, 0.5);   
 
         // var bg_texture = Luxe.resources.texture('assets/images/symbols/wool.png');
         // bg_texture.clamp_s = phoenix.Texture.ClampType.repeat;
@@ -315,7 +317,11 @@ class PlayState extends State {
     function handle_game_over() {
         //var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
         //return tween.toPromise();
-        Main.states.enable(GameOverState.StateId, { score: Math.floor(1000 * Math.random()), name: 'Name' + Math.floor(1000 * Math.random()) });
+        Main.states.enable(GameOverState.StateId, {
+            client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
+            name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
+            score: Math.floor(1000 * Math.random()) // TODO: Use correct score
+        });
 
         return Promise.resolve();
     }

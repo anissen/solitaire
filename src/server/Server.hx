@@ -5,7 +5,7 @@ import js.node.http.ServerResponse;
 import js.node.http.IncomingMessage;
 import js.node.Url;
 
-typedef Highscore = { name :String, score :Int /*, seed :String, time :Date */ };
+typedef Highscore = { client :String, name :String, score :Int /*, seed :String, time :Date */ };
 
 class Server {
     static public function main() {
@@ -26,12 +26,11 @@ class Server {
             var query :haxe.DynamicAccess<String> = params.query;
             
             switch (params.pathname) {
-                case '/highscore' if (query.exists('score') && query.exists('name')):
-                    ok(highscores); // returning highscores list *without* new score
+                case '/highscore' if (query.exists('score') && query.exists('name') && query.exists('client')):
+                    // trace('setting highscore: ${query.get('score')} for ${query.get('name')}');
+                    highscores.push({ client: query.get('client'), name: query.get('name'), score: Std.parseInt(query.get('score')) /*, seed: query.get('seed'), time:  Date.fromString(query.get('time')) */ });
+                    ok(highscores);
 
-                    trace('setting highscore: ${query.get('score')} for ${query.get('name')}');
-
-                    highscores.push({ name: query.get('name'), score: Std.parseInt(query.get('score')) /*, seed: query.get('seed'), time:  Date.fromString(query.get('time')) */ });
                     sys.io.File.saveContent(highscore_file, haxe.Json.stringify(highscores));
                 case _: error({ error: 'Unknown endpoint "${params.pathname}"'});
             }
