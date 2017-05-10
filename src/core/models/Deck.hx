@@ -83,21 +83,18 @@ class InfiniteDeck extends GenericDeck<CardData> {
     }
 
     public function take(count :Int = 1) {
-        // TODO: Ask the game (or playstate) to provide a Card instead
-        // Alternatively, make the deck only have raw data and make the game (or playstate) create the corresponding Entity
-
         var taken_cards = cards.splice(0, count);
         var cards_missing = (count - taken_cards.length);
-        trace('taken_cards: ${taken_cards.length}, cards_missing: $cards_missing, cards left: ${cards.length}');
+        // trace('taken_cards: ${taken_cards.length}, cards_missing: $cards_missing, cards left: ${cards.length}');
         while (cards_missing > 0) {
             reshuffle();
             var new_cards = cards.splice(0, cards_missing);
             cards_missing -= new_cards.length;
-            trace('RESHUFFLED:');
+            // trace('RESHUFFLED:');
             taken_cards.append(new_cards);
             // taken_cards = taken_cards.concat(new_cards);
-            trace('new_cards: ${new_cards.length}, taken_cards: ${taken_cards.length}, cards left: ${cards.length}');
-            for (c in new_cards) trace('::::: $c');
+            // trace('new_cards: ${new_cards.length}, taken_cards: ${taken_cards.length}, cards left: ${cards.length}');
+            // for (c in new_cards) trace('::::: $c');
         }
         return [ for (card in taken_cards) instatiate_func(card) ];
     }
