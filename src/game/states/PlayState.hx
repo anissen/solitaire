@@ -225,14 +225,15 @@ class PlayState extends State {
     }
 
     function handle_event(event :core.models.Game.Event) :Promise {
+        trace(event.getName());
         return switch (event) {
             case NewGame: handle_new_game();
             case Draw(cards): handle_draw(cards);
             case NewQuest(quest): handle_new_quest(quest);
-            // case TilePlaced(card): handle_tile_placed(card);
-            case TileRemoved(card): handle_tile_removed(card); Promise.resolve();
+            case TilePlaced(card, x, y): handle_tile_placed(card, x, y);
+            case TileRemoved(card): handle_tile_removed(card);
             case Collected(cards, quest): handle_collected(cards, quest);
-            case Stacked(card): handle_stacked(card); Promise.resolve();
+            case Stacked(card): handle_stacked(card);
             case Score(score, card): handle_score(score, card);
             case GameOver: handle_game_over();
         }
@@ -293,23 +294,31 @@ class PlayState extends State {
 
     function handle_stacked(card :Card) {
         card.stacked = true;
+
+        return Promise.resolve();
     }
 
-    function handle_tile_placed(card :Card) {
-        // grabbed_card.pos = sprite.pos.clone();
-        // grabbed_card.grid_pos = { x: x, y: y };
-        // grabbed_card.remove('Clickable');
-        // Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
-        //     grabbed_card_copy.add(new Clickable(tile_clicked));
-        //     grabbed_card_copy.add(new DragOver(tile_dragover));
-        // });
-        // grabbed_card.depth = 2;
-        return Promise.resolve();
+    function handle_tile_placed(card :Card, x :Int, y :Int) {
+        // card.pos = get_pos(x, y + 2);
+        var tween = tween_pos(card, get_pos(x, y + 2), 0.1);
+        card.grid_pos = { x: x, y: y };
+        card.depth = 2;
+        card.remove('Clickable');
+        // card.add(new Clickable(tile_clicked));
+        // card.add(new DragOver(tile_dragover));
+
+        Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
+            card.add(new Clickable(tile_clicked));
+            card.add(new DragOver(tile_dragover));
+        });
+        return tween.toPromise();
     }
 
     function handle_tile_removed(card :Card) {
         tiles.remove(card);
         card.destroy();
+
+        return Promise.resolve();
     }
 
     function handle_score(card_score :Int, card :Card) {
@@ -363,16 +372,16 @@ class PlayState extends State {
             return;
         }
 
-        grabbed_card.pos = sprite.pos.clone();
-        grabbed_card.grid_pos = { x: x, y: y };
-        grabbed_card.remove('Clickable');
+        // grabbed_card.pos = sprite.pos.clone();
+        // grabbed_card.grid_pos = { x: x, y: y };
+        // grabbed_card.remove('Clickable');
         Game.Instance.do_action(Place(grabbed_card.cardId, x, y));
-        var grabbed_card_copy = grabbed_card;
-        Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
-            grabbed_card_copy.add(new Clickable(tile_clicked));
-            grabbed_card_copy.add(new DragOver(tile_dragover));
-        });
-        grabbed_card.depth = 2;
+        // var grabbed_card_copy = grabbed_card;
+        // Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
+        //     grabbed_card_copy.add(new Clickable(tile_clicked));
+        //     grabbed_card_copy.add(new DragOver(tile_dragover));
+        // });
+        // grabbed_card.depth = 2;
         grabbed_card = null;
     }
 

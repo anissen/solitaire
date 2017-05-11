@@ -18,8 +18,8 @@ class MessageQueue<T> {
         on = null;
         finished = null;
 
-        var has_serializable_property = options != null;
-        serializable = has_serializable_property ? options.serializable : false;
+        var has_serializable_property = (options != null);
+        serializable = (has_serializable_property ? options.serializable : false);
     }
 
     public function emit(actions :Array<T>) {
@@ -46,8 +46,10 @@ class MessageQueue<T> {
     }
 
     public function deserialize(s :String) {
+        processed = [];
         var unserializer = new haxe.Unserializer(s);
         queue = unserializer.unserialize();
         emit([]); // HACK
+        // Some way of stepping through actions only when the corresponding events are done
     }
 }

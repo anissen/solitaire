@@ -16,6 +16,7 @@ enum Event {
     NewGame();
     Draw(card :Array<Card>);
     NewQuest(card :Array<Card>);
+    TilePlaced(card :Card, x :Int, y :Int);
     TileRemoved(card :Card);
     Collected(cards :Array<Card>, quest :Array<Card>);
     Stacked(card :Card);
@@ -83,6 +84,7 @@ class Game {
 
     function handle_place(cardId :CardId, x :Int, y :Int) {
         var card = CardManager[cardId];
+        messageSystem.emit(TilePlaced(card, x, y));
         grid.set_tile(x, y, card);
 
         hand.remove(card);
