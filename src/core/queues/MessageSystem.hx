@@ -37,4 +37,14 @@ class MessageSystem<TAction, TEvent> {
     public function listen(func :TEvent->snow.api.Promise) {
         listeners.add(func);
     }
+
+    // TODO: Move serialization/deserialization logic here
+
+    public function serialize() {
+        return actions.serialize();
+    }
+
+    public function deserialize(s :String) {
+        actions.deserialize(s);
+    }
 }

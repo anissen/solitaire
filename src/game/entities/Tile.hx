@@ -22,6 +22,9 @@ class Tile extends Sprite implements core.models.Deck.ICard {
     
     public var grid_pos :{ x :Int, y :Int } = null;
 
+    static public var CardId :Int = 0;
+    public var cardId(default, never) :Int = CardId++;
+
     var original_color :Color;
 
     var bg :Sprite;

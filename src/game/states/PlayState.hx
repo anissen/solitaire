@@ -68,6 +68,13 @@ class PlayState extends State {
     }
 
     override function onenter(_) {
+        Luxe.camera.center = Vector.Multiply(Luxe.camera.size, 0.5);
+        handle_new_game();
+    }
+
+    function handle_new_game() {
+        Luxe.scene.empty();
+
         collection = [];
         quests = [];
         tiles = [];
@@ -76,9 +83,9 @@ class PlayState extends State {
         score = 0;
         counting_score = 0;
         game_over = false;
-        Luxe.utils.random.initial = 42;     
+        Tile.CardId = 0; // reset card Ids
+        Luxe.utils.random.initial = 42;
 
-        Luxe.camera.center = Vector.Multiply(Luxe.camera.size, 0.5);   
 
         // var bg_texture = Luxe.resources.texture('assets/images/symbols/wool.png');
         // bg_texture.clamp_s = phoenix.Texture.ClampType.repeat;
@@ -172,6 +179,8 @@ class PlayState extends State {
             }
         };
         Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
+
+        return Promise.resolve();
     }
 
     function random_func(v :Int) {
@@ -204,6 +213,7 @@ class PlayState extends State {
             stacked: stacked,
             depth: 2
         });
+        Game.CardManager[tile.cardId] = tile;
         return tile;
     }
 
@@ -216,8 +226,10 @@ class PlayState extends State {
 
     function handle_event(event :core.models.Game.Event) :Promise {
         return switch (event) {
+            case NewGame: handle_new_game();
             case Draw(cards): handle_draw(cards);
             case NewQuest(quest): handle_new_quest(quest);
+            // case TilePlaced(card): handle_tile_placed(card);
             case TileRemoved(card): handle_tile_removed(card); Promise.resolve();
             case Collected(cards, quest): handle_collected(cards, quest);
             case Stacked(card): handle_stacked(card); Promise.resolve();
@@ -283,6 +295,18 @@ class PlayState extends State {
         card.stacked = true;
     }
 
+    function handle_tile_placed(card :Card) {
+        // grabbed_card.pos = sprite.pos.clone();
+        // grabbed_card.grid_pos = { x: x, y: y };
+        // grabbed_card.remove('Clickable');
+        // Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
+        //     grabbed_card_copy.add(new Clickable(tile_clicked));
+        //     grabbed_card_copy.add(new DragOver(tile_dragover));
+        // });
+        // grabbed_card.depth = 2;
+        return Promise.resolve();
+    }
+
     function handle_tile_removed(card :Card) {
         tiles.remove(card);
         card.destroy();
@@ -342,7 +366,7 @@ class PlayState extends State {
         grabbed_card.pos = sprite.pos.clone();
         grabbed_card.grid_pos = { x: x, y: y };
         grabbed_card.remove('Clickable');
-        Game.Instance.do_action(Place(grabbed_card, x, y));
+        Game.Instance.do_action(Place(grabbed_card.cardId, x, y));
         var grabbed_card_copy = grabbed_card;
         Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
             grabbed_card_copy.add(new Clickable(tile_clicked));
@@ -381,7 +405,8 @@ class PlayState extends State {
         }
 
         if (collection.length == 3) {
-            Game.Instance.do_action(Collect(collection));
+            var cardIds = [ for (c in collection) c.cardId ];
+            Game.Instance.do_action(Collect(cardIds));
             clear_collection();
         } else {
             for (tile in quest_matches) {
@@ -435,11 +460,43 @@ class PlayState extends State {
         if (textScale > 1) scoreText.scale.set_xy(textScale - dt, textScale - dt);
     }
 
+    function save_game() {
+        var save_data = {
+            seed: Luxe.utils.random.seed,
+            score: score,
+            events: Game.Instance.save()
+        };
+
+        trace('save_data: $save_data');
+
+        var succeeded = Luxe.io.string_save('save', haxe.Json.stringify(save_data));
+        if (!succeeded) trace('Save failed!');
+    }
+
+    function load_game() {
+        var data_string = Luxe.io.string_load('save');
+        if (data_string == null) {
+            trace('Save not found or failed to load!');
+            return;
+        }
+        try {
+            trace('load_data: $data_string');
+            var data = haxe.Json.parse(data_string);
+            Luxe.utils.random.initial = data.seed;
+            score = data.score;
+            Game.Instance.load(data.events);
+        } catch (e :Dynamic) {
+            trace('Failed to parse or load saved data. Error: $e');
+        }
+    }
+
     #if debug // TODO: Remove before release
     override function onkeyup(event :luxe.Input.KeyEvent) {
         switch (event.keycode) {
             case luxe.Input.Key.key_k: handle_game_over();
             case luxe.Input.Key.key_n: Main.NewGame();
+            case luxe.Input.Key.key_s: save_game();
+            case luxe.Input.Key.key_l: load_game();
         }
     }
     #end

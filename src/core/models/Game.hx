@@ -4,13 +4,16 @@ import core.models.Deck.Card;
 import core.models.Deck.InfiniteDeck;
 import core.queues.MessageSystem;
 
+typedef CardId = Int;
+
 enum Action {
     Noop;
-    Place(card :Card, x :Int, y :Int);
-    Collect(tiles :Array<Card>);
+    Place(card :CardId, x :Int, y :Int);
+    Collect(tiles :Array<CardId>);
 }
 
 enum Event {
+    NewGame();
     Draw(card :Array<Card>);
     NewQuest(card :Array<Card>);
     TileRemoved(card :Card);
@@ -21,7 +24,8 @@ enum Event {
 }
 
 class Game {
-    public static var Instance(default, null) :Game = new Game();
+    public static var Instance(default, null) = new Game();
+    public static var CardManager(default, null) = new Map<CardId, Card>(); //new Manager<Card>();
 
     var quest_deck :InfiniteDeck;
     var deck :InfiniteDeck;
@@ -44,6 +48,7 @@ class Game {
 
         quests = [];
         hand = [];
+        CardManager = new Map();
 
         new_turn();
     }
@@ -59,8 +64,8 @@ class Game {
     function handle_action(action :Action) {
         switch (action) {
             case Noop:
-            case Place(card, x, y): handle_place(card, x, y);
-            case Collect(tiles): handle_collecting(tiles);
+            case Place(cardId, x, y): handle_place(cardId, x, y);
+            case Collect(cardIds): handle_collecting(cardIds);
         }
     }
 
@@ -76,7 +81,8 @@ class Game {
         messageSystem.emit(Draw(hand));
     }
 
-    function handle_place(card :Card, x :Int, y :Int) {
+    function handle_place(cardId :CardId, x :Int, y :Int) {
+        var card = CardManager[cardId];
         grid.set_tile(x, y, card);
 
         hand.remove(card);
@@ -87,6 +93,31 @@ class Game {
         if (is_game_over()) {
             messageSystem.emit(GameOver);
         }
+    }
+
+    public function save() {
+        return messageSystem.serialize();
+        /*
+        return {
+            deck: deck.save(),
+            quest_deck: quest_deck.save(),
+            quests: [], // TODO: Fix me
+            hand: [ for (c in hand) { suit: c.suit, stacked: c.stacked } ], // TODO: Fix me
+            grid: grid.save()
+        };
+        */
+    }
+
+    public function load(s :String) {
+        messageSystem.emit(NewGame);
+        messageSystem.deserialize(s);
+        /*
+        deck.load(data.deck);
+        quest_deck.load(data.quest_deck);
+        quests = data.quests;
+        hand = []; //data.hand; // TODO: Fix me
+        grid.load(data.grid);
+        */
     }
 
     public function is_game_over() {
@@ -306,7 +337,8 @@ class Game {
         return matches;
     }
 
-    public function handle_collecting(tiles :Array<Card>) {
+    public function handle_collecting(cardIds :Array<CardId>) {
+        var tiles = [ for (id in cardIds) CardManager[id] ];
         if (!is_collection_valid(tiles)) return;
         if (tiles.length != 3) {
             // trace('Only ${tiles.length} tiles selected');
