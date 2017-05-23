@@ -49,6 +49,7 @@ class Game {
 
         quests = [];
         hand = [];
+        Card.CardId = 0;
         CardManager = new Map();
 
         new_turn();
@@ -63,11 +64,13 @@ class Game {
     }
 
     function handle_action(action :Action) {
+        // trace(action);
         switch (action) {
             case Noop:
             case Place(cardId, x, y): handle_place(cardId, x, y);
             case Collect(cardIds): handle_collecting(cardIds);
         }
+        return snow.api.Promise.resolve();
     }
 
     function new_turn() {
