@@ -69,7 +69,8 @@ class PlayState extends State {
 
     override function onenter(_) {
         Luxe.camera.center = Vector.Multiply(Luxe.camera.size, 0.5);
-        handle_new_game();
+        var could_load_game = load_game();
+        if (!could_load_game) handle_new_game();
     }
 
     function handle_new_game() {
@@ -377,7 +378,7 @@ class PlayState extends State {
         // grabbed_card.pos = sprite.pos.clone();
         // grabbed_card.grid_pos = { x: x, y: y };
         // grabbed_card.remove('Clickable');
-        Game.Instance.do_action(Place(grabbed_card.cardId, x, y));
+        do_action(Place(grabbed_card.cardId, x, y));
         // var grabbed_card_copy = grabbed_card;
         // Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
         //     grabbed_card_copy.add(new Clickable(tile_clicked));
@@ -417,7 +418,7 @@ class PlayState extends State {
 
         if (collection.length == 3) {
             var cardIds = [ for (c in collection) c.cardId ];
-            Game.Instance.do_action(Collect(cardIds));
+            do_action(Collect(cardIds));
             clear_collection();
         } else {
             for (tile in quest_matches) {
@@ -471,6 +472,11 @@ class PlayState extends State {
         if (textScale > 1) scoreText.scale.set_xy(textScale - dt, textScale - dt);
     }
 
+    function do_action(action :Action) {
+        Game.Instance.do_action(action);
+        save_game();
+    }
+
     function save_game() {
         // deck list
         // quest list
@@ -495,17 +501,19 @@ class PlayState extends State {
         var data_string = Luxe.io.string_load('save');
         if (data_string == null) {
             trace('Save not found or failed to load!');
-            return;
+            return false;
         }
-        // try {
+        try {
             trace('load_data: $data_string');
             var data = haxe.Json.parse(data_string);
             Luxe.utils.random.initial = data.seed;
             score = data.score;
             Game.Instance.load(data.events);
-        // } catch (e :Dynamic) {
-        //     trace('Failed to parse or load saved data. Error: $e');
-        // }
+            return true;
+        } catch (e :Dynamic) {
+            trace('Failed to parse or load saved data. Error: $e');
+            return false;
+        }
     }
 
     #if debug // TODO: Remove before release

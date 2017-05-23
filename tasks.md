@@ -6,7 +6,6 @@ Need:
 * Make better graphics for stacked tiles
 * Better background graphics
 * Add sounds
-* Automatic save and resume games
 * Add game over screen
 * Add main screen (or make an overlay menu)
 * Tutorial
