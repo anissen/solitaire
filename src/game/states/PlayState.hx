@@ -225,7 +225,7 @@ class PlayState extends State {
     }
 
     function handle_event(event :core.models.Game.Event) :Promise {
-        trace(event.getName());
+        // trace(event);
         return switch (event) {
             case NewGame: handle_new_game();
             case Draw(cards): handle_draw(cards);
@@ -299,15 +299,17 @@ class PlayState extends State {
     }
 
     function handle_tile_placed(card :Card, x :Int, y :Int) {
+        trace('handle_tile_placed');
         // card.pos = get_pos(x, y + 2);
         var tween = tween_pos(card, get_pos(x, y + 2), 0.1);
         card.grid_pos = { x: x, y: y };
         card.depth = 2;
-        card.remove('Clickable');
+        if (card.has('Clickable')) card.remove('Clickable');
         // card.add(new Clickable(tile_clicked));
         // card.add(new DragOver(tile_dragover));
 
         Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
+            if (card == null || card.destroyed) return; // might happen when replaying (that card is removed in the same frame)
             card.add(new Clickable(tile_clicked));
             card.add(new DragOver(tile_dragover));
         });
@@ -470,6 +472,13 @@ class PlayState extends State {
     }
 
     function save_game() {
+        // deck list
+        // quest list
+        // active quests
+        // hand
+        // board
+        // (what to do about card ids?)
+
         var save_data = {
             seed: Luxe.utils.random.seed,
             score: score,
@@ -488,22 +497,22 @@ class PlayState extends State {
             trace('Save not found or failed to load!');
             return;
         }
-        try {
+        // try {
             trace('load_data: $data_string');
             var data = haxe.Json.parse(data_string);
             Luxe.utils.random.initial = data.seed;
             score = data.score;
             Game.Instance.load(data.events);
-        } catch (e :Dynamic) {
-            trace('Failed to parse or load saved data. Error: $e');
-        }
+        // } catch (e :Dynamic) {
+        //     trace('Failed to parse or load saved data. Error: $e');
+        // }
     }
 
     #if debug // TODO: Remove before release
     override function onkeyup(event :luxe.Input.KeyEvent) {
         switch (event.keycode) {
             case luxe.Input.Key.key_k: handle_game_over();
-            case luxe.Input.Key.key_n: Main.NewGame();
+            case luxe.Input.Key.key_n: handle_new_game(); // Main.NewGame();
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
         }
