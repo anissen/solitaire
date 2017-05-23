@@ -68,6 +68,7 @@ class PlayState extends State {
     }
 
     override function onenter(_) {
+        Actuate.reset();
         Luxe.camera.center = Vector.Multiply(Luxe.camera.size, 0.5);
         var could_load_game = load_game();
         if (!could_load_game) handle_new_game();
@@ -418,8 +419,8 @@ class PlayState extends State {
 
         if (collection.length == 3) {
             var cardIds = [ for (c in collection) c.cardId ];
-            do_action(Collect(cardIds));
             clear_collection();
+            do_action(Collect(cardIds));
         } else {
             for (tile in quest_matches) {
                 tile.set_highlight(false);
