@@ -63,6 +63,11 @@ class MessageSystem<TAction, TEvent> {
         var unserializer = new haxe.Unserializer(s);
         var action_list :Array<TAction> = unserializer.unserialize();
 
+        // Events are played correctly, but does not seem to complete in the correct order
+        // processed_actions = action_list;
+        // queue.handle_many([ for (action in action_list) Action(action) ]);
+
+        // Events are seemingly played all at once but it doesn't break, somehow
         for (action in action_list) {
             do_action(action);
         }

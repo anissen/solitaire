@@ -43,6 +43,10 @@ class ArrayTools {
         return array[0];
     }
 
+    static public function rest<T>(array :Array<T>, fromIndex :Int = 1) :Array<T> {
+        return array.splice(fromIndex, array.length - fromIndex);
+    }
+
     static public function last<T>(array :Array<T>) :Null<T> {
         return array[array.length - 1];
     }

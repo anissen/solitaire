@@ -70,6 +70,7 @@ class PlayState extends State {
     override function onenter(_) {
         Actuate.reset();
         Luxe.camera.center = Vector.Multiply(Luxe.camera.size, 0.5);
+
         var could_load_game = load_game();
         if (!could_load_game) handle_new_game();
     }
@@ -277,11 +278,15 @@ class PlayState extends State {
     }
 
     function tween_pos(sprite :Sprite, pos :Vector, duration :Float = 0.2) {
-        return Actuate.tween(sprite.pos, duration, { x: pos.x, y: pos.y }).onUpdate(function() {
-            if (sprite != null && sprite.transform != null) {
-                sprite.transform.dirty = true;
+        // trace('tween_pos', sprite);
+        // return Actuate.tween(this, duration, { score: score + 1 });
+        // var temp_pos = sprite.pos.clone();
+        return Actuate.tween(sprite.pos, duration, { x: pos.x, y: pos.y }); /* .onUpdate(function() {
+            if (sprite != null && sprite.transform != null && !sprite.destroyed) {
+                sprite.pos.set_xy(temp_pos.x, temp_pos.y);
+                // sprite.transform.dirty = true;
             }
-        });
+        }); */
     }
 
     function handle_collected(cards :Array<Card>, quest :Array<Card>) {
@@ -289,6 +294,7 @@ class PlayState extends State {
 
         for (card in quest) {
             quests.remove(card);
+            // Actuate.stop(card);
             card.destroy();
         }
         return Promise.resolve();
@@ -301,7 +307,6 @@ class PlayState extends State {
     }
 
     function handle_tile_placed(card :Card, x :Int, y :Int) {
-        trace('handle_tile_placed');
         // card.pos = get_pos(x, y + 2);
         var tween = tween_pos(card, get_pos(x, y + 2), 0.1);
         card.grid_pos = { x: x, y: y };
@@ -320,6 +325,7 @@ class PlayState extends State {
 
     function handle_tile_removed(card :Card) {
         tiles.remove(card);
+        // Actuate.stop(card);
         card.destroy();
 
         return Promise.resolve();

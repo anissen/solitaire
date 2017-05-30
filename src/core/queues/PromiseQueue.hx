@@ -13,8 +13,13 @@ class PromiseQueue<T> {
         temp_queue = new List();
     }
 
+    public function handle_many(elements :Array<T>) {
+        queue = queue.concat(elements);
+        handle_next_element();
+    }
+
     public function handle(element :T) :Promise {
-        if (queue.isEmpty()) {
+        if (queue.isEmpty() && temp_queue.isEmpty()) {
             queue.add(element);
             return handle_next_element();
         } else {
@@ -28,8 +33,10 @@ class PromiseQueue<T> {
     }
 
     function handle_next_element() :Promise {
-        queue = queue.concat(temp_queue);
-        temp_queue.clear();
+        if (!temp_queue.isEmpty()) {
+            queue = temp_queue.concat(queue);
+            temp_queue.clear();
+        }
         if (queue.isEmpty()) return Promise.resolve();
         return handle_element(queue.pop());
     }
