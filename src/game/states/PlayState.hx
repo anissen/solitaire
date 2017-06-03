@@ -71,6 +71,7 @@ class PlayState extends State {
         Actuate.reset();
         Luxe.camera.center = Vector.Multiply(Luxe.camera.size, 0.5);
 
+        // Luxe.io.string_save('save', null);
         var could_load_game = load_game();
         if (!could_load_game) handle_new_game();
     }
@@ -109,7 +110,7 @@ class PlayState extends State {
                 pos: get_pos(x, 0.5),
                 texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
                 size: new Vector(tile_size, tile_size * 2.6),
-                color: new Color().rgb(0xBBBBBB)
+                color: new Color().rgb(0xF6CE8C)
             });
         }
         
@@ -120,7 +121,7 @@ class PlayState extends State {
                     pos: get_pos(x, y + 2),
                     texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
                     size: new Vector(tile_size * 1.15, tile_size * 1.15),
-                    color: new Color().rgb(0xDDDDDD)
+                    color: new Color().rgb(0xF6CE8C)
                 });
                 sprite.add(new MouseUp(grid_clicked.bind(x, y)));
                 // tween_pos(sprite, get_pos(x+3, y + 2), 10);
@@ -133,7 +134,7 @@ class PlayState extends State {
                 pos: get_pos(x, tiles_y + 2 + 0.1),
                 texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
                 size: new Vector(tile_size * 1.4, tile_size * 1.4),
-                color: new Color().rgb(0xCCCCCC)
+                color: new Color().rgb(0xE8B89A)
             });
             sprite.add(new MouseUp(card_grid_clicked));
         }

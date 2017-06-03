@@ -26,17 +26,18 @@ class Main extends luxe.Game {
     }
 
     override function ready() {
-        Luxe.renderer.clear_color.rgb(0xD5D5D5);
-        
+        Luxe.renderer.clear_color.rgb(game.misc.Settings.BACKGROUND_COLOR);
+
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'];
 
+        // var icons = ['animals/elephant.png', 'animals/giraffe.png', 'animals/hippo.png', 'animals/monkey.png','animals/panda.png', 'animals/parrot.png', 'animals/penguin.png', 'animals/pig.png', 'animals/rabbit.png', 'animals/snake.png', 'symbols/tile.png', 'symbols/tile_bg.png', 'symbols/tile_stacked.png'];
         var parcel = new luxe.Parcel({
 			// load_time_spacing: .5,
 			// load_start_delay: .5,
 			textures: [ for (icon in icons) { id: 'assets/images/symbols/' + icon } ]
 		});
 
-		new game.tools.ArcProgress(parcel, new luxe.Color().rgb(Std.random(0xffffff)), start);
+		new game.misc.ArcProgress(parcel, new luxe.Color().rgb(0x914D50), start);
     }
 
     function start() {

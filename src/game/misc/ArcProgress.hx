@@ -1,31 +1,24 @@
-package game.tools;
+package game.misc;
 
 import luxe.Color;
 import luxe.Ev;
-import luxe.options.ParcelProgressOptions;
 import luxe.Parcel;
 import luxe.ParcelProgress;
 import luxe.Sprite;
 import luxe.Text;
 import luxe.tween.Actuate;
-import phoenix.geometry.Geometry;
 
 /**
  * ...
  * @author https://github.com/wimcake
  */
 class ArcProgress extends ParcelProgress {
+	var s :Sprite;
+	var t :Text;
+	var value :Float = 0.01;
+	var cb :Void->Void;
 
-
-	var s:Sprite;
-	var t:Text;
-
-	var value:Float = .01;
-
-	var cb:Void->Void;
-
-
-	public function new(parcel:Parcel, ?color:Color, cb:Void->Void) {
+	public function new(parcel :Parcel, ?color :Color, cb :Void->Void) {
 		super({
 			parcel: parcel,
 			no_visuals: true,
@@ -61,8 +54,7 @@ class ArcProgress extends ParcelProgress {
 		parcel.load();
 	}
 
-
-	function upd(dt:Float) {
+	function upd(dt :Float) {
 		t.text = '${Math.floor(value * 100)}%';
 		s.rotation_z += 360 * dt;
 		s.geometry = Luxe.draw.arc( {
@@ -83,20 +75,18 @@ class ArcProgress extends ParcelProgress {
 		cb = null;
 	}
 
-
-	override public function onbegin(_parcel:Parcel) {
+	override public function onbegin(_parcel :Parcel) {
 		super.onbegin(_parcel);
 		Luxe.on(Ev.update, upd);
 	}
 
-	override public function onprogress(_state:ParcelChange) {
+	override public function onprogress(_state :ParcelChange) {
 		super.onprogress(_state);
 		Actuate.tween(this, .3, { value: _state.index / _state.total } );
 	}
 
-	override public function oncomplete(_parcel:Parcel) {
+	override public function oncomplete(_parcel :Parcel) {
 		Actuate.tween(this, .3, { value: 1.0 } ).onComplete(complete);
 		//super.oncomplete(_parcel);
 	}
-
 }
