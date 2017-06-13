@@ -59,15 +59,15 @@ class Tile extends Sprite implements core.models.Deck.ICard {
             bg.texture = Luxe.resources.texture('assets/images/symbols/' + (value ? 'tile_stacked' : 'tile') + '.png');
             // bg.pos = (value ? Vector.Subtract(Vector.Multiply(size, 0.5), new Vector(0, 10)) : Vector.Multiply(size, 0.5));
 
-            color = (value ? new Color(0, 0, 0, 1) : original_color);
-            bg.color = (highlighted ? Settings.CARD_HIGHLIGHT_COLOR : (value ? original_color : new Color().rgb(0xF6CE8C)));
+            color = (value ? Settings.CARD_STACKED_COLOR : original_color);
+            bg.color = (highlighted ? Settings.CARD_HIGHLIGHT_COLOR : (value ? original_color : Settings.CARD_COLOR));
         }
         return value;
     }
 
     public function set_highlight(value :Bool) {
         highlighted = value;
-        bg.color = (highlighted ? Settings.CARD_HIGHLIGHT_COLOR : (stacked ? original_color : new Color().rgb(0xF6CE8C)));
+        bg.color = (highlighted ? Settings.CARD_HIGHLIGHT_COLOR : (stacked ? original_color : Settings.CARD_COLOR));
     }
 
     override public function set_visible(value :Bool) {

@@ -110,7 +110,7 @@ class PlayState extends State {
                 pos: get_pos(x, 0.5),
                 texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
                 size: new Vector(tile_size, tile_size * 2.6),
-                color: new Color().rgb(0xF6CE8C)
+                color: Settings.QUEST_BG_COLOR
             });
         }
         
@@ -121,7 +121,7 @@ class PlayState extends State {
                     pos: get_pos(x, y + 2),
                     texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
                     size: new Vector(tile_size * 1.15, tile_size * 1.15),
-                    color: new Color().rgb(0xF6CE8C)
+                    color: Settings.BOARD_BG_COLOR
                 });
                 sprite.add(new MouseUp(grid_clicked.bind(x, y)));
                 // tween_pos(sprite, get_pos(x+3, y + 2), 10);
@@ -134,7 +134,7 @@ class PlayState extends State {
                 pos: get_pos(x, tiles_y + 2 + 0.1),
                 texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
                 size: new Vector(tile_size * 1.4, tile_size * 1.4),
-                color: new Color().rgb(0xE8B89A)
+                color: Settings.CARD_BG_COLOR
             });
             sprite.add(new MouseUp(card_grid_clicked));
         }
@@ -195,16 +195,7 @@ class PlayState extends State {
         var tile = new Tile({
             pos: get_pos(0, tiles_y + 3),
             size: size * 1.25, // HACK
-            color: new Color().rgb(switch (suit) { 
-                // http://www.colourlovers.com/palette/434904/espresso_rainbow
-                case 0: 0x0db8b5; // blue
-                case 1: 0xffe433; // yellow
-                case 2: 0xd92727; // red
-                case 3: 0x6fcc43; // green
-                case 4: 0xfc8f12; // orange
-                // case 4: 0xd00fc3; // purple
-                case _: throw 'invalid enum';
-            }),
+            color: Settings.SYMBOL_COLORS[suit],
             texture: Luxe.resources.texture('assets/images/symbols/' + switch (suit) {
                 case 0: 'square.png';
                 case 1: 'circle.png';

@@ -26,7 +26,7 @@ class Main extends luxe.Game {
     }
 
     override function ready() {
-        Luxe.renderer.clear_color.rgb(game.misc.Settings.BACKGROUND_COLOR);
+        Luxe.renderer.clear_color = game.misc.Settings.BACKGROUND_COLOR;
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'];
 
