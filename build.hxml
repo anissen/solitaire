@@ -11,6 +11,7 @@
 -D snow_web
 -D luxe
 -D snow
+-D mint
 -D linc_openal
 -D linc_timestamp
 -D linc_stb
@@ -29,6 +30,7 @@
 -lib snow
 -lib luxe
 -lib hxnodejs # temp!
+-lib mint # temp!
 --macro snow.Set.assets("snow.core.web.assets.Assets")
 --macro snow.Set.audio("snow.modules.webaudio.Audio")
 --macro snow.Set.runtime("snow.core.web.Runtime")

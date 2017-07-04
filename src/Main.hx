@@ -61,8 +61,8 @@ class Main extends luxe.Game {
     }
 
     #if sys
-    override function onkeyup(event:KeyEvent) {
-        if (event.keycode == Key.escape) {
+    override function onkeyup(event :luxe.Input.KeyEvent) {
+        if (event.keycode == luxe.Input.Key.escape) {
             Luxe.shutdown();
         }
     }

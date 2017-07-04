@@ -354,6 +354,9 @@ class PlayState extends State {
 
     function handle_game_over() {
         game_over = true;
+
+        Luxe.io.string_save('save', null); // clear the save
+
         //var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
         //return tween.toPromise();
         Main.states.enable(GameOverState.StateId, {
@@ -522,6 +525,7 @@ class PlayState extends State {
             case luxe.Input.Key.key_n: handle_new_game(); // Main.NewGame();
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
+            case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Solitaire tweet #Solitaire&url=http://andersnissen.com/');
         }
     }
     #end

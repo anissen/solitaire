@@ -3,7 +3,6 @@
 
 Need:
 * Make better graphics for quest background
-* Make better graphics for stacked tiles
 * Better background graphics
 * Add sounds
 * Add game over screen
@@ -14,10 +13,10 @@ Need:
 * Add some analytics
 
 Bugs:
-* Releasing a card on the board (not on a tile) causes the card to hang (instead of tweening back to its origin)
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
+* If multiple quests match the collected tiles, the highest-scoring quest should be completed
 
 Nice:
-* Share score via twitter
+* Share score via twitter (e.g Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Solitaire tweet&url=http://andersnissen.com/');)
 * Move the general-purpose parts out of core and into turnabout (and reference it)
 * Disable clicking (only dragging supported)

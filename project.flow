@@ -4,7 +4,7 @@
 
       //These first two are required
     name : 'solitaire',
-    version : '0.1.0',
+    version : '0.2.0',
     author : 'Anders Nissen',
 
       //This configures your app.
@@ -22,7 +22,8 @@
       //This configures the build process
     build : {
       dependencies : {
-        luxe : '*'
+        luxe : '*',
+        mint : '*'
       },
       defines : [
         'NO_PRECOMPILED_HEADERS',

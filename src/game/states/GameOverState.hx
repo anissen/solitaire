@@ -7,6 +7,13 @@ import luxe.Sprite;
 import luxe.Color;
 import luxe.tween.Actuate;
 
+import mint.Control;
+import mint.types.Types;
+import mint.render.luxe.LuxeMintRender;
+import mint.render.luxe.Convert;
+import mint.layout.margins.Margins;
+import mint.focus.Focus;
+
 class HighscoreLine {
     var rankText :Text;
     var scoreText :Text;
@@ -84,6 +91,11 @@ typedef Highscore = { client :String, score :Int, name :String };
 class GameOverState extends State {
     static public var StateId :String = 'GameOverState';
 
+    var canvas: mint.Canvas;
+    var rendering: LuxeMintRender;
+    var layout: Margins;
+    var focus :Focus;
+
     public function new() {
         super({ name: StateId });
     }
@@ -93,6 +105,22 @@ class GameOverState extends State {
     }
 
     override function onenabled(data :Dynamic) {
+        var bg = new luxe.Sprite({
+            pos: Luxe.screen.mid.clone(),
+            size: Luxe.screen.size.clone(),
+            color: new Color(1.0, 1.0, 1.0, 0.0),
+            depth: 100
+        });
+
+        Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function(_) {
+            var highscores = [ for (i in 0 ... 100) { score: i * 10, name: 'Test $i' } ];
+            setup_ui(highscores, Std.int(1000 * Math.random())); 
+        });
+
+        return;
+
+
+
         var highscore :Highscore = cast data;
 
         var http = new haxe.Http("http://localhost:1337/highscore");
@@ -156,7 +184,192 @@ class GameOverState extends State {
         });
     }
 
+    function setup_ui(highscores :Array<{ score :Int, name :String }>, my_score :Int) {
+        rendering = new LuxeMintRender({
+            depth: 1000,
+            batcher: Luxe.renderer.create_batcher({ name: 'gui', layer: 5 })
+        });
+        layout = new Margins();
+
+        var _scale = 1.0; //Luxe.screen.device_pixel_ratio;
+        var auto_canvas = new game.ui.AutoCanvas({
+            name: 'canvas',
+            rendering: rendering,
+            // options: { color: new Color(1,1,1,0.5) },
+            scale: _scale,
+            x: 0,
+            y: 0,
+            w: Luxe.screen.w / _scale,
+            h: Luxe.screen.h / _scale
+        });
+
+        auto_canvas.auto_listen();
+        canvas = auto_canvas;
+        focus = new Focus(canvas);
+
+        // var panel = new mint.Panel({
+        //     parent: canvas,
+        //     // x: (Luxe.screen.w / _scale) / 2 - 150,
+        //     // y: (Luxe.screen.h / _scale) / 2 - 200,
+        //     // w: 300,
+        //     // h: 400,
+        //     x: 20,
+        //     y: 20,
+        //     w: Luxe.screen.w - 40,
+        //     h: Luxe.screen.h - 40
+        //     // options: { color: new Color(0.5,0.5,0,0.8) },
+        // });
+
+        var _list = new mint.List({
+            parent: canvas,
+            name: 'list',
+            options: { 
+                // color: new Color(0.5,0.0,5,0.8), // no effect?
+                view: {  // scroll view
+                    color: new Color(1.0, 1.0, 1.0, 0.0),
+                    color_handles:new Color().rgb(0x000000)
+                } 
+            },
+            x: 20,
+            y: 20 + 90,
+            w: Luxe.screen.w - 40,
+            h: Luxe.screen.h - 40 - 90 - 90
+        });
+
+        var rank_count = 0;
+        for (s in highscores) {
+            rank_count++;
+            var row_panel = new mint.Panel({
+                parent: _list,
+                name: 'panel$rank_count',
+                x: 0,
+                y: 0,
+                w: Luxe.screen.w - 40,
+                h: 30,
+                options: { color: new Color(1.0,1.0,1.0,0.0) }
+            });
+
+            var rank = new mint.Label({
+                parent: row_panel,
+                x: 0,
+                y: 0,
+                w: 60,
+                h: 30,
+                align: TextAlign.right,
+                align_vertical: TextAlign.top,
+                name: 'rank$rank_count',
+                text: '$rank_count.',
+                text_size: 24,
+                options: {
+                    color: new Color().rgb(0x333333),
+                }
+            });
+            // rank.mouse_input = false;
+            // _list.add_item(rank, 0, 0);
+
+            var score = new mint.Label({
+                parent: row_panel,
+                x: 75,
+                y: 0,
+                w: 50,
+                h: 30,
+                align: TextAlign.right,
+                align_vertical: TextAlign.top,
+                name: 'score$rank_count',
+                text: '${s.score}',
+                text_size: 24,
+                options: {
+                    color: new Color().rgb(0x333333)
+                }
+            });
+            // score.mouse_input = false;
+            // _list.add_item(score, 50, -30);
+
+            var name = new mint.Label({
+                parent: row_panel,
+                x: 140,
+                y: 0,
+                w: 100,
+                h: 30,
+                align: TextAlign.left,
+                align_vertical: TextAlign.top,
+                name: 'name$rank_count',
+                text: s.name,
+                text_size: 24,
+                options: {
+                    color: new Color().rgb(0x333333),
+                    // color_hover: new Color().rgb(0xf6007b)
+                },
+                // onclick: function(_,_) { trace('hello label$i'); }
+            });
+            // name.mouse_input = false;
+
+            _list.add_item(row_panel);
+        }
+        _list.view.set_scroll_percent(0 /* horizontal */, 0.5 /* vertical */);
+
+        var header = new mint.Label({
+            parent: canvas,
+            x: 0,
+            y: 25,
+            w: Luxe.screen.w,
+            h: 40,
+            align: TextAlign.center,
+            align_vertical: TextAlign.center,
+            name: 'header',
+            text: 'Highscores',
+            text_size: 32,
+            options: {
+                color: new Color().rgb(0x333333),
+                // color_hover: new Color().rgb(0xf6007b)
+            },
+            // onclick: function(_,_) { trace('hello label$i'); }
+        });
+
+        var buttonWidth = 120;
+        var buttonHeight = 40;
+        new mint.Button({
+            parent: canvas,
+            x: Luxe.screen.w * (1 / 4) - buttonWidth / 2,
+            y: Luxe.screen.h - 40 - (100 - buttonHeight) / 2,
+            w: buttonWidth,
+            h: buttonHeight,
+            align: TextAlign.center,
+            align_vertical: TextAlign.center,
+            name: 'button',
+            text: 'Back',
+            text_size: 24,
+            options: {
+                color: new Color().rgb(0x333333),
+                color_hover: new Color().rgb(0xf6007b)
+            },
+            onclick: function(_,_) { Main.NewGame(); }
+        });
+
+        new mint.Button({
+            parent: canvas,
+            x: Luxe.screen.w * (3 / 4)  - buttonWidth / 2,
+            y: Luxe.screen.h - 40 - (100 - buttonHeight) / 2,
+            w: buttonWidth,
+            h: buttonHeight,
+            align: TextAlign.center,
+            align_vertical: TextAlign.center,
+            name: 'button2',
+            text: 'Tweet',
+            text_size: 24,
+            options: {
+                color: new Color().rgb(0x333333),
+                color_hover: new Color().rgb(0xf6007b)
+            },
+            onclick: function(_,_) {
+                Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=I scored $my_score points in Solitaire %23Solitaire&url=http://andersnissen.com/');
+                Main.NewGame();
+            }
+        });
+    }
+
     override function ondisabled(_) {
+        canvas.destroy();
         Luxe.camera.remove('CameraPan');
         Luxe.scene.empty();
     }
