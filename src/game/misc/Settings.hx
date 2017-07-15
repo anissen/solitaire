@@ -27,4 +27,7 @@ class Settings {
         new Color().rgb(0x6fcc43), // green
         new Color().rgb(0xfc8f12)  // orange
     ];
+
+    static public var WIDTH  = 270;
+    static public var HEIGHT = 480;
 }

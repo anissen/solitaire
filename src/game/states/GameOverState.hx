@@ -7,10 +7,8 @@ import luxe.Sprite;
 import luxe.Color;
 import luxe.tween.Actuate;
 
-import mint.Control;
 import mint.types.Types;
 import mint.render.luxe.LuxeMintRender;
-import mint.render.luxe.Convert;
 import mint.layout.margins.Margins;
 import mint.focus.Focus;
 
@@ -162,7 +160,7 @@ class GameOverState extends State {
             Luxe.camera.transform.pos.y = count * 50;
             var pan = new game.components.CameraPan({ name: 'CameraPan' });
             pan.y_top = -50; // ???
-            pan.y_bottom = count * 50 - Luxe.screen.h + 50;
+            pan.y_bottom = count * 50 - Settings.HEIGHT + 50;
             Luxe.camera.add(pan);
         }
         http.request();
@@ -185,20 +183,22 @@ class GameOverState extends State {
     }
 
     function setup_ui(highscores :Array<{ score :Int, name :String }>, my_score :Int) {
+        var ui_batcher = Luxe.renderer.create_batcher({ name: 'gui', layer: 5 });
         rendering = new LuxeMintRender({
             depth: 1000,
-            batcher: Luxe.renderer.create_batcher({ name: 'gui', layer: 5 })
+            batcher: ui_batcher
         });
         layout = new Margins();
 
-        var _scale = 1.0; //Luxe.screen.device_pixel_ratio;
+        var _scale = Luxe.screen.device_pixel_ratio;
+        // ui_batcher.view.zoom = _scale;
         var auto_canvas = new game.ui.AutoCanvas({
             name: 'canvas',
             rendering: rendering,
             // options: { color: new Color(1,1,1,0.5) },
             scale: _scale,
-            x: 0,
-            y: 0,
+            // x: 0,
+            // y: 0,
             w: Luxe.screen.w / _scale,
             h: Luxe.screen.h / _scale
         });
@@ -209,14 +209,14 @@ class GameOverState extends State {
 
         // var panel = new mint.Panel({
         //     parent: canvas,
-        //     // x: (Luxe.screen.w / _scale) / 2 - 150,
-        //     // y: (Luxe.screen.h / _scale) / 2 - 200,
+        //     // x: (Settings.WIDTH / _scale) / 2 - 150,
+        //     // y: (Settings.HEIGHT / _scale) / 2 - 200,
         //     // w: 300,
         //     // h: 400,
         //     x: 20,
         //     y: 20,
-        //     w: Luxe.screen.w - 40,
-        //     h: Luxe.screen.h - 40
+        //     w: Settings.WIDTH - 40,
+        //     h: Settings.HEIGHT - 40
         //     // options: { color: new Color(0.5,0.5,0,0.8) },
         // });
 
@@ -232,8 +232,8 @@ class GameOverState extends State {
             },
             x: 20,
             y: 20 + 90,
-            w: Luxe.screen.w - 40,
-            h: Luxe.screen.h - 40 - 90 - 90
+            w: Settings.WIDTH - 40,
+            h: Settings.HEIGHT - 40 - 90 - 90
         });
 
         var rank_count = 0;
@@ -244,7 +244,7 @@ class GameOverState extends State {
                 name: 'panel$rank_count',
                 x: 0,
                 y: 0,
-                w: Luxe.screen.w - 40,
+                w: Settings.WIDTH - 40,
                 h: 30,
                 options: { color: new Color(1.0,1.0,1.0,0.0) }
             });
@@ -312,7 +312,7 @@ class GameOverState extends State {
             parent: canvas,
             x: 0,
             y: 25,
-            w: Luxe.screen.w,
+            w: Settings.WIDTH,
             h: 40,
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -330,8 +330,8 @@ class GameOverState extends State {
         var buttonHeight = 40;
         new mint.Button({
             parent: canvas,
-            x: Luxe.screen.w * (1 / 4) - buttonWidth / 2,
-            y: Luxe.screen.h - 40 - (100 - buttonHeight) / 2,
+            x: Settings.WIDTH / 2 - buttonWidth / 2,
+            y: Settings.HEIGHT - 40 - (100 - buttonHeight) / 2,
             w: buttonWidth,
             h: buttonHeight,
             align: TextAlign.center,
@@ -344,27 +344,6 @@ class GameOverState extends State {
                 color_hover: new Color().rgb(0xf6007b)
             },
             onclick: function(_,_) { Main.NewGame(); }
-        });
-
-        new mint.Button({
-            parent: canvas,
-            x: Luxe.screen.w * (3 / 4)  - buttonWidth / 2,
-            y: Luxe.screen.h - 40 - (100 - buttonHeight) / 2,
-            w: buttonWidth,
-            h: buttonHeight,
-            align: TextAlign.center,
-            align_vertical: TextAlign.center,
-            name: 'button2',
-            text: 'Tweet',
-            text_size: 24,
-            options: {
-                color: new Color().rgb(0x333333),
-                color_hover: new Color().rgb(0xf6007b)
-            },
-            onclick: function(_,_) {
-                Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=I scored $my_score points in Solitaire %23Solitaire&url=http://andersnissen.com/');
-                Main.NewGame();
-            }
         });
     }
 
