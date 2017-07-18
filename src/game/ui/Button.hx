@@ -17,10 +17,10 @@ class Button extends luxe.NineSlice {
         super({
             name_unique: true,
             texture: Luxe.resources.texture('assets/ui/buttonLong_brown_pressed.png'),
-            top: 10,
-            left: 10,
-            right: 10,
-            bottom: 10,
+            top: 20,
+            left: 50,
+            right: 50,
+            bottom: 20,
             color: new Color(1, 1, 1, 1)
         });
         this.create(Vector.Subtract(pos, new Vector(width / 2, height / 2)), width, height);
@@ -50,12 +50,34 @@ class Button extends luxe.NineSlice {
     }
 
     override public function onmousedown(event :MouseEvent) {
-        trace('onmousedown');
+        trace('onmousedown, event pos: ${event.pos}');
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
-        if (Luxe.utils.geometry.point_in_geometry(world_pos, geometry)) {
+        trace('onmousedown, world pos: ${world_pos}');
+        if (point_inside_AABB(world_pos)) {
             trace('click!');
             events.fire('click');
         }
+        // if (Luxe.utils.geometry.point_in_geometry(world_pos, geometry)) {
+        //     trace('click!');
+        //     events.fire('click');
+        // }
+    }
+
+    /** Returns true if a point is inside the AABB unrotated */
+    public function point_inside_AABB(_p :Vector) :Bool {
+        if (pos == null) return false;
+        if (size == null) return false;
+
+        // scaled size
+        var _s_x = size.x * scale.x;
+        var _s_y = size.y * scale.y;
+
+        if (_p.x < pos.x) return false;
+        if (_p.y < pos.y) return false;
+        if (_p.x > pos.x+_s_x) return false;
+        if (_p.y > pos.y+_s_y) return false;
+
+        return true;
     }
 
     public function assign(symbol :String) {

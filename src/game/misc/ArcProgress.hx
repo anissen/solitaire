@@ -28,7 +28,7 @@ class ArcProgress extends ParcelProgress {
 		this.cb = cb;
 
 		s = new Sprite({
-			pos: Luxe.screen.mid,
+			pos: Luxe.camera.center,
 			centered: true,
 			color: color,
 			no_scene: true,
@@ -36,14 +36,14 @@ class ArcProgress extends ParcelProgress {
 				immediate: true,
 				x: 0.0,
 				y: 0.0,
-				r: 100.0,
+				r: 50.0,
 				start_angle: 0.0,
 				end_angle: 1.0
 			})
 		});
 
 		t = new Text({
-			pos: Luxe.screen.mid,
+			pos: Luxe.camera.center,
 			color: color,
 			text: '...',
 			align: center,
