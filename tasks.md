@@ -17,6 +17,6 @@ Bugs:
 * If multiple quests match the collected tiles, the highest-scoring quest should be completed
 
 Nice:
-* Share score via twitter (e.g Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Solitaire tweet&url=http://andersnissen.com/');)
+* Share score via twitter
 * Move the general-purpose parts out of core and into turnabout (and reference it)
 * Disable clicking (only dragging supported)

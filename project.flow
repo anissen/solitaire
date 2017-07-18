@@ -22,8 +22,7 @@
       //This configures the build process
     build : {
       dependencies : {
-        luxe : '*',
-        mint : '*'
+        luxe : '*'
       },
       defines : [
         'NO_PRECOMPILED_HEADERS',
