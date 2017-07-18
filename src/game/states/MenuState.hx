@@ -7,6 +7,8 @@ import luxe.Sprite;
 import luxe.Color;
 import luxe.tween.Actuate;
 
+import game.ui.Button;
+
 
 class MenuState extends State {
     static public var StateId :String = 'MenuState';
@@ -20,11 +22,17 @@ class MenuState extends State {
     }
 
     override function onenter(data :Dynamic) {
-        var button = new game.ui.Button(new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2));
-        // button.pos.set_xy(Settings.WIDTH / 2, Settings.HEIGHT / 2);
-        button.assign('Play');
-        button.events.listen('click', function(_) {
+        var play_button = new Button(new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2));
+        play_button.assign('Play');
+        play_button.events.listen('click', function(_) {
             trace('new game');
+            Main.NewGame();
+        });
+
+        var strive_button = new Button(new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 60));
+        strive_button.assign('Strive');
+        strive_button.events.listen('click', function(_) {
+            trace('new game -- strive');
             Main.NewGame();
         });
     }

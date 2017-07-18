@@ -12,6 +12,7 @@ class Button extends luxe.NineSlice {
     // public var x :Int;
     // public var y :Int;
     var text :Text;
+    var hovered :Bool = false;
 
     public function new(pos :Vector, width :Float = 200, height :Float = 40) {
         super({
@@ -36,7 +37,7 @@ class Button extends luxe.NineSlice {
             parent: this,
             text: 'PLAY',
             pos: new Vector(width / 2, height / 2),
-            point_size: 32,
+            point_size: 24,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
             color: new luxe.Color(1.0, 1.0, 1.0)
@@ -49,18 +50,26 @@ class Button extends luxe.NineSlice {
             .ease(luxe.tween.easing.Cubic.easeInOut);
     }
 
-    override public function onmousedown(event :MouseEvent) {
-        trace('onmousedown, event pos: ${event.pos}');
+    override function onmousemove(event :MouseEvent) {
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
-        trace('onmousedown, world pos: ${world_pos}');
         if (point_inside_AABB(world_pos)) {
-            trace('click!');
+            if (!hovered) {
+                hovered = true;
+                color.tween(0.1, { a: 0.6 });
+            }
+        } else {
+            if (hovered) {
+                hovered = false;
+                color.tween(0.1, { a: 1.0 });
+            }
+        }
+    }
+
+    override public function onmouseup(event :MouseEvent) {
+        var world_pos = Luxe.camera.screen_point_to_world(event.pos);
+        if (point_inside_AABB(world_pos)) {
             events.fire('click');
         }
-        // if (Luxe.utils.geometry.point_in_geometry(world_pos, geometry)) {
-        //     trace('click!');
-        //     events.fire('click');
-        // }
     }
 
     /** Returns true if a point is inside the AABB unrotated */

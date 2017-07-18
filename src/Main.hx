@@ -3,6 +3,8 @@ package;
 import luxe.GameConfig;
 import luxe.States;
 
+import game.misc.Settings;
+
 import game.states.MenuState;
 import game.states.PlayState;
 import game.states.GameOverState;
@@ -44,8 +46,8 @@ class Main extends luxe.Game {
             depth: -1000,
             scene: new luxe.Scene()
         });
-        nineslice.create(new luxe.Vector(0, game.misc.Settings.HEIGHT / 4), game.misc.Settings.WIDTH, game.misc.Settings.HEIGHT / 2);
-        nineslice.size = new luxe.Vector(game.misc.Settings.WIDTH, game.misc.Settings.HEIGHT / 2);
+        nineslice.create(new luxe.Vector(20, Settings.HEIGHT / 4), Settings.WIDTH - 40, Settings.HEIGHT / 2);
+        nineslice.size = new luxe.Vector(Settings.WIDTH - 40, Settings.HEIGHT / 2);
         luxe.tween.Actuate.tween(nineslice.color, 0.3, { a: 1.0 });
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'].map(function(i) return 'images/symbols/$i');
@@ -72,28 +74,11 @@ class Main extends luxe.Game {
         states.add(new GameOverState());
         states.set(MenuState.StateId);
 
-        // var nineslice = new luxe.NineSlice({
-        //     name_unique: true,
-        //     texture: Luxe.resources.texture('assets/ui/panel_beigeLight.png'),
-        //     top: 20,
-        //     left: 20,
-        //     right: 20,
-        //     bottom: 20,
-        //     // color: new Color(1, 1, 1, 1),
-        //     depth: -1000,
-        //     scene: new luxe.Scene()
-        // });
-        // nineslice.create(new luxe.Vector(), game.misc.Settings.WIDTH, game.misc.Settings.HEIGHT);
-
         luxe.tween.Actuate.tween(nineslice.pos, 0.3, { x: 0, y: 0 });
-        luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: game.misc.Settings.WIDTH, y: game.misc.Settings.HEIGHT });
-        // nineslice.size = new luxe.Vector(game.misc.Settings.WIDTH, game.misc.Settings.HEIGHT);
-        
-        // NewGame();
+        luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT });
     }
 
     static public function NewGame() {
-        // if (states.enabled(GameOverState.StateId)) states.disable(GameOverState.StateId);
         states.unset();
         states.set(PlayState.StateId);
     }
