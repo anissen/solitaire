@@ -18,5 +18,6 @@ Bugs:
 
 Nice:
 * Share score via twitter
+* Outlines on text
+* Trails on symbol particles (https://gist.github.com/le-doux/d9ac94af66c2b9a86238)
 * Move the general-purpose parts out of core and into turnabout (and reference it)
-* Disable clicking (only dragging supported)

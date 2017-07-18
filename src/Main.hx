@@ -3,6 +3,7 @@ package;
 import luxe.GameConfig;
 import luxe.States;
 
+import game.states.MenuState;
 import game.states.PlayState;
 import game.states.GameOverState;
 
@@ -28,13 +29,13 @@ class Main extends luxe.Game {
     override function ready() {
         Luxe.renderer.clear_color = game.misc.Settings.BACKGROUND_COLOR;
 
-        var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'];
+        var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'].map(function(i) return 'images/symbols/$i');
+        var ui = ['ui/buttonLong_brown_pressed.png'];
 
-        // var icons = ['animals/elephant.png', 'animals/giraffe.png', 'animals/hippo.png', 'animals/monkey.png','animals/panda.png', 'animals/parrot.png', 'animals/penguin.png', 'animals/pig.png', 'animals/rabbit.png', 'animals/snake.png', 'symbols/tile.png', 'symbols/tile_bg.png', 'symbols/tile_stacked.png'];
         var parcel = new luxe.Parcel({
-			// load_time_spacing: .5,
-			// load_start_delay: .5,
-			textures: [ for (icon in icons) { id: 'assets/images/symbols/' + icon } ]
+			load_time_spacing: 0, //.5,
+			load_start_delay: 0, //.5,
+			textures: [ for (icon in icons.concat(ui)) { id: 'assets/' + icon } ]
 		});
 
 		new game.misc.ArcProgress(parcel, new luxe.Color().rgb(0x914D50), start);
@@ -49,9 +50,11 @@ class Main extends luxe.Game {
         luxe.tween.Actuate.defaultEase = luxe.tween.easing.Quad.easeIn;
 
         states = new States({ name: 'state_machine' });
+        states.add(new MenuState());
         states.add(new PlayState());
         states.add(new GameOverState());
-        NewGame();
+        states.set(MenuState.StateId);
+        // NewGame();
     }
 
     static public function NewGame() {
