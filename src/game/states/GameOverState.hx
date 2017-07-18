@@ -12,53 +12,117 @@ import mint.render.luxe.LuxeMintRender;
 import mint.layout.margins.Margins;
 import mint.focus.Focus;
 
-class HighscoreLine {
+// class HighscoreLine {
+//     var rankText :Text;
+//     var scoreText :Text;
+//     var nameText :Text;
+//     public var y(get, set) :Float;
+//     public var alpha(get, set) :Float;
+//     public var color(get, set) :Color;
+
+//     public function new(rank :String, score :Int, name :String, y :Float) {
+//         rankText = new luxe.Text({
+//             pos: new Vector(60, y),
+//             text: '$rank.',
+//             point_size: 24,
+//             align: right,
+//             align_vertical: center,
+//             color: new Color(0.6, 0.6, 0.6, 0.0),
+//             depth: 101
+//         });
+//         scoreText = new luxe.Text({
+//             pos: new Vector(115, y),
+//             text: '$score',
+//             point_size: 24,
+//             align: right,
+//             align_vertical: center,
+//             color: new Color(0.6, 0.6, 0.6, 0.0),
+//             depth: 101
+//         });
+//         nameText = new luxe.Text({
+//             pos: new Vector(120, y),
+//             text: name,
+//             point_size: 24,
+//             align: left,
+//             align_vertical: center,
+//             color: new Color(0.6, 0.6, 0.6, 0.0),
+//             depth: 101
+//         });
+//     }
+
+//     function set_y(y :Float) {
+//         rankText.pos.y = y;
+//         scoreText.pos.y = y;
+//         nameText.pos.y = y;
+//         return y;
+//     }
+    
+//     function get_y() {
+//         return rankText.pos.y;
+//     }
+
+//     function set_alpha(alpha :Float) {
+//         rankText.color.a = alpha;
+//         scoreText.color.a = alpha;
+//         nameText.color.a = alpha;
+//         return alpha;
+//     }
+
+//     function get_alpha() {
+//         return rankText.color.a;
+//     }
+
+//     function set_color(color :Color) {
+//         rankText.color = color;
+//         scoreText.color = color;
+//         nameText.color = color;
+//         return color;
+//     }
+
+//     function get_color() {
+//         return rankText.color;
+//     }
+// }
+
+class HighscoreLine extends luxe.Entity {
     var rankText :Text;
     var scoreText :Text;
     var nameText :Text;
-    public var y(get, set) :Float;
     public var alpha(get, set) :Float;
-    public var color(get, set) :Color;
+    // public var color(get, set) :Color;
 
-    public function new(rank :String, score :Int, name :String, y :Float) {
+    public function new(rank :String, score :Int, name :String) {
+        super({ name: '$rank.$score.$name' });
         rankText = new luxe.Text({
-            pos: new Vector(60, y),
+            parent: this,
+            pos: new Vector(60, 0),
             text: '$rank.',
-            point_size: 28,
+            point_size: 24,
             align: right,
             align_vertical: center,
-            color: new Color(0.6, 0.6, 0.6, 0.0),
+            color: new Color(0.8, 0.8, 0.8, 0.0),
             depth: 101
         });
         scoreText = new luxe.Text({
-            pos: new Vector(115, y),
+            parent: this,
+            pos: new Vector(115, 0),
             text: '$score',
-            point_size: 28,
+            point_size: 24,
             align: right,
             align_vertical: center,
             color: new Color(0.6, 0.6, 0.6, 0.0),
             depth: 101
         });
         nameText = new luxe.Text({
-            pos: new Vector(120, y),
+            parent: this,
+            pos: new Vector(120, 0),
             text: name,
-            point_size: 28,
+            point_size: 24,
             align: left,
             align_vertical: center,
             color: new Color(0.6, 0.6, 0.6, 0.0),
             depth: 101
         });
-    }
-
-    function set_y(y :Float) {
-        rankText.pos.y = y;
-        scoreText.pos.y = y;
-        nameText.pos.y = y;
-        return y;
-    }
-    
-    function get_y() {
-        return rankText.pos.y;
     }
 
     function set_alpha(alpha :Float) {
@@ -72,16 +136,16 @@ class HighscoreLine {
         return rankText.color.a;
     }
 
-    function set_color(color :Color) {
-        rankText.color = color;
-        scoreText.color = color;
-        nameText.color = color;
-        return color;
-    }
+    // function set_color(color :Color) {
+    //     rankText.color = color;
+    //     scoreText.color = color;
+    //     nameText.color = color;
+    //     return color;
+    // }
 
-    function get_color() {
-        return rankText.color;
-    }
+    // function get_color() {
+    //     return rankText.color;
+    // }
 }
 
 typedef Highscore = { client :String, score :Int, name :String };
@@ -102,22 +166,21 @@ class GameOverState extends State {
 
     }
 
-    override function onenabled(data :Dynamic) {
+    override function onenter(data :Dynamic) {
         var bg = new luxe.Sprite({
             pos: Luxe.screen.mid.clone(),
             size: Luxe.screen.size.clone(),
             color: new Color(1.0, 1.0, 1.0, 0.0),
             depth: 100
         });
+        Actuate.tween(bg.color, 1.0, { a: 0.95 });
 
-        Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function(_) {
-            var highscores = [ for (i in 0 ... 100) { score: i * 10, name: 'Test $i' } ];
-            setup_ui(highscores, Std.int(1000 * Math.random())); 
-        });
+        // Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function(_) {
+        //     var highscores = [ for (i in 0 ... 100) { score: i * 10, name: 'Test $i' } ];
+        //     setup_ui(highscores, Std.int(1000 * Math.random())); 
+        // });
 
-        return;
-
-
+        // return;
 
         var highscore :Highscore = cast data;
 
@@ -128,8 +191,11 @@ class GameOverState extends State {
         http.onError = function(data) {
             trace('error: $data');
 
-            new HighscoreLine('?', highscore.score, highscore.name, 320 /* TODO: Don't hardcode */);
+            // new HighscoreLine('?', highscore.score, highscore.name, 320 /* TODO: Don't hardcode */);
             // TODO: Show not-connected icon
+
+            var highscores = [ for (i in 0 ... 50) { score: i * 10, name: 'Test $i' } ];
+            show_highscores(highscores);
         }
         http.onStatus = function(data) {
             trace('status: $data');
@@ -143,43 +209,43 @@ class GameOverState extends State {
                 trace('Error parsing data: $e');
             }
 
-            scores.sort(function(a, b) { return b.score - a.score; });
-            
-            var count = 0;
-            for (score in scores) {
-                count++;
-                var highscore_line = new HighscoreLine('$count', score.score, score.name, count * 50 + 20);
-                Actuate.tween(highscore_line, 0.3, { y: count * 50, alpha: 1.0 }).delay(1.0);
-                if (score.client == highscore.client) {
-                    highscore_line.color = new Color(0.4, 0.4, 0.4, 0.0);
-                    Actuate.tween(Luxe.camera.view.center, 2.0, { y: count * 50 }, true).onUpdate( function() {
-                        Luxe.camera.transform.pos.set_xy(Luxe.camera.view.pos.x, Luxe.camera.view.pos.y); // TODO: Clamp to pan viewport
-                    });
-                }
-            }
-            Luxe.camera.transform.pos.y = count * 50;
-            var pan = new game.components.CameraPan({ name: 'CameraPan' });
-            pan.y_top = -50; // ???
-            pan.y_bottom = count * 50 - Settings.HEIGHT + 50;
-            Luxe.camera.add(pan);
+            show_highscores(scores);
         }
         http.request();
 
-        var bg = new luxe.Sprite({
-            pos: Luxe.screen.mid.clone(),
-            size: Luxe.screen.size.clone(),
-            color: new Color(1.0, 1.0, 1.0, 0.0),
-            depth: 100
-        });
-
-        Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {
+        // Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {
         //     var my_highscore_line = new HighscoreLine('$my_highscore_rank', highscore.score, highscore.name, highscores_count * 50 + 620);
         //     Actuate.tween(my_highscore_line, 0.3, { alpha: 1 }).onComplete(function() {
         //         Actuate.tween(my_highscore_line, 5.0, { y: my_highscore_rank * 50 - 20 }).onUpdate(function() {
         //             Luxe.camera.transform.pos.y = my_highscore_line.y;
         //         });
         //     });
-        });
+        // });
+    }
+
+    function show_highscores(highscores :Array<{ score :Int, name :String }>) {
+        highscores.sort(function(a, b) { return b.score - a.score; });
+            
+        var count = 0;
+        for (score in highscores) {
+            count++;
+            var highscore_line = new HighscoreLine('$count', score.score, score.name);
+            highscore_line.pos.y = count * 25 + 20;
+            highscore_line.alpha = 0;
+            Actuate.tween(highscore_line, 0.3, { alpha: 1.0 }).delay(1.0 + count * 0.1);
+            // Actuate.tween(highscore_line.color, 0.3, { y: count * 25 }).delay(1.0);
+            // if (score.client == highscore.client) {
+            //     highscore_line.color = new Color(0.4, 0.4, 0.4, 0.0);
+            //     Actuate.tween(Luxe.camera.view.center, 2.0, { y: count * 50 }, true).onUpdate( function() {
+            //         Luxe.camera.transform.pos.set_xy(Luxe.camera.view.pos.x, Luxe.camera.view.pos.y); // TODO: Clamp to pan viewport
+            //     });
+            // }
+        }
+        // Luxe.camera.transform.pos.y = count * 50;
+        var pan = new game.components.CameraPan({ name: 'CameraPan' });
+        pan.y_top = -50; // ???
+        pan.y_bottom = count * 25 - Settings.HEIGHT + 50;
+        Luxe.camera.add(pan);
     }
 
     function setup_ui(highscores :Array<{ score :Int, name :String }>, my_score :Int) {
@@ -347,7 +413,7 @@ class GameOverState extends State {
         });
     }
 
-    override function ondisabled(_) {
+    override function onleave(_) {
         canvas.destroy();
         Luxe.camera.remove('CameraPan');
         Luxe.scene.empty();

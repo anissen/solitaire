@@ -88,7 +88,7 @@ class PlayState extends State {
         counting_score = 0;
         game_over = false;
         Tile.CardId = 0; // reset card Ids
-        Luxe.utils.random.initial = 42;
+        Luxe.utils.random.initial = Math.random(); // TODO: Should be incremented for each play
 
 
         // var bg_texture = Luxe.resources.texture('assets/images/symbols/wool.png');
@@ -359,7 +359,7 @@ class PlayState extends State {
 
         //var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
         //return tween.toPromise();
-        Main.states.enable(GameOverState.StateId, {
+        Main.states.set(GameOverState.StateId, {
             client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
             name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
             score: Math.floor(1000 * Math.random()) // TODO: Use correct score

@@ -55,7 +55,7 @@ class Main extends luxe.Game {
     }
 
     static public function NewGame() {
-        if (states.enabled(GameOverState.StateId)) states.disable(GameOverState.StateId);
+        // if (states.enabled(GameOverState.StateId)) states.disable(GameOverState.StateId);
         states.unset();
         states.set(PlayState.StateId);
     }
