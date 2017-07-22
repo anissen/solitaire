@@ -14,6 +14,7 @@ class Button extends luxe.NineSlice {
     var text :Text;
     var hovered :Bool = false;
 
+    // TODO: Take an options object instead
     public function new(pos :Vector, width :Float = 200, height :Float = 40) {
         super({
             name_unique: true,

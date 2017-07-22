@@ -353,18 +353,19 @@ class PlayState extends State {
     }
 
     function handle_game_over() {
+        Actuate.reset();
+
         game_over = true;
 
         Luxe.io.string_save('save', null); // clear the save
 
-        //var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
-        //return tween.toPromise();
         Main.states.set(GameOverState.StateId, {
             client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
             name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
             score: Math.floor(1000 * Math.random()) // TODO: Use correct score
         });
-
+        //var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
+        //return tween.toPromise();
         return Promise.resolve();
     }
 

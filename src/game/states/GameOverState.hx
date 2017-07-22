@@ -85,13 +85,13 @@ class GameOverState extends State {
     }
 
     override function onenter(data :Dynamic) {
-        var bg = new luxe.Sprite({
-            pos: Luxe.screen.mid.clone(),
-            size: Luxe.screen.size.clone(),
-            color: new Color(1.0, 1.0, 1.0, 0.0),
-            depth: 100
-        });
-        Actuate.tween(bg.color, 1.0, { a: 0.95 });
+        // var bg = new luxe.Sprite({
+        //     pos: Luxe.screen.mid.clone(),
+        //     size: Luxe.screen.size.clone(),
+        //     color: new Color(1.0, 1.0, 1.0, 0.0),
+        //     depth: 100
+        // });
+        // Actuate.tween(bg.color, 1.0, { a: 0.95 });
 
         var highscore :Highscore = cast data;
 
@@ -124,6 +124,20 @@ class GameOverState extends State {
         }
         http.request();
 
+        var back_button = new game.ui.Button(new Vector(Settings.WIDTH * (1/4), Settings.HEIGHT - 50), 100);
+        back_button.assign('Back');
+        back_button.events.listen('click', function(_) {
+            trace('back');
+            Main.states.set(MenuState.StateId);
+        });
+
+        var play_button = new game.ui.Button(new Vector(Settings.WIDTH * (3/4), Settings.HEIGHT - 50), 100);
+        play_button.assign('Play');
+        play_button.events.listen('click', function(_) {
+            trace('new game');
+            Main.NewGame();
+        });
+
         // Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {
         //     var my_highscore_line = new HighscoreLine('$my_highscore_rank', highscore.score, highscore.name, highscores_count * 50 + 620);
         //     Actuate.tween(my_highscore_line, 0.3, { alpha: 1 }).onComplete(function() {
@@ -136,13 +150,18 @@ class GameOverState extends State {
 
     function show_highscores(highscores :Array<{ score :Int, name :String }>) {
         highscores.sort(function(a, b) { return b.score - a.score; });
-            
+
+        var score_container = new luxe.Visual({});
+        // score_container.clip_rect = new luxe.Rectangle(0, 50, Settings.WIDTH / 2, Settings.HEIGHT / 2 - 50);
+        
         var count = 0;
         for (score in highscores) {
             count++;
             var highscore_line = new HighscoreLine('$count', score.score, score.name);
             highscore_line.pos.y = count * 25 + 20;
             highscore_line.alpha = 0;
+            highscore_line.parent = score_container;
+
             Actuate.tween(highscore_line, 0.3, { alpha: 1.0 }).delay(1.0 + count * 0.1);
             // Actuate.tween(highscore_line.color, 0.3, { y: count * 25 }).delay(1.0);
             // if (score.client == highscore.client) {
@@ -153,13 +172,15 @@ class GameOverState extends State {
             // }
         }
         // Luxe.camera.transform.pos.y = count * 50;
-        var pan = new game.components.CameraPan({ name: 'CameraPan' });
-        pan.y_top = -50; // ???
-        pan.y_bottom = count * 25 - Settings.HEIGHT + 50;
-        Luxe.camera.add(pan);
+        var pan = new game.components.DragPan({ name: 'DragPan' });
+        pan.y_top = Settings.HEIGHT - (count * 25 + 50);
+        pan.y_bottom = 0;
+        score_container.add(pan);
+        // Luxe.camera.add(pan);
     }
 
     override function onleave(_) {
+        Actuate.reset();
         Luxe.camera.remove('CameraPan');
         Luxe.scene.empty();
     }

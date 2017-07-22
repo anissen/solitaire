@@ -6,7 +6,7 @@ import luxe.Input.MouseButton;
 import luxe.Input.MouseEvent;
 import luxe.Vector;
 
-class CameraPan extends Component {
+class DragPan extends Component {
     public var y_top :Float;
     public var y_bottom :Float;
     public var button : MouseButton;
@@ -14,7 +14,7 @@ class CameraPan extends Component {
     var dragging : Bool = false;
     var drag_start : Vector;
     var drag_start_pos : Vector;
-    var camera : luxe.Camera;
+    var visual : luxe.Visual;
 
     override function init() {
         drag_start = new Vector();
@@ -22,11 +22,11 @@ class CameraPan extends Component {
 
         button = MouseButton.left;
 
-        camera = cast entity;
-        if(camera == null) throw "CameraDrag only applies to luxe.Camera type right now.";
+        visual = cast entity;
+        if(visual == null) throw 'Invalid entity type';
     }
 
-    override function onmousedown(e:MouseEvent) {
+    override function onmousedown(e :MouseEvent) {
         if (!dragging && e.button == button) {
             dragging = true;
             drag_start.set_xy(e.pos.x, e.pos.y);
@@ -34,15 +34,15 @@ class CameraPan extends Component {
         }
     }
 
-    override function onmouseup(e:MouseEvent) {
+    override function onmouseup(e :MouseEvent) {
         if (e.button == button && dragging) {
             dragging = false;
         }
     }
 
-    override function onmousemove(e:MouseEvent) {
+    override function onmousemove(e :MouseEvent) {
         if (dragging) {
-            var diffy = (e.pos.y - drag_start.y) / camera.zoom;
+            var diffy = (drag_start.y - e.pos.y); // / camera.zoom;
             pos.y = luxe.utils.Maths.clamp(drag_start_pos.y - diffy, y_top, y_bottom);
             // pos.y = drag_start_pos.y - diffy;
         }
