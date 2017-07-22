@@ -36,7 +36,7 @@ class ArcProgress extends ParcelProgress {
 				immediate: true,
 				x: 0.0,
 				y: 0.0,
-				r: 50.0,
+				r: 60.0,
 				start_angle: 0.0,
 				end_angle: 1.0
 			})
@@ -45,7 +45,7 @@ class ArcProgress extends ParcelProgress {
 		t = new Text({
 			pos: Luxe.camera.center,
 			color: color,
-			text: '...',
+			text: '',
 			align: center,
 			align_vertical: center,
 			point_size: 14 * Luxe.screen.device_pixel_ratio
@@ -55,13 +55,13 @@ class ArcProgress extends ParcelProgress {
 	}
 
 	function upd(dt :Float) {
-		t.text = '${Math.floor(value * 100)}%';
+		t.text = '${Math.floor(value * 100)} %';
 		s.rotation_z += 360 * dt;
 		s.geometry = Luxe.draw.arc( {
 			immediate: true,
 			x: 0.0,
 			y: 0.0,
-			r: 100.0,
+			r: 60.0,
 			start_angle: 0.0,
 			end_angle: value * 360
 		} );

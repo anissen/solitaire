@@ -51,8 +51,9 @@ class Main extends luxe.Game {
             depth: -1000,
             scene: new luxe.Scene()
         });
-        nineslice.create(new luxe.Vector(20, Settings.HEIGHT / 4), Settings.WIDTH - 40, Settings.HEIGHT / 2);
-        nineslice.size = new luxe.Vector(Settings.WIDTH - 40, Settings.HEIGHT / 2);
+        var size = 160;
+        nineslice.create(new luxe.Vector(Settings.WIDTH / 2 - size / 2, Settings.HEIGHT / 2 - size / 2), size, size);
+        nineslice.size = new luxe.Vector(size, size);
         luxe.tween.Actuate.tween(nineslice.color, 0.3, { a: 1.0 });
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'].map(function(i) return 'images/symbols/$i');
