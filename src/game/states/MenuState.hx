@@ -26,14 +26,14 @@ class MenuState extends State {
         play_button.assign('Play');
         play_button.events.listen('click', function(_) {
             trace('new game');
-            Main.NewGame();
+            Main.SetState(PlayState.StateId);
         });
 
         var strive_button = new Button(new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 60));
         strive_button.assign('Strive');
         strive_button.events.listen('click', function(_) {
             trace('new game -- strive');
-            Main.NewGame();
+            Main.SetState(PlayState.StateId);
         });
     }
 

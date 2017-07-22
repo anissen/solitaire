@@ -68,7 +68,6 @@ class PlayState extends State {
     }
 
     override function onenter(_) {
-        Actuate.reset();
         Luxe.camera.center = Vector.Multiply(Luxe.camera.size, 0.5);
 
         // Luxe.io.string_save('save', null);
@@ -353,13 +352,11 @@ class PlayState extends State {
     }
 
     function handle_game_over() {
-        Actuate.reset();
-
         game_over = true;
 
         Luxe.io.string_save('save', null); // clear the save
 
-        Main.states.set(GameOverState.StateId, {
+        Main.SetState(GameOverState.StateId, {
             client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
             name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
             score: Math.floor(1000 * Math.random()) // TODO: Use correct score

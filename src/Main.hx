@@ -10,7 +10,8 @@ import game.states.PlayState;
 import game.states.GameOverState;
 
 class Main extends luxe.Game {
-    static public var states :States;
+    static var states :States;
+    static var fade :game.components.Fader;
     var start_time :Float;
     var nineslice :luxe.NineSlice;
 
@@ -34,6 +35,10 @@ class Main extends luxe.Game {
     override function ready() {
         Luxe.camera.size = new luxe.Vector(270, 480);
         Luxe.renderer.clear_color = game.misc.Settings.BACKGROUND_COLOR;
+        
+        fade = new game.components.Fader({ name: 'fade' });
+        Luxe.camera.add(fade);
+        Luxe.on(luxe.Ev.init, function(_){ fade.fade_in(); });
 
         nineslice = new luxe.NineSlice({
             name_unique: true,
@@ -72,15 +77,18 @@ class Main extends luxe.Game {
         states.add(new MenuState());
         states.add(new PlayState());
         states.add(new GameOverState());
-        states.set(MenuState.StateId);
+        states.set(MenuState.StateId);        
 
         luxe.tween.Actuate.tween(nineslice.pos, 0.3, { x: 0, y: 0 });
         luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT });
     }
 
-    static public function NewGame() {
-        states.unset();
-        states.set(PlayState.StateId);
+    static public function SetState(id :String, ?data :Dynamic) {
+        luxe.tween.Actuate.reset();
+        fade.fade_out().onComplete(function() {
+            states.set(id, data);
+            fade.fade_in();
+        });
     }
 
     #if sys

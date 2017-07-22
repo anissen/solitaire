@@ -128,14 +128,14 @@ class GameOverState extends State {
         back_button.assign('Back');
         back_button.events.listen('click', function(_) {
             trace('back');
-            Main.states.set(MenuState.StateId);
+            Main.SetState(MenuState.StateId);
         });
 
         var play_button = new game.ui.Button(new Vector(Settings.WIDTH * (3/4), Settings.HEIGHT - 50), 100);
         play_button.assign('Play');
         play_button.events.listen('click', function(_) {
             trace('new game');
-            Main.NewGame();
+            Main.SetState(PlayState.StateId);
         });
 
         // Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {
@@ -180,14 +180,13 @@ class GameOverState extends State {
     }
 
     override function onleave(_) {
-        Actuate.reset();
         Luxe.camera.remove('CameraPan');
         Luxe.scene.empty();
     }
 
     override function onmouseup(event :luxe.Input.MouseEvent) {
         if (event.button == luxe.Input.MouseButton.right) {
-            Main.NewGame();
+            Main.SetState(PlayState.StateId);
         }
     }
 }
