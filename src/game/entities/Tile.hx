@@ -27,6 +27,7 @@ class Tile extends Sprite implements core.models.Deck.ICard {
 
     var original_color :Color;
 
+    var outline :Sprite;
     var bg :Sprite;
     var highlighted :Bool;
 
@@ -38,6 +39,16 @@ class Tile extends Sprite implements core.models.Deck.ICard {
             texture: options.texture
         });
 
+        outline = new Sprite({
+            pos: Vector.Multiply(size, 0.5),
+            size: Vector.Multiply(size, 1.15),
+            texture: texture,
+            depth: depth - 0.2,
+            color: Settings.CARD_COLOR,
+            parent: this
+        });
+        // if (texture.id.indexOf('triangle') > -1) outline.pos.y += 1; // HACK to correct triangle pos
+
         bg = new Sprite({
             pos: Vector.Multiply(size, 0.5),
             size: size,
@@ -45,6 +56,7 @@ class Tile extends Sprite implements core.models.Deck.ICard {
             depth: depth - 0.1,
             parent: this
         });
+        bg.visible = false;
 
         original_color = options.color;
         suit = options.suit;
@@ -69,6 +81,16 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         highlighted = value;
         bg.color = (highlighted ? Settings.CARD_HIGHLIGHT_COLOR : (stacked ? original_color : Settings.CARD_COLOR));
     }
+    
+    public function show_tile_graphics() {
+        bg.visible = true;
+        var old_size = bg.size.clone();
+        bg.size.set_xy(0, 0);
+        
+        var tween = luxe.tween.Actuate.tween(bg.size, 0.2, { x: old_size.x, y: old_size.y });
+        tween.onComplete(function() { outline.visible = false; });
+        return tween;
+    }
 
     override public function set_visible(value :Bool) {
         bg.visible = value;
@@ -77,6 +99,7 @@ class Tile extends Sprite implements core.models.Deck.ICard {
 
     override public function set_depth(value :Float) {
         if (bg != null) bg.depth = value - 0.1;
+        if (outline != null) outline.depth = value - 0.2;
         return (super.depth = value);
     }
 }

@@ -132,7 +132,7 @@ class PlayState extends State {
             var sprite = new Sprite({
                 pos: get_pos(x, tiles_y + 2 + 0.1),
                 texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
-                size: new Vector(tile_size * 1.4, tile_size * 1.4),
+                size: new Vector(tile_size * 1.15, tile_size * 1.15),
                 color: Settings.CARD_BG_COLOR
             });
             sprite.add(new MouseUp(card_grid_clicked));
@@ -262,6 +262,7 @@ class PlayState extends State {
             var new_pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
             tween = tween_pos(card, new_pos).delay(delay_count * 0.1);
             quests.push(card);
+            card.show_tile_graphics().delay(delay_count * 0.1);
             delay_count++;
             count++;
         }
@@ -302,6 +303,7 @@ class PlayState extends State {
         var tween = tween_pos(card, get_pos(x, y + 2), 0.1);
         card.grid_pos = { x: x, y: y };
         card.depth = 2;
+        card.show_tile_graphics();
         if (card.has('Clickable')) card.remove('Clickable');
         // card.add(new Clickable(tile_clicked));
         // card.add(new DragOver(tile_dragover));
@@ -337,7 +339,7 @@ class PlayState extends State {
             delay: delay
         });
         Actuate.tween(p.size, duration, { x: tile_size * 0.25, y: tile_size * 0.25 }).delay(delay).onComplete(function() {
-            p.destroy(true);
+            if (p != null && !p.destroyed) p.destroy();
             score += card_score;
             // scoreText.text = '${Std.int(this.score)}';
             var textScale = scoreText.scale.x;
