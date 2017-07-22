@@ -20,6 +20,11 @@ using game.tools.TweenTools;
 
 typedef Card = Tile;
 
+enum GameMode {
+    Normal;
+    Strive(level :Int);
+}
+
 /*
     Stuff to be saved:
     * Deck list
@@ -54,6 +59,7 @@ class PlayState extends State {
     var score :Int;
 
     var game_over :Bool;
+    var game_mode :GameMode;
 
     var quest_matches :Array<Card>;
 
@@ -67,8 +73,11 @@ class PlayState extends State {
 
     }
 
-    override function onenter(_) {
+    override function onenter(data :Dynamic) {
         Luxe.camera.center = Vector.Multiply(Luxe.camera.size, 0.5);
+
+        game_mode = cast data;
+        if (game_mode == null) game_mode = Normal;
 
         // Luxe.io.string_save('save', null);
         var could_load_game = load_game();
@@ -135,6 +144,7 @@ class PlayState extends State {
                 size: new Vector(tile_size * 1.15, tile_size * 1.15),
                 color: Settings.CARD_BG_COLOR
             });
+            sprite.color.a = 0.5;
             sprite.add(new MouseUp(card_grid_clicked));
         }
 
@@ -152,12 +162,16 @@ class PlayState extends State {
             }
         }
 
+        var strive_score = get_strive_score();
         scoreText = new luxe.Text({
             pos: get_pos(1, -0.75),
             align: center,
             align_vertical: center,
-            text: '0'
+            text: '${0-strive_score}'
         });
+        if (strive_score > 0) {
+            scoreText.color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
+        }
 
         var deck = new InfiniteDeck(deck_cards, function(data) {
             var tile = create_tile(data.suit, data.stacked, tile_size);
@@ -324,6 +338,13 @@ class PlayState extends State {
         return Promise.resolve();
     }
 
+    function get_strive_score() :Int {
+        return switch (game_mode) {
+            case Normal: 0;
+            case Strive(level): (level < 10) ? level * 10 : 10 * 10 + (level % 10) * 5; // 10 interval to 100, then 5
+        }
+    }
+
     function handle_score(card_score :Int, card :Card) {
         var duration = 0.3;
         var delay = game.entities.Particle.Count * 0.1;
@@ -347,7 +368,12 @@ class PlayState extends State {
                 textScale += 0.1 * card_score;
                 scoreText.scale.set_xy(textScale, textScale);
             }
-            Actuate.tween(this, (score - counting_score) * 0.02, { counting_score: score }, true).onUpdate(function() { scoreText.text = '${Std.int(counting_score)}'; });
+            var strive_score = get_strive_score();
+            if (strive_score > 0 && score >= strive_score) scoreText.color.tween(0.3, { r: 0.2, g: 1, b: 0.2 });
+            Actuate.tween(this, (score - counting_score) * 0.02, { counting_score: score }, true).onUpdate(function() {
+                var temp_score = Std.int(counting_score) - strive_score;
+                scoreText.text = '$temp_score';
+            });
         });
 
         return Promise.resolve();
@@ -357,6 +383,16 @@ class PlayState extends State {
         game_over = true;
 
         Luxe.io.string_save('save', null); // clear the save
+
+        switch (game_mode) {
+            case Strive(level):
+                var strive_score = get_strive_score();
+                var win = (score >= strive_score);
+                var new_level = (win ? level + 1 : level - 1);
+                if (new_level < 1) new_level = 1;
+                Luxe.io.string_save('strive_level', '$new_level');
+            case _:
+        }
 
         Main.SetState(GameOverState.StateId, {
             client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
