@@ -78,10 +78,11 @@ class Main extends luxe.Game {
         states.add(new MenuState());
         states.add(new PlayState());
         states.add(new GameOverState());
-        states.set(MenuState.StateId);        
 
         luxe.tween.Actuate.tween(nineslice.pos, 0.3, { x: 0, y: 0 });
-        luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT });
+        luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT }).onComplete(function() {
+            states.set(MenuState.StateId);  
+        });
     }
 
     static public function SetState(id :String, ?data :Dynamic) {

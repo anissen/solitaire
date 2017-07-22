@@ -125,6 +125,7 @@ class GameOverState extends State {
         http.request();
 
         var back_button = new game.ui.Button(new Vector(Settings.WIDTH * (1/4), Settings.HEIGHT - 50), 100);
+        back_button.depth = 100;
         back_button.assign('Back');
         back_button.events.listen('click', function(_) {
             trace('back');
@@ -132,6 +133,7 @@ class GameOverState extends State {
         });
 
         var play_button = new game.ui.Button(new Vector(Settings.WIDTH * (3/4), Settings.HEIGHT - 50), 100);
+        play_button.depth = 100;
         play_button.assign('Play');
         play_button.events.listen('click', function(_) {
             trace('new game');
@@ -152,6 +154,7 @@ class GameOverState extends State {
         highscores.sort(function(a, b) { return b.score - a.score; });
 
         var score_container = new luxe.Visual({});
+        score_container.color.a = 0;
         // score_container.clip_rect = new luxe.Rectangle(0, 50, Settings.WIDTH / 2, Settings.HEIGHT / 2 - 50);
         
         var count = 0;

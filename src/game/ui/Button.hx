@@ -41,13 +41,14 @@ class Button extends luxe.NineSlice {
             point_size: 24,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
-            color: new luxe.Color(1.0, 1.0, 1.0)
+            color: new luxe.Color(1.0, 1.0, 1.0),
+            depth: this.depth + 0.1
         });
 
-        this.scale.set_xy(0, 0);
+        this.scale.y = 0;
         Actuate
-            .tween(this.scale, 0.5, { x: 1, y: 1 })
-            // .delay(x * 0.2 + y * 0.5)
+            .tween(this.scale, 0.3, { y: 1 })
+            .delay(Math.random() * 0.2)
             .ease(luxe.tween.easing.Cubic.easeInOut);
     }
 
