@@ -56,11 +56,17 @@ class Button extends luxe.NineSlice {
         if (point_inside_AABB(world_pos)) {
             if (!hovered) {
                 hovered = true;
-                color.tween(0.1, { a: 0.6 });
+                color.tween(0.1, { a: 0.7 });
+                Actuate
+                    .tween(this.pos, 0.3, { y: this.pos.y + 2 })
+                    .reflect()
+                    .repeat()
+                    .ease(luxe.tween.easing.Sine.easeInOut);
             }
         } else {
             if (hovered) {
                 hovered = false;
+                Actuate.stop(this.pos);
                 color.tween(0.1, { a: 1.0 });
             }
         }
@@ -92,10 +98,10 @@ class Button extends luxe.NineSlice {
 
     public function assign(symbol :String) {
         text.text = symbol;
-        Actuate
-            .tween(text, 0.3, { rotation_z: 90 })
-            .reflect()
-            .repeat(1)
-            .ease(luxe.tween.easing.Cubic.easeInOut);
+        // Actuate
+        //     .tween(this.pos, 1.0, { y: this.pos.y + 3 })
+        //     .reflect()
+        //     .repeat()
+        //     .ease(luxe.tween.easing.Cubic.easeInOut);
     }
 }

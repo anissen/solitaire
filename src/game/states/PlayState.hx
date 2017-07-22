@@ -262,7 +262,7 @@ class PlayState extends State {
             var new_pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
             tween = tween_pos(card, new_pos).delay(delay_count * 0.1);
             quests.push(card);
-            card.show_tile_graphics().delay(delay_count * 0.1);
+            card.show_tile_graphics().delay(delay_count * 0.1 + 0.2);
             delay_count++;
             count++;
         }
