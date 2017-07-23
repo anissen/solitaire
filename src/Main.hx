@@ -97,6 +97,9 @@ class Main extends luxe.Game {
     override function onkeyup(event :luxe.Input.KeyEvent) {
         if (event.keycode == luxe.Input.Key.escape) {
             Luxe.shutdown();
+        } else if (event.keycode == luxe.Input.Key.key_d) {
+            Luxe.io.string_save('save_normal', null);
+            Luxe.io.string_save('save_strive', null);
         }
     }
     #end

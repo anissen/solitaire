@@ -79,7 +79,7 @@ class PlayState extends State {
         game_mode = cast data;
         if (game_mode == null) game_mode = Normal;
 
-        // Luxe.io.string_save('save', null);
+        Luxe.utils.random.initial = Math.random(); // TODO: Should be incremented for each play
         var could_load_game = load_game();
         if (!could_load_game) handle_new_game();
     }
@@ -96,8 +96,6 @@ class PlayState extends State {
         counting_score = 0;
         game_over = false;
         Tile.CardId = 0; // reset card Ids
-        Luxe.utils.random.initial = Math.random(); // TODO: Should be incremented for each play
-
 
         // var bg_texture = Luxe.resources.texture('assets/images/symbols/wool.png');
         // bg_texture.clamp_s = phoenix.Texture.ClampType.repeat;
@@ -313,6 +311,10 @@ class PlayState extends State {
     }
 
     function handle_tile_placed(card :Card, x :Int, y :Int) {
+        if (card == null) {
+            trace('handle_tile_placed: Card was null -- how?!');
+            return Promise.resolve();
+        }
         // card.pos = get_pos(x, y + 2);
         var tween = tween_pos(card, get_pos(x, y + 2), 0.1);
         card.grid_pos = { x: x, y: y };
@@ -323,7 +325,12 @@ class PlayState extends State {
         // card.add(new DragOver(tile_dragover));
 
         Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
-            if (card == null || card.destroyed) return; // might happen when replaying (that card is removed in the same frame)
+            trace('card is null: ${card == null}');
+            trace('card is destoryed: ${card.destroyed}');
+            if (card == null || card.destroyed) {
+                trace('No component is added to card -- card is null or destroyed');
+                return; // might happen when replaying (that card is removed in the same frame)
+            }
             card.add(new Clickable(tile_clicked));
             card.add(new DragOver(tile_dragover));
         });
@@ -338,11 +345,16 @@ class PlayState extends State {
         return Promise.resolve();
     }
 
+    // TODO: move game mode stuff into a seperate class
     function get_strive_score() :Int {
         return switch (game_mode) {
             case Normal: 0;
             case Strive(level): (level < 10) ? level * 10 : 10 * 10 + (level % 10) * 5; // 10 interval to 100, then 5
         }
+    }
+
+    function get_game_mode_id() :String {
+        return game_mode.getName().toLowerCase();
     }
 
     function handle_score(card_score :Int, card :Card) {
@@ -382,7 +394,7 @@ class PlayState extends State {
     function handle_game_over() {
         game_over = true;
 
-        Luxe.io.string_save('save', null); // clear the save
+        Luxe.io.string_save('save_${get_game_mode_id()}', null); // clear the save
 
         switch (game_mode) {
             case Strive(level):
@@ -524,19 +536,19 @@ class PlayState extends State {
         // (what to do about card ids?)
 
         var save_data = {
-            seed: Luxe.utils.random.seed,
+            seed: Luxe.utils.random.initial,
             score: score,
             events: Game.Instance.save()
         };
 
         trace('save_data: $save_data');
 
-        var succeeded = Luxe.io.string_save('save', haxe.Json.stringify(save_data));
+        var succeeded = Luxe.io.string_save('save_${get_game_mode_id()}', haxe.Json.stringify(save_data));
         if (!succeeded) trace('Save failed!');
     }
 
     function load_game() {
-        var data_string = Luxe.io.string_load('save');
+        var data_string = Luxe.io.string_load('save_${get_game_mode_id()}');
         if (data_string == null) {
             trace('Save not found or failed to load!');
             return false;
