@@ -54,7 +54,7 @@ class Main extends luxe.Game {
         luxe.tween.Actuate.tween(nineslice.color, 0.3, { a: 1.0 });
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'].map(function(i) return 'images/symbols/$i');
-        var ui = ['ui/buttonLong_brown_pressed.png'];
+        var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png'];
 
         var parcel = new luxe.Parcel({
 			load_time_spacing: 0,

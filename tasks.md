@@ -6,7 +6,6 @@ Need:
 * Better background graphics
 * Add sounds
 * Add game over screen
-* Add main screen (or make an overlay menu)
 * Tutorial
 * App icon
 * Remove debug hooks, debug view

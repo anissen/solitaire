@@ -87,6 +87,12 @@ class PlayState extends State {
         game_over = false;
         Tile.CardId = 0; // reset card Ids
 
+        var back_button = new game.ui.Icon({
+            pos: new Vector(25, 25),
+            texture_path: 'assets/ui/arrowBeige_left.png',
+            on_click: Main.SetState.bind(MenuState.StateId)
+        });
+
         // quest backgrounds
         for (x in 0 ... 3) {
             new Sprite({

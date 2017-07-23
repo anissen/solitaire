@@ -4,6 +4,7 @@ package game.entities;
 import luxe.Vector;
 import luxe.Sprite;
 import luxe.Color;
+import luxe.tween.Actuate;
 
 typedef TileOptions = {
     pos :Vector,
@@ -47,7 +48,6 @@ class Tile extends Sprite implements core.models.Deck.ICard {
             color: Settings.CARD_COLOR,
             parent: this
         });
-        // if (texture.id.indexOf('triangle') > -1) outline.pos.y += 1; // HACK to correct triangle pos
 
         bg = new Sprite({
             pos: Vector.Multiply(size, 0.5),
@@ -69,7 +69,6 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         stacked = value;
         if (bg != null) {
             bg.texture = Luxe.resources.texture('assets/images/symbols/' + (value ? 'tile_stacked' : 'tile') + '.png');
-            // bg.pos = (value ? Vector.Subtract(Vector.Multiply(size, 0.5), new Vector(0, 10)) : Vector.Multiply(size, 0.5));
 
             color = (value ? Settings.CARD_STACKED_COLOR : original_color);
             bg.color = (highlighted ? Settings.CARD_HIGHLIGHT_COLOR : (value ? original_color : Settings.CARD_COLOR));
@@ -86,8 +85,8 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         bg.visible = true;
         var old_size = bg.size.clone();
         bg.size.set_xy(0, 0);
-        
-        var tween = luxe.tween.Actuate.tween(bg.size, 0.2, { x: old_size.x, y: old_size.y });
+
+        var tween = Actuate.tween(bg.size, 0.2, { x: old_size.x, y: old_size.y });
         tween.onComplete(function() { outline.visible = false; });
         return tween;
     }
