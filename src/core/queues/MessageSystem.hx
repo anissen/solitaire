@@ -35,6 +35,10 @@ class MessageSystem<TAction, TEvent> {
         });
     }
 
+    public function reset() {
+        processed_actions = [];
+    }
+
     public function emit(event :TEvent) {
         return queue.handle(Event(event));
     }
@@ -68,8 +72,16 @@ class MessageSystem<TAction, TEvent> {
         // queue.handle_many([ for (action in action_list) Action(action) ]);
 
         // Events are seemingly played all at once but it doesn't break, somehow
-        for (action in action_list) {
-            do_action(action);
+        // for (action in action_list) {
+        //     do_action(action);
+        // }
+
+        function next_action() {
+            if (action_list.empty()) return;
+            do_action(action_list.shift()).then(next_action);
         }
+        next_action();
+
+        // Promise.all(action_list.map(do_action));
     }
 }

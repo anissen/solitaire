@@ -79,7 +79,7 @@ class PlayState extends State {
         game_mode = cast data;
         if (game_mode == null) game_mode = Normal;
 
-        Luxe.utils.random.initial = Math.random(); // TODO: Should be incremented for each play
+        Luxe.utils.random.initial = Std.int(10000 * Math.random()); // TODO: Should be incremented for each play
         var could_load_game = load_game();
         if (!could_load_game) handle_new_game();
     }
@@ -87,6 +87,7 @@ class PlayState extends State {
     function handle_new_game() {
         Luxe.scene.empty();
 
+        grabbed_card = null;
         collection = [];
         quests = [];
         tiles = [];
@@ -536,7 +537,7 @@ class PlayState extends State {
         // (what to do about card ids?)
 
         var save_data = {
-            seed: Luxe.utils.random.initial,
+            seed: Std.int(Luxe.utils.random.initial),
             score: score,
             events: Game.Instance.save()
         };
@@ -556,7 +557,7 @@ class PlayState extends State {
         try {
             trace('load_data: $data_string');
             var data = haxe.Json.parse(data_string);
-            Luxe.utils.random.initial = data.seed;
+            Luxe.utils.random.initial = Std.int(data.seed);
             score = data.score;
             Game.Instance.load(data.events);
             return true;
@@ -570,7 +571,10 @@ class PlayState extends State {
     override function onkeyup(event :luxe.Input.KeyEvent) {
         switch (event.keycode) {
             case luxe.Input.Key.key_k: handle_game_over();
-            case luxe.Input.Key.key_n: handle_new_game(); // Main.NewGame();
+            case luxe.Input.Key.key_n: {
+                Luxe.io.string_save('save_${get_game_mode_id()}', null); // clear the save
+                handle_new_game();
+            }
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
             case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Solitaire tweet #Solitaire&url=http://andersnissen.com/');

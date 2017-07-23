@@ -3,8 +3,6 @@ package core.models;
 
 using core.tools.ArrayTools;
 
-// TODO: Handle random seed
-
 class GenericDeck<T> {
     var cards :Array<T>;
 

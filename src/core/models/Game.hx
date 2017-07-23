@@ -47,6 +47,7 @@ class Game {
         this.quest_deck = quest_deck;
         grid = new Grid(grid_width, grid_height);
 
+        messageSystem.reset();
         quests = [];
         hand = [];
         Card.CardId = 0;
