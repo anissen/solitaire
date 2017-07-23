@@ -253,6 +253,7 @@ class PlayState extends State {
     }
 
     function handle_new_quest(quest :Array<Card>) {
+        // play_sound('quest.wav');
         var count = 0;
         var delay_count = 0;
         var tween = null;
@@ -290,12 +291,14 @@ class PlayState extends State {
     }
 
     function handle_stacked(card :Card) {
+        // play_sound('stack.wav');
         card.stacked = true;
 
         return Promise.resolve();
     }
 
     function handle_tile_placed(card :Card, x :Int, y :Int) {
+        play_sound('place.wav');
         if (card == null) {
             trace('handle_tile_placed: Card was null -- how?!');
             return Promise.resolve();
@@ -336,6 +339,11 @@ class PlayState extends State {
         return game_mode.getName().toLowerCase();
     }
 
+    function play_sound(id :String) {
+        var sound = Luxe.resources.audio('assets/sounds/$id');
+        Luxe.audio.play(sound.source);
+    }
+
     function handle_score(card_score :Int, card :Card) {
         var duration = 0.3;
         var delay = game.entities.Particle.Count * 0.1;
@@ -357,6 +365,13 @@ class PlayState extends State {
             if (textScale < 1.5) {
                 textScale += 0.1 * card_score;
                 scoreText.scale.set_xy(textScale, textScale);
+            }
+            if (card_score <= 1) {
+                play_sound('points_small.wav');
+            } else if (card_score <= 3) {
+                play_sound('points_big.wav');
+            } else {
+                play_sound('points_huge.wav');
             }
             var strive_score = get_strive_score();
             if (strive_score > 0 && score >= strive_score) scoreText.color.tween(0.3, { r: 0.2, g: 1, b: 0.2 });
@@ -381,7 +396,9 @@ class PlayState extends State {
                 var new_level = (win ? level + 1 : level - 1);
                 if (new_level < 1) new_level = 1;
                 Luxe.io.string_save('strive_level', '$new_level');
-            case _:
+                play_sound(win ? 'won.wav' : 'lost.wav');
+            case Normal:
+                play_sound('won.wav');
         }
 
         Main.SetState(GameOverState.StateId, {
@@ -429,9 +446,12 @@ class PlayState extends State {
         tile.set_highlight(true);
         collection.push(tile);
         if (!Game.Instance.is_collection_valid(collection)) {
+            play_sound('invalid.wav');
             clear_collection();
             return;
         }
+
+        play_sound('tile_click.wav');
 
         if (collection.length == 3) {
             var cardIds = [ for (c in collection) c.cardId ];

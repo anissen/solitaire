@@ -3,12 +3,9 @@ package game.states;
 import luxe.Text;
 import luxe.States.State;
 import luxe.Vector;
-import luxe.Sprite;
 import luxe.Color;
-import luxe.tween.Actuate;
 
 import game.ui.Button;
-
 
 class MenuState extends State {
     static public var StateId :String = 'MenuState';

@@ -55,11 +55,13 @@ class Main extends luxe.Game {
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'].map(function(i) return 'images/symbols/$i');
         var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png'];
+        var sounds = ['invalid.wav', 'lost.wav', 'place.wav', 'points_big.wav', 'points_huge.wav', 'points_small.wav', 'quest.wav', 'slide.wav', 'stack.wav', 'tile_click.wav', 'ui_click.wav', 'won.wav'];
 
         var parcel = new luxe.Parcel({
 			load_time_spacing: 0,
 			load_start_delay: 0,
-			textures: [ for (icon in icons.concat(ui)) { id: 'assets/' + icon } ]
+			textures: [ for (icon in icons.concat(ui)) { id: 'assets/' + icon } ],
+			sounds: [ for (sound in sounds) { id: 'assets/sounds/' + sound, is_stream: false } ]
 		});
 
 		new game.misc.ArcProgress(parcel, new luxe.Color().rgb(0x914D50), start);
@@ -85,6 +87,7 @@ class Main extends luxe.Game {
     static public function SetState(id :String, ?data :Dynamic) {
         luxe.tween.Actuate.reset();
         fade.fade_out().onComplete(function() {
+            Luxe.audio.play(Luxe.resources.audio('assets/sounds/slide.wav').source);
             states.set(id, data);
             fade.fade_in();
         });

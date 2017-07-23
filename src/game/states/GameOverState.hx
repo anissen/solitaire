@@ -3,7 +3,6 @@ package game.states;
 import luxe.Text;
 import luxe.States.State;
 import luxe.Vector;
-import luxe.Sprite;
 import luxe.Color;
 import luxe.tween.Actuate;
 
@@ -130,7 +129,6 @@ class GameOverState extends State {
             text: 'Back',
             on_click: Main.SetState.bind(MenuState.StateId)
         });
-        back_button.depth = 100;
 
         var play_button = new game.ui.Button({
             pos: new Vector(Settings.WIDTH * (3/4), Settings.HEIGHT - 50),
@@ -138,7 +136,6 @@ class GameOverState extends State {
             text: 'Play',
             on_click: Main.SetState.bind(PlayState.StateId)
         });
-        play_button.depth = 100;
 
         // Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {
         //     var my_highscore_line = new HighscoreLine('$my_highscore_rank', highscore.score, highscore.name, highscores_count * 50 + 620);

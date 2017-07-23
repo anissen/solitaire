@@ -28,7 +28,8 @@ class Button extends luxe.NineSlice {
             left: 50,
             right: 50,
             bottom: 20,
-            color: new Color(1, 1, 1, 1)
+            color: new Color(1, 1, 1, 1),
+            depth: 100
         });
         var width = (options.width != null ? options.width : 200);
         var height = (options.height != null ? options.height : 40);
@@ -79,8 +80,14 @@ class Button extends luxe.NineSlice {
     override public function onmouseup(event :MouseEvent) {
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (point_inside_AABB(world_pos)) {
+            play_sound('ui_click.wav');
             on_click();
         }
+    }
+
+    function play_sound(id :String) {
+        var sound = Luxe.resources.audio('assets/sounds/$id');
+        Luxe.audio.play(sound.source);
     }
 
     /** Returns true if a point is inside the AABB unrotated */
