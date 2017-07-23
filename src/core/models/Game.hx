@@ -26,7 +26,7 @@ enum Event {
 
 class Game {
     public static var Instance(default, null) = new Game();
-    public static var CardManager(default, null) = new Map<CardId, Card>(); //new Manager<Card>();
+    public static var CardManager(default, null) = new Map<CardId, Card>();
 
     var quest_deck :InfiniteDeck;
     var deck :InfiniteDeck;
@@ -103,37 +103,14 @@ class Game {
 
     public function save() {
         return messageSystem.serialize();
-        /*
-        return {
-            deck: deck.save(),
-            quest_deck: quest_deck.save(),
-            quests: [], // TODO: Fix me
-            hand: [ for (c in hand) { suit: c.suit, stacked: c.stacked } ], // TODO: Fix me
-            grid: grid.save()
-        };
-        */
     }
 
     public function load(s :String) {
         messageSystem.emit(NewGame);
         messageSystem.deserialize(s);
-        /*
-        deck.load(data.deck);
-        quest_deck.load(data.quest_deck);
-        quests = data.quests;
-        hand = []; //data.hand; // TODO: Fix me
-        grid.load(data.grid);
-        */
     }
 
     public function is_game_over() {
-        // var last_turn = deck.empty();
-        // var empty_hand = hand.empty();
-        // if (last_turn && empty_hand) {
-        //     // trace('game over: last turn + hand empty');
-        //     return true;
-        // }
-
         var board_full = is_board_full();
         if (!board_full) {
             // trace('board is not full');

@@ -23,11 +23,11 @@ class MessageSystem<TAction, TEvent> {
         queue.set_handler(function(element :MessageType<TAction, TEvent>) {
             switch (element) {
                 case Action(action):
-                    trace('ACTION: ${action}');
+                    // trace('ACTION: ${action}');
                     action_handler(action);
                     return Promise.resolve();
                 case Event(event):
-                    trace('EVENT: ${event}');
+                    // trace('EVENT: ${event}');
                     var promises :Array<Promise> = [];
                     for (l in listeners) promises.push(l(event));
                     return Promise.all(promises);

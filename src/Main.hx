@@ -57,8 +57,8 @@ class Main extends luxe.Game {
         var ui = ['ui/buttonLong_brown_pressed.png'];
 
         var parcel = new luxe.Parcel({
-			load_time_spacing: 0, //.5,
-			load_start_delay: 0, //.5,
+			load_time_spacing: 0,
+			load_start_delay: 0,
 			textures: [ for (icon in icons.concat(ui)) { id: 'assets/' + icon } ]
 		});
 

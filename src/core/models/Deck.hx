@@ -15,10 +15,6 @@ class GenericDeck<T> {
         return this;
     }
 
-    // public function take(count :Int = 1) {
-    //     return cards.splice(0, count);
-    // }
-
     public inline function count() {
         return cards.length;
     }
@@ -44,16 +40,6 @@ typedef Card = ICard;
 #else
 typedef Card = game.entities.Tile; // TODO: Hack!
 #end
-
-// typedef Deck = GenericDeck<CardData>;
-
-// class Deck extends GenericDeck<Card> {
-// 	public function new(cards :Array<Card>) {
-//         super(cards);
-//         this.cards = cards;
-//         shuffle();
-//     }
-// }
 
 class InfiniteDeck extends GenericDeck<CardData> {
     var all_cards :Array<CardData>;

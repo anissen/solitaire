@@ -5,7 +5,6 @@ import core.models.Deck.InfiniteDeck;
 import luxe.States.State;
 import luxe.Vector;
 import luxe.Sprite;
-import luxe.Color;
 import luxe.tween.Actuate;
 
 import game.entities.Tile;
@@ -24,15 +23,6 @@ enum GameMode {
     Normal;
     Strive(level :Int);
 }
-
-/*
-    Stuff to be saved:
-    * Deck list
-    * Hand list
-    * Board
-    * Score
-    * Game seed (for this instant in the game!)
-*/
 
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
@@ -65,7 +55,6 @@ class PlayState extends State {
 
     public function new() {
         super({ name: StateId });
-        // game = new Game();
         Game.Instance.listen(handle_event);
     }
 
@@ -98,19 +87,6 @@ class PlayState extends State {
         game_over = false;
         Tile.CardId = 0; // reset card Ids
 
-        // var bg_texture = Luxe.resources.texture('assets/images/symbols/wool.png');
-        // bg_texture.clamp_s = phoenix.Texture.ClampType.repeat;
-        // bg_texture.clamp_t = phoenix.Texture.ClampType.repeat;
-        // bg_texture.width = Luxe.screen.w * 2;
-        // bg_texture.height = Luxe.screen.h * 2;
-
-        // new Sprite({
-        //     centered: true,
-        //     pos: Luxe.screen.mid.clone(),
-        //     texture: bg_texture,
-        //     depth: -1
-        // });
-        
         // quest backgrounds
         for (x in 0 ... 3) {
             new Sprite({
@@ -131,7 +107,6 @@ class PlayState extends State {
                     color: Settings.BOARD_BG_COLOR
                 });
                 sprite.add(new MouseUp(grid_clicked.bind(x, y)));
-                // tween_pos(sprite, get_pos(x+3, y + 2), 10);
             }
         }
 
@@ -283,15 +258,7 @@ class PlayState extends State {
     }
 
     function tween_pos(sprite :Sprite, pos :Vector, duration :Float = 0.2) {
-        // trace('tween_pos', sprite);
-        // return Actuate.tween(this, duration, { score: score + 1 });
-        // var temp_pos = sprite.pos.clone();
-        return Actuate.tween(sprite.pos, duration, { x: pos.x, y: pos.y }); /* .onUpdate(function() {
-            if (sprite != null && sprite.transform != null && !sprite.destroyed) {
-                sprite.pos.set_xy(temp_pos.x, temp_pos.y);
-                // sprite.transform.dirty = true;
-            }
-        }); */
+        return Actuate.tween(sprite.pos, duration, { x: pos.x, y: pos.y });
     }
 
     function handle_collected(cards :Array<Card>, quest :Array<Card>) {
@@ -299,7 +266,6 @@ class PlayState extends State {
 
         for (card in quest) {
             quests.remove(card);
-            // Actuate.stop(card);
             card.destroy();
         }
         return Promise.resolve();
@@ -316,18 +282,13 @@ class PlayState extends State {
             trace('handle_tile_placed: Card was null -- how?!');
             return Promise.resolve();
         }
-        // card.pos = get_pos(x, y + 2);
         var tween = tween_pos(card, get_pos(x, y + 2), 0.1);
         card.grid_pos = { x: x, y: y };
         card.depth = 2;
         card.show_tile_graphics();
         if (card.has('Clickable')) card.remove('Clickable');
-        // card.add(new Clickable(tile_clicked));
-        // card.add(new DragOver(tile_dragover));
 
         Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
-            // trace('card is null: ${card == null}');
-            // trace('card is destoryed: ${card.destroyed}');
             if (card == null || card.destroyed) {
                 trace('No component is added to card -- card is null or destroyed');
                 return; // might happen when replaying (that card is removed in the same frame)
@@ -340,7 +301,6 @@ class PlayState extends State {
 
     function handle_tile_removed(card :Card) {
         tiles.remove(card);
-        // Actuate.stop(card);
         card.destroy();
 
         return Promise.resolve();
@@ -375,7 +335,6 @@ class PlayState extends State {
         Actuate.tween(p.size, duration, { x: tile_size * 0.25, y: tile_size * 0.25 }).delay(delay).onComplete(function() {
             if (p != null && !p.destroyed) p.destroy();
             score += card_score;
-            // scoreText.text = '${Std.int(this.score)}';
             var textScale = scoreText.scale.x;
             if (textScale < 1.5) {
                 textScale += 0.1 * card_score;
@@ -412,8 +371,6 @@ class PlayState extends State {
             name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
             score: Math.floor(1000 * Math.random()) // TODO: Use correct score
         });
-        //var tween = Luxe.renderer.clear_color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
-        //return tween.toPromise();
         return Promise.resolve();
     }
 
@@ -426,16 +383,7 @@ class PlayState extends State {
             return;
         }
 
-        // grabbed_card.pos = sprite.pos.clone();
-        // grabbed_card.grid_pos = { x: x, y: y };
-        // grabbed_card.remove('Clickable');
         do_action(Place(grabbed_card.cardId, x, y));
-        // var grabbed_card_copy = grabbed_card;
-        // Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
-        //     grabbed_card_copy.add(new Clickable(tile_clicked));
-        //     grabbed_card_copy.add(new DragOver(tile_dragover));
-        // });
-        // grabbed_card.depth = 2;
         grabbed_card = null;
     }
 
@@ -529,20 +477,13 @@ class PlayState extends State {
     }
 
     function save_game() {
-        // deck list
-        // quest list
-        // active quests
-        // hand
-        // board
-        // (what to do about card ids?)
-
         var save_data = {
             seed: Std.int(Luxe.utils.random.initial),
             score: score,
             events: Game.Instance.save()
         };
 
-        trace('save_data: $save_data');
+        // trace('save_data: $save_data');
 
         var succeeded = Luxe.io.string_save('save_${get_game_mode_id()}', haxe.Json.stringify(save_data));
         if (!succeeded) trace('Save failed!');
@@ -555,7 +496,7 @@ class PlayState extends State {
             return false;
         }
         try {
-            trace('load_data: $data_string');
+            // trace('load_data: $data_string');
             var data = haxe.Json.parse(data_string);
             Luxe.utils.random.initial = Std.int(data.seed);
             score = data.score;
