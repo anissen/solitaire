@@ -5,6 +5,7 @@ import luxe.Color;
 class Settings {
     // egypt theme:
     // static public var BACKGROUND_COLOR = new Color().rgb(0x914D50);
+    // static public var CARD_COLOR = new Color().rgb(0xFFFFFF);
     // static public var CARD_HIGHLIGHT_COLOR = new Color().rgb(0x7FDBFF);
     // static public var CARD_STACKED_COLOR = new Color().rgb(0xF6CE8C);
     // static public var BOARD_BG_COLOR = new Color().rgb(0xF6CE8C);

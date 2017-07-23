@@ -7,15 +7,25 @@ import luxe.Text;
 import luxe.Color;
 import luxe.tween.Actuate;
 
+typedef ButtonOptions = {
+    pos :Vector,
+    ?width :Int,
+    ?height :Int,
+    ?font_size :Int,
+    ?text :String,
+    on_click :Void->Void
+}
+
 class Button extends luxe.NineSlice {
     // static var SIZE = 150;
     // public var x :Int;
     // public var y :Int;
-    var text :Text;
+    var label :Text;
     var hovered :Bool = false;
+    var on_click :Void->Void;
 
     // TODO: Take an options object instead
-    public function new(pos :Vector, width :Float = 200, height :Float = 40) {
+    public function new(options :ButtonOptions /*pos :Vector, width :Float = 200, height :Float = 40 */) {
         super({
             name_unique: true,
             texture: Luxe.resources.texture('assets/ui/buttonLong_brown_pressed.png'),
@@ -25,7 +35,12 @@ class Button extends luxe.NineSlice {
             bottom: 20,
             color: new Color(1, 1, 1, 1)
         });
-        this.create(Vector.Subtract(pos, new Vector(width / 2, height / 2)), width, height);
+        var width = (options.width != null ? options.width : 200);
+        var height = (options.height != null ? options.height : 40);
+        var font_size = (options.font_size != null ? options.font_size : 24);
+        var text = (options.text != null ? options.text : '');
+        on_click = options.on_click;
+        this.create(Vector.Subtract(options.pos, new Vector(width / 2, height / 2)), width, height);
 
         // new Visual({
         //     pos: new Vector(SIZE * 0.05, SIZE * 0.05),
@@ -34,11 +49,11 @@ class Button extends luxe.NineSlice {
         //     parent: this
         // });
 
-        text = new Text({
+        label = new Text({
             parent: this,
-            text: 'PLAY',
+            text: text,
             pos: new Vector(width / 2, height / 2),
-            point_size: 24,
+            point_size: font_size,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
             color: new luxe.Color(1.0, 1.0, 1.0),
@@ -76,7 +91,8 @@ class Button extends luxe.NineSlice {
     override public function onmouseup(event :MouseEvent) {
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (point_inside_AABB(world_pos)) {
-            events.fire('click');
+            // events.fire('click');
+            on_click();
         }
     }
 
@@ -95,14 +111,5 @@ class Button extends luxe.NineSlice {
         if (_p.y > pos.y+_s_y) return false;
 
         return true;
-    }
-
-    public function assign(symbol :String) {
-        text.text = symbol;
-        // Actuate
-        //     .tween(this.pos, 1.0, { y: this.pos.y + 3 })
-        //     .reflect()
-        //     .repeat()
-        //     .ease(luxe.tween.easing.Cubic.easeInOut);
     }
 }

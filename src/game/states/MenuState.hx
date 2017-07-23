@@ -31,23 +31,32 @@ class MenuState extends State {
             color: new luxe.Color(1.0, 1.0, 1.0)
         });
 
-        var play_button = new Button(new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2));
-        play_button.assign('Play');
-        play_button.events.listen('click', function(_) {
-            trace('new game');
-            Main.SetState(PlayState.StateId);
+        var normal_save = Luxe.io.string_load('save_normal');
+
+        var play_button = new Button({
+            pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2),
+            text: (normal_save == null ? 'Play' : 'Continue Play'),
+            on_click: Main.SetState.bind(PlayState.StateId)
         });
 
+        var strive_save = Luxe.io.string_load('save_strive');
         var strive_level = Luxe.io.string_load('strive_level');
-        var strive_button = new Button(new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 60));
-        strive_button.assign(strive_level != null ? 'Strive (Level $strive_level)' : 'Strive');
-        strive_button.events.listen('click', function(_) {
-            trace('new game -- strive');
-            Main.SetState(PlayState.StateId, PlayState.GameMode.Strive(strive_level != null ? Std.parseInt(strive_level) : 1));
+        var strive_button = new Button({
+            pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 60),
+            text: (strive_save == null ? '' : 'Continue ') + (strive_level != null ? 'Strive (Level $strive_level)' : 'Strive'),
+            on_click: Main.SetState.bind(PlayState.StateId, PlayState.GameMode.Strive(strive_level != null ? Std.parseInt(strive_level) : 1))
         });
     }
 
     override function onleave(_) {
         Luxe.scene.empty();
     }
+
+    #if sys
+    override function onkeyup(event :luxe.Input.KeyEvent) {
+        if (event.keycode == luxe.Input.Key.escape) {
+            Luxe.shutdown();
+        }
+    }
+    #end
 }

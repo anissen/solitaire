@@ -325,8 +325,8 @@ class PlayState extends State {
         // card.add(new DragOver(tile_dragover));
 
         Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
-            trace('card is null: ${card == null}');
-            trace('card is destoryed: ${card.destroyed}');
+            // trace('card is null: ${card == null}');
+            // trace('card is destoryed: ${card.destroyed}');
             if (card == null || card.destroyed) {
                 trace('No component is added to card -- card is null or destroyed');
                 return; // might happen when replaying (that card is removed in the same frame)
@@ -574,6 +574,7 @@ class PlayState extends State {
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
             case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Solitaire tweet #Solitaire&url=http://andersnissen.com/');
+            case luxe.Input.Key.escape: Main.SetState(MenuState.StateId);
         }
     }
     #end

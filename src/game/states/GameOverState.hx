@@ -124,21 +124,21 @@ class GameOverState extends State {
         }
         http.request();
 
-        var back_button = new game.ui.Button(new Vector(Settings.WIDTH * (1/4), Settings.HEIGHT - 50), 100);
+        var back_button = new game.ui.Button({
+            pos: new Vector(Settings.WIDTH * (1/4), Settings.HEIGHT - 50),
+            width: 100,
+            text: 'Back',
+            on_click: Main.SetState.bind(MenuState.StateId)
+        });
         back_button.depth = 100;
-        back_button.assign('Back');
-        back_button.events.listen('click', function(_) {
-            trace('back');
-            Main.SetState(MenuState.StateId);
-        });
 
-        var play_button = new game.ui.Button(new Vector(Settings.WIDTH * (3/4), Settings.HEIGHT - 50), 100);
-        play_button.depth = 100;
-        play_button.assign('Play');
-        play_button.events.listen('click', function(_) {
-            trace('new game');
-            Main.SetState(PlayState.StateId);
+        var play_button = new game.ui.Button({
+            pos: new Vector(Settings.WIDTH * (3/4), Settings.HEIGHT - 50),
+            width: 100,
+            text: 'Play',
+            on_click: Main.SetState.bind(PlayState.StateId)
         });
+        play_button.depth = 100;
 
         // Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {
         //     var my_highscore_line = new HighscoreLine('$my_highscore_rank', highscore.score, highscore.name, highscores_count * 50 + 620);

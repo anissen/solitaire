@@ -19,22 +19,19 @@ class Main extends luxe.Game {
         start_time = haxe.Timer.stamp();
 
         config.window.title = 'Solitaire';
-        config.window.width = 360;
-        config.window.height = 640;
+        config.window.width = 360; //Settings.WIDTH;
+        config.window.height = 640; //Settings.HEIGHT;
         config.window.fullscreen = false;
         config.render.antialiasing = 4;
 
         config.preload.textures.push({ id: 'assets/ui/panel_beigeLight.png' });
 
-        // var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'];
-        // for (icon in icons) config.preload.textures.push({ id: 'assets/images/symbols/' + icon });
-
         return config;
     }
 
     override function ready() {
-        Luxe.camera.size = new luxe.Vector(270, 480);
-        Luxe.renderer.clear_color = game.misc.Settings.BACKGROUND_COLOR;
+        Luxe.camera.size = new luxe.Vector(Settings.WIDTH, Settings.HEIGHT);
+        Luxe.renderer.clear_color = Settings.BACKGROUND_COLOR;
         
         fade = new game.components.Fader({ name: 'fade' });
         Luxe.camera.add(fade);
@@ -93,11 +90,9 @@ class Main extends luxe.Game {
         });
     }
 
-    #if sys
+    #if debug
     override function onkeyup(event :luxe.Input.KeyEvent) {
-        if (event.keycode == luxe.Input.Key.escape) {
-            Luxe.shutdown();
-        } else if (event.keycode == luxe.Input.Key.key_d) {
+        if (event.keycode == luxe.Input.Key.key_d) {
             Luxe.io.string_save('save_normal', null);
             Luxe.io.string_save('save_strive', null);
         }
