@@ -2,7 +2,6 @@
 # Tasks:
 
 Need:
-* Make better graphics for quest background
 * Better background graphics
 * Add sounds
 * Add game over screen

@@ -95,12 +95,24 @@ class PlayState extends State {
 
         // quest backgrounds
         for (x in 0 ... 3) {
-            new Sprite({
-                pos: get_pos(x, 0.5),
-                texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
-                size: new Vector(tile_size, tile_size * 2.6),
-                color: Settings.QUEST_BG_COLOR
+            // new Sprite({
+            //     pos: get_pos(x, 0.5),
+            //     texture: Luxe.resources.texture('assets/images/symbols/tile_bg.png'),
+            //     size: new Vector(tile_size, tile_size * 2.6),
+            //     color: Settings.QUEST_BG_COLOR
+            // });
+            var nineslice = new luxe.NineSlice({
+                name_unique: true,
+                texture: Luxe.resources.texture('assets/ui/panelInset_beige.png'),
+                top: 10,
+                left: 10,
+                right: 10,
+                bottom: 10
             });
+
+            nineslice.create(get_pos(-0.35 + x, -0.35), tile_size * 0.8, tile_size);
+            nineslice.size = new luxe.Vector(tile_size * 0.8, tile_size);
+            Actuate.tween(nineslice.size, 0.3, { y: tile_size * 2 }).delay(x * 0.2);
         }
         
         // board grid
