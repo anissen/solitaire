@@ -55,13 +55,15 @@ class Main extends luxe.Game {
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'].map(function(i) return 'images/symbols/$i');
         var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png'];
-        var sounds = ['invalid.wav', 'lost.wav', 'place.wav', 'points_big.wav', 'points_huge.wav', 'points_small.wav', 'quest.wav', 'slide.wav', 'stack.wav', 'tile_click.wav', 'ui_click.wav', 'won.wav'];
+        var sounds = ['invalid.ogg', 'lost.ogg', 'place.ogg', 'points_big.ogg', 'points_huge.ogg', 'points_small.ogg', 'quest.ogg', 'slide.ogg', 'stack.ogg', 'tile_click.ogg', 'ui_click.ogg', 'won.ogg'];
+        var music = ['Temple_of_the_Mystics.ogg']; // TODO: Convert to ogg/mp3
 
         var parcel = new luxe.Parcel({
 			load_time_spacing: 0,
 			load_start_delay: 0,
 			textures: [ for (icon in icons.concat(ui)) { id: 'assets/' + icon } ],
 			sounds: [ for (sound in sounds) { id: 'assets/sounds/' + sound, is_stream: false } ]
+                    .concat([for (m in music) { id: 'assets/music/' + m, is_stream: true }])
 		});
 
 		new game.misc.ArcProgress(parcel, new luxe.Color().rgb(0x914D50), start);
@@ -78,6 +80,8 @@ class Main extends luxe.Game {
         states.add(new PlayState());
         states.add(new GameOverState());
 
+        Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.ogg').source);
+
         luxe.tween.Actuate.tween(nineslice.pos, 0.3, { x: 0, y: 0 });
         luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT }).onComplete(function() {
             states.set(MenuState.StateId);  
@@ -87,7 +91,7 @@ class Main extends luxe.Game {
     static public function SetState(id :String, ?data :Dynamic) {
         luxe.tween.Actuate.reset();
         fade.fade_out().onComplete(function() {
-            Luxe.audio.play(Luxe.resources.audio('assets/sounds/slide.wav').source);
+            Luxe.audio.play(Luxe.resources.audio('assets/sounds/slide.ogg').source);
             states.set(id, data);
             fade.fade_in();
         });

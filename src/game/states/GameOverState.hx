@@ -154,6 +154,7 @@ class GameOverState extends State {
         score_container.color.a = 0;
         // score_container.clip_rect = new luxe.Rectangle(0, 50, Settings.WIDTH / 2, Settings.HEIGHT / 2 - 50);
         
+        // TODO: Try adding a batcher with clipping rectangle
         var count = 0;
         for (score in highscores) {
             count++;
