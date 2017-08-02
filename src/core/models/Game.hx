@@ -247,16 +247,25 @@ class Game {
 
     function complete_quest(tiles :Array<Card>) {
         var cards = [ for (t in tiles) grid.get_tile(t.grid_pos.x, t.grid_pos.y) ];
+        var best_quest_score = 0;
+        var best_quest = null;
         for (quest in quests) {
             if (!cards_matching(cards, quest)) continue;
-
-            quests.remove(quest);
-            update_score(cards, quest);
-            for (tile in tiles) remove_tile(tile);
-            messageSystem.emit(Collected(cards, quest));
-            return true;
+            
+            var quest_score = calculate_score(cards, quest);
+            if (quest_score > best_quest_score) {
+                best_quest = quest;
+                best_quest_score = quest_score;
+            } 
         }
-        return false;
+
+        if (best_quest == null) return false;
+
+        quests.remove(best_quest);
+        update_score(cards, best_quest);
+        for (tile in tiles) remove_tile(tile);
+        messageSystem.emit(Collected(cards, best_quest));
+        return true;
     }
 
     function make_stack(tiles :Array<Card>) {
@@ -331,17 +340,31 @@ class Game {
         if (make_stack(tiles)) return;
     }
 
-    function update_score(cards :Array<Card>, quest :Array<Card>) {
+    function card_score(card :Card, isCorrectOrder :Bool) {
+        return (card.stacked ? 3 : 1) * (isCorrectOrder ? 2 : 1);
+    }
+
+    function is_correct_order(cards :Array<Card>, quest :Array<Card>) {
         var matchingSuits = true;
         var matchingSuitsReverse = true;
         for (i in 0 ... cards.length) {
             if (cards[i].suit != quest[i].suit) matchingSuits = false;
             if (cards[i].suit != quest[cards.length - i - 1].suit) matchingSuitsReverse = false;
         }
-        var matchingOrder = (cards.length > 0 && (matchingSuits || matchingSuitsReverse));
+        return (cards.length > 0 && (matchingSuits || matchingSuitsReverse));
+    }
 
+    function calculate_score(cards :Array<Card>, quest :Array<Card>) {
+        var score_sum = 0;
         for (card in cards) {
-            var card_score = (card.stacked ? 3 : 1) * (matchingOrder ? 2 : 1);
+            score_sum += card_score(card, is_correct_order(cards, quest));
+        }
+        return score_sum;
+    }
+
+    function update_score(cards :Array<Card>, quest :Array<Card>) {
+        for (card in cards) {
+            var card_score = card_score(card, is_correct_order(cards, quest));
             messageSystem.emit(Score(card_score, card));
         }
     }
