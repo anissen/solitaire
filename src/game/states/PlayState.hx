@@ -401,11 +401,14 @@ class PlayState extends State {
                 play_sound('won.ogg');
         }
 
-        Main.SetState(GameOverState.StateId, {
-            client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
-            name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
-            score: Math.floor(1000 * Math.random()) // TODO: Use correct score
+        Luxe.timer.schedule(1.0, function() {
+            Main.SetState(GameOverState.StateId, {
+                client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
+                name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
+                score: Math.floor(1000 * Math.random()) // TODO: Use correct score
+            });
         });
+
         return Promise.resolve();
     }
 
