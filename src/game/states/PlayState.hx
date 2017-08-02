@@ -515,6 +515,8 @@ class PlayState extends State {
     }
 
     function save_game() {
+        if (game_over) return; // do not try to save game when game is over!
+
         var save_data = {
             seed: Std.int(Luxe.utils.random.initial),
             score: score,

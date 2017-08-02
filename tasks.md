@@ -3,16 +3,17 @@
 
 Need:
 * Better background graphics
-* Add sounds
 * Add game over screen
 * Tutorial
 * App icon
 * Remove debug hooks, debug view
 * Add some analytics
+* Better font
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 * If multiple quests match the collected tiles, the highest-scoring quest should be completed
+* Cards can still get stuck on the background
 
 Nice:
 * Share score via twitter
