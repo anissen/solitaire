@@ -56,20 +56,23 @@ class Main extends luxe.Game {
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png'].map(function(i) return 'images/symbols/$i');
         var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png'];
         var sounds = ['invalid.ogg', 'lost.ogg', 'place.ogg', 'points_big.ogg', 'points_huge.ogg', 'points_small.ogg', 'quest.ogg', 'slide.ogg', 'stack.ogg', 'tile_click.ogg', 'ui_click.ogg', 'won.ogg'];
-        var music = ['Temple_of_the_Mystics.ogg']; // TODO: Convert to ogg/mp3
+        var music = ['Temple_of_the_Mystics.ogg']; // TODO: Convert to mp3 to work in more browsers?]
 
         var parcel = new luxe.Parcel({
 			load_time_spacing: 0,
 			load_start_delay: 0,
 			textures: [ for (icon in icons.concat(ui)) { id: 'assets/' + icon } ],
 			sounds: [ for (sound in sounds) { id: 'assets/sounds/' + sound, is_stream: false } ]
-                    .concat([for (m in music) { id: 'assets/music/' + m, is_stream: true }])
+                    .concat([for (m in music) { id: 'assets/music/' + m, is_stream: true }]),
+            fonts: [{ id: 'assets/fonts/clemente/clemente.fnt' } ]
 		});
 
 		new game.misc.ArcProgress(parcel, new luxe.Color().rgb(0x914D50), start);
     }
 
     function start() {
+        Luxe.renderer.font = Luxe.resources.font('assets/fonts/clemente/clemente.fnt');
+
         var end = haxe.Timer.stamp();
         trace('startup took ${end - start_time} seconds'); 
 
