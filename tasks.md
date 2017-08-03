@@ -8,6 +8,7 @@ Need:
 * App icon
 * Remove debug hooks, debug view
 * Add some analytics
+* [No default font]
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
