@@ -46,8 +46,16 @@ class Button extends luxe.NineSlice {
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
             color: new luxe.Color(1.0, 1.0, 1.0),
-            depth: this.depth + 0.1
+            depth: this.depth + 0.1,
+
+            letter_spacing: -1.4,
+            sdf: true,
+            shader: Luxe.renderer.shaders.bitmapfont.shader.clone('title-shader'),
+            outline: 0.7,
+            outline_color: new Color().rgb(0xa55004)
         });
+
+        Actuate.tween(label, 3.0, { letter_spacing: -0.5 }).reflect().repeat();
 
         this.scale.y = 0;
         Actuate
