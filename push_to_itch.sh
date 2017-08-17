@@ -1,8 +1,12 @@
 # build for web
+rm -rf bin/web
+rm -rf bin/web.build
 flow build web
 butler push bin/web anissen/solitaire:web
 
 # build for mac
+rm -rf bin/mac64
+rm -rf bin/mac64.build
 flow build mac
 butler push bin/mac64 anissen/solitaire:mac
 

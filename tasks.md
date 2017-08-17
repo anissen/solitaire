@@ -2,13 +2,14 @@
 # Tasks:
 
 Need:
-* Better background graphics
+* Better tile graphics (to indicate depth)
 * Add game over screen
 * Tutorial
 * App icon
 * Remove debug hooks, debug view
 * Add some analytics
 * [No default font]
+* Convert sounds to MP3 for better browser compability
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
@@ -16,6 +17,7 @@ Bugs:
 * A tile can be selected while dragging a grabbed card
 
 Nice:
+* Better background graphics
 * Share score via twitter
 * Outlines on text
 * State transitions (fade)
