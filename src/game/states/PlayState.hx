@@ -92,6 +92,7 @@ class PlayState extends State {
             texture_path: 'assets/ui/arrowBeige_left.png',
             on_click: Main.SetState.bind(MenuState.StateId)
         });
+        back_button.scale.set_xy(1/5, 1/5);
 
         // quest backgrounds
         for (x in 0 ... 3) {
@@ -104,10 +105,10 @@ class PlayState extends State {
             var nineslice = new luxe.NineSlice({
                 name_unique: true,
                 texture: Luxe.resources.texture('assets/ui/panelInset_beige.png'),
-                top: 10,
-                left: 10,
-                right: 10,
-                bottom: 10
+                top: 20,
+                left: 20,
+                right: 20,
+                bottom: 20
             });
 
             nineslice.create(get_pos(-0.35 + x, -0.35), tile_size * 0.8, tile_size);
@@ -374,7 +375,10 @@ class PlayState extends State {
                 play_sound('points_huge.ogg');
             }
             var strive_score = get_strive_score();
-            if (strive_score > 0 && score >= strive_score) scoreText.color.tween(0.3, { r: 0.2, g: 1, b: 0.2 });
+            if (strive_score > 0 && score >= strive_score) {
+                scoreText.color.tween(0.3, { r: 0.2, g: 1, b: 0.2 });
+                handle_game_over();
+            }
             Actuate.tween(this, (score - counting_score) * 0.02, { counting_score: score }, true).onUpdate(function() {
                 var temp_score = Std.int(counting_score) - strive_score;
                 scoreText.text = '$temp_score';

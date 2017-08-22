@@ -32,7 +32,7 @@ class Button extends luxe.NineSlice {
             depth: 100
         });
         var width = (options.width != null ? options.width : 200);
-        var height = (options.height != null ? options.height : 40);
+        var height = (options.height != null ? options.height : 50);
         var font_size = (options.font_size != null ? options.font_size : 24);
         var text = (options.text != null ? options.text : '');
         on_click = options.on_click;
@@ -104,13 +104,13 @@ class Button extends luxe.NineSlice {
         if (size == null) return false;
 
         // scaled size
-        var _s_x = size.x * scale.x;
-        var _s_y = size.y * scale.y;
+        // var _s_x = size.x * scale.x * 0.5  /* hack */;
+        // var _s_y = size.y * scale.y * 0.5 /* hack */;
 
         if (_p.x < pos.x) return false;
         if (_p.y < pos.y) return false;
-        if (_p.x > pos.x+_s_x) return false;
-        if (_p.y > pos.y+_s_y) return false;
+        if (_p.x > pos.x + width) return false;
+        if (_p.y > pos.y + height) return false;
 
         return true;
     }

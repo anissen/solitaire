@@ -22,10 +22,13 @@ class Icon extends Sprite {
             pos: options.pos
         });
         on_click = options.on_click;
+    }
 
+    override function init() {
+        var old_scale = scale.clone();
         this.scale.y = 0;
         Actuate
-            .tween(this.scale, 0.3, { y: 1 })
+            .tween(this.scale, 0.3, { y: old_scale.y })
             .delay(Math.random() * 0.2)
             .ease(luxe.tween.easing.Cubic.easeInOut);
     }

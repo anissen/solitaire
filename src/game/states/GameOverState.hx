@@ -23,7 +23,7 @@ class HighscoreLine extends luxe.Entity {
             align: right,
             align_vertical: center,
             color: new Color(0.8, 0.8, 0.8, 0.0),
-            depth: 101
+            depth: 10
         });
         scoreText = new luxe.Text({
             parent: this,
@@ -33,7 +33,7 @@ class HighscoreLine extends luxe.Entity {
             align: right,
             align_vertical: center,
             color: new Color(0.6, 0.6, 0.6, 0.0),
-            depth: 101
+            depth: 10
         });
         nameText = new luxe.Text({
             parent: this,
@@ -43,7 +43,7 @@ class HighscoreLine extends luxe.Entity {
             align: left,
             align_vertical: center,
             color: new Color(0.6, 0.6, 0.6, 0.0),
-            depth: 101
+            depth: 10
         });
     }
 

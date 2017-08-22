@@ -47,7 +47,7 @@ class MenuState extends State {
         var strive_save = Luxe.io.string_load('save_strive');
         var strive_level = Luxe.io.string_load('strive_level');
         var strive_button = new Button({
-            pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 60),
+            pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 75),
             text: (strive_save == null ? '' : '~ ') + (strive_level != null ? 'Strive $strive_level' : 'Strive') +(strive_save == null ? '' : ' ~'),
             on_click: Main.SetState.bind(PlayState.StateId, PlayState.GameMode.Strive(strive_level != null ? Std.parseInt(strive_level) : 1))
         });
