@@ -83,7 +83,7 @@ class GameOverState extends State {
 
     }
 
-    override function onenter(data :Dynamic) {
+    override function onenter(d :Dynamic) {
         // var bg = new luxe.Sprite({
         //     pos: Luxe.screen.mid.clone(),
         //     size: Luxe.screen.size.clone(),
@@ -92,12 +92,12 @@ class GameOverState extends State {
         // });
         // Actuate.tween(bg.color, 1.0, { a: 0.95 });
 
-        var highscore :Highscore = cast data;
+        var data :{ client :String, score :Int, name :String, game_mode :PlayState.GameMode } = cast d;
 
         var http = new haxe.Http("http://localhost:1337/highscore");
-        http.addParameter('client', highscore.client);
-        http.addParameter('name', highscore.name);
-        http.addParameter('score', '${highscore.score}');
+        http.addParameter('client', data.client);
+        http.addParameter('name', data.name);
+        http.addParameter('score', '${data.score}');
         http.onError = function(data) {
             trace('error: $data');
 
@@ -124,17 +124,26 @@ class GameOverState extends State {
         http.request();
 
         var back_button = new game.ui.Button({
-            pos: new Vector(Settings.WIDTH * (1/4), Settings.HEIGHT - 50),
-            width: 100,
+            pos: new Vector(Settings.WIDTH * (1/4) + 5, Settings.HEIGHT - 40),
+            width: 120,
+            font_size: 22,
             text: 'Back',
             on_click: Main.SetState.bind(MenuState.StateId)
         });
 
+        var play_text = switch (data.game_mode) {
+            case Normal: 'Play';
+            case Strive(level): 'Strive for $level';
+        };
+
         var play_button = new game.ui.Button({
-            pos: new Vector(Settings.WIDTH * (3/4), Settings.HEIGHT - 50),
-            width: 100,
-            text: 'Play',
-            on_click: Main.SetState.bind(PlayState.StateId)
+            pos: new Vector(Settings.WIDTH * (3/4) - 5, Settings.HEIGHT - 40),
+            width: 120,
+            font_size: 22,
+            text: play_text,
+            on_click: function() {
+                Main.SetState(PlayState.StateId, data.game_mode);
+            }
         });
 
         // Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {

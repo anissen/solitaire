@@ -33,7 +33,7 @@ class Button extends luxe.NineSlice {
         });
         var width = (options.width != null ? options.width : 200);
         var height = (options.height != null ? options.height : 50);
-        var font_size = (options.font_size != null ? options.font_size : 24);
+        var font_size = (options.font_size != null ? options.font_size : 26);
         var text = (options.text != null ? options.text : '');
         on_click = options.on_click;
         this.create(Vector.Subtract(options.pos, new Vector(width / 2, height / 2)), width, height);

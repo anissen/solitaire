@@ -157,7 +157,7 @@ class PlayState extends State {
 
         var strive_score = get_strive_score();
         scoreText = new luxe.Text({
-            pos: get_pos(1, -0.75),
+            pos: get_pos(1, -0.6),
             align: center,
             align_vertical: center,
             text: '${0-strive_score}'
@@ -401,6 +401,7 @@ class PlayState extends State {
                 if (new_level < 1) new_level = 1;
                 Luxe.io.string_save('strive_level', '$new_level');
                 play_sound(win ? 'won.ogg' : 'lost.ogg');
+                game_mode = Strive(new_level);
             case Normal:
                 play_sound('won.ogg');
         }
@@ -409,7 +410,8 @@ class PlayState extends State {
             Main.SetState(GameOverState.StateId, {
                 client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
                 name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
-                score: Math.floor(1000 * Math.random()) // TODO: Use correct score
+                score: Math.floor(1000 * Math.random()), // TODO: Use correct score
+                game_mode: game_mode
             });
         });
 
