@@ -3,7 +3,7 @@
 
 Need:
 * Better tile graphics (to indicate depth)
-* Add game over screen
+* Finalize game over screen
 * Tutorial
 * App icon
 * Remove debug hooks, debug view

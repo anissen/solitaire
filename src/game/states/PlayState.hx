@@ -230,7 +230,7 @@ class PlayState extends State {
             case TileRemoved(card): handle_tile_removed(card);
             case Collected(cards, quest): handle_collected(cards, quest);
             case Stacked(card): handle_stacked(card);
-            case Score(score, card): handle_score(score, card);
+            case Score(score, card, correct_order): handle_score(score, card, correct_order);
             case GameOver: handle_game_over();
         }
     }
@@ -242,6 +242,9 @@ class PlayState extends State {
             var new_pos = get_pos(x, tiles_y + 2 + 0.1);
             tween = tween_pos(card, new_pos).delay(x * 0.1);
             card.add(new Clickable(card_clicked));
+            // var trail = new game.components.TrailRenderer();
+            // trail.depth = card.depth - 0.1;
+            // card.add(trail);
             tiles.push(card);
             x++;
         }
@@ -340,7 +343,7 @@ class PlayState extends State {
         Luxe.audio.play(sound.source);
     }
 
-    function handle_score(card_score :Int, card :Card) {
+    function handle_score(card_score :Int, card :Card, correct_order :Bool) {
         var duration = 0.3;
         var delay = game.entities.Particle.Count * 0.1;
         var p = new game.entities.Particle({
@@ -354,6 +357,15 @@ class PlayState extends State {
             duration: duration,
             delay: delay
         });
+        if (correct_order) {
+            var trail = new game.components.TrailRenderer();
+            trail.trailColor.fromColor(card.color);
+            trail.startSize = 8;
+            trail.maxLength = 75;
+            trail.depth = p.depth - 0.1;
+            p.add(trail);
+        }
+
         Actuate.tween(p.size, duration, { x: tile_size * 0.25, y: tile_size * 0.25 }).delay(delay).onComplete(function() {
             if (p != null && !p.destroyed) p.destroy();
             score += card_score;
