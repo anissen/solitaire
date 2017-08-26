@@ -7,6 +7,8 @@ import luxe.Color;
 
 import game.ui.Button;
 
+using game.misc.GameMode.GameModeTools;
+
 class MenuState extends State {
     static public var StateId :String = 'MenuState';
     var title :Text;
@@ -46,10 +48,11 @@ class MenuState extends State {
 
         var strive_save = Luxe.io.string_load('save_strive');
         var strive_level = Luxe.io.string_load('strive_level');
+        var strive_mode = game.misc.GameMode.GameMode.Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
         var strive_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 75),
-            text: (strive_save == null ? '' : '~ ') + (strive_level != null ? 'Strive for $strive_level' : 'Strive') +(strive_save == null ? '' : ' ~'),
-            on_click: Main.SetState.bind(PlayState.StateId, PlayState.GameMode.Strive(strive_level != null ? Std.parseInt(strive_level) : 1))
+            text: (strive_save == null ? '' : '~ ') + (strive_level != null ? 'Strive for ${strive_mode.get_strive_score()}' : 'Strive') +(strive_save == null ? '' : ' ~'),
+            on_click: Main.SetState.bind(PlayState.StateId, strive_mode)
         });
     }
 

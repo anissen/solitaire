@@ -6,6 +6,8 @@ import luxe.Vector;
 import luxe.Color;
 import luxe.tween.Actuate;
 
+using game.misc.GameMode.GameModeTools;
+
 class HighscoreLine extends luxe.Entity {
     var rankText :Text;
     var scoreText :Text;
@@ -92,7 +94,7 @@ class GameOverState extends State {
         // });
         // Actuate.tween(bg.color, 1.0, { a: 0.95 });
 
-        var data :{ client :String, score :Int, name :String, game_mode :PlayState.GameMode } = cast d;
+        var data :{ client :String, score :Int, name :String, game_mode :game.misc.GameMode.GameMode } = cast d;
 
         var http = new haxe.Http("http://localhost:1337/highscore");
         http.addParameter('client', data.client);
@@ -133,7 +135,7 @@ class GameOverState extends State {
 
         var play_text = switch (data.game_mode) {
             case Normal: 'Play';
-            case Strive(level): 'Strive for $level';
+            case Strive(level): 'Strive for ${data.game_mode.get_strive_score()}';
         };
 
         var play_button = new game.ui.Button({

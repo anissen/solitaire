@@ -19,11 +19,6 @@ using game.tools.TweenTools;
 
 typedef Card = Tile;
 
-enum GameMode {
-    Normal;
-    Strive(level :Int);
-}
-
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var grabbed_card :Tile = null;
@@ -49,7 +44,7 @@ class PlayState extends State {
     var score :Int;
 
     var game_over :Bool;
-    var game_mode :GameMode;
+    var game_mode :game.misc.GameMode.GameMode;
 
     var quest_matches :Array<Card>;
 
