@@ -20,7 +20,7 @@ enum Event {
     TileRemoved(card :Card);
     Collected(cards :Array<Card>, quest :Array<Card>);
     Stacked(card :Card);
-    Score(score :Int, card :Card);
+    Score(score :Int, card :Card, correct_order :Bool);
     GameOver();
 }
 
@@ -283,7 +283,7 @@ class Game {
         }
 
         for (i in 0 ... cards.length - 1) {
-            messageSystem.emit(Score(1, cards[i]));
+            messageSystem.emit(Score(1, cards[i], false));
         }
 
         for (i in 0 ... tiles.length - 1) remove_tile(tiles[i]);
@@ -363,9 +363,10 @@ class Game {
     }
 
     function update_score(cards :Array<Card>, quest :Array<Card>) {
+        var correct_order = is_correct_order(cards, quest);
         for (card in cards) {
-            var card_score = card_score(card, is_correct_order(cards, quest));
-            messageSystem.emit(Score(card_score, card));
+            var card_score = card_score(card, correct_order);
+            messageSystem.emit(Score(card_score, card, correct_order));
         }
     }
 
