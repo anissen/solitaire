@@ -69,7 +69,7 @@ class Button extends luxe.NineSlice {
         if (point_inside_AABB(world_pos)) {
             if (!hovered) {
                 hovered = true;
-                color.tween(0.1, { a: 0.7 });
+                color.tween(0.1, { r: 1.0, g: 0.9, b: 0.9 });
                 Actuate
                     .tween(this.pos, 0.3, { y: this.pos.y + 2 })
                     .reflect()
@@ -80,7 +80,7 @@ class Button extends luxe.NineSlice {
             if (hovered) {
                 hovered = false;
                 Actuate.stop(this.pos);
-                color.tween(0.1, { a: 1.0 });
+                color.tween(0.1, { r: 1.0, g: 1.0, b: 1.0 });
             }
         }
     }

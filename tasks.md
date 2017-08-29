@@ -19,6 +19,8 @@ Bugs:
 Nice:
 * Better background graphics
 * Share score via twitter
+* Score indicator on the main menu
 * Puzzle mode
+* Multi-touch for dragging tiles?
 * Trails on symbol particles (https://gist.github.com/le-doux/d9ac94af66c2b9a86238)
 * Move the general-purpose parts out of core and into turnabout (and reference it)
