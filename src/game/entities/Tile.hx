@@ -28,7 +28,6 @@ class Tile extends Sprite implements core.models.Deck.ICard {
 
     var original_color :Color;
 
-    var outline :Sprite;
     var bg :Sprite;
     var highlighted :Bool;
 
@@ -38,15 +37,6 @@ class Tile extends Sprite implements core.models.Deck.ICard {
             size: new Vector(options.size, options.size),
             depth: ((options.depth == null) ? 0 : options.depth),
             texture: options.texture
-        });
-
-        outline = new Sprite({
-            pos: Vector.Multiply(size, 0.5),
-            size: Vector.Multiply(size, 1.15),
-            texture: texture,
-            depth: depth - 0.2,
-            color: Settings.CARD_COLOR,
-            parent: this
         });
 
         bg = new Sprite({
@@ -86,9 +76,7 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         var old_size = bg.size.clone();
         bg.size.set_xy(0, 0);
 
-        var tween = Actuate.tween(bg.size, 0.2, { x: old_size.x, y: old_size.y });
-        tween.onComplete(function() { outline.visible = false; });
-        return tween;
+        return Actuate.tween(bg.size, 0.2, { x: old_size.x, y: old_size.y });
     }
 
     override public function set_visible(value :Bool) {
@@ -98,7 +86,6 @@ class Tile extends Sprite implements core.models.Deck.ICard {
 
     override public function set_depth(value :Float) {
         if (bg != null) bg.depth = value - 0.1;
-        if (outline != null) outline.depth = value - 0.2;
         return (super.depth = value);
     }
 }
