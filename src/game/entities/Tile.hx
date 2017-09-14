@@ -71,12 +71,11 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         bg.color = (highlighted ? Settings.CARD_HIGHLIGHT_COLOR : (stacked ? original_color : Settings.CARD_COLOR));
     }
     
-    public function show_tile_graphics() {
+    public function show_tile_graphics(show :Bool = true) {
         bg.visible = true;
-        var old_size = bg.size.clone();
-        bg.size.set_xy(0, 0);
-
-        return Actuate.tween(bg.size, 0.2, { x: old_size.x, y: old_size.y });
+        var to_size = (show ? bg.size.clone() : new Vector(0, 0));
+        if (show) bg.size.set_xy(0, 0);
+        return Actuate.tween(bg.size, 0.2, { x: to_size.x, y: to_size.y });
     }
 
     override public function set_visible(value :Bool) {

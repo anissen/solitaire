@@ -185,7 +185,7 @@ class GameOverState extends State {
         }
         // Luxe.camera.transform.pos.y = count * 50;
         var pan = new game.components.DragPan({ name: 'DragPan' });
-        pan.y_top = Settings.HEIGHT - (count * 25 + 50);
+        pan.y_top = Settings.HEIGHT - (count * 25 + 100);
         pan.y_bottom = 0;
         score_container.add(pan);
         // Luxe.camera.add(pan);
