@@ -345,7 +345,7 @@ class PlayState extends State {
 
     function handle_score(card_score :Int, card :Card, correct_order :Bool) {
         var duration = 0.3;
-        var delay = game.entities.Particle.Count * 0.1;
+        var delay = game.entities.Particle.Count * 0.15;
         var p = new game.entities.Particle({
             pos: card.pos.clone(),
             texture: card.texture,
@@ -374,6 +374,19 @@ class PlayState extends State {
                 textScale += 0.1 * card_score;
                 scoreText.scale.set_xy(textScale, textScale);
             }
+            var tile_symbol = new Sprite({
+                texture: Luxe.resources.texture('assets/images/symbols/ring.png'),
+                size: new Vector(tile_size / 2, tile_size / 2),
+                pos: scoreText.pos,
+                color: card.color // new luxe.Color(1, 0, 0, 1)
+                // parent: scoreText
+            });
+            Actuate.tween(tile_symbol.color, 0.1, { a: 1.0 });
+            Actuate.tween(tile_symbol.color, 0.1, { a: 0.0 }).delay(0.1);
+            Actuate.tween(tile_symbol.size, 0.2, { x: tile_size * 2, y: tile_size * 2 }).onComplete(function() {
+                if (!tile_symbol.destroyed) tile_symbol.destroy();
+            });
+
             if (card_score <= 1) {
                 play_sound('points_small.ogg');
             } else if (card_score <= 3) {
