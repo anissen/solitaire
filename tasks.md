@@ -11,7 +11,6 @@ Need:
 * Convert sounds to MP3 for better browser compability
 * About screen with credit (me, music)
 * Options screen to mute music/sounds
-* Indication that the game is lost before the game over screen is shown (especially if music is disabled/muted)
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
