@@ -2,7 +2,6 @@
 # Tasks:
 
 Need:
-* Better tile graphics (to indicate depth)
 * Finalize game over screen
 * Tutorial
 * App icon
@@ -10,6 +9,9 @@ Need:
 * Add some analytics
 * [No default font]
 * Convert sounds to MP3 for better browser compability
+* About screen with credit (me, music)
+* Options screen to mute music/sounds
+* Indication that the game is lost before the game over screen is shown (especially if music is disabled/muted)
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
@@ -22,5 +24,4 @@ Nice:
 * Score indicator on the main menu
 * Puzzle mode
 * Multi-touch for dragging tiles?
-* Trails on symbol particles (https://gist.github.com/le-doux/d9ac94af66c2b9a86238)
 * Move the general-purpose parts out of core and into turnabout (and reference it)
