@@ -106,10 +106,18 @@ class MenuState extends State {
             return 250 + (button_count++) * button_height;
         }
         var play_button = new Button({
-            pos: new Vector(Settings.WIDTH / 2 - 20, get_button_y()),
+            pos: new Vector(Settings.WIDTH / 2, get_button_y()),
             text: (normal_save == null ? 'Normal' : '~ Normal ~'),
             on_click: Main.SetState.bind(PlayState.StateId)
         });
+
+        // var play_stats = new game.ui.Icon({
+        //     pos: new Vector(play_button.pos.x + play_button.width - 30, play_button.pos.y + 22),
+        //     texture_path: 'assets/ui/stars.png',
+        //     on_click: function() { trace('stats button'); }
+        // });
+        // play_stats.scale.set_xy(1/7, 1/7);
+        // play_stats.depth = 200;
 
         var strive_save = Luxe.io.string_load('save_strive');
         var strive_level = Luxe.io.string_load('strive_level');
