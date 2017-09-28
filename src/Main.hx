@@ -54,7 +54,7 @@ class Main extends luxe.Game {
         luxe.tween.Actuate.tween(nineslice.color, 0.3, { a: 1.0 });
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'star.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png', 'ring.png'].map(function(i) return 'images/symbols/$i');
-        var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/cog.png', 'ui/book.png', 'ui/histogram.png'];
+        var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/cog.png', 'ui/book.png', 'ui/stars.png'];
         var sounds = ['invalid.ogg', 'lost.ogg', 'place.ogg', 'points_big.ogg', 'points_huge.ogg', 'points_small.ogg', 'quest.ogg', 'slide.ogg', 'stack.ogg', 'tile_click.ogg', 'ui_click.ogg', 'won.ogg'];
         var music = ['Temple_of_the_Mystics.ogg']; // TODO: Convert to mp3 to work in more browsers?]
 

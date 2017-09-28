@@ -106,8 +106,8 @@ class MenuState extends State {
             return 250 + (button_count++) * button_height;
         }
         var play_button = new Button({
-            pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: (normal_save == null ? 'Play' : '~ Play ~'),
+            pos: new Vector(Settings.WIDTH / 2 - 20, get_button_y()),
+            text: (normal_save == null ? 'Normal' : '~ Normal ~'),
             on_click: Main.SetState.bind(PlayState.StateId)
         });
 
