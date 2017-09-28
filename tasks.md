@@ -4,13 +4,14 @@
 Need:
 * Finalize game over screen
 * Tutorial
-* App icon
+* App icon -- done?
 * Remove debug hooks, debug view
 * Add some analytics
 * [No default font]
 * Convert sounds to MP3 for better browser compability
 * About screen with credit (me, music)
 * Options screen to mute music/sounds
+* Add scoring information to home screen (or e.g. sub-screens)
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched

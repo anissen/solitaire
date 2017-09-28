@@ -12,6 +12,7 @@ typedef ButtonOptions = {
     ?height :Int,
     ?font_size :Int,
     ?text :String,
+    ?disabled :Bool,
     on_click :Void->Void
 }
 
@@ -19,6 +20,7 @@ class Button extends luxe.NineSlice {
     var label :Text;
     var hovered :Bool = false;
     var on_click :Void->Void;
+    var disabled :Bool;
 
     public function new(options :ButtonOptions) {
         super({
@@ -32,16 +34,17 @@ class Button extends luxe.NineSlice {
             depth: 100
         });
         var width = (options.width != null ? options.width : 200);
-        var height = (options.height != null ? options.height : 50);
+        var height = (options.height != null ? options.height : 45);
         var font_size = (options.font_size != null ? options.font_size : 26);
         var text = (options.text != null ? options.text : '');
-        on_click = options.on_click;
+        disabled = (options.disabled != null ? options.disabled : false);
+        if (!disabled) on_click = options.on_click;
         this.create(Vector.Subtract(options.pos, new Vector(width / 2, height / 2)), width, height);
 
         label = new Text({
             parent: this,
             text: text,
-            pos: new Vector(width / 2, height / 2),
+            pos: new Vector(width / 2, height / 2 + 2),
             point_size: font_size,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
@@ -54,6 +57,15 @@ class Button extends luxe.NineSlice {
             outline: 0.7,
             outline_color: new Color().rgb(0xa55004)
         });
+
+        if (disabled) {
+            color.a = 0.2;
+            // label.outline_color.set(1 - label.outline_color.r, 1 - label.outline_color.g, 1 - label.outline_color.b);
+            label.outline_color.set(0.5, 0.5, 0.5);
+            // label.color.set(1 - label.color.r, 1 - label.color.g, 1 - label.color.b);
+            label.color.set(1, 1, 1);
+            return;
+        }
 
         Actuate.tween(label, 3.0, { letter_spacing: -0.5 }).reflect().repeat();
 
@@ -100,6 +112,7 @@ class Button extends luxe.NineSlice {
 
     /** Returns true if a point is inside the AABB unrotated */
     public function point_inside_AABB(_p :Vector) :Bool {
+        if (disabled) return false;
         if (pos == null) return false;
         if (size == null) return false;
 

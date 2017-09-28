@@ -16,7 +16,9 @@
 
       mobile: {
         orientation: portrait
-      }
+      },
+
+      icon: 'asset_sources/icons/default'
     },
 
       //This configures the build process
