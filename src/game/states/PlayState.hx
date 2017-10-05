@@ -16,6 +16,7 @@ import snow.api.Promise;
 import core.models.Game;
 
 using game.tools.TweenTools;
+using game.misc.GameMode.GameModeTools;
 
 typedef Card = Tile;
 
@@ -41,6 +42,7 @@ class PlayState extends State {
 
     var scoreText :luxe.Text;
     var counting_score :Float;
+    var time_penalty :Float;
     var score :Int;
 
     var game_over :Bool;
@@ -77,8 +79,8 @@ class PlayState extends State {
         tiles = [];
         quest_matches = [];
         reshuffle_count = 0;
-        score = 0;
-        counting_score = 0;
+        // score = 0;
+        // counting_score = 0;
         game_over = false;
         Tile.CardId = 0; // reset card Ids
 
@@ -150,16 +152,19 @@ class PlayState extends State {
             }
         }
 
-        var strive_score = get_strive_score();
+        score = switch (game_mode) {
+            case Normal: 0;
+            case Strive(_): -game_mode.get_strive_score();
+            case Timed: 10;
+        };
+        counting_score = score;
+        time_penalty = 0;
         scoreText = new luxe.Text({
             pos: get_pos(1, -0.6),
             align: center,
             align_vertical: center,
-            text: '${0-strive_score}'
+            text: '$score'
         });
-        if (strive_score > 0) {
-            scoreText.color.tween(1.0, { r: 1.0, g: 0.2, b: 0.2 });
-        }
 
         var deck = new InfiniteDeck(deck_cards, function(data) {
             var tile = create_tile(data.suit, data.stacked, tile_size);
@@ -221,6 +226,7 @@ class PlayState extends State {
     }
 
     function handle_event(event :core.models.Game.Event) :Promise {
+        if (game_over) return Promise.resolve();
         // trace(event);
         return switch (event) {
             case NewGame: handle_new_game();
@@ -326,18 +332,6 @@ class PlayState extends State {
         return Promise.resolve();
     }
 
-    // TODO: move game mode stuff into a seperate class
-    function get_strive_score() :Int {
-        return switch (game_mode) {
-            case Normal: 0;
-            case Strive(level): (level < 10) ? level * 10 : 10 * 10 + (level % 10) * 5; // 10 interval to 100, then 5
-        }
-    }
-
-    function get_game_mode_id() :String {
-        return game_mode.getName().toLowerCase();
-    }
-
     function play_sound(id :String) {
         var sound = Luxe.resources.audio('assets/sounds/$id');
         Luxe.audio.play(sound.source);
@@ -394,14 +388,22 @@ class PlayState extends State {
             } else {
                 play_sound('points_huge.ogg');
             }
-            var strive_score = get_strive_score();
-            if (strive_score > 0 && score >= strive_score) {
-                scoreText.color.tween(0.3, { r: 0.2, g: 1, b: 0.2 });
-                handle_game_over();
+            switch (game_mode) {
+                case Strive(_): 
+                    if (score >= 0) {
+                        scoreText.color.tween(0.3, { r: 0.2, g: 1, b: 0.2 });
+                        handle_game_over();
+                    }
+                default: 
             }
+            // var strive_score = get_strive_score();
+            // if (strive_score > 0 && score >= strive_score) {
+            //     scoreText.color.tween(0.3, { r: 0.2, g: 1, b: 0.2 });
+            //     handle_game_over();
+            // }
             Actuate.tween(this, (score - counting_score) * 0.02, { counting_score: score }, true).onUpdate(function() {
-                var temp_score = Std.int(counting_score) - strive_score;
-                scoreText.text = '$temp_score';
+                // var temp_score = Std.int(counting_score) - strive_score;
+                scoreText.text = '${Std.int(counting_score - time_penalty)}';
             });
         });
 
@@ -411,11 +413,11 @@ class PlayState extends State {
     function handle_game_over() {
         game_over = true;
 
-        Luxe.io.string_save('save_${get_game_mode_id()}', null); // clear the save
+        Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
 
         switch (game_mode) {
             case Strive(level):
-                var strive_score = get_strive_score();
+                var strive_score = game_mode.get_strive_score();
                 var win = (score >= strive_score);
                 var new_level = (win ? level + 1 : level - 1);
                 if (new_level < 1) new_level = 1;
@@ -424,6 +426,8 @@ class PlayState extends State {
                 game_mode = Strive(new_level);
             case Normal:
                 play_sound('won.ogg');
+            case Timed:
+                play_sound((counting_score - time_penalty > 0) ? 'won.ogg' : 'lost.ogg');
         }
 
         var delay = 0.0;
@@ -542,6 +546,16 @@ class PlayState extends State {
     override function update(dt :Float) {
         var textScale = scoreText.scale.x; 
         if (textScale > 1) scoreText.scale.set_xy(textScale - dt, textScale - dt);
+        switch (game_mode) {
+            case Timed if (!game_over):
+                time_penalty += dt;
+                scoreText.text = '${Std.int(counting_score - time_penalty)}';
+                if ((counting_score - time_penalty) < 0) {
+                    scoreText.color.tween(0.3, { r: 1, g: 0.2, b: 0.2 });
+                    handle_game_over();
+                }
+            default:
+        }
     }
 
     function do_action(action :Action) {
@@ -560,12 +574,12 @@ class PlayState extends State {
 
         // trace('save_data: $save_data');
 
-        var succeeded = Luxe.io.string_save('save_${get_game_mode_id()}', haxe.Json.stringify(save_data));
+        var succeeded = Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', haxe.Json.stringify(save_data));
         if (!succeeded) trace('Save failed!');
     }
 
     function load_game() {
-        var data_string = Luxe.io.string_load('save_${get_game_mode_id()}');
+        var data_string = Luxe.io.string_load('save_${game_mode.get_game_mode_id()}');
         if (data_string == null) {
             trace('Save not found or failed to load!');
             return false;
@@ -588,9 +602,16 @@ class PlayState extends State {
         switch (event.keycode) {
             case luxe.Input.Key.key_k: handle_game_over();
             case luxe.Input.Key.key_n: {
-                Luxe.io.string_save('save_${get_game_mode_id()}', null); // clear the save
+                Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
                 handle_new_game();
             }
+            case luxe.Input.Key.key_m:
+                Luxe.audio.active = !Luxe.audio.active;
+                if (!Luxe.audio.active) {
+                    Luxe.audio.suspend();
+                } else {
+                    Luxe.audio.resume();
+                }
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
             case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Solitaire tweet #Solitaire&url=http://andersnissen.com/');

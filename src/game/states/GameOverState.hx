@@ -135,7 +135,8 @@ class GameOverState extends State {
 
         var play_text = switch (data.game_mode) {
             case Normal: 'Play';
-            case Strive(level): 'Strive for ${data.game_mode.get_strive_score()}';
+            case Strive(level): 'Strive: ${data.game_mode.get_strive_score()}';
+            case Timed: 'Timed';
         };
 
         var play_button = new game.ui.Button({

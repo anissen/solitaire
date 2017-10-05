@@ -130,11 +130,12 @@ class MenuState extends State {
 
         var timed_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: 'Unlock: 1000', //'Timed',
-            on_click: function() { trace('timed button'); },
-            disabled: true
+            // text: 'Unlock: 1000', //'Timed',
+            text: 'Timed',
+            // on_click: function() { trace('timed button'); },
+            on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Timed),
+            disabled: false
         });
-        timed_button.color.a = 0.2;
 
         var puzzle_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
@@ -142,7 +143,6 @@ class MenuState extends State {
             on_click: function() { trace('puzzle button'); },
             disabled: true
         });
-        puzzle_button.color.a = 0.2;
     }
 
     override function onleave(_) {
