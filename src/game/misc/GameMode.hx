@@ -4,6 +4,7 @@ enum GameMode {
     Normal;
     Strive(level :Int);
     Timed;
+    Puzzle;
 }
 
 class GameModeTools {

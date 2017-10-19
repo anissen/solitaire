@@ -156,6 +156,7 @@ class PlayState extends State {
             case Normal: 0;
             case Strive(_): -game_mode.get_strive_score();
             case Timed: 10;
+            case Puzzle: 0;
         };
         counting_score = score;
         time_penalty = 0;
@@ -428,6 +429,8 @@ class PlayState extends State {
                 play_sound('won.ogg');
             case Timed:
                 play_sound((counting_score - time_penalty > 0) ? 'won.ogg' : 'lost.ogg');
+            case Puzzle:
+                play_sound('won.ogg');
         }
 
         var delay = 0.0;

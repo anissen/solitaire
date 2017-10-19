@@ -139,9 +139,10 @@ class MenuState extends State {
 
         var puzzle_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: 'Unlock: 2000', //'Puzzle',
-            on_click: function() { trace('puzzle button'); },
-            disabled: true
+            // text: 'Unlock: 2000', //'Puzzle',
+            text: 'Puzzle',
+            on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Puzzle),
+            disabled: false
         });
     }
 
