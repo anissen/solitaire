@@ -15,10 +15,9 @@ Need:
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
-* Cards can still get stuck on the background
-* A tile can be selected while dragging a grabbed card
 
 Nice:
+* More music
 * Better background graphics
 * Share score via twitter
 * Score indicator on the main menu

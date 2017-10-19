@@ -155,7 +155,7 @@ class PlayState extends State {
         score = switch (game_mode) {
             case Normal: 0;
             case Strive(_): -game_mode.get_strive_score();
-            case Timed: 10;
+            case Timed: 30;
             case Puzzle: 0;
         };
         counting_score = score;
@@ -480,6 +480,7 @@ class PlayState extends State {
 
     function tile_clicked(sprite :Sprite) {
         if (game_over) return;
+        if (grabbed_card != null) return;
         var tile :Tile = cast sprite;
         add_to_collection(tile);
     }
