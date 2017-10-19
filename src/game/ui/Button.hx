@@ -21,6 +21,7 @@ class Button extends luxe.NineSlice {
     var hovered :Bool = false;
     var on_click :Void->Void;
     var disabled :Bool;
+    public var text (get, set) :String;
 
     public function new(options :ButtonOptions) {
         super({
@@ -103,6 +104,14 @@ class Button extends luxe.NineSlice {
             play_sound('ui_click.ogg');
             on_click();
         }
+    }
+
+    function get_text() {
+        return label.text;
+    }
+
+    function set_text(t :String) {
+        return (label.text = t);
     }
 
     function play_sound(id :String) {

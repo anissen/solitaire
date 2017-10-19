@@ -47,7 +47,7 @@ class MenuState extends State {
         var config_button = new game.ui.Icon({
             pos: new Vector(35, 35),
             texture_path: 'assets/ui/circular.png',
-            on_click: function() { trace('config button'); }
+            on_click: Main.SetState.bind(SettingsState.StateId)
         });
         config_button.scale.set_xy(1/5, 1/5);
         config_button.color.a = 0.75;
@@ -63,7 +63,7 @@ class MenuState extends State {
         var about_button = new game.ui.Icon({
             pos: new Vector(Settings.WIDTH - 35, 35),
             texture_path: 'assets/ui/circular.png',
-            on_click: function() { trace('about button'); }
+            on_click: Main.SetState.bind(CreditsState.StateId)
         });
         about_button.scale.set_xy(1/5, 1/5);
         about_button.color.a = 0.75;
@@ -139,10 +139,10 @@ class MenuState extends State {
 
         var puzzle_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            // text: 'Unlock: 2000', //'Puzzle',
-            text: 'Puzzle',
+            text: 'Unlock: 2000', //'Puzzle',
+            // text: 'Puzzle',
             on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Puzzle),
-            disabled: false
+            disabled: true
         });
     }
 

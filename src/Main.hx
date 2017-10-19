@@ -5,9 +5,7 @@ import luxe.States;
 
 import game.misc.Settings;
 
-import game.states.MenuState;
-import game.states.PlayState;
-import game.states.GameOverState;
+import game.states.*;
 
 class Main extends luxe.Game {
     static var states :States;
@@ -80,6 +78,8 @@ class Main extends luxe.Game {
 
         states = new States({ name: 'state_machine' });
         states.add(new MenuState());
+        states.add(new SettingsState());
+        states.add(new CreditsState());
         states.add(new PlayState());
         states.add(new GameOverState());
 
