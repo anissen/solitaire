@@ -12,6 +12,14 @@ Need:
 * About screen with credit (me, music)
 * Options screen to mute music/sounds
 * Add scoring information to home screen (or e.g. sub-screens)
+* Don't save game in timed mode
+* Settings screen:
+    * Reset tutorial
+    * Music on/off
+    * Sounds on/off
+* About screen:
+    * Credits
+    * Donation link
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched

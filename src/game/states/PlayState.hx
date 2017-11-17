@@ -339,6 +339,8 @@ class PlayState extends State {
     }
 
     function handle_score(card_score :Int, card :Card, correct_order :Bool) {
+        if (game_over) return Promise.resolve();
+
         var duration = 0.3;
         var delay = game.entities.Particle.Count * 0.15;
         var p = new game.entities.Particle({
@@ -412,19 +414,18 @@ class PlayState extends State {
     }
 
     function handle_game_over() {
+        if (game_over) return Promise.resolve();
         game_over = true;
 
         Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
 
         switch (game_mode) {
             case Strive(level):
-                var strive_score = game_mode.get_strive_score();
-                var win = (score >= strive_score);
+                var win = (score >= 0); // strive score starts negative
                 var new_level = (win ? level + 1 : level - 1);
                 if (new_level < 1) new_level = 1;
-                Luxe.io.string_save('strive_level', '$new_level');
-                play_sound(win ? 'won.ogg' : 'lost.ogg');
                 game_mode = Strive(new_level);
+                play_sound(win ? 'won.ogg' : 'lost.ogg');
             case Normal:
                 play_sound('won.ogg');
             case Timed:
@@ -439,6 +440,22 @@ class PlayState extends State {
             delay += 0.05;
         }
 
+        switch (game_mode) {
+            case Timed:
+                scoreText.color.tween(0.3, { r: 0.0, g: 0.0, b: 0.0 });
+                trace('time_penalty: $time_penalty');
+                counting_score = 0.0;
+                var tween = Actuate.tween(this, time_penalty * 0.05, { counting_score: time_penalty }, true).onUpdate(function() {
+                    trace('counting_score: $counting_score');
+                    scoreText.text = '${Std.int(counting_score)} sec';
+                });
+                return tween.toPromise().then(switch_to_game_over_state);
+            default:
+                return switch_to_game_over_state();
+        }
+    }
+
+    function switch_to_game_over_state() {
         Luxe.timer.schedule(1.0, function() {
             Main.SetState(GameOverState.StateId, {
                 client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
@@ -447,7 +464,6 @@ class PlayState extends State {
                 game_mode: game_mode
             });
         });
-
         return Promise.resolve();
     }
 
@@ -456,11 +472,13 @@ class PlayState extends State {
         if (grabbed_card == null) return;
         if (!Game.Instance.is_placement_valid(x, y)) {
             tween_pos(grabbed_card, grabbed_card_origin);
+            grabbed_card.depth = 3;
             grabbed_card = null;
             return;
         }
 
         do_action(Place(grabbed_card.cardId, x, y));
+        grabbed_card.depth = 3;
         grabbed_card = null;
     }
 
@@ -468,6 +486,7 @@ class PlayState extends State {
         if (game_over) return;
         if (grabbed_card == null) return;
         tween_pos(grabbed_card, grabbed_card_origin);
+        grabbed_card.depth = 3;
         grabbed_card = null;
     }
 
@@ -527,7 +546,7 @@ class PlayState extends State {
         grabbed_card = cast sprite;
         grabbed_card_origin = sprite.pos.clone();
         grabbed_card_offset = Vector.Subtract(Luxe.screen.cursor.pos, Luxe.camera.world_point_to_screen(sprite.pos));
-        grabbed_card.depth = 3;
+        grabbed_card.depth = 10;
         clear_collection();
     }
 
@@ -543,11 +562,20 @@ class PlayState extends State {
         }
     }
 
+    override function onmouseup(event :luxe.Input.MouseEvent) {
+        if (game_over) return;
+        if (grabbed_card == null) return;
+        tween_pos(grabbed_card, grabbed_card_origin);
+        grabbed_card.depth = 3;
+        grabbed_card = null;        
+    }
+
     override function onrender() {
 
     }
 
     override function update(dt :Float) {
+        if (game_over) return;
         var textScale = scoreText.scale.x; 
         if (textScale > 1) scoreText.scale.set_xy(textScale - dt, textScale - dt);
         switch (game_mode) {
