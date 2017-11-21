@@ -36,7 +36,9 @@ class Server {
             }
             trace('You got served!');
         });
-        server.listen(1337, "localhost");
-        trace('Server running at http://127.0.0.1:1337/');
+        var port = Std.parseInt(js.Node.process.env['port']);
+        if (port == null) port = 5000;
+        server.listen(port, "localhost");
+        trace('Server running at port $port');
     }
 }

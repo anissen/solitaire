@@ -4,7 +4,7 @@
 
       //These first two are required
     name : 'solitaire',
-    version : '0.2.0',
+    version : '0.3.0',
     author : 'Anders Nissen',
 
       //This configures your app.
@@ -12,13 +12,13 @@
       //for save locations, initializing mobile project files etc
     app : {
       name : 'solitaire',
-      package : 'com.anissen.solitaire',
+      package : 'anissen.solitaire',
 
       mobile: {
         orientation: portrait
       },
 
-      icon: 'asset_sources/icons/default'
+      icon: 'asset_sources/icons'
     },
 
       //This configures the build process
