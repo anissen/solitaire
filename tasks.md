@@ -8,7 +8,6 @@ Need:
 * Remove debug hooks, debug view
 * Add some analytics
 * [No default font]
-* Don't save game in timed mode
 * Settings screen:
     * Reset tutorial
     * Music on/off
@@ -18,7 +17,6 @@ Need:
     * Donation link
 * Local highscores
 * More music: Play all tracks, randomized
-* Countdown to unlock gameplay modes
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched

@@ -119,30 +119,34 @@ class MenuState extends State {
         // play_stats.scale.set_xy(1/7, 1/7);
         // play_stats.depth = 200;
 
+        var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
+
         var strive_save = Luxe.io.string_load('save_strive');
         var strive_level = Luxe.io.string_load('strive_level');
         var strive_mode = game.misc.GameMode.GameMode.Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
+        var strive_text = (strive_save == null ? '' : '~ ') + (strive_level != null ? 'Strive for ${strive_mode.get_strive_score()}' : 'Strive') +(strive_save == null ? '' : ' ~');
+        var strive_unlock = 1000;
         var strive_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: (strive_save == null ? '' : '~ ') + (strive_level != null ? 'Strive for ${strive_mode.get_strive_score()}' : 'Strive') +(strive_save == null ? '' : ' ~'),
-            on_click: Main.SetState.bind(PlayState.StateId, strive_mode)
+            text: (total_score < strive_unlock ? 'Unlock: ${strive_unlock - total_score}' : strive_text),
+            on_click: Main.SetState.bind(PlayState.StateId, strive_mode),
+            disabled: (total_score < strive_unlock)
         });
 
+        var timed_unlock = 2000;
         var timed_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            // text: 'Unlock: 1000', //'Timed',
-            text: 'Timed',
-            // on_click: function() { trace('timed button'); },
+            text: (total_score < timed_unlock ? 'Unlock: ${timed_unlock - total_score}' : 'Timed'),
             on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Timed),
-            disabled: false
+            disabled: (total_score < timed_unlock)
         });
 
+        var puzzle_unlock = 3000;
         var puzzle_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: 'Unlock: 2000', //'Puzzle',
-            // text: 'Puzzle',
+            text: (total_score < puzzle_unlock ? 'Unlock: ${puzzle_unlock - total_score}' : 'Puzzle'),
             on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Puzzle),
-            disabled: true
+            disabled: (total_score < puzzle_unlock)
         });
     }
 

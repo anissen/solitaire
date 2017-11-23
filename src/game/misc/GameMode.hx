@@ -5,6 +5,7 @@ enum GameMode {
     Strive(level :Int);
     Timed;
     Puzzle;
+    Tutorial(game_mode :GameMode);
 }
 
 class GameModeTools {
@@ -17,5 +18,15 @@ class GameModeTools {
 
     static public function get_game_mode_id(game_mode :GameMode) :String {
         return game_mode.getName().toLowerCase();
+    }
+
+    static public function persistable_game_mode(game_mode :GameMode) :Bool {
+        return switch (game_mode) {
+            case Normal: true;
+            case Strive(_): true;
+            case Puzzle: true;
+            case Timed: false;
+            case Tutorial(_): false;
+        }
     }
 }

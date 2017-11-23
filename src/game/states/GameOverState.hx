@@ -138,6 +138,7 @@ class GameOverState extends State {
             case Strive(level): 'Strive: ${data.game_mode.get_strive_score()}';
             case Timed: 'Timed';
             case Puzzle: 'Puzzle';
+            case Tutorial(game_mode): 'Tutorial'; // never shown
         };
 
         var play_button = new game.ui.Button({
@@ -176,7 +177,7 @@ class GameOverState extends State {
             highscore_line.alpha = 0;
             highscore_line.parent = score_container;
 
-            Actuate.tween(highscore_line, 0.3, { alpha: 1.0 }).delay(1.0 + count * 0.1);
+            Actuate.tween(highscore_line, 0.3, { alpha: 1.0 }).delay(0.3 + count * 0.1);
             // Actuate.tween(highscore_line.color, 0.3, { y: count * 25 }).delay(1.0);
             // if (score.client == highscore.client) {
             //     highscore_line.color = new Color(0.4, 0.4, 0.4, 0.0);

@@ -157,6 +157,7 @@ class PlayState extends State {
             case Strive(_): -game_mode.get_strive_score();
             case Timed: 30;
             case Puzzle: 0;
+            case Tutorial(_): 0;
         };
         counting_score = score;
         time_penalty = 0;
@@ -430,8 +431,7 @@ class PlayState extends State {
                 texture: Luxe.resources.texture('assets/images/symbols/ring.png'),
                 size: new Vector(tile_size / 2, tile_size / 2),
                 pos: scoreText.pos,
-                color: card.color // new luxe.Color(1, 0, 0, 1)
-                // parent: scoreText
+                color: card.color
             });
             Actuate.tween(ring_symbol.color, 0.1, { a: 1.0 });
             Actuate.tween(ring_symbol.color, 0.1, { a: 0.0 }).delay(0.1);
@@ -486,8 +486,12 @@ class PlayState extends State {
             case Normal:
                 play_sound('won.ogg');
             case Timed:
+                score = Std.int(time_penalty); // set the score to be the time survived
                 play_sound((counting_score - time_penalty > 0) ? 'won.ogg' : 'lost.ogg');
             case Puzzle:
+                play_sound('won.ogg');
+            case Tutorial(mode):
+                game_mode = mode;
                 play_sound('won.ogg');
         }
 
@@ -513,11 +517,15 @@ class PlayState extends State {
     }
 
     function switch_to_game_over_state() {
+        var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
+        total_score += score;
+        Luxe.io.string_save('total_score', '$total_score');
+
         Luxe.timer.schedule(1.0, function() {
             Main.SetState(GameOverState.StateId, {
-                client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
-                name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
-                score: Math.floor(1000 * Math.random()), // TODO: Use correct score
+                // client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
+                // name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
+                score: score,
                 game_mode: game_mode
             });
         });
@@ -654,6 +662,7 @@ class PlayState extends State {
 
     function save_game() {
         if (game_over) return; // do not try to save game when game is over!
+        if (!game_mode.persistable_game_mode()) return; // game mode should not be saved
 
         var save_data = {
             seed: Std.int(Luxe.utils.random.initial),
