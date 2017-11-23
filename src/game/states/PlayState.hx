@@ -343,16 +343,16 @@ class PlayState extends State {
         card.stacked = true;
         Luxe.camera.shake(1);
 
-        var tile_symbol = new Sprite({
+        var ring_symbol = new Sprite({
             texture: Luxe.resources.texture('assets/images/symbols/ring.png'),
             size: new Vector(tile_size, tile_size),
             pos: card.pos,
             color: card.get_original_color(),
-            depth: card.depth - 0.1
+            depth: card.depth + 0.1
         });
-        Actuate.tween(tile_symbol.color, 0.3, { a: 0.0 });
-        Actuate.tween(tile_symbol.size, 0.3, { x: tile_size * 4, y: tile_size * 4 }).onComplete(function() {
-            if (!tile_symbol.destroyed) tile_symbol.destroy();
+        Actuate.tween(ring_symbol.color, 0.3, { a: 0.0 });
+        Actuate.tween(ring_symbol.size, 0.3, { x: tile_size * 4, y: tile_size * 4 }).onComplete(function() {
+            if (!ring_symbol.destroyed) ring_symbol.destroy();
         });
 
         return Promise.resolve();
@@ -426,17 +426,17 @@ class PlayState extends State {
                 textScale += 0.1 * card_score;
                 scoreText.scale.set_xy(textScale, textScale);
             }
-            var tile_symbol = new Sprite({
+            var ring_symbol = new Sprite({
                 texture: Luxe.resources.texture('assets/images/symbols/ring.png'),
                 size: new Vector(tile_size / 2, tile_size / 2),
                 pos: scoreText.pos,
                 color: card.color // new luxe.Color(1, 0, 0, 1)
                 // parent: scoreText
             });
-            Actuate.tween(tile_symbol.color, 0.1, { a: 1.0 });
-            Actuate.tween(tile_symbol.color, 0.1, { a: 0.0 }).delay(0.1);
-            Actuate.tween(tile_symbol.size, 0.2, { x: tile_size * 2, y: tile_size * 2 }).onComplete(function() {
-                if (!tile_symbol.destroyed) tile_symbol.destroy();
+            Actuate.tween(ring_symbol.color, 0.1, { a: 1.0 });
+            Actuate.tween(ring_symbol.color, 0.1, { a: 0.0 }).delay(0.1);
+            Actuate.tween(ring_symbol.size, 0.2, { x: tile_size * 2, y: tile_size * 2 }).onComplete(function() {
+                if (!ring_symbol.destroyed) ring_symbol.destroy();
             });
 
             Luxe.camera.shake(card_score);
