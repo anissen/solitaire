@@ -74,7 +74,8 @@ class Button extends luxe.NineSlice {
         Actuate
             .tween(this.scale, 0.3, { y: 1 })
             .delay(Math.random() * 0.2)
-            .ease(luxe.tween.easing.Cubic.easeInOut);
+            .ease(luxe.tween.easing.Cubic.easeInOut)
+            .onComplete(Luxe.camera.shake.bind(1));
     }
 
     override function onmousemove(event :MouseEvent) {

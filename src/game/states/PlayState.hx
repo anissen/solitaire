@@ -299,6 +299,19 @@ class PlayState extends State {
     function handle_stacked(card :Card) {
         // play_sound('stack.ogg');
         card.stacked = true;
+        Luxe.camera.shake(1);
+
+        var tile_symbol = new Sprite({
+            texture: Luxe.resources.texture('assets/images/symbols/ring.png'),
+            size: new Vector(tile_size, tile_size),
+            pos: card.pos,
+            color: card.get_original_color(),
+            depth: card.depth - 0.1
+        });
+        Actuate.tween(tile_symbol.color, 0.3, { a: 0.0 });
+        Actuate.tween(tile_symbol.size, 0.3, { x: tile_size * 4, y: tile_size * 4 }).onComplete(function() {
+            if (!tile_symbol.destroyed) tile_symbol.destroy();
+        });
 
         return Promise.resolve();
     }
@@ -383,6 +396,8 @@ class PlayState extends State {
             Actuate.tween(tile_symbol.size, 0.2, { x: tile_size * 2, y: tile_size * 2 }).onComplete(function() {
                 if (!tile_symbol.destroyed) tile_symbol.destroy();
             });
+
+            Luxe.camera.shake(card_score);
 
             if (card_score <= 1) {
                 play_sound('points_small.ogg');

@@ -87,4 +87,8 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         if (bg != null) bg.depth = value - 0.1;
         return (super.depth = value);
     }
+
+    public function get_original_color() {
+        return original_color.clone();
+    }
 }

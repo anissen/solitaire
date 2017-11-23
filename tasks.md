@@ -16,13 +16,14 @@ Need:
 * About screen:
     * Credits
     * Donation link
+* Local highscores
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 
 Nice:
 * More music
-* Better background graphics
+* Global highscores
 * Share score via twitter
 * Score indicator on the main menu
 * Puzzle mode
