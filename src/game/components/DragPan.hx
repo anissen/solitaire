@@ -44,10 +44,12 @@ class DragPan extends Component {
     }
 
     override function onmouseup(e :MouseEvent) {
-        if (e.button == button && dragging) {
+        if (e.button == button) {
             mouse_down = false;
-            dragging = false;
-            inertia_time = inertia_duration;
+            if (dragging) {
+                dragging = false;
+                inertia_time = inertia_duration;
+            }
         }
     }
 
@@ -63,7 +65,6 @@ class DragPan extends Component {
 
     override function update(dt :Float) {
         if (inertia_time > 0) {
-            trace('inertia_time: $inertia_time');
             pos.y = luxe.utils.Maths.clamp(pos.y + drag_velocity, y_top, y_bottom);
             var progress = (inertia_duration - inertia_time) / inertia_duration;
             drag_velocity = luxe.utils.Maths.lerp(drag_velocity, 0, progress);

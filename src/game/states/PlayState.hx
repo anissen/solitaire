@@ -517,16 +517,6 @@ class PlayState extends State {
     }
 
     function switch_to_game_over_state() {
-        var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
-        total_score += score;
-        Luxe.io.string_save('total_score', '$total_score');
-
-        var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
-        var local_scores = [];
-        if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
-        local_scores.push(score);
-        Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
-
         Luxe.timer.schedule(1.0, function() {
             Main.SetState(GameOverState.StateId, {
                 // client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally

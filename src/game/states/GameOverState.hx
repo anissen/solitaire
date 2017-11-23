@@ -39,7 +39,7 @@ class HighscoreLine extends luxe.Entity {
         });
         nameText = new luxe.Text({
             parent: this,
-            pos: new Vector(120, 0),
+            pos: new Vector(125, 0),
             text: name,
             point_size: 24,
             align: left,
@@ -61,9 +61,9 @@ class HighscoreLine extends luxe.Entity {
     }
 
     function set_color(color :Color) {
-        rankText.color = color;
-        scoreText.color = color;
-        nameText.color = color;
+        rankText.color = color.clone();
+        scoreText.color = color.clone();
+        nameText.color = color.clone();
         return color;
     }
 
@@ -86,39 +86,35 @@ class GameOverState extends State {
     }
 
     override function onenter(d :Dynamic) {
-        var data :{ client :String, score :Int, name :String, game_mode :game.misc.GameMode.GameMode } = cast d;
+        // var http = new haxe.Http("http://localhost:1337/highscore");
+        // http.addParameter('client', data.client);
+        // http.addParameter('name', data.name);
+        // http.addParameter('score', '${data.score}');
+        // http.onError = function(http_data) {
+        //     trace('error: $http_data');
+        //     var local_scores_str = Luxe.io.string_load('scores_${data.game_mode.get_game_mode_id()}');
+        //     var local_scores = [];
+        //     if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
 
-        var http = new haxe.Http("http://localhost:1337/highscore");
-        http.addParameter('client', data.client);
-        http.addParameter('name', data.name);
-        http.addParameter('score', '${data.score}');
-        http.onError = function(http_data) {
-            trace('error: $http_data');
-            // var highscores = [ for (i in 0 ... 50) { score: i * 10, name: 'Test $i' } ];
-            // Show local highscores
-            var local_scores_str = Luxe.io.string_load('scores_${data.game_mode.get_game_mode_id()}');
-            var local_scores = [];
-            if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
+        //     var highscores = [ for (s in local_scores) { score: s, name: 'You' } ];
 
-            var highscores = [ for (s in local_scores) { score: s, name: 'You' } ];
+        //     show_highscores(highscores);
+        // }
+        // http.onStatus = function(http_data) {
+        //     trace('status: $http_data');
+        // }
+        // http.onData = function(http_data) {
+        //     trace('data: $http_data');
+        //     var scores :Array<Highscore> = [];
+        //     try {
+        //         scores = haxe.Json.parse(http_data);
+        //     } catch (e :Dynamic) {
+        //         trace('Error parsing data: $e');
+        //     }
 
-            show_highscores(highscores);
-        }
-        http.onStatus = function(http_data) {
-            trace('status: $http_data');
-        }
-        http.onData = function(http_data) {
-            trace('data: $http_data');
-            var scores :Array<Highscore> = [];
-            try {
-                scores = haxe.Json.parse(http_data);
-            } catch (e :Dynamic) {
-                trace('Error parsing data: $e');
-            }
-
-            show_highscores(scores);
-        }
-        http.request();
+        //     show_highscores(scores);
+        // }
+        // http.request();
 
         var back_button = new game.ui.Icon({
             pos: new Vector(25, 25),
@@ -127,6 +123,8 @@ class GameOverState extends State {
         });
         back_button.scale.set_xy(1/5, 1/5);
         back_button.depth = 100;
+
+        var data :{ client :String, score :Int, name :String, game_mode :game.misc.GameMode.GameMode } = cast d;
 
         var play_text = switch (data.game_mode) {
             case Normal: 'Play';
@@ -144,6 +142,33 @@ class GameOverState extends State {
             }
         });
 
+        var score = data.score;
+        var game_mode = data.game_mode;
+
+        var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
+        total_score += score;
+        Luxe.io.string_save('total_score', '$total_score');
+
+        var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
+        var local_scores = [];
+        if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
+
+        var highscores = [ for (s in local_scores) { score: s, name: 'You', current: false } ];
+        highscores.push({ score: score, name: 'You', current: true });
+        
+        highscores.sort(function(a, b) {
+            if (a.score == b.score) {
+                if (a.current) return -1;
+                if (b.current) return 1;
+            }
+            return a.score - b.score;
+        });
+
+        local_scores.push(score);
+        Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
+
+        show_highscores(highscores);
+
         // Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {
         //     var my_highscore_line = new HighscoreLine('$my_highscore_rank', highscore.score, highscore.name, highscores_count * 50 + 620);
         //     Actuate.tween(my_highscore_line, 0.3, { alpha: 1 }).onComplete(function() {
@@ -154,7 +179,7 @@ class GameOverState extends State {
         // });
     }
 
-    function show_highscores(highscores :Array<{ score :Int, name :String }>) {
+    function show_highscores(highscores :Array<{ score :Int, name :String, current :Bool }>) {
         highscores.sort(function(a, b) { return b.score - a.score; });
 
         var score_container = new luxe.Visual({});
@@ -169,6 +194,7 @@ class GameOverState extends State {
             highscore_line.pos.y = count * 25 + 20;
             highscore_line.alpha = 0;
             highscore_line.parent = score_container;
+            if (score.current) highscore_line.color = new Color(0.8, 0.0, 0.8);
 
             Actuate.tween(highscore_line, 0.3, { alpha: 1.0 }).delay(0.3 + count * 0.1);
             // Actuate.tween(highscore_line.color, 0.3, { y: count * 25 }).delay(1.0);
