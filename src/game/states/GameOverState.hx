@@ -86,37 +86,32 @@ class GameOverState extends State {
     }
 
     override function onenter(d :Dynamic) {
-        // var bg = new luxe.Sprite({
-        //     pos: Luxe.screen.mid.clone(),
-        //     size: Luxe.screen.size.clone(),
-        //     color: new Color(1.0, 1.0, 1.0, 0.0),
-        //     depth: 100
-        // });
-        // Actuate.tween(bg.color, 1.0, { a: 0.95 });
-
         var data :{ client :String, score :Int, name :String, game_mode :game.misc.GameMode.GameMode } = cast d;
 
         var http = new haxe.Http("http://localhost:1337/highscore");
         http.addParameter('client', data.client);
         http.addParameter('name', data.name);
         http.addParameter('score', '${data.score}');
-        http.onError = function(data) {
-            trace('error: $data');
+        http.onError = function(http_data) {
+            trace('error: $http_data');
+            // var highscores = [ for (i in 0 ... 50) { score: i * 10, name: 'Test $i' } ];
+            // Show local highscores
+            var local_scores_str = Luxe.io.string_load('scores_${data.game_mode.get_game_mode_id()}');
+            var local_scores = [];
+            if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
 
-            // new HighscoreLine('?', highscore.score, highscore.name, 320 /* TODO: Don't hardcode */);
-            // TODO: Show not-connected icon
+            var highscores = [ for (s in local_scores) { score: s, name: 'You' } ];
 
-            var highscores = [ for (i in 0 ... 50) { score: i * 10, name: 'Test $i' } ];
             show_highscores(highscores);
         }
-        http.onStatus = function(data) {
-            trace('status: $data');
+        http.onStatus = function(http_data) {
+            trace('status: $http_data');
         }
-        http.onData = function(data) {
-            trace('data: $data');
+        http.onData = function(http_data) {
+            trace('data: $http_data');
             var scores :Array<Highscore> = [];
             try {
-                scores = haxe.Json.parse(data);
+                scores = haxe.Json.parse(http_data);
             } catch (e :Dynamic) {
                 trace('Error parsing data: $e');
             }
@@ -125,13 +120,13 @@ class GameOverState extends State {
         }
         http.request();
 
-        var back_button = new game.ui.Button({
-            pos: new Vector(Settings.WIDTH * (1/4) + 5, Settings.HEIGHT - 40),
-            width: 120,
-            font_size: 22,
-            text: 'Back',
+        var back_button = new game.ui.Icon({
+            pos: new Vector(25, 25),
+            texture_path: 'assets/ui/arrowBeige_left.png',
             on_click: Main.SetState.bind(MenuState.StateId)
         });
+        back_button.scale.set_xy(1/5, 1/5);
+        back_button.depth = 100;
 
         var play_text = switch (data.game_mode) {
             case Normal: 'Play';
@@ -142,9 +137,7 @@ class GameOverState extends State {
         };
 
         var play_button = new game.ui.Button({
-            pos: new Vector(Settings.WIDTH * (3/4) - 5, Settings.HEIGHT - 40),
-            width: 120,
-            font_size: 22,
+            pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT - 40),
             text: play_text,
             on_click: function() {
                 Main.SetState(PlayState.StateId, data.game_mode);

@@ -2,7 +2,6 @@
 # Tasks:
 
 Need:
-* Finalize game over screen
 * Tutorial
 * App icon -- done?
 * Remove debug hooks, debug view
@@ -15,7 +14,6 @@ Need:
 * About screen:
     * Credits
     * Donation link
-* Local highscores
 * More music: Play all tracks, randomized
 
 Bugs:

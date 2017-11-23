@@ -439,7 +439,7 @@ class PlayState extends State {
                 if (!ring_symbol.destroyed) ring_symbol.destroy();
             });
 
-            Luxe.camera.shake(card_score);
+            Luxe.camera.shake(card_score * 0.5);
 
             if (card_score <= 1) {
                 play_sound('points_small.ogg');
@@ -520,6 +520,12 @@ class PlayState extends State {
         var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
         total_score += score;
         Luxe.io.string_save('total_score', '$total_score');
+
+        var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
+        var local_scores = [];
+        if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
+        local_scores.push(score);
+        Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
 
         Luxe.timer.schedule(1.0, function() {
             Main.SetState(GameOverState.StateId, {
