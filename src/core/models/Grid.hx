@@ -35,4 +35,14 @@ class Grid<T> {
     public function set_tile(x :Int, y :Int, value :T) {
         tiles[y][x] = value;
     }
+
+    public function clone() {
+        var grid = new Grid(width, height);
+        for (y in 0 ... height) {
+            for (x in 0 ... width) {
+                grid.set_tile(x, y, get_tile(x, y));
+            }
+        }
+        return grid;
+    }
 }

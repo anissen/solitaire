@@ -167,6 +167,39 @@ class PlayState extends State {
             text: '$score'
         });
 
+        // TODO: Make a different deck/quest_deck/game for puzzle mode
+        /*
+        XYZ
+        ZZY
+        XYX
+
+        Hand: XXZ
+
+        Quest: XXX
+        Quest: XYZ
+        Quest: ZYZ
+        */
+
+        switch (game_mode) {
+            case Puzzle:
+                deck_cards = [];
+                var stackedIndex = Luxe.utils.random.int(0, 9);
+                for (value in 0 ... 9) { // tile cards
+                    deck_cards.push({ suit: Luxe.utils.random.int(0, 4), stacked: (value == stackedIndex) });
+                }
+                for (value in 0 ... 3) { // hand cards
+                    deck_cards.push({ suit: Luxe.utils.random.int(0, 4), stacked: false });
+                }
+
+                quest_cards = [];
+                for (suit in 0 ... 2) {
+                    for (value in 0 ... 2) {
+                        quest_cards.push({ suit: suit, stacked: false });
+                    }
+                }
+            default:
+        }
+
         var deck = new InfiniteDeck(deck_cards, function(data) {
             var tile = create_tile(data.suit, data.stacked, tile_size);
             tile.pos = get_pos(1, tiles_y + 3.5);
@@ -190,6 +223,15 @@ class PlayState extends State {
             }
         };
         Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
+
+        switch (game_mode) {
+            case Puzzle:
+                Game.Instance.make_puzzle();
+                deck.on_reshuffling = function() {
+                    handle_game_over();
+                };
+            default:
+        }
 
         return Promise.resolve();
     }

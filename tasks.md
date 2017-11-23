@@ -17,12 +17,13 @@ Need:
     * Credits
     * Donation link
 * Local highscores
+* More music: Play all tracks, randomized
+* Countdown to unlock gameplay modes
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 
 Nice:
-* More music
 * Global highscores
 * Share score via twitter
 * Score indicator on the main menu

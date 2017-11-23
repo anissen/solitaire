@@ -56,6 +56,131 @@ class Game {
         new_turn();
     }
 
+    public function make_puzzle() {
+        // 3+3+3 = 9
+        // 3+3+3+3 = 12
+        // 3+2+3+3 = 11
+
+        /* TODO:
+         (New) idea:
+         Place 9 random tiles on the grid. Make a "worm" find and remove a connected subset of the tiles. Randomly place between 0 and 3 of cards on hand onto grid. Repeat. The collected tiles form the quests.
+         Consider using stacked tiles?
+
+         To use all tiles:
+         Make a grid like this:
+         XXX
+         X X
+         XXX
+
+         Hand: XXX
+         There must be exactly one stacked tile (3+2+3 tiles + 3 cards - 2 tiles for stack == 3+3+3 quest cards)
+        */
+
+        for (y in 0 ... 3) {
+            for (x in 0 ... 3) {
+                if (x == 1 && y == 1) continue; // skip center tile
+                var card = deck.take(1).first();
+                //grid.set_tile(x, y, card);
+                handle_place(card.cardId, x, y);
+            }
+        }
+
+        //var hand = deck.take(3);
+
+        var test_grid = grid.clone();
+        // if (Luxe.utils.random.bool()) {
+
+        // }
+
+        function get_random_tile(empty :Bool = false) {
+            var x = 0;
+            var y = 0;
+            var tile = null;
+            while (tile == null) {
+                x = Luxe.utils.random.int(0, 4);
+                y = Luxe.utils.random.int(0, 4);
+                tile = test_grid.get_tile(x, y);
+                if (empty && tile == null) break; // return first empty tile if empty argument is passed
+            }
+            return { tile: tile, x: x, y: y };
+        }
+
+        // function get_adjacent_tile(startX :Int, startY :Int) {
+        //     var adjacent = [];
+        //     if (startX > 0) adjacent.push({ x: startX - 1, y: startY });
+        //     if (startX < 3) adjacent.push({ x: startX + 1, y: startY });
+        //     if (startY > 0) adjacent.push({ x: startX, y: startY - 1 });
+        //     if (startY < 3) adjacent.push({ x: startX, y: startY + 1 });
+        //     var randomAdjacent = adjacent.shuffle();
+
+        //     while (!randomAdjacent.empty()) {
+        //         var a = randomAdjacent.pop();
+        //         var tile = test_grid.get_tile(a.x, a.y);
+        //         if (tile != null) return { tile: tile, x: a.x, y: a.y }
+        //     }
+        //     return { tile: null, x: startX, y: startY };
+        // }
+
+        function get_adjacent_tiles(startX :Int, startY :Int) {
+            var adjacent = [];
+            if (startX > 0) adjacent.push({ x: startX - 1, y: startY });
+            if (startX < 3) adjacent.push({ x: startX + 1, y: startY });
+            if (startY > 0) adjacent.push({ x: startX, y: startY - 1 });
+            if (startY < 3) adjacent.push({ x: startX, y: startY + 1 });
+
+            var nonempty = [];
+            for (a in adjacent) {
+                var tile = test_grid.get_tile(a.x, a.y);
+                if (tile != null) nonempty.push({ tile: tile, x: a.x, y: a.y });
+            }
+            return nonempty.shuffle();
+        }
+
+        function get_quest() {
+                //var temp_grid = test_grid.clone();
+            // var quests = [];
+            // while (quests.length < 3) {
+
+                // TODO: MAYBE insert a card from hand
+
+                var quest = [];
+                var start = get_random_tile();
+                quest.push(start.tile);
+                test_grid.set_tile(start.x, start.y, null);
+                
+                var tiles = get_adjacent_tiles(start.x, start.y);
+                if (tiles.empty()) return []; // abort
+
+                
+                
+            //     quests.push(quest);
+            // }
+            // return quests;
+            return quest;
+        }
+
+        while (quests.length < 3) {
+            var newQuest = get_quest(); //quest_deck.take(3);
+            quests.push(newQuest);
+            messageSystem.emit(NewQuest(newQuest));
+        }
+
+        // do {
+        //     for (y in 0 ... 3) {
+        //         for (x in 0 ... 3) {
+        //             var card = deck.take(1).first();
+        //             grid.set_tile(x, y, card);
+        //         }
+        //     }
+        // } while (is_game_over());
+
+        // for (y in 0 ... 3) {
+        //     for (x in 0 ... 3) {
+        //         handle_place(grid.get_tile(x, y).cardId, x, y);
+        //     }
+        // }
+    }
+
     public function do_action(action :Action) {
         messageSystem.do_action(action);
     }
@@ -306,6 +431,7 @@ class Game {
         // Only look at the quests in normal order (not reversed)
         for (quest in quests) {
             var quest_copy = [ for (tile in quest) { suit: tile.suit, stacked: tile.stacked, tile: tile } ];
+            // trace(quest_copy);
             var quest_matches = [];
 
             for (tile in tiles) {
