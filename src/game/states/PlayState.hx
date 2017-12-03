@@ -278,7 +278,7 @@ class PlayState extends State {
             case NewQuest(quest): handle_new_quest(quest);
             case TilePlaced(card, x, y): handle_tile_placed(card, x, y);
             case TileRemoved(card): handle_tile_removed(card);
-            case Collected(cards, quest): handle_collected(cards, quest);
+            case Collected(cards, quest, total_score): handle_collected(cards, quest, total_score);
             case Stacked(card): handle_stacked(card);
             case Score(score, card, correct_order): handle_score(score, card, correct_order);
             case GameOver: handle_game_over();
@@ -329,8 +329,12 @@ class PlayState extends State {
         return Actuate.tween(sprite.pos, duration, { x: pos.x, y: pos.y });
     }
 
-    function handle_collected(cards :Array<Card>, quest :Array<Card>) {
+    function handle_collected(cards :Array<Card>, quest :Array<Card>, total_score :Int) {
         quest_matches = [];
+
+        if (total_score > 10) {
+            play_sound('points_devine.ogg');
+        }
 
         for (card in quest) {
             quests.remove(card);
@@ -445,7 +449,7 @@ class PlayState extends State {
                 play_sound('points_small.ogg');
             } else if (card_score <= 3) {
                 play_sound('points_big.ogg');
-            } else {
+            } else { // score: 6
                 play_sound('points_huge.ogg');
             }
             switch (game_mode) {

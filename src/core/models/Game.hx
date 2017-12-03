@@ -18,7 +18,7 @@ enum Event {
     NewQuest(card :Array<Card>);
     TilePlaced(card :Card, x :Int, y :Int);
     TileRemoved(card :Card);
-    Collected(cards :Array<Card>, quest :Array<Card>);
+    Collected(cards :Array<Card>, quest :Array<Card>, total_score :Int);
     Stacked(card :Card);
     Score(score :Int, card :Card, correct_order :Bool);
     GameOver();
@@ -389,7 +389,7 @@ class Game {
         quests.remove(best_quest);
         update_score(cards, best_quest);
         for (tile in tiles) remove_tile(tile);
-        messageSystem.emit(Collected(cards, best_quest));
+        messageSystem.emit(Collected(cards, best_quest, calculate_score(cards, best_quest)));
         return true;
     }
 
