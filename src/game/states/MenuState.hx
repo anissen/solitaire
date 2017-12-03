@@ -76,13 +76,13 @@ class MenuState extends State {
             depth: 110
         });
 
+        /*
         var star = new luxe.Sprite({
             pos: new Vector(55, 190),
             texture: Luxe.resources.texture('assets/images/symbols/star.png'),
             scale: new Vector(0.15, 0.15),
             color: new Color().rgb(0xFFFFFF),
             depth: 10
-            // color: new Color().rgb(0xFFD48F)
         });
         luxe.tween.Actuate
             .tween(star, 10.0, { rotation_z: 360 })
@@ -97,6 +97,7 @@ class MenuState extends State {
             color: new Color().rgb(0x956416),
             point_size: 26
         });
+        */
 
         var normal_save = Luxe.io.string_load('save_normal');
 
@@ -120,6 +121,7 @@ class MenuState extends State {
         // play_stats.depth = 200;
 
         var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
+        if (total_score == null) total_score = 0;
 
         var strive_save = Luxe.io.string_load('save_strive');
         var strive_level = Luxe.io.string_load('strive_level');
@@ -141,13 +143,13 @@ class MenuState extends State {
             disabled: (total_score < timed_unlock)
         });
 
-        var puzzle_unlock = 3000;
-        var puzzle_button = new Button({
-            pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: (total_score < puzzle_unlock ? 'Unlock: ${puzzle_unlock - total_score}' : 'Puzzle'),
-            on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Puzzle),
-            disabled: (total_score < puzzle_unlock)
-        });
+        // var puzzle_unlock = 3000;
+        // var puzzle_button = new Button({
+        //     pos: new Vector(Settings.WIDTH / 2, get_button_y()),
+        //     text: (total_score < puzzle_unlock ? 'Unlock: ${puzzle_unlock - total_score}' : 'Puzzle'),
+        //     on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Puzzle),
+        //     disabled: (total_score < puzzle_unlock)
+        // });
     }
 
     override function onleave(_) {

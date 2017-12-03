@@ -43,15 +43,27 @@ class CreditsState extends State {
         });
         back_button.scale.set_xy(1/5, 1/5);
 
-        new Text({
+        var madeby = new Text({
             //pos: new Vector(90, 190),
             pos: Luxe.camera.center.clone(),
-            text: 'Made by me',
+            text: 'Made by',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
             color: new Color().rgb(0x956416),
             point_size: 26
         });
+        var link = new Text({
+            //pos: new Vector(90, 190),
+            pos: Vector.Add(madeby.pos, new Vector(0, 50)),
+            text: 'Anders Nissen',
+            align: TextAlign.center,
+            align_vertical: TextAlign.center,
+            color: new Color(0.6, 0.0, 0.6),
+            point_size: 26
+        });
+        link.add(new game.components.MouseUp(function(s) {
+            // Luxe.io.url_open('http://www.andersnissen.com'); // TODO: Does not work on Android :(
+        }));
     }
 
     override function onleave(_) {

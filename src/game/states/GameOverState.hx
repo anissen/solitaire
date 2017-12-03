@@ -146,6 +146,7 @@ class GameOverState extends State {
         var game_mode = data.game_mode;
 
         var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
+        if (total_score == null) total_score = 0;
         total_score += score;
         Luxe.io.string_save('total_score', '$total_score');
 
@@ -206,11 +207,13 @@ class GameOverState extends State {
             // }
         }
         // Luxe.camera.transform.pos.y = count * 50;
-        var pan = new game.components.DragPan({ name: 'DragPan' });
-        pan.y_top = Settings.HEIGHT - (count * 25 + 100);
-        pan.y_bottom = 0;
-        score_container.add(pan);
-        // Luxe.camera.add(pan);
+        var highscore_list_height = (count * 25 + 100);
+        if (highscore_list_height > Settings.HEIGHT) {
+            var pan = new game.components.DragPan({ name: 'DragPan' });
+            pan.y_top = Settings.HEIGHT - highscore_list_height;
+            pan.y_bottom = 0;
+            score_container.add(pan);
+        }
     }
 
     override function onleave(_) {

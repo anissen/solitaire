@@ -15,6 +15,8 @@ Need:
     * Credits
     * Donation link
 * More music: Play all tracks, randomized
+* Clean up bundled resources (especially music)
+* Replace tile click and tile place sounds (too clunky)
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched

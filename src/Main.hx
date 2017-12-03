@@ -53,8 +53,8 @@ class Main extends luxe.Game {
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'star.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png', 'ring.png'].map(function(i) return 'images/symbols/$i');
         var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/cog.png', 'ui/book.png', 'ui/stars.png'];
-        var music = ['Temple_of_the_Mystics.ogg']; // TODO: Convert to mp3 to work in more browsers?]
         var sounds = ['invalid.ogg', 'lost.ogg', 'place.ogg', 'points_big.ogg', 'points_huge.ogg', 'points_small.ogg', 'points_devine.ogg', 'quest.ogg', 'slide.ogg', 'stack.ogg', 'tile_click.ogg', 'ui_click.ogg', 'won.ogg'];
+        var music = ['Temple_of_the_Mystics.ogg', 'desert-ambience-cropped.ogg']; // TODO: Convert to mp3 to work in more browsers?]
 
         var parcel = new luxe.Parcel({
 			load_time_spacing: 0,
@@ -82,6 +82,8 @@ class Main extends luxe.Game {
         states.add(new CreditsState());
         states.add(new PlayState());
         states.add(new GameOverState());
+
+        Luxe.audio.loop(Luxe.resources.audio('assets/music/desert-ambience-cropped.ogg').source);
 
         // Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.ogg').source);
 
