@@ -53,8 +53,8 @@ class Main extends luxe.Game {
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'star.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png', 'ring.png'].map(function(i) return 'images/symbols/$i');
         var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/cog.png', 'ui/book.png', 'ui/stars.png'];
-        var sounds = ['invalid.ogg', 'lost.ogg', 'place.ogg', 'points_big.ogg', 'points_huge.ogg', 'points_small.ogg', 'points_devine.ogg', 'quest.ogg', 'slide.ogg', 'stack.ogg', 'tile_click.ogg', 'ui_click.ogg', 'won.ogg'];
-        var music = ['Temple_of_the_Mystics.ogg', 'desert-ambience-cropped.ogg']; // TODO: Convert to mp3 to work in more browsers?]
+        var sounds = ['invalid.mp3', 'lost.mp3', 'place.mp3', 'points_big.mp3', 'points_huge.mp3', 'points_small.mp3', 'points_devine.mp3', 'quest.mp3', 'slide.mp3', 'stack.mp3', 'tile_click.mp3', 'ui_click.mp3', 'won.mp3'];
+        var music = ['Temple_of_the_Mystics.mp3' /*, 'desert-ambience-cropped.mp3' */];
 
         var parcel = new luxe.Parcel({
 			load_time_spacing: 0,
@@ -83,9 +83,9 @@ class Main extends luxe.Game {
         states.add(new PlayState());
         states.add(new GameOverState());
 
-        Luxe.audio.loop(Luxe.resources.audio('assets/music/desert-ambience-cropped.ogg').source);
+        // Luxe.audio.loop(Luxe.resources.audio('assets/music/desert-ambience-cropped.mp3').source);
 
-        // Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.ogg').source);
+        Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source);
 
         luxe.tween.Actuate.tween(nineslice.pos, 0.3, { x: 0, y: 0 });
         luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT }).onComplete(function() {
@@ -96,7 +96,7 @@ class Main extends luxe.Game {
     static public function SetState(id :String, ?data :Dynamic) {
         luxe.tween.Actuate.reset();
         fade.fade_out().onComplete(function() {
-            Luxe.audio.play(Luxe.resources.audio('assets/sounds/slide.ogg').source);
+            Luxe.audio.play(Luxe.resources.audio('assets/sounds/slide.mp3').source);
             states.set(id, data);
             fade.fade_in();
         });

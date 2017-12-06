@@ -102,7 +102,7 @@ class Button extends luxe.NineSlice {
     override public function onmouseup(event :MouseEvent) {
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (point_inside_AABB(world_pos)) {
-            play_sound('ui_click.ogg');
+            play_sound('ui_click.mp3');
             on_click();
         }
     }

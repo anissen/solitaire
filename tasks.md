@@ -23,6 +23,7 @@ Bugs:
 
 Nice:
 * Global highscores
+* On-screen keyboard for entering name for highscores
 * Share score via twitter
 * Score indicator on the main menu
 * Puzzle mode
