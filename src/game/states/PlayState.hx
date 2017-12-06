@@ -344,7 +344,7 @@ class PlayState extends State {
     }
 
     function handle_stacked(card :Card) {
-        // play_sound('stack.mp3');
+        play_sound('stack.mp3');
         card.stacked = true;
         Luxe.camera.shake(1);
 
@@ -443,7 +443,7 @@ class PlayState extends State {
                 if (!ring_symbol.destroyed) ring_symbol.destroy();
             });
 
-            Luxe.camera.shake(card_score * 0.5);
+            Luxe.camera.shake(card_score * (1 / 3));
 
             if (card_score <= 1) {
                 play_sound('points_small.mp3');
