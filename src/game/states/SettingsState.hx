@@ -43,25 +43,76 @@ class SettingsState extends State {
         });
         back_button.scale.set_xy(1/5, 1/5);
 
-        new Text({
-            // pos: new Vector(90, 190),
-            pos: Luxe.camera.center.clone(),
-            text: 'Settings goes here',
-            align: TextAlign.center,
-            align_vertical: TextAlign.center,
-            color: new Color().rgb(0x956416),
-            point_size: 26
+        // new Text({
+        //     // pos: new Vector(90, 190),
+        //     pos: Luxe.camera.center.clone(),
+        //     text: 'Settings goes here',
+        //     align: TextAlign.center,
+        //     align_vertical: TextAlign.center,
+        //     color: new Color().rgb(0x956416),
+        //     point_size: 26
+        // });
+
+        var button_height = 60;
+        var button_count = 0;
+        function get_button_y() {
+            return 150 + (button_count++) * button_height;
+        }
+
+        var audio_enabled = true;
+        if (Luxe.io.string_load('audio_enabled') == 'false') audio_enabled = false;
+        var music_enabled = true;
+        if (Luxe.io.string_load('music_enabled') == 'false') music_enabled = false;
+        
+        var audio_button :Button;
+        var music_button :Button;
+        
+        audio_button = new Button({
+            pos: new Vector(Settings.WIDTH / 2, get_button_y()),
+            text: (audio_enabled ? 'Audio Enabled' : 'Audio Disabled'),
+            on_click: function() {
+                audio_enabled = (!audio_enabled);
+                audio_button.text = (audio_enabled ? 'Audio Enabled' : 'Audio Disabled');
+                Luxe.audio.active = (!audio_enabled);
+                if (!audio_enabled) {
+                    Luxe.audio.suspend();
+                    music_enabled = false;
+                    music_button.enabled = false;
+                    music_button.text = 'Music Disabled';
+                } else {
+                    Luxe.audio.resume();
+                    music_enabled = true;
+                    if (Luxe.io.string_load('music_enabled') == 'false') music_enabled = false;
+                    music_button.enabled = true;
+                    music_button.text = (music_enabled ? 'Music Enabled' : 'Music Disabled');
+                }
+                Luxe.io.string_save('audio_enabled', (audio_enabled ? 'true' : 'false'));
+            }
         });
 
-        var music_enabled = true;
-        var puzzle_button :Button; 
-        puzzle_button = new Button({
-            pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT * (2/3)),
-            text: 'Music Enabled',
+        music_button = new Button({
+            pos: new Vector(Settings.WIDTH / 2, get_button_y()),
+            text: (music_enabled ? 'Music Enabled' : 'Music Disabled'),
             on_click: function() {
                 music_enabled = (!music_enabled);
-                puzzle_button.text = (music_enabled ? 'Music Enabled' : 'Music Disabled');
-            }
+                music_button.text = (music_enabled ? 'Music Enabled' : 'Music Disabled');
+                // Luxe.audio.stop();
+                Luxe.io.string_save('music_enabled', (music_enabled ? 'true' : 'false'));
+            },
+            disabled: (!audio_enabled)
+        });
+
+        var reset_tutorial_enabled = false;
+        if (Luxe.io.string_load('tutorial_enabled') == 'false') reset_tutorial_enabled = true;
+        var reset_tutorial_button :Button;
+        reset_tutorial_button = new Button({
+            pos: new Vector(Settings.WIDTH / 2, get_button_y() + button_height),
+            text: 'Reset Tutorial',
+            on_click: function() {
+                reset_tutorial_button.enabled = false;
+                Luxe.io.string_save('tutorial_enabled', 'true');
+            },
+            disabled: (!reset_tutorial_enabled)
         });
     }
 

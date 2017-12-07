@@ -83,6 +83,11 @@ class Main extends luxe.Game {
         states.add(new PlayState());
         states.add(new GameOverState());
 
+        if (Luxe.io.string_load('audio_enabled') == 'false') {
+            Luxe.audio.active = false;
+            Luxe.audio.suspend();
+        }
+
         // Luxe.audio.loop(Luxe.resources.audio('assets/music/desert-ambience-cropped.mp3').source);
 
         var music_handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source);
