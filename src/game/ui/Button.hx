@@ -20,8 +20,9 @@ class Button extends luxe.NineSlice {
     var label :Text;
     var hovered :Bool = false;
     var on_click :Void->Void;
-    var disabled :Bool;
+    var is_enabled :Bool;
     public var text (get, set) :String;
+    public var enabled (get, set) :Bool;
 
     public function new(options :ButtonOptions) {
         super({
@@ -38,8 +39,8 @@ class Button extends luxe.NineSlice {
         var height = (options.height != null ? options.height : 45);
         var font_size = (options.font_size != null ? options.font_size : 26);
         var text = (options.text != null ? options.text : '');
-        disabled = (options.disabled != null ? options.disabled : false);
-        if (!disabled) on_click = options.on_click;
+        var disabled = (options.disabled != null ? options.disabled : false);
+        on_click = options.on_click;
         this.create(Vector.Subtract(options.pos, new Vector(width / 2, height / 2)), width, height);
 
         label = new Text({
@@ -59,14 +60,7 @@ class Button extends luxe.NineSlice {
             outline_color: new Color().rgb(0xa55004)
         });
 
-        if (disabled) {
-            color.a = 0.2;
-            // label.outline_color.set(1 - label.outline_color.r, 1 - label.outline_color.g, 1 - label.outline_color.b);
-            label.outline_color.set(0.5, 0.5, 0.5);
-            // label.color.set(1 - label.color.r, 1 - label.color.g, 1 - label.color.b);
-            label.color.set(1, 1, 1);
-            return;
-        }
+        enabled = !disabled;
 
         Actuate.tween(label, 3.0, { letter_spacing: -0.5 }).reflect().repeat();
 
@@ -115,6 +109,23 @@ class Button extends luxe.NineSlice {
         return (label.text = t);
     }
 
+    function get_enabled() {
+        return is_enabled;
+    }
+
+    function set_enabled(value :Bool) {
+        if (is_enabled == value) return value;
+        is_enabled = value;
+        if (value) {
+            color.tween(0.3, { a: 1.0 });
+            label.outline_color.tween(0.3, { r: 0.65, g: 0.31, b: 0.02 });
+        } else {
+            color.tween(0.3, { a: 0.2 });
+            label.outline_color.tween(0.3, { r: 0.5, g: 0.5, b: 0.5 });
+        }
+        return is_enabled;
+    }
+
     function play_sound(id :String) {
         var sound = Luxe.resources.audio('assets/sounds/$id');
         Luxe.audio.play(sound.source);
@@ -122,7 +133,7 @@ class Button extends luxe.NineSlice {
 
     /** Returns true if a point is inside the AABB unrotated */
     public function point_inside_AABB(_p :Vector) :Bool {
-        if (disabled) return false;
+        if (!enabled) return false;
         if (pos == null) return false;
         if (size == null) return false;
 
