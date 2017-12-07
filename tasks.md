@@ -16,15 +16,11 @@ Need:
     * Donation link
 * More music: Play all tracks, randomized
 * Clean up bundled resources (especially music)
-* Replace sounds:
-    * (tile click)
-    * tile place
-    * stack
-    * invalid
-    * (ui click)
+* Count-down on the locked buttons
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
+* Clicking on grid selects multiple tiles
 
 Nice:
 * Global highscores

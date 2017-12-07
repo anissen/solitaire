@@ -85,7 +85,8 @@ class Main extends luxe.Game {
 
         // Luxe.audio.loop(Luxe.resources.audio('assets/music/desert-ambience-cropped.mp3').source);
 
-        Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source);
+        var music_handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source);
+        Luxe.audio.volume(music_handle, 0.2);
 
         luxe.tween.Actuate.tween(nineslice.pos, 0.3, { x: 0, y: 0 });
         luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT }).onComplete(function() {
