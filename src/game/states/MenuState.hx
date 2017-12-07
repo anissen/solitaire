@@ -4,6 +4,7 @@ import luxe.Text;
 import luxe.States.State;
 import luxe.Vector;
 import luxe.Color;
+import luxe.tween.Actuate;
 
 import game.ui.Button;
 
@@ -12,6 +13,7 @@ using game.misc.GameMode.GameModeTools;
 class MenuState extends State {
     static public var StateId :String = 'MenuState';
     var title :Text;
+    var counting_total_score :Float;
 
     public function new() {
         super({ name: StateId });
@@ -120,8 +122,11 @@ class MenuState extends State {
         // play_stats.scale.set_xy(1/7, 1/7);
         // play_stats.depth = 200;
 
+        var old_total_score = Std.parseInt(Luxe.io.string_load('menu_last_total_score'));
+        if (old_total_score == null) old_total_score = 0;
         var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
         if (total_score == null) total_score = 0;
+        Luxe.io.string_save('menu_last_total_score', '$total_score');
 
         var strive_save = Luxe.io.string_load('save_strive');
         var strive_level = Luxe.io.string_load('strive_level');
@@ -138,10 +143,20 @@ class MenuState extends State {
         var timed_unlock = 2000;
         var timed_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: (total_score < timed_unlock ? 'Unlock: ${timed_unlock - total_score}' : 'Timed'),
+            text: (total_score < timed_unlock ? 'Unlock: ${timed_unlock - total_score}' : 'Survival'),
             on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Timed),
             disabled: (total_score < timed_unlock)
         });
+        
+        counting_total_score = old_total_score;
+        Actuate.tween(this, (total_score - old_total_score) / 250, { counting_total_score: total_score }, true).onUpdate(function () {
+            strive_button.text = (counting_total_score < strive_unlock ? 'Unlock: ${Std.int(strive_unlock - counting_total_score)}' : strive_text);
+            strive_button.enabled = (counting_total_score >= strive_unlock);
+
+            timed_button.text = (counting_total_score < timed_unlock ? 'Unlock: ${Std.int(timed_unlock - counting_total_score)}' : 'Survival');
+            timed_button.enabled = (counting_total_score >= timed_unlock);
+        });
+        
 
         // var puzzle_unlock = 3000;
         // var puzzle_button = new Button({

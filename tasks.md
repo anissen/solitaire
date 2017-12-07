@@ -16,7 +16,6 @@ Need:
     * Donation link
 * More music: Play all tracks, randomized
 * Clean up bundled resources (especially music)
-* Count-down on the locked buttons
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
