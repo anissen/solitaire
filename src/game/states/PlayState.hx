@@ -14,6 +14,7 @@ import game.components.DragOver;
 
 import snow.api.Promise;
 import core.models.Game;
+import game.misc.GameMode.GameMode;
 
 using game.tools.TweenTools;
 using game.misc.GameMode.GameModeTools;
@@ -46,7 +47,7 @@ class PlayState extends State {
     var score :Int;
 
     var game_over :Bool;
-    var game_mode :game.misc.GameMode.GameMode;
+    var game_mode :GameMode;
 
     var quest_matches :Array<Card>;
 
@@ -302,7 +303,7 @@ class PlayState extends State {
     }
 
     function handle_new_quest(quest :Array<Card>) {
-        // play_sound('quest.mp3');
+        play_sound('quest.mp3');
         var count = 0;
         var delay_count = 0;
         var tween = null;
@@ -331,6 +332,8 @@ class PlayState extends State {
 
     function handle_collected(cards :Array<Card>, quest :Array<Card>, total_score :Int) {
         quest_matches = [];
+
+        play_sound('collect.mp3');
 
         if (total_score > 10) {
             play_sound('points_devine.mp3');
@@ -480,12 +483,13 @@ class PlayState extends State {
 
         Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
 
+        var new_game_mode :GameMode = game_mode;
         switch (game_mode) {
             case Strive(level):
                 var win = (score >= 0); // strive score starts negative
                 var new_level = (win ? level + 1 : level - 1);
                 if (new_level < 1) new_level = 1;
-                game_mode = Strive(new_level);
+                new_game_mode = Strive(new_level);
                 play_sound(win ? 'won.mp3' : 'lost.mp3');
             case Normal:
                 play_sound('won.mp3');
@@ -495,7 +499,7 @@ class PlayState extends State {
             case Puzzle:
                 play_sound('won.mp3');
             case Tutorial(mode):
-                game_mode = mode;
+                new_game_mode = mode;
                 play_sound('won.mp3');
         }
 
@@ -508,25 +512,29 @@ class PlayState extends State {
         switch (game_mode) {
             case Timed:
                 scoreText.color.tween(0.3, { r: 0.0, g: 0.0, b: 0.0 });
-                trace('time_penalty: $time_penalty');
+                // trace('time_penalty: $time_penalty');
                 counting_score = 0.0;
                 var tween = Actuate.tween(this, time_penalty * 0.05, { counting_score: time_penalty }, true).onUpdate(function() {
-                    trace('counting_score: $counting_score');
+                    // trace('counting_score: $counting_score');
                     scoreText.text = '${Std.int(counting_score)} sec';
                 });
-                return tween.toPromise().then(switch_to_game_over_state);
+                return tween.toPromise().then(switch_to_game_over_state.bind(new_game_mode));
             default:
-                return switch_to_game_over_state();
+                return switch_to_game_over_state(new_game_mode);
         }
     }
 
-    function switch_to_game_over_state() {
+    function switch_to_game_over_state(next_game_mode :GameMode) {
         Luxe.timer.schedule(1.0, function() {
             Main.SetState(GameOverState.StateId, {
                 // client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
                 // name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
-                score: score,
-                game_mode: game_mode
+                score: switch (game_mode) {
+                    case Timed: time_penalty;
+                    case Strive(level): game_mode.get_strive_score() + score;
+                    default: score;
+                },
+                game_mode: next_game_mode
             });
         });
         return Promise.resolve();
