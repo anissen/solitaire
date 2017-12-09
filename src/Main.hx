@@ -10,6 +10,7 @@ import game.states.*;
 class Main extends luxe.Game {
     static var states :States;
     static var fade :game.components.Fader;
+    // static var music_handles :Array<luxe.Audio.AudioHandle> = [];
     var start_time :Float;
     var nineslice :luxe.NineSlice;
 
@@ -53,7 +54,7 @@ class Main extends luxe.Game {
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'star.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png', 'ring.png'].map(function(i) return 'images/symbols/$i');
         var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/cog.png', 'ui/book.png', 'ui/stars.png'];
-        var sounds = ['invalid.mp3', 'lost.mp3', 'place.mp3', 'points_big.mp3', 'points_huge.mp3', 'points_small.mp3', 'points_devine.mp3', 'quest.mp3', 'slide.mp3', 'stack.mp3', 'tile_click.mp3', 'ui_click.mp3', 'won.mp3'];
+        var sounds = ['invalid.mp3', 'lost.mp3', 'place.mp3', 'points_big.mp3', 'points_huge.mp3', 'points_small.mp3', 'points_devine.mp3', 'quest.mp3', 'slide.mp3', 'stack.mp3', 'tile_click.mp3', 'ui_click.mp3', 'won.mp3', 'collect.mp3'];
         var music = ['Temple_of_the_Mystics.mp3' /*, 'desert-ambience-cropped.mp3' */];
 
         var parcel = new luxe.Parcel({
@@ -89,6 +90,16 @@ class Main extends luxe.Game {
         }
 
         // Luxe.audio.loop(Luxe.resources.audio('assets/music/desert-ambience-cropped.mp3').source);
+        // var handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source);
+        // handle.
+
+        // music_handles.push(Luxe.resources.audio('assets/music/desert-ambience-cropped.mp3').source));
+        // music_handles.push(Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source));
+
+        // var music_handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source);
+        // for (handle in music_handles) {
+        //     Luxe.audio.volume(handle, 0.2);
+        // }
 
         var music_handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source);
         Luxe.audio.volume(music_handle, 0.2);

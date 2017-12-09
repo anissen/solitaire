@@ -16,10 +16,12 @@ Need:
     * Donation link
 * More music: Play all tracks, randomized
 * Clean up bundled resources (especially music)
+* "Invalid sound" should play when making a valid but non-matching selecting
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
+* Strive progress broken
 
 Nice:
 * Global highscores
