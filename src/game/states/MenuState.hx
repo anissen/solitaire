@@ -147,15 +147,29 @@ class MenuState extends State {
             on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Timed),
             disabled: (total_score < timed_unlock)
         });
+
+        trace('Old total score: $old_total_score, new total score: $total_score');
         
         counting_total_score = old_total_score;
-        Actuate.tween(this, (total_score - old_total_score) / 250, { counting_total_score: total_score }, true).onUpdate(function () {
+        var count_down_duration = luxe.utils.Maths.clamp((total_score - old_total_score) / 50, 1.0, 3.0);
+        Actuate.tween(this, count_down_duration, { counting_total_score: total_score }, true).onUpdate(function () {
             strive_button.text = (counting_total_score < strive_unlock ? 'Unlock: ${Std.int(strive_unlock - counting_total_score)}' : strive_text);
+            var was_enabled = strive_button.enabled;
             strive_button.enabled = (counting_total_score >= strive_unlock);
+            if (!was_enabled && strive_button.enabled) {
+                Luxe.audio.play(Luxe.resources.audio('assets/sounds/points_devine.mp3').source);
+                Luxe.audio.play(Luxe.resources.audio('assets/sounds/ui_click.mp3').source);
+            }
 
             timed_button.text = (counting_total_score < timed_unlock ? 'Unlock: ${Std.int(timed_unlock - counting_total_score)}' : 'Survival');
+            was_enabled = timed_button.enabled;
             timed_button.enabled = (counting_total_score >= timed_unlock);
+            if (!was_enabled && timed_button.enabled) {
+                Luxe.audio.play(Luxe.resources.audio('assets/sounds/points_devine.mp3').source);
+                Luxe.audio.play(Luxe.resources.audio('assets/sounds/ui_click.mp3').source);
+            }
         });
+        
         
 
         // var puzzle_unlock = 3000;
