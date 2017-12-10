@@ -96,7 +96,7 @@ class Button extends luxe.NineSlice {
     override public function onmouseup(event :MouseEvent) {
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (point_inside_AABB(world_pos)) {
-            play_sound('ui_click.mp3');
+            play_sound('ui_click.ogg');
             on_click();
         }
     }
@@ -127,7 +127,7 @@ class Button extends luxe.NineSlice {
     }
 
     function play_sound(id :String) {
-        var sound = Luxe.resources.audio('assets/sounds/$id');
+        var sound = Luxe.resources.audio('assets/sounds/ogg/$id');
         Luxe.audio.play(sound.source);
     }
 

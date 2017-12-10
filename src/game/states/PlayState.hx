@@ -5,6 +5,7 @@ import core.models.Deck.InfiniteDeck;
 import luxe.States.State;
 import luxe.Vector;
 import luxe.Sprite;
+import luxe.Color;
 import luxe.tween.Actuate;
 
 import game.entities.Tile;
@@ -15,6 +16,9 @@ import game.components.DragOver;
 import snow.api.Promise;
 import core.models.Game;
 import game.misc.GameMode.GameMode;
+
+import particles.ParticleSystem;
+import particles.ParticleEmitter;
 
 using game.tools.TweenTools;
 using game.misc.GameMode.GameModeTools;
@@ -51,6 +55,8 @@ class PlayState extends State {
 
     var quest_matches :Array<Card>;
 
+    var ps :ParticleSystem;
+
     public function new() {
         super({ name: StateId });
         Game.Instance.listen(handle_event);
@@ -84,6 +90,7 @@ class PlayState extends State {
         // counting_score = 0;
         game_over = false;
         Tile.CardId = 0; // reset card Ids
+        ps = new ParticleSystem();
 
         var back_button = new game.ui.Icon({
             pos: new Vector(25, 25),
@@ -303,7 +310,7 @@ class PlayState extends State {
     }
 
     function handle_new_quest(quest :Array<Card>) {
-        play_sound('quest.mp3');
+        play_sound('quest.ogg');
         var count = 0;
         var delay_count = 0;
         var tween = null;
@@ -333,10 +340,10 @@ class PlayState extends State {
     function handle_collected(cards :Array<Card>, quest :Array<Card>, total_score :Int) {
         quest_matches = [];
 
-        play_sound('collect.mp3');
+        play_sound('collect.ogg');
 
         if (total_score > 10) {
-            play_sound('points_devine.mp3');
+            play_sound('points_devine.ogg');
         }
 
         for (card in quest) {
@@ -347,9 +354,9 @@ class PlayState extends State {
     }
 
     function handle_stacked(card :Card) {
-        play_sound('stack.mp3');
+        play_sound('stack.ogg');
         card.stacked = true;
-        Luxe.camera.shake(1);
+        Luxe.camera.shake(0.5);
 
         var ring_symbol = new Sprite({
             texture: Luxe.resources.texture('assets/images/symbols/ring.png'),
@@ -367,7 +374,7 @@ class PlayState extends State {
     }
 
     function handle_tile_placed(card :Card, x :Int, y :Int) {
-        play_sound('place.mp3');
+        play_sound('place.ogg');
         if (card == null) {
             trace('handle_tile_placed: Card was null -- how?!');
             return Promise.resolve();
@@ -386,6 +393,45 @@ class PlayState extends State {
             card.add(new Clickable(tile_clicked));
             card.add(new DragOver(tile_dragover));
         });
+
+		var pe = new ParticleEmitter({ // TODO: Don't make a new particle emitter every time -- just use a single one
+			name : 'test_emitter', 
+			rate : 128,
+			cache_size : 512,
+			cache_wrap : true,
+			duration: 0.1,
+            // depth: card.depth - 0.1,
+			modules : [
+				new particles.modules.SpawnModule(),
+				new particles.modules.LifeTimeModule({
+					lifetime : 0.2,
+					lifetime_max : 0.5
+				}),
+				// new particles.modules.VelocityModule({
+				// 	initial_velocity : new Vector(0, 100)
+				// }),
+				new particles.modules.ColorLifeModule({
+					initial_color : new Color(1,0,1,1),
+					end_color : new Color(0,0,1,1),
+					end_color_max : new Color(1,0,0,1)
+				}),
+				new particles.modules.SizeLifeModule({
+					initial_size : new Vector(10,10),
+					end_size : new Vector(5,5)
+				}),
+				new particles.modules.DirectionModule({
+					direction: 0,
+					direction_variance: 360,
+                    speed: 100
+				})
+				// new particles.modules.GravityModule({
+				// 	gravity: new Vector(0, 100)
+				// })
+			]
+		});
+		ps.add(pe);
+        pe.position.copy_from(card.pos);
+
         return tween.toPromise();
     }
 
@@ -397,7 +443,7 @@ class PlayState extends State {
     }
 
     function play_sound(id :String) {
-        var sound = Luxe.resources.audio('assets/sounds/$id');
+        var sound = Luxe.resources.audio('assets/sounds/ogg/$id');
         Luxe.audio.play(sound.source);
     }
 
@@ -449,11 +495,11 @@ class PlayState extends State {
             Luxe.camera.shake(card_score * (1 / 3));
 
             if (card_score <= 1) {
-                play_sound('points_small.mp3');
+                play_sound('points_small.ogg');
             } else if (card_score <= 3) {
-                play_sound('points_big.mp3');
+                play_sound('points_big.ogg');
             } else { // score: 6
-                play_sound('points_huge.mp3');
+                play_sound('points_huge.ogg');
             }
             switch (game_mode) {
                 case Strive(_): 
@@ -490,17 +536,17 @@ class PlayState extends State {
                 var new_level = (win ? level + 1 : level - 1);
                 if (new_level < 1) new_level = 1;
                 new_game_mode = Strive(new_level);
-                play_sound(win ? 'won.mp3' : 'lost.mp3');
+                play_sound(win ? 'won.mp3' : 'lost.ogg');
             case Normal:
-                play_sound('won.mp3');
+                play_sound('won.ogg');
             case Timed:
                 score = Std.int(time_penalty); // set the score to be the time survived
-                play_sound((counting_score - time_penalty > 0) ? 'won.mp3' : 'lost.mp3');
+                play_sound((counting_score - time_penalty > 0) ? 'won.mp3' : 'lost.ogg');
             case Puzzle:
-                play_sound('won.mp3');
+                play_sound('won.ogg');
             case Tutorial(mode):
                 new_game_mode = mode;
-                play_sound('won.mp3');
+                play_sound('won.ogg');
         }
 
         var delay = 0.0;
@@ -581,12 +627,12 @@ class PlayState extends State {
         tile.set_highlight(true);
         collection.push(tile);
         if (!Game.Instance.is_collection_valid(collection)) {
-            play_sound('invalid.mp3');
+            play_sound('invalid.ogg');
             clear_collection();
             return;
         }
 
-        play_sound('tile_click.mp3');
+        play_sound('tile_click.ogg');
 
         if (collection.length == 3) {
             var cardIds = [ for (c in collection) c.cardId ];
@@ -649,6 +695,7 @@ class PlayState extends State {
 
     override function update(dt :Float) {
         if (game_over) return;
+        ps.update(dt);
         var textScale = scoreText.scale.x; 
         if (textScale > 1) scoreText.scale.set_xy(textScale - dt, textScale - dt);
         switch (game_mode) {

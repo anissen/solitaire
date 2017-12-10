@@ -18,6 +18,7 @@ class MouseUp extends Component {
     }
 
     override function onmouseup(event :MouseEvent) {
+        if (sprite == null) return; // can happen if the sprite is destroyed on mouse-down
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (sprite.point_inside(world_pos)) {
             callback(sprite);

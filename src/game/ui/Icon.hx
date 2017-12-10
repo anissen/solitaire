@@ -57,7 +57,7 @@ class Icon extends Sprite {
     override public function onmouseup(event :MouseEvent) {
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (point_inside_AABB(world_pos)) {
-            Luxe.audio.play(Luxe.resources.audio('assets/sounds/tile_click.mp3').source);
+            Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/tile_click.ogg').source);
             on_click();
         }
     }

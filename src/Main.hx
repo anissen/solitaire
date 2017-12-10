@@ -54,15 +54,15 @@ class Main extends luxe.Game {
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'star.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png', 'ring.png'].map(function(i) return 'images/symbols/$i');
         var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/cog.png', 'ui/book.png', 'ui/stars.png'];
-        var sounds = ['invalid.mp3', 'lost.mp3', 'place.mp3', 'points_big.mp3', 'points_huge.mp3', 'points_small.mp3', 'points_devine.mp3', 'quest.mp3', 'slide.mp3', 'stack.mp3', 'tile_click.mp3', 'ui_click.mp3', 'won.mp3', 'collect.mp3'];
-        var music = ['Temple_of_the_Mystics.mp3' /*, 'desert-ambience-cropped.mp3' */];
+        var sounds = ['invalid.ogg', 'lost.ogg', 'place.ogg', 'points_big.ogg', 'points_huge.ogg', 'points_small.ogg', 'points_devine.ogg', 'quest.ogg', 'slide.ogg', 'stack.ogg', 'tile_click.ogg', 'ui_click.ogg', 'won.ogg', 'collect.ogg'];
+        var music = ['Temple_of_the_Mystics.ogg' /*, 'desert-ambience-cropped.ogg' */];
 
         var parcel = new luxe.Parcel({
 			load_time_spacing: 0,
 			load_start_delay: 0,
 			textures: [ for (icon in icons.concat(ui)) { id: 'assets/' + icon } ],
-			sounds: [ for (sound in sounds) { id: 'assets/sounds/' + sound, is_stream: false } ]
-                    .concat([for (m in music) { id: 'assets/music/' + m, is_stream: true }]),
+			sounds: [ for (sound in sounds) { id: 'assets/sounds/ogg/' + sound, is_stream: false } ]
+                    .concat([for (m in music) { id: 'assets/music/ogg/' + m, is_stream: true }]),
             fonts: [{ id: 'assets/fonts/clemente/clemente.fnt' } ]
 		});
 
@@ -89,19 +89,19 @@ class Main extends luxe.Game {
             Luxe.audio.suspend();
         }
 
-        // Luxe.audio.loop(Luxe.resources.audio('assets/music/desert-ambience-cropped.mp3').source);
-        // var handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source);
+        // Luxe.audio.loop(Luxe.resources.audio('assets/music/ogg/desert-ambience-cropped.ogg').source);
+        // var handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/ogg/Temple_of_the_Mystics.ogg').source);
         // handle.
 
-        // music_handles.push(Luxe.resources.audio('assets/music/desert-ambience-cropped.mp3').source));
-        // music_handles.push(Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source));
+        // music_handles.push(Luxe.resources.audio('assets/music/ogg/desert-ambience-cropped.ogg').source));
+        // music_handles.push(Luxe.audio.loop(Luxe.resources.audio('assets/music/ogg/Temple_of_the_Mystics.ogg').source));
 
-        // var music_handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source);
+        // var music_handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/ogg/Temple_of_the_Mystics.ogg').source);
         // for (handle in music_handles) {
         //     Luxe.audio.volume(handle, 0.2);
         // }
 
-        var music_handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/Temple_of_the_Mystics.mp3').source);
+        var music_handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/ogg/Temple_of_the_Mystics.ogg').source);
         Luxe.audio.volume(music_handle, 0.2);
 
         luxe.tween.Actuate.tween(nineslice.pos, 0.3, { x: 0, y: 0 });
@@ -113,7 +113,7 @@ class Main extends luxe.Game {
     static public function SetState(id :String, ?data :Dynamic) {
         luxe.tween.Actuate.reset();
         fade.fade_out().onComplete(function() {
-            Luxe.audio.play(Luxe.resources.audio('assets/sounds/slide.mp3').source);
+            Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/slide.ogg').source);
             states.set(id, data);
             fade.fade_in();
         });

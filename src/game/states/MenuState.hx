@@ -122,10 +122,8 @@ class MenuState extends State {
         // play_stats.scale.set_xy(1/7, 1/7);
         // play_stats.depth = 200;
 
-        var old_total_score = Std.parseInt(Luxe.io.string_load('menu_last_total_score'));
-        if (old_total_score == null) old_total_score = 0;
-        var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
-        if (total_score == null) total_score = 0;
+        var old_total_score = load_int('menu_last_total_score', 0);
+        var total_score = load_int('total_score', 0);
         Luxe.io.string_save('menu_last_total_score', '$total_score');
 
         var strive_save = Luxe.io.string_load('save_strive');
@@ -148,27 +146,30 @@ class MenuState extends State {
             disabled: (total_score < timed_unlock)
         });
 
-        trace('Old total score: $old_total_score, new total score: $total_score');
+        // trace('Old total score: $old_total_score, new total score: $total_score');
         
         counting_total_score = old_total_score;
         var count_down_duration = luxe.utils.Maths.clamp((total_score - old_total_score) / 50, 1.0, 3.0);
         Actuate.tween(this, count_down_duration, { counting_total_score: total_score }, true).onUpdate(function () {
+            if (counting_total_score - old_total_score % 10 == 0) {
+                Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/points_big.ogg').source);
+            }
             strive_button.text = (counting_total_score < strive_unlock ? 'Unlock: ${Std.int(strive_unlock - counting_total_score)}' : strive_text);
             var was_enabled = strive_button.enabled;
             strive_button.enabled = (counting_total_score >= strive_unlock);
-            if (!was_enabled && strive_button.enabled) {
-                Luxe.audio.play(Luxe.resources.audio('assets/sounds/points_devine.mp3').source);
-                Luxe.audio.play(Luxe.resources.audio('assets/sounds/ui_click.mp3').source);
+            if (!was_enabled && strive_button.enabled {
+                Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/points_devine.ogg').source);
+                Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/ui_click.ogg').source);
             }
 
             timed_button.text = (counting_total_score < timed_unlock ? 'Unlock: ${Std.int(timed_unlock - counting_total_score)}' : 'Survival');
             was_enabled = timed_button.enabled;
             timed_button.enabled = (counting_total_score >= timed_unlock);
             if (!was_enabled && timed_button.enabled) {
-                Luxe.audio.play(Luxe.resources.audio('assets/sounds/points_devine.mp3').source);
-                Luxe.audio.play(Luxe.resources.audio('assets/sounds/ui_click.mp3').source);
+                Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/points_devine.ogg').source);
+                Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/ui_click.ogg').source);
             }
-        });
+        }).delay(0.1);
         
         
 
@@ -179,6 +180,23 @@ class MenuState extends State {
         //     on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Puzzle),
         //     disabled: (total_score < puzzle_unlock)
         // });
+    }
+
+    function load_string(key :String, default_value :String) :String {
+        var data = Luxe.io.string_load(key);
+        if (data == null) return default_value;
+        
+        return data;
+    }
+
+    function load_int(key :String, default_value :Int) :Int {
+        var data = Luxe.io.string_load(key);
+        if (data == null) return default_value;
+        
+        var value = Std.parseInt(data);
+        if (value == null) return default_value;
+
+        return value;
     }
 
     override function onleave(_) {

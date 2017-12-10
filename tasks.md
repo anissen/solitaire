@@ -22,6 +22,8 @@ Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
 * Strive progress broken
+* Menu screen buttons shown enabled when disabled (or maybe never disabled at all)
+* Crash when going back from About screen
 
 Nice:
 * Global highscores

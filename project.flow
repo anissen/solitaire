@@ -24,7 +24,8 @@
       //This configures the build process
     build : {
       dependencies : {
-        luxe : '*'
+        luxe : '*',
+        sparkler : '*'
       },
       defines : [
         'NO_PRECOMPILED_HEADERS',
