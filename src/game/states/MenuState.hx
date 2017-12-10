@@ -151,13 +151,13 @@ class MenuState extends State {
         counting_total_score = old_total_score;
         var count_down_duration = luxe.utils.Maths.clamp((total_score - old_total_score) / 50, 1.0, 3.0);
         Actuate.tween(this, count_down_duration, { counting_total_score: total_score }, true).onUpdate(function () {
-            if (counting_total_score - old_total_score % 10 == 0) {
-                Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/points_big.ogg').source);
-            }
+            // if (counting_total_score - old_total_score % 10 == 0) {
+            //     Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/points_big.ogg').source);
+            // }
             strive_button.text = (counting_total_score < strive_unlock ? 'Unlock: ${Std.int(strive_unlock - counting_total_score)}' : strive_text);
             var was_enabled = strive_button.enabled;
             strive_button.enabled = (counting_total_score >= strive_unlock);
-            if (!was_enabled && strive_button.enabled {
+            if (!was_enabled && strive_button.enabled) {
                 Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/points_devine.ogg').source);
                 Luxe.audio.play(Luxe.resources.audio('assets/sounds/ogg/ui_click.ogg').source);
             }

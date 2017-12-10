@@ -20,7 +20,7 @@ class Button extends luxe.NineSlice {
     var label :Text;
     var hovered :Bool = false;
     var on_click :Void->Void;
-    var is_enabled :Bool;
+    var is_enabled :Bool = true;
     public var text (get, set) :String;
     public var enabled (get, set) :Bool;
 
@@ -60,9 +60,9 @@ class Button extends luxe.NineSlice {
             outline_color: new Color().rgb(0xa55004)
         });
 
-        enabled = !disabled;
-
         Actuate.tween(label, 3.0, { letter_spacing: -0.5 }).reflect().repeat();
+
+        enabled = !disabled;
 
         this.scale.y = 0;
         Actuate

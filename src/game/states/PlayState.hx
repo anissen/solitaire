@@ -535,13 +535,14 @@ class PlayState extends State {
                 var win = (score >= 0); // strive score starts negative
                 var new_level = (win ? level + 1 : level - 1);
                 if (new_level < 1) new_level = 1;
+                Luxe.io.string_save('strive_level', '$new_level');
                 new_game_mode = Strive(new_level);
-                play_sound(win ? 'won.mp3' : 'lost.ogg');
+                play_sound(win ? 'won.ogg' : 'lost.ogg');
             case Normal:
                 play_sound('won.ogg');
             case Timed:
                 score = Std.int(time_penalty); // set the score to be the time survived
-                play_sound((counting_score - time_penalty > 0) ? 'won.mp3' : 'lost.ogg');
+                play_sound((counting_score - time_penalty > 0) ? 'won.ogg' : 'lost.ogg');
             case Puzzle:
                 play_sound('won.ogg');
             case Tutorial(mode):
