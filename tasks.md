@@ -11,12 +11,17 @@ Need:
     * Reset tutorial
     * Music on/off
     * Sounds on/off
+    * Maybe split buttons into label+button, e.g. Audio: [ON/OFF] -- or simply [Sounds On/Sounds Off]
 * About screen:
     * Credits
     * Donation link
-* More music: Play all tracks, randomized
 * Clean up bundled resources (especially music)
 * "Invalid sound" should play when making a valid but non-matching selecting
+* Music:
+    * desert ambience always looping
+    * temple of the mystics starting on main menu and playing in normal and strive
+    * theme-3 plays on survival
+    * theme-5 plays on puzzle
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched

@@ -129,7 +129,7 @@ class GameOverState extends State {
         var play_text = switch (data.game_mode) {
             case Normal: 'Play';
             case Strive(level): 'Strive: ${data.game_mode.get_strive_score()}';
-            case Timed: 'Timed';
+            case Timed: 'Survival';
             case Puzzle: 'Puzzle';
             case Tutorial(game_mode): 'Tutorial'; // never shown
         };
