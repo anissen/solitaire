@@ -28,6 +28,7 @@ Bugs:
 * Clicking on grid selects multiple tiles
 
 Nice:
+* Grabbed symbol hovering with a shadow
 * Global highscores
 * On-screen keyboard for entering name for highscores
 * Share score via twitter

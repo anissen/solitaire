@@ -4,7 +4,7 @@
 
       //These first two are required
     name : 'solitaire',
-    version : '0.3.0',
+    version : '0.4.0',
     author : 'Anders Nissen',
 
       //This configures your app.
@@ -33,14 +33,28 @@
       ]
     },
 
-      //Copies over all the assets to the output
+    //Copies over all the assets to the output
     files : {
         config : 'config.json',
         assets : 'assets/',
         index : { path: 'index.html => index.html' }
     }
+    
+  }, //project
 
-  } //project
-
+  if : {
+    "web" : {
+      files : {
+          sounds: 'assets_audio/sounds/mp3 => assets/sounds',
+          music: 'assets_audio/music/mp3 => assets/music'
+      }
+    },
+    "!web" : {
+      files : {
+          sounds: 'assets_audio/sounds/ogg => assets/sounds',
+          music: 'assets_audio/music/ogg => assets/music'
+      }
+    }
+  }
 }
 

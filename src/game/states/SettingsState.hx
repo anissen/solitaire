@@ -69,22 +69,22 @@ class SettingsState extends State {
         
         audio_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: (audio_enabled ? 'Audio Enabled' : 'Audio Disabled'),
+            text: (audio_enabled ? 'Audio On' : 'Audio Off'),
             on_click: function() {
                 audio_enabled = (!audio_enabled);
-                audio_button.text = (audio_enabled ? 'Audio Enabled' : 'Audio Disabled');
+                audio_button.text = (audio_enabled ? 'Audio On' : 'Audio Off');
                 Luxe.audio.active = (!audio_enabled);
                 if (!audio_enabled) {
                     Luxe.audio.suspend();
                     music_enabled = false;
                     music_button.enabled = false;
-                    music_button.text = 'Music Disabled';
+                    music_button.text = 'Music Off';
                 } else {
                     Luxe.audio.resume();
                     music_enabled = true;
                     if (Luxe.io.string_load('music_enabled') == 'false') music_enabled = false;
                     music_button.enabled = true;
-                    music_button.text = (music_enabled ? 'Music Enabled' : 'Music Disabled');
+                    music_button.text = (music_enabled ? 'Music On' : 'Music Off');
                 }
                 Luxe.io.string_save('audio_enabled', (audio_enabled ? 'true' : 'false'));
             }
@@ -92,10 +92,10 @@ class SettingsState extends State {
 
         music_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: (music_enabled ? 'Music Enabled' : 'Music Disabled'),
+            text: (music_enabled ? 'Music On' : 'Music Off'),
             on_click: function() {
                 music_enabled = (!music_enabled);
-                music_button.text = (music_enabled ? 'Music Enabled' : 'Music Disabled');
+                music_button.text = (music_enabled ? 'Music On' : 'Music Off');
                 // Luxe.audio.stop();
                 Luxe.io.string_save('music_enabled', (music_enabled ? 'true' : 'false'));
             },
