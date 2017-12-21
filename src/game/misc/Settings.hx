@@ -3,6 +3,17 @@ package game.misc;
 import luxe.Color;
 
 class Settings {
+
+    static public function get_sound_file_path(id :String) {
+        var audio_type = #if web 'mp3' #else 'ogg' #end;
+        return 'assets/sounds/$id.$audio_type';
+    }
+
+    static public function get_music_file_path(id :String) {
+        var audio_type = #if web 'mp3' #else 'ogg' #end;
+        return 'assets/music/$id.$audio_type';
+    }
+
     // egypt theme:
     // static public var BACKGROUND_COLOR = new Color().rgb(0x914D50);
     // static public var CARD_COLOR = new Color().rgb(0xFFFFFF);

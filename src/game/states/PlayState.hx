@@ -310,7 +310,7 @@ class PlayState extends State {
     }
 
     function handle_new_quest(quest :Array<Card>) {
-        play_sound('quest.ogg');
+        play_sound('quest');
         var count = 0;
         var delay_count = 0;
         var tween = null;
@@ -340,10 +340,10 @@ class PlayState extends State {
     function handle_collected(cards :Array<Card>, quest :Array<Card>, total_score :Int) {
         quest_matches = [];
 
-        play_sound('collect.ogg');
+        play_sound('collect');
 
         if (total_score > 10) {
-            play_sound('points_devine.ogg');
+            play_sound('points_devine');
         }
 
         for (card in quest) {
@@ -354,7 +354,7 @@ class PlayState extends State {
     }
 
     function handle_stacked(card :Card) {
-        play_sound('stack.ogg');
+        play_sound('stack');
         card.stacked = true;
         Luxe.camera.shake(0.5);
 
@@ -374,7 +374,7 @@ class PlayState extends State {
     }
 
     function handle_tile_placed(card :Card, x :Int, y :Int) {
-        play_sound('place.ogg');
+        play_sound('place');
         if (card == null) {
             trace('handle_tile_placed: Card was null -- how?!');
             return Promise.resolve();
@@ -431,6 +431,7 @@ class PlayState extends State {
 		});
 		ps.add(pe);
         pe.position.copy_from(card.pos);
+        pe.start();
 
         return tween.toPromise();
     }
@@ -443,7 +444,7 @@ class PlayState extends State {
     }
 
     function play_sound(id :String) {
-        var sound = Luxe.resources.audio('assets/sounds/ogg/$id');
+        var sound = Luxe.resources.audio(Settings.get_sound_file_path(id));
         Luxe.audio.play(sound.source);
     }
 
@@ -495,11 +496,11 @@ class PlayState extends State {
             Luxe.camera.shake(card_score * (1 / 3));
 
             if (card_score <= 1) {
-                play_sound('points_small.ogg');
+                play_sound('points_small');
             } else if (card_score <= 3) {
-                play_sound('points_big.ogg');
+                play_sound('points_big');
             } else { // score: 6
-                play_sound('points_huge.ogg');
+                play_sound('points_huge');
             }
             switch (game_mode) {
                 case Strive(_): 
@@ -537,17 +538,17 @@ class PlayState extends State {
                 if (new_level < 1) new_level = 1;
                 Luxe.io.string_save('strive_level', '$new_level');
                 new_game_mode = Strive(new_level);
-                play_sound(win ? 'won.ogg' : 'lost.ogg');
+                play_sound(win ? 'won' : 'lost');
             case Normal:
-                play_sound('won.ogg');
+                play_sound('won');
             case Timed:
                 score = Std.int(time_penalty); // set the score to be the time survived
-                play_sound((counting_score - time_penalty > 0) ? 'won.ogg' : 'lost.ogg');
+                play_sound((counting_score - time_penalty > 0) ? 'won' : 'lost');
             case Puzzle:
-                play_sound('won.ogg');
+                play_sound('won');
             case Tutorial(mode):
                 new_game_mode = mode;
-                play_sound('won.ogg');
+                play_sound('won');
         }
 
         var delay = 0.0;
@@ -628,12 +629,12 @@ class PlayState extends State {
         tile.set_highlight(true);
         collection.push(tile);
         if (!Game.Instance.is_collection_valid(collection)) {
-            play_sound('invalid.ogg');
+            play_sound('invalid');
             clear_collection();
             return;
         }
 
-        play_sound('tile_click.ogg');
+        play_sound('tile_click');
 
         if (collection.length == 3) {
             var cardIds = [ for (c in collection) c.cardId ];
