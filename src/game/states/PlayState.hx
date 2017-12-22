@@ -15,6 +15,7 @@ import game.components.DragOver;
 
 import snow.api.Promise;
 import core.models.Game;
+import core.utils.Analytics;
 import game.misc.GameMode.GameMode;
 
 import particles.ParticleSystem;
@@ -231,6 +232,9 @@ class PlayState extends State {
                 quest_deck.reshuffle();
             }
         };
+
+        Analytics.event('game', 'start', game_mode.get_game_mode_id());
+
         Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
 
         switch (game_mode) {
@@ -573,6 +577,7 @@ class PlayState extends State {
     }
 
     function switch_to_game_over_state(next_game_mode :GameMode) {
+        Analytics.event('game', 'over', 'score', the_score);
         Luxe.timer.schedule(1.0, function() {
             Main.SetState(GameOverState.StateId, {
                 // client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally

@@ -4,6 +4,7 @@ import luxe.GameConfig;
 import luxe.States;
 
 import game.misc.Settings;
+import core.utils.Analytics;
 
 import game.states.*;
 
@@ -29,6 +30,17 @@ class Main extends luxe.Game {
     }
 
     override function ready() {
+        var clientId = Luxe.io.string_load('clientId');
+        if (clientId == null) {
+            clientId = '${haxe.Timer.stamp()}'.split('.').join('');
+            Luxe.io.string_save('clientId', clientId);
+        }
+        trace('clientId: $clientId');
+
+        Analytics.tracking_id = 'UA-64844180-1';
+        Analytics.client_id = clientId;
+        Analytics.event('startup', 'ready');
+
         Luxe.camera.size = new luxe.Vector(Settings.WIDTH, Settings.HEIGHT);
         Luxe.renderer.clear_color = Settings.BACKGROUND_COLOR;
         
@@ -74,6 +86,7 @@ class Main extends luxe.Game {
 
         var end = haxe.Timer.stamp();
         trace('startup took ${end - start_time} seconds'); 
+        Analytics.event('startup', 'finished', 'duration', Std.int(end - start_time));
 
         luxe.tween.Actuate.defaultEase = luxe.tween.easing.Quad.easeIn;
 
