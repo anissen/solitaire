@@ -23,10 +23,12 @@ Need:
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Sand particles?
+* Check that Survival has remaining seconds added to score on game over
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
+* Survival can give invalid score (probably due to last score occuring _after_ game over)
 
 Nice:
 * Grabbed symbol hovering with a shadow
