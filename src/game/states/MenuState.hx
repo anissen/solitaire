@@ -122,8 +122,8 @@ class MenuState extends State {
         // play_stats.scale.set_xy(1/7, 1/7);
         // play_stats.depth = 200;
 
-        var old_total_score = load_int('menu_last_total_score', 0);
-        var total_score = load_int('total_score', 0);
+        var old_total_score = Settings.load_int('menu_last_total_score', 0);
+        var total_score = Settings.load_int('total_score', 0);
         Luxe.io.string_save('menu_last_total_score', '$total_score');
 
         var strive_save = Luxe.io.string_load('save_strive');
@@ -180,23 +180,6 @@ class MenuState extends State {
         //     on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Puzzle),
         //     disabled: (total_score < puzzle_unlock)
         // });
-    }
-
-    function load_string(key :String, default_value :String) :String {
-        var data = Luxe.io.string_load(key);
-        if (data == null) return default_value;
-        
-        return data;
-    }
-
-    function load_int(key :String, default_value :Int) :Int {
-        var data = Luxe.io.string_load(key);
-        if (data == null) return default_value;
-        
-        var value = Std.parseInt(data);
-        if (value == null) return default_value;
-
-        return value;
     }
 
     override function onleave(_) {

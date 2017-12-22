@@ -57,6 +57,7 @@ class PlayState extends State {
     var quest_matches :Array<Card>;
 
     var ps :ParticleSystem;
+    var pe :ParticleEmitter;
 
     public function new() {
         super({ name: StateId });
@@ -92,6 +93,44 @@ class PlayState extends State {
         game_over = false;
         Tile.CardId = 0; // reset card Ids
         ps = new ParticleSystem();
+
+        pe = new ParticleEmitter({
+			name : 'test_emitter', 
+			rate : 128,
+			cache_size : 512,
+			cache_wrap : true,
+			duration: 0.1,
+            // depth: card.depth - 0.1,
+			modules : [
+				new particles.modules.SpawnModule(),
+				new particles.modules.LifeTimeModule({
+					lifetime : 0.2,
+					lifetime_max : 0.5
+				}),
+				// new particles.modules.VelocityModule({
+				// 	initial_velocity : new Vector(0, 100)
+				// }),
+				new particles.modules.ColorLifeModule({
+					initial_color : new Color(1,0,1,1),
+					end_color : new Color(0,0,1,1),
+					end_color_max : new Color(1,0,0,1)
+				}),
+				new particles.modules.SizeLifeModule({
+					initial_size : new Vector(10,10),
+					end_size : new Vector(5,5)
+				}),
+				new particles.modules.DirectionModule({
+					direction: 0,
+					direction_variance: 360,
+                    speed: 100
+				})
+				// new particles.modules.GravityModule({
+				// 	gravity: new Vector(0, 100)
+				// })
+			]
+		});
+        pe.stop();
+		ps.add(pe);
 
         var back_button = new game.ui.Icon({
             pos: new Vector(25, 25),
@@ -398,42 +437,6 @@ class PlayState extends State {
             card.add(new DragOver(tile_dragover));
         });
 
-		var pe = new ParticleEmitter({ // TODO: Don't make a new particle emitter every time -- just use a single one
-			name : 'test_emitter', 
-			rate : 128,
-			cache_size : 512,
-			cache_wrap : true,
-			duration: 0.1,
-            // depth: card.depth - 0.1,
-			modules : [
-				new particles.modules.SpawnModule(),
-				new particles.modules.LifeTimeModule({
-					lifetime : 0.2,
-					lifetime_max : 0.5
-				}),
-				// new particles.modules.VelocityModule({
-				// 	initial_velocity : new Vector(0, 100)
-				// }),
-				new particles.modules.ColorLifeModule({
-					initial_color : new Color(1,0,1,1),
-					end_color : new Color(0,0,1,1),
-					end_color_max : new Color(1,0,0,1)
-				}),
-				new particles.modules.SizeLifeModule({
-					initial_size : new Vector(10,10),
-					end_size : new Vector(5,5)
-				}),
-				new particles.modules.DirectionModule({
-					direction: 0,
-					direction_variance: 360,
-                    speed: 100
-				})
-				// new particles.modules.GravityModule({
-				// 	gravity: new Vector(0, 100)
-				// })
-			]
-		});
-		ps.add(pe);
         pe.position.copy_from(card.pos);
         pe.start();
 
@@ -577,16 +580,17 @@ class PlayState extends State {
     }
 
     function switch_to_game_over_state(next_game_mode :GameMode) {
+        var the_score :Int = switch (game_mode) {
+            case Timed: Std.int(time_penalty);
+            case Strive(level): game_mode.get_strive_score() + score;
+            default: score;
+        };
         Analytics.event('game', 'over', 'score', the_score);
         Luxe.timer.schedule(1.0, function() {
             Main.SetState(GameOverState.StateId, {
                 // client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
                 // name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
-                score: switch (game_mode) {
-                    case Timed: time_penalty;
-                    case Strive(level): game_mode.get_strive_score() + score;
-                    default: score;
-                },
+                score: the_score,
                 game_mode: next_game_mode
             });
         });

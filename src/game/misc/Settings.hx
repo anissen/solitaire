@@ -14,6 +14,23 @@ class Settings {
         return 'assets/music/$id.$audio_type';
     }
 
+    static public function load_string(key :String, default_value :String) :String {
+        var data = Luxe.io.string_load(key);
+        if (data == null) return default_value;
+        
+        return data;
+    }
+
+    static public function load_int(key :String, default_value :Int) :Int {
+        var data = Luxe.io.string_load(key);
+        if (data == null) return default_value;
+        
+        var value = Std.parseInt(data);
+        if (value == null) return default_value;
+
+        return value;
+    }
+
     // egypt theme:
     // static public var BACKGROUND_COLOR = new Color().rgb(0x914D50);
     // static public var CARD_COLOR = new Color().rgb(0xFFFFFF);
