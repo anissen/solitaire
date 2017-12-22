@@ -24,4 +24,41 @@ class Analytics {
         #end
         http.request();
     }
+
+    // public static function screen(screen :String) {
+    //     var rand :Int = Std.int(Math.random() * 100000000);
+    //     var url = 'https://www.google-analytics.com/collect?v=1&tid=$tracking_id&cid=$client_id&t=screenview&an=solitaire&av=0.4.0&aid=anissen.solitaire&cd=$screen&z=$rand';
+    //     var http = new haxe.Http(url);
+    //     // http.onData = function(data) {
+    //     //     trace('Result: $data');
+    //     // };
+    //     // http.onError = function(err) {
+    //     //     trace('Error: $err');
+    //     // };
+    //     // http.onStatus = function(status) {
+    //     //     trace('Status: $status');
+    //     // };
+    //     #if web
+    //     http.async = true;
+    //     #end
+    //     http.request();
+    // }
+    public static function screen(screen :String) {
+        var rand :Int = Std.int(Math.random() * 100000000);
+        var url = 'https://www.google-analytics.com/collect?v=1&tid=$tracking_id&cid=$client_id&t=pageview&dh=solitaire&dp=$screen&dt=$screen&z=$rand';
+        var http = new haxe.Http(url);
+        // http.onData = function(data) {
+        //     trace('Result: $data');
+        // };
+        // http.onError = function(err) {
+        //     trace('Error: $err');
+        // };
+        // http.onStatus = function(status) {
+        //     trace('Status: $status');
+        // };
+        #if web
+        http.async = true;
+        #end
+        http.request();
+    }
 }

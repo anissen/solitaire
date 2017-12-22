@@ -39,6 +39,12 @@ class Main extends luxe.Game {
 
         Analytics.tracking_id = 'UA-64844180-1';
         Analytics.client_id = clientId;
+        Analytics.screen('Main');
+        #if web
+        Analytics.event('platform', 'Web');
+        #else
+        Analytics.event('platform', Sys.systemName());
+        #end
         Analytics.event('startup', 'ready');
 
         Luxe.camera.size = new luxe.Vector(Settings.WIDTH, Settings.HEIGHT);
@@ -124,6 +130,7 @@ class Main extends luxe.Game {
     }
 
     static public function SetState(id :String, ?data :Dynamic) {
+        Analytics.screen(id);
         luxe.tween.Actuate.reset();
         fade.fade_out().onComplete(function() {
             Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('slide')).source);
