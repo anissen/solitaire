@@ -76,6 +76,8 @@ class PlayState extends State {
         game_mode = cast data;
         if (game_mode == null) game_mode = Normal;
 
+        Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
+
         Luxe.utils.random.initial = Std.int(10000 * Math.random()); // TODO: Should be incremented for each play
         var could_load_game = load_game();
         if (!could_load_game) handle_new_game();
@@ -448,7 +450,7 @@ class PlayState extends State {
         pe.position.copy_from(card.pos);
         pe_color_life_module.initial_color = card.get_original_color();
         pe_color_life_module.end_color = card.get_original_color();
-        pe_color_life_module.end_color_max = new Color();
+        pe_color_life_module.end_color_max = new Color(1, 1, 1, 0);
         pe.start();
 
         return tween.toPromise();
@@ -695,7 +697,7 @@ class PlayState extends State {
 
     override function onleave(_) {
         Luxe.scene.empty();
-        pe.destroy();
+        ps.destroy();
     }
 
     override function onmousemove(event :luxe.Input.MouseEvent) {
