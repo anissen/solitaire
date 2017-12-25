@@ -20,6 +20,7 @@ import game.misc.GameMode.GameMode;
 
 import particles.ParticleSystem;
 import particles.ParticleEmitter;
+import particles.modules.*;
 
 using game.tools.TweenTools;
 using game.misc.GameMode.GameModeTools;
@@ -58,6 +59,7 @@ class PlayState extends State {
 
     var ps :ParticleSystem;
     var pe :ParticleEmitter;
+    var pe_color_life_module :ColorLifeModule;
 
     public function new() {
         super({ name: StateId });
@@ -94,37 +96,43 @@ class PlayState extends State {
         Tile.CardId = 0; // reset card Ids
         ps = new ParticleSystem();
 
+        pe_color_life_module = new ColorLifeModule({
+            initial_color : new Color(1,0,1,1),
+            end_color : new Color(0,0,1,1),
+            end_color_max : new Color(1,0,0,1)
+        });
         pe = new ParticleEmitter({
-			name : 'test_emitter', 
+			name : 'tile_particle_emitter', 
 			rate : 128,
 			cache_size : 512,
 			cache_wrap : true,
 			duration: 0.1,
             // depth: card.depth - 0.1,
 			modules : [
-				new particles.modules.SpawnModule(),
-				new particles.modules.LifeTimeModule({
+				new SpawnModule(),
+				new LifeTimeModule({
 					lifetime : 0.2,
 					lifetime_max : 0.5
 				}),
-				// new particles.modules.VelocityModule({
+				// new VelocityModule({
 				// 	initial_velocity : new Vector(0, 100)
 				// }),
-				new particles.modules.ColorLifeModule({
-					initial_color : new Color(1,0,1,1),
-					end_color : new Color(0,0,1,1),
-					end_color_max : new Color(1,0,0,1)
-				}),
-				new particles.modules.SizeLifeModule({
+				// new ColorLifeModule({
+				// 	initial_color : new Color(1,0,1,1),
+				// 	end_color : new Color(0,0,1,1),
+				// 	end_color_max : new Color(1,0,0,1)
+				// }),
+                pe_color_life_module,
+				new SizeLifeModule({
 					initial_size : new Vector(10,10),
 					end_size : new Vector(5,5)
 				}),
-				new particles.modules.DirectionModule({
+				new DirectionModule({
 					direction: 0,
 					direction_variance: 360,
                     speed: 100
 				})
-				// new particles.modules.GravityModule({
+				// new GravityModule({
 				// 	gravity: new Vector(0, 100)
 				// })
 			]
@@ -438,6 +446,9 @@ class PlayState extends State {
         });
 
         pe.position.copy_from(card.pos);
+        pe_color_life_module.initial_color = card.get_original_color();
+        pe_color_life_module.end_color = card.get_original_color();
+        pe_color_life_module.end_color_max = new Color();
         pe.start();
 
         return tween.toPromise();
@@ -638,6 +649,7 @@ class PlayState extends State {
         tile.set_highlight(true);
         collection.push(tile);
         if (!Game.Instance.is_collection_valid(collection)) {
+            trace('!is_collection_valid');
             play_sound('invalid');
             clear_collection();
             return;
@@ -646,6 +658,7 @@ class PlayState extends State {
         play_sound('tile_click');
 
         if (collection.length == 3) {
+            trace('collection.length == 3');
             var cardIds = [ for (c in collection) c.cardId ];
             clear_collection();
             do_action(Collect(cardIds));
@@ -682,6 +695,7 @@ class PlayState extends State {
 
     override function onleave(_) {
         Luxe.scene.empty();
+        pe.destroy();
     }
 
     override function onmousemove(event :luxe.Input.MouseEvent) {
