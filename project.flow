@@ -25,7 +25,8 @@
     build : {
       dependencies : {
         luxe : '*',
-        sparkler : '*'
+        sparkler : '*',
+        "akifox-asynchttp": '*'
       },
       defines : [
         'NO_PRECOMPILED_HEADERS',
