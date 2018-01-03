@@ -58,8 +58,10 @@ class PlayState extends State {
     var quest_matches :Array<Card>;
 
     var ps :ParticleSystem;
-    var pe :ParticleEmitter;
-    var pe_color_life_module :ColorLifeModule;
+    var pe_burst :ParticleEmitter;
+    var pe_continous :ParticleEmitter;
+    var pe_burst_color_life_module :ColorLifeModule;
+    var pe_continous_color_life_module :ColorLifeModule;
 
     var highlighted_tile :Sprite;
 
@@ -111,49 +113,68 @@ class PlayState extends State {
 
         ps = new ParticleSystem();
 
-        pe_color_life_module = new ColorLifeModule({
+        pe_burst_color_life_module = new ColorLifeModule({
             initial_color : new Color(1,0,1,1),
             end_color : new Color(0,0,1,1),
             end_color_max : new Color(1,0,0,1)
         });
-        pe = new ParticleEmitter({
-			name : 'tile_particle_emitter', 
-			rate : 128,
-			cache_size : 512,
-			cache_wrap : true,
+        pe_burst = new ParticleEmitter({
+			name: 'tile_particle_emitter', 
+			rate: 128,
+			cache_size: 128,
+			cache_wrap: true,
 			duration: 0.1,
-            // depth: card.depth - 0.1,
-			modules : [
-				new SpawnModule(),
+			modules: [
+				new RadialSpawnModule({
+                    radius: 5
+                }),
 				new LifeTimeModule({
-					lifetime : 0.2,
-					lifetime_max : 0.5
+					lifetime: 0.15,
+					lifetime_max: 0.3
 				}),
-				// new VelocityModule({
-				// 	initial_velocity : new Vector(0, 100)
-				// }),
-				// new ColorLifeModule({
-				// 	initial_color : new Color(1,0,1,1),
-				// 	end_color : new Color(0,0,1,1),
-				// 	end_color_max : new Color(1,0,0,1)
-				// }),
-                pe_color_life_module,
+                pe_burst_color_life_module,
 				new SizeLifeModule({
-					initial_size : new Vector(10,10),
-					end_size : new Vector(5,5)
+					initial_size: new Vector(10,10),
+					end_size: new Vector(5,5)
 				}),
 				new DirectionModule({
 					direction: 0,
 					direction_variance: 360,
                     speed: 100
 				})
-				// new GravityModule({
-				// 	gravity: new Vector(0, 100)
-				// })
 			]
 		});
-        pe.stop();
-		ps.add(pe);
+        pe_burst.stop();
+		ps.add(pe_burst);
+
+        pe_continous_color_life_module = new ColorLifeModule({
+            initial_color : new Color(1,0,1,0.5),
+            end_color : new Color(0,0,1,0),
+            end_color_max : new Color(1,0,0,0.5)
+        });
+        pe_continous = new ParticleEmitter({
+			name: 'card_particle_emitter', 
+			rate: 32,
+			cache_size: 128,
+			cache_wrap: true,
+            depth: 9,
+			modules: [
+                new RadialSpawnModule({
+                    radius: 10
+                }),
+				new LifeTimeModule({
+					lifetime: 0.3,
+					lifetime_max: 0.6
+				}),
+                pe_continous_color_life_module,
+				new SizeLifeModule({
+					initial_size: new Vector(10,10),
+					end_size: new Vector(5,5)
+				})
+			]
+		});
+        pe_continous.stop();
+		ps.add(pe_continous);
 
         var back_button = new game.ui.Icon({
             pos: new Vector(25, 25),
@@ -451,6 +472,14 @@ class PlayState extends State {
             if (!ring_symbol.destroyed) ring_symbol.destroy();
         });
 
+        pe_burst.position.copy_from(card.pos);
+        var color = card.get_original_color();
+        color.a = 0.5;
+        pe_burst_color_life_module.initial_color = color;
+        pe_burst_color_life_module.end_color = color;
+        pe_burst_color_life_module.end_color_max = new Color(1, 1, 1, 0);
+        pe_burst.start();
+
         return Promise.resolve();
     }
 
@@ -475,11 +504,11 @@ class PlayState extends State {
             card.add(new DragOver(tile_dragover));
         });
 
-        pe.position.copy_from(card.pos);
-        pe_color_life_module.initial_color = card.get_original_color();
-        pe_color_life_module.end_color = card.get_original_color();
-        pe_color_life_module.end_color_max = new Color(1, 1, 1, 0);
-        pe.start();
+        pe_burst.position.copy_from(card.pos);
+        pe_burst_color_life_module.initial_color = card.get_original_color();
+        pe_burst_color_life_module.end_color = card.get_original_color();
+        pe_burst_color_life_module.end_color_max = new Color(1, 1, 1, 0);
+        pe_burst.start();
 
         return tween.toPromise();
     }
@@ -542,6 +571,14 @@ class PlayState extends State {
             });
 
             Luxe.camera.shake(card_score * (1 / 3));
+
+            pe_burst.position.copy_from(scoreText.pos);
+            var color = card.get_original_color();
+            color.a = 0.5;
+            pe_burst_color_life_module.initial_color = color;
+            pe_burst_color_life_module.end_color = color;
+            pe_burst_color_life_module.end_color_max = new Color(1, 1, 1, 0);
+            pe_burst.start();
 
             if (card_score <= 1) {
                 play_sound('points_small');
@@ -645,12 +682,14 @@ class PlayState extends State {
             tween_pos(grabbed_card, grabbed_card_origin);
             grabbed_card.depth = 3;
             grabbed_card = null;
+            pe_continous.stop();
             return;
         }
 
         do_action(Place(grabbed_card.cardId, x, y));
         grabbed_card.depth = 3;
         grabbed_card = null;
+        pe_continous.stop();
     }
 
     function card_grid_clicked(sprite :Sprite) {
@@ -659,6 +698,7 @@ class PlayState extends State {
         tween_pos(grabbed_card, grabbed_card_origin);
         grabbed_card.depth = 3;
         grabbed_card = null;
+        pe_continous.stop();
         highlighted_tile.visible = false;
     }
 
@@ -721,7 +761,15 @@ class PlayState extends State {
         grabbed_card_origin = sprite.pos.clone();
         grabbed_card_offset = Vector.Subtract(Luxe.screen.cursor.pos, Luxe.camera.world_point_to_screen(sprite.pos));
         grabbed_card.depth = 10;
-        // TODO: Add shadow
+        
+        pe_continous.position.copy_from(grabbed_card.pos);
+        var color = grabbed_card.get_original_color();
+        color.a = 0.5;
+        pe_continous_color_life_module.initial_color = color;
+        pe_continous_color_life_module.end_color = color;
+        pe_continous_color_life_module.end_color_max = new Color(1, 1, 1, 0);
+        pe_continous.start();
+
         clear_collection();
     }
 
@@ -735,6 +783,7 @@ class PlayState extends State {
         if (grabbed_card != null) {
             var world_pos = Luxe.camera.screen_point_to_world(Vector.Subtract(event.pos, grabbed_card_offset));
             grabbed_card.pos = world_pos;
+            pe_continous.position.copy_from(world_pos);
         }
     }
 
@@ -744,6 +793,7 @@ class PlayState extends State {
         tween_pos(grabbed_card, grabbed_card_origin);
         grabbed_card.depth = 3;
         grabbed_card = null;
+        pe_continous.stop();
         highlighted_tile.visible = false;
     }
 
