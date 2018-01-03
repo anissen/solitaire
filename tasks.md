@@ -22,7 +22,6 @@ Need:
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Check that Survival has remaining seconds added to score on game over
-* Highlight tile below dragged card
 * Put on Google Play beta program
 * Particles from grabbed card
 * Particles on menu screen when counting down to unlock buttons

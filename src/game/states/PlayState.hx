@@ -61,6 +61,8 @@ class PlayState extends State {
     var pe :ParticleEmitter;
     var pe_color_life_module :ColorLifeModule;
 
+    var highlighted_tile :Sprite;
+
     public function new() {
         super({ name: StateId });
         Game.Instance.listen(handle_event);
@@ -96,6 +98,17 @@ class PlayState extends State {
         // counting_score = 0;
         game_over = false;
         Tile.CardId = 0; // reset card Ids
+
+        highlighted_tile = new Sprite({
+            texture: Luxe.resources.texture('assets/images/symbols/tile.png'),
+            // size: new Vector(tile_size * 1.25, tile_size * 1.25),
+            size: new Vector(tile_size * 1.08, tile_size * 1.08),
+            depth: 1,
+            color: Settings.CARD_COLOR.clone()
+        });
+        highlighted_tile.color.a = 0.3;
+        highlighted_tile.visible = false;
+
         ps = new ParticleSystem();
 
         pe_color_life_module = new ColorLifeModule({
@@ -170,6 +183,10 @@ class PlayState extends State {
             nineslice.size = new luxe.Vector(tile_size * 0.8, tile_size);
             Actuate.tween(nineslice.size, 0.3, { y: tile_size * 2 }).delay(x * 0.2);
         }
+
+        function drag_left(s) {
+            highlighted_tile.visible = false;
+        }
         
         // board grid
         for (x in 0 ... tiles_x) {
@@ -181,6 +198,11 @@ class PlayState extends State {
                     color: Settings.BOARD_BG_COLOR
                 });
                 sprite.add(new MouseUp(grid_clicked.bind(x, y)));
+                sprite.add(new DragOver(function(s) {
+                    if (grabbed_card == null) return;
+                    highlighted_tile.pos = sprite.pos;
+                    highlighted_tile.visible = true;
+                }, drag_left));
             }
         }
 
@@ -194,6 +216,12 @@ class PlayState extends State {
             });
             sprite.color.a = 0.5;
             sprite.add(new MouseUp(card_grid_clicked));
+            sprite.add(new DragOver(function(s) {
+                if (grabbed_card == null) return;
+                if (!grabbed_card_origin.equals(sprite.pos)) return;
+                highlighted_tile.pos = sprite.pos;
+                highlighted_tile.visible = true;
+            }, drag_left));
         }
 
         var deck_cards = [];
@@ -631,6 +659,7 @@ class PlayState extends State {
         tween_pos(grabbed_card, grabbed_card_origin);
         grabbed_card.depth = 3;
         grabbed_card = null;
+        highlighted_tile.visible = false;
     }
 
     function tile_dragover(sprite :Sprite) {
@@ -692,6 +721,7 @@ class PlayState extends State {
         grabbed_card_origin = sprite.pos.clone();
         grabbed_card_offset = Vector.Subtract(Luxe.screen.cursor.pos, Luxe.camera.world_point_to_screen(sprite.pos));
         grabbed_card.depth = 10;
+        // TODO: Add shadow
         clear_collection();
     }
 
@@ -713,7 +743,8 @@ class PlayState extends State {
         if (grabbed_card == null) return;
         tween_pos(grabbed_card, grabbed_card_origin);
         grabbed_card.depth = 3;
-        grabbed_card = null;        
+        grabbed_card = null;
+        highlighted_tile.visible = false;
     }
 
     override function onrender() {
@@ -777,9 +808,9 @@ class PlayState extends State {
         }
     }
 
-    #if debug // TODO: Remove before release
     override function onkeyup(event :luxe.Input.KeyEvent) {
         switch (event.keycode) {
+            #if debug
             case luxe.Input.Key.key_k: handle_game_over();
             case luxe.Input.Key.key_n: {
                 Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
@@ -795,8 +826,8 @@ class PlayState extends State {
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
             case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Solitaire tweet #Solitaire&url=http://andersnissen.com/');
+            #end
             case luxe.Input.Key.escape: Main.SetState(MenuState.StateId);
         }
     }
-    #end
 }
