@@ -21,9 +21,11 @@ Need:
     * temple of the mystics starting on main menu and playing in normal and strive
     * theme-3 plays on survival
     * theme-5 plays on puzzle
-* Sand particles?
 * Check that Survival has remaining seconds added to score on game over
 * Highlight tile below dragged card
+* Put on Google Play beta program
+* Particles from grabbed card
+* Particles on menu screen when counting down to unlock buttons
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
