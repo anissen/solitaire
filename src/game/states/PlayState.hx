@@ -121,7 +121,7 @@ class PlayState extends State {
         pe_burst = new ParticleEmitter({
 			name: 'tile_particle_emitter', 
 			rate: 128,
-			cache_size: 128,
+			cache_size: 64,
 			cache_wrap: true,
 			duration: 0.1,
 			modules: [
@@ -155,7 +155,7 @@ class PlayState extends State {
         pe_continous = new ParticleEmitter({
 			name: 'card_particle_emitter', 
 			rate: 32,
-			cache_size: 128,
+			cache_size: 64,
 			cache_wrap: true,
             depth: 9,
 			modules: [

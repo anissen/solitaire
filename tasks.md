@@ -23,13 +23,12 @@ Need:
     * theme-5 plays on puzzle
 * Check that Survival has remaining seconds added to score on game over
 * Put on Google Play beta program
-* Particles from grabbed card
-* Particles on menu screen when counting down to unlock buttons
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
 * Survival can give invalid score (probably due to last score occuring _after_ game over)
+* If game starts with audio disabled, enabling audio does not start the music
 
 Nice:
 * Grabbed symbol hovering with a shadow

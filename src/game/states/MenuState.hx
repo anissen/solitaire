@@ -150,6 +150,10 @@ class MenuState extends State {
         
         counting_total_score = old_total_score;
         var count_down_duration = luxe.utils.Maths.clamp((total_score - old_total_score) / 50, 1.0, 3.0);
+        if (total_score > old_total_score) {
+            if (!strive_button.enabled) strive_button.color_burst(count_down_duration);
+            if (!timed_button.enabled) timed_button.color_burst(count_down_duration);
+        }
         Actuate.tween(this, count_down_duration, { counting_total_score: total_score }, true).onUpdate(function () {
             // if (counting_total_score - old_total_score % 10 == 0) {
             //     Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('points_big').source);

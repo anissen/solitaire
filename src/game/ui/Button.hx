@@ -6,6 +6,10 @@ import luxe.Text;
 import luxe.Color;
 import luxe.tween.Actuate;
 
+import particles.ParticleSystem;
+import particles.ParticleEmitter;
+import particles.modules.*;
+
 typedef ButtonOptions = {
     pos :Vector,
     ?width :Int,
@@ -21,6 +25,9 @@ class Button extends luxe.NineSlice {
     var hovered :Bool = false;
     var on_click :Void->Void;
     var is_enabled :Bool = true;
+    var ps :ParticleSystem;
+    var pe :ParticleEmitter;
+    var particle_color :Color;
     public var text (get, set) :String;
     public var enabled (get, set) :Bool;
 
@@ -64,6 +71,43 @@ class Button extends luxe.NineSlice {
 
         enabled = !disabled;
 
+        particle_color = new Color(1, 1, 1, 0.5);
+        ps = new ParticleSystem();
+        pe = new ParticleEmitter({
+			name: 'tile_particle_emitter', 
+			rate: 8,
+			cache_size: 32,
+			cache_wrap: true,
+			modules: [
+				new AreaSpawnModule({
+                    size: new Vector(width, height),
+                    inside: false
+                }),
+				new LifeTimeModule({
+					lifetime: 0.5,
+					lifetime_max: 1
+				}),
+                new ColorLifeModule({
+                    initial_color: particle_color
+                }),
+				new SizeLifeModule({
+					initial_size: new Vector(5,5),
+					end_size: new Vector(2,2)
+				}),
+				new DirectionModule({
+					direction: 0,
+					direction_variance: 360,
+                    speed: 10
+				})
+                // new particles.modules.RadialAccelModule({
+                //     accel: 500
+                // })
+			]
+		});
+        pe.stop();
+		ps.add(pe);
+        pe.position.copy_from(options.pos);
+
         this.scale.y = 0;
         Actuate
             .tween(this.scale, 0.3, { y: 1 })
@@ -78,6 +122,7 @@ class Button extends luxe.NineSlice {
             if (!hovered) {
                 hovered = true;
                 color.tween(0.1, { r: 1.0, g: 0.9, b: 0.9 });
+                pe.start();
                 Actuate
                     .tween(this.pos, 0.3, { y: this.pos.y + 2 })
                     .reflect()
@@ -87,6 +132,7 @@ class Button extends luxe.NineSlice {
         } else {
             if (hovered) {
                 hovered = false;
+                pe.stop();
                 Actuate.stop(this.pos);
                 color.tween(0.1, { r: 1.0, g: 1.0, b: 1.0 });
             }
@@ -99,6 +145,30 @@ class Button extends luxe.NineSlice {
             play_sound('ui_click');
             on_click();
         }
+    }
+
+    override public function update(dt :Float) {
+        super.update(dt);
+        ps.update(dt);
+    }
+
+    override public function ondestroy() {
+        super.ondestroy();
+        ps.destroy();
+    }
+
+    public function color_burst(duration :Float = 0.5) {
+        var old_color = particle_color.clone();
+        particle_color.set(1, 1, 0, 1);
+        pe.rate = 32;
+        pe.start();
+        particle_color
+            .tween(0.3, { r: old_color.r, g: old_color.g, b: old_color.b, a: old_color.a })
+            .onComplete(function(_) {
+                pe.rate = 8;
+                pe.stop();
+            })
+            .delay(duration);
     }
 
     function get_text() {
