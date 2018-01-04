@@ -29,6 +29,7 @@ class Tile extends Sprite implements core.models.Deck.ICard {
     var original_color :Color;
 
     var bg :Sprite;
+    var shadow :Sprite;
     var highlighted :Bool;
 
     public function new(options :TileOptions) {
@@ -47,6 +48,16 @@ class Tile extends Sprite implements core.models.Deck.ICard {
             parent: this
         });
         bg.visible = false;
+
+        shadow = new Sprite({
+            pos: Vector.Multiply(size, 0.5),
+            size: Vector.Multiply(size, 0.9),
+            depth: depth - 0.2,
+            texture: options.texture,
+            color: new Color(0, 0, 0, 0.2),
+            parent: this
+        });
+        shadow.visible = false;
 
         original_color = options.color;
         suit = options.suit;
@@ -76,6 +87,15 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         var to_size = (show ? bg.size.clone() : new Vector(0, 0));
         if (show) bg.size.set_xy(0, 0);
         return Actuate.tween(bg.size, 0.2, { x: to_size.x, y: to_size.y });
+    }
+
+    public function show_shadow(show :Bool) {
+        var scale_value = (show ? 1.1 : 1.0);
+        Actuate.tween(this.scale, 0.2, { x: scale_value, y: scale_value });
+        shadow.visible = (!bg.visible); // hack
+        var shadow_pos = Vector.Multiply(size, 0.5);
+        if (show) shadow_pos = new Vector(shadow_pos.x + 7, shadow_pos.y + 7);
+        Actuate.tween(shadow.pos, 0.2, { x: shadow_pos.x, y: shadow_pos.y });
     }
 
     override public function set_visible(value :Bool) {

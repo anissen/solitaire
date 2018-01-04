@@ -680,26 +680,19 @@ class PlayState extends State {
         if (grabbed_card == null) return;
         if (!Game.Instance.is_placement_valid(x, y)) {
             tween_pos(grabbed_card, grabbed_card_origin);
-            grabbed_card.depth = 3;
-            grabbed_card = null;
-            pe_continous.stop();
+            release_grabbed_card();
             return;
         }
 
         do_action(Place(grabbed_card.cardId, x, y));
-        grabbed_card.depth = 3;
-        grabbed_card = null;
-        pe_continous.stop();
+        release_grabbed_card();
     }
 
     function card_grid_clicked(sprite :Sprite) {
         if (game_over) return;
         if (grabbed_card == null) return;
         tween_pos(grabbed_card, grabbed_card_origin);
-        grabbed_card.depth = 3;
-        grabbed_card = null;
-        pe_continous.stop();
-        highlighted_tile.visible = false;
+        release_grabbed_card();
     }
 
     function tile_dragover(sprite :Sprite) {
@@ -761,6 +754,7 @@ class PlayState extends State {
         grabbed_card_origin = sprite.pos.clone();
         grabbed_card_offset = Vector.Subtract(Luxe.screen.cursor.pos, Luxe.camera.world_point_to_screen(sprite.pos));
         grabbed_card.depth = 10;
+        grabbed_card.show_shadow(true);
         
         pe_continous.position.copy_from(grabbed_card.pos);
         var color = grabbed_card.get_original_color();
@@ -771,6 +765,15 @@ class PlayState extends State {
         pe_continous.start();
 
         clear_collection();
+    }
+
+    function release_grabbed_card() {
+        if (grabbed_card == null) return;
+        grabbed_card.show_shadow(false);
+        grabbed_card.depth = 3;
+        grabbed_card = null;
+        pe_continous.stop();
+        highlighted_tile.visible = false;
     }
 
     override function onleave(_) {
@@ -791,10 +794,7 @@ class PlayState extends State {
         if (game_over) return;
         if (grabbed_card == null) return;
         tween_pos(grabbed_card, grabbed_card_origin);
-        grabbed_card.depth = 3;
-        grabbed_card = null;
-        pe_continous.stop();
-        highlighted_tile.visible = false;
+        release_grabbed_card();
     }
 
     override function onrender() {

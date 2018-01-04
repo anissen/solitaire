@@ -31,7 +31,6 @@ Bugs:
 * If game starts with audio disabled, enabling audio does not start the music
 
 Nice:
-* Grabbed symbol hovering with a shadow
 * Global highscores
 * On-screen keyboard for entering name for highscores
 * Share score via twitter
