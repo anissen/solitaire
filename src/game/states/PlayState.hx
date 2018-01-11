@@ -667,7 +667,7 @@ class PlayState extends State {
             default: score;
         };
         Analytics.event('game', 'over', 'score', the_score);
-        Luxe.timer.schedule(1.0, function() {
+        Luxe.timer.schedule(1.5, function() {
             Main.SetState(GameOverState.StateId, {
                 // client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
                 // name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
@@ -878,7 +878,7 @@ class PlayState extends State {
                 }
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
-            case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Solitaire tweet #Solitaire&url=http://andersnissen.com/');
+            case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Stone Set tweet #StoneSet&url=http://andersnissen.com/');
             #end
             case luxe.Input.Key.escape: Main.SetState(MenuState.StateId);
         }
