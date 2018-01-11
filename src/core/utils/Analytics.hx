@@ -11,7 +11,7 @@ class Analytics {
     }
 
     public static function screen(screen :String) {
-        analytics_request('t=pageview&dh=solitaire&dp=$screen&dt=$screen');
+        analytics_request('t=pageview&dh=stoneset&dp=$screen&dt=$screen');
     }
 
     static function analytics_request(url_part :String) {

@@ -18,7 +18,7 @@ class Main extends luxe.Game {
     override function config(config:GameConfig) {
         start_time = haxe.Timer.stamp();
 
-        config.window.title = 'Solitaire';
+        config.window.title = 'Stoneset';
         config.window.width = 360; //Settings.WIDTH;
         config.window.height = 640; //Settings.HEIGHT;
         config.window.fullscreen = false;

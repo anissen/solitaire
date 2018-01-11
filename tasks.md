@@ -36,7 +36,6 @@ Nice:
 * Share score via twitter
 * Score indicator on the main menu
 * Puzzle mode
-* Convert sounds to MP3 for better browser compability
 * Multi-touch for dragging tiles?
 * Add scoring information to home screen (or e.g. sub-screens)
 * Move the general-purpose parts out of core and into turnabout (and reference it)

@@ -31,7 +31,7 @@ class MenuState extends State {
         });
 
         title = new Text({
-            text: 'Solitaire',
+            text: 'Stoneset',
             pos: new Vector(Settings.WIDTH / 2, 80),
             point_size: 42,
             align: luxe.Text.TextAlign.center,
