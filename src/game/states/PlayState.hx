@@ -308,11 +308,13 @@ class PlayState extends State {
             default:
         }
 
-        var deck = new InfiniteDeck(deck_cards, function(data) {
+        function instantiate_tile(data) {
             var tile = create_tile(data.suit, data.stacked, tile_size);
             tile.pos = get_pos(1, tiles_y + 3.5);
             return tile;
-        }, random_func);
+        }
+
+        var deck = new InfiniteDeck(deck_cards, instantiate_tile, random_func);
         var quest_deck = new InfiniteDeck(quest_cards, function(data) {
             var tile = create_tile(data.suit, data.stacked, tile_size * 0.5);
             tile.pos = get_pos(1, -2);
@@ -337,10 +339,11 @@ class PlayState extends State {
 
         switch (game_mode) {
             case Puzzle:
-                Game.Instance.make_puzzle();
-                deck.on_reshuffling = function() {
-                    handle_game_over();
-                };
+                Game.Instance.make_puzzle(instantiate_tile);
+                return Promise.resolve();
+                // deck.on_reshuffling = function() {
+                //     handle_game_over();
+                // };
             default:
         }
 

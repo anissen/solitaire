@@ -66,6 +66,11 @@ class InfiniteDeck extends GenericDeck<CardData> {
         return this;
     }
 
+    // public function clear() {
+    //     cards.clear();
+    //     all_cards.clear();
+    // }
+
     public function take(count :Int = 1) {
         var taken_cards = cards.splice(0, count);
         var cards_missing = (count - taken_cards.length);

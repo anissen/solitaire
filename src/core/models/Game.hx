@@ -1,6 +1,7 @@
 package core.models;
 
 import core.models.Deck.Card;
+import core.models.Deck.CardData;
 import core.models.Deck.InfiniteDeck;
 import core.queues.MessageSystem;
 
@@ -56,7 +57,60 @@ class Game {
         new_turn();
     }
 
-    public function make_puzzle() {
+    public function make_puzzle(instantiate_func :CardData->Card) {
+        // var random_cards = [
+        //     { suit: 0, stacked: false },
+        //     { suit: 0, stacked: false },
+        //     { suit: 1, stacked: false },
+        //     { suit: 1, stacked: false },
+        //     { suit: 2, stacked: false },
+        //     { suit: 2, stacked: false }
+        // ];
+        // // deck.add_cards(random_cards);
+
+        // var positions = [
+        //     { x: 0, y: 0 },
+        //     { x: 1, y: 0 },
+        //     { x: 2, y: 0 },
+        //     { x: 0, y: 1 },
+        //     { x: 1, y: 1 },
+        //     { x: 2, y: 1 },
+        //     { x: 0, y: 2 },
+        //     { x: 1, y: 2 },
+        //     { x: 2, y: 2 }
+        // ];//.shuffle();
+
+        // deck.add_cards([ // hand
+        //     { suit: 0, stacked: false },
+        //     { suit: 1, stacked: false },
+        //     { suit: 2, stacked: false }
+        // ]);
+
+        // var card_pos_pairs = [];
+        // // var the_quests = [];
+        // var newQuest = [];
+        // for (card_data in random_cards) {
+        //     var card = instantiate_func(card_data);
+        //     var position = positions.shift();
+        //     // card_pos_pairs.push({ card: card, pos: position });
+        //     newQuest.push(card);
+        //     if (newQuest.length == 3) {
+        //         // the_quests.push(newQuest);
+
+        //         quests.push(newQuest);
+        //         messageSystem.emit(NewQuest(newQuest));
+        //         newQuest.clear();
+        //     }
+        //     handle_place(card.cardId, position.x, position.y);
+        // }
+
+        // // for (card_pos_pair in card_pos_pairs) {
+        // //     handle_place(card_pos_pair.card.cardId, card_pos_pair.pos.x, card_pos_pair.pos.y);
+        // // }
+        
+        // return;
+
+
         // 3+3+3 = 9
         // 3+3+3+3 = 12
         // 3+2+3+3 = 11
@@ -76,109 +130,135 @@ class Game {
          There must be exactly one stacked tile (3+2+3 tiles + 3 cards - 2 tiles for stack == 3+3+3 quest cards)
         */
 
-        for (y in 0 ... 3) {
-            for (x in 0 ... 3) {
-                if (x == 1 && y == 1) continue; // skip center tile
-                var card = deck.take(1).first();
-                //grid.set_tile(x, y, card);
-                handle_place(card.cardId, x, y);
-            }
+        
+        // for (y in 0 ... 3) {
+        //     for (x in 0 ... 3) {
+        //         if (x == 1 && y == 1) continue; // skip center tile
+        //         var card = deck.take(1).first();
+        //         //grid.set_tile(x, y, card);
+        //         handle_place(card.cardId, x, y);
+        //     }
+        // }
+
+        var positions = [
+            { x: 0, y: 0 },
+            { x: 1, y: 0 },
+            { x: 2, y: 0 },
+            // { x: 0, y: 1 },
+            // { x: 1, y: 1 },
+            // { x: 2, y: 1 },
+            { x: 0, y: 2 },
+            { x: 1, y: 2 },
+            { x: 2, y: 2 }
+        ];//.shuffle();
+        
+        for (pos in positions) {
+            var card = deck.take(1).first();
+            handle_place(card.cardId, pos.x, pos.y);
         }
 
         //var hand = deck.take(3);
 
-        var test_grid = grid.clone();
-        // if (Luxe.utils.random.bool()) {
+        // var test_grid = grid.clone();
 
+        // function get_random_tile(empty :Bool = false) {
+        //     var x = 0;
+        //     var y = 0;
+        //     var tile = null;
+        //     while (tile == null) {
+        //         x = Luxe.utils.random.int(0, 3);
+        //         y = Luxe.utils.random.int(0, 3);
+        //         tile = test_grid.get_tile(x, y);
+        //         if (empty && tile == null) break; // return first empty tile if empty argument is passed
+        //     }
+        //     return { tile: tile, x: x, y: y };
         // }
 
-        function get_random_tile(empty :Bool = false) {
-            var x = 0;
-            var y = 0;
-            var tile = null;
-            while (tile == null) {
-                x = Luxe.utils.random.int(0, 4);
-                y = Luxe.utils.random.int(0, 4);
-                tile = test_grid.get_tile(x, y);
-                if (empty && tile == null) break; // return first empty tile if empty argument is passed
-            }
-            return { tile: tile, x: x, y: y };
-        }
-
-        // function get_adjacent_tile(startX :Int, startY :Int) {
+        // function get_adjacent_tiles(startX :Int, startY :Int) {
         //     var adjacent = [];
         //     if (startX > 0) adjacent.push({ x: startX - 1, y: startY });
         //     if (startX < 3) adjacent.push({ x: startX + 1, y: startY });
         //     if (startY > 0) adjacent.push({ x: startX, y: startY - 1 });
         //     if (startY < 3) adjacent.push({ x: startX, y: startY + 1 });
-        //     var randomAdjacent = adjacent.shuffle();
 
-        //     while (!randomAdjacent.empty()) {
-        //         var a = randomAdjacent.pop();
+        //     var nonempty = [];
+        //     for (a in adjacent) {
         //         var tile = test_grid.get_tile(a.x, a.y);
-        //         if (tile != null) return { tile: tile, x: a.x, y: a.y }
+        //         if (tile != null) nonempty.push({ tile: tile, x: a.x, y: a.y });
         //     }
-        //     return { tile: null, x: startX, y: startY };
+        //     return nonempty.shuffle();
         // }
 
-        function get_adjacent_tiles(startX :Int, startY :Int) {
-            var adjacent = [];
-            if (startX > 0) adjacent.push({ x: startX - 1, y: startY });
-            if (startX < 3) adjacent.push({ x: startX + 1, y: startY });
-            if (startY > 0) adjacent.push({ x: startX, y: startY - 1 });
-            if (startY < 3) adjacent.push({ x: startX, y: startY + 1 });
+        function collect_quest(x :Int, y :Int, quest :Array<Card>, visited :Array<Card>) {
+            trace('collect_quest x: $x, y: $y');
+            trace('quest length: ${quest.length}');
+            var tile = grid.get_tile(x, y);
+            if (tile == null) return [];
+            if (visited.has(tile)) return [];
+            quest.push(tile);
+            trace('quest tile added!');
+            if (quest.length == 3) return quest;
 
-            var nonempty = [];
-            for (a in adjacent) {
-                var tile = test_grid.get_tile(a.x, a.y);
-                if (tile != null) nonempty.push({ tile: tile, x: a.x, y: a.y });
+            var new_visited = visited.copy();
+            new_visited.push(tile);
+            
+            var new_quest = quest.copy();
+            // new_quest.shift();
+
+            var adjacent_tiles = [];
+            if (x > 0)                      adjacent_tiles.push({ x: x - 1, y: y });
+            if (x < grid.get_width() - 1)   adjacent_tiles.push({ x: x + 1, y: y });
+            if (y > 0)                      adjacent_tiles.push({ x: x, y: y - 1 });
+            if (y < grid.get_height() - 1)  adjacent_tiles.push({ x: x, y: y + 1 });
+
+            for (adjacent in adjacent_tiles.shuffle()) {
+                var result = collect_quest(adjacent.x, adjacent.y, new_quest, new_visited);
+                if (result.length == 3) return result;
             }
-            return nonempty.shuffle();
+            return [];
         }
 
+        var visited_quest_tiles = [];
         function get_quest() {
-                //var temp_grid = test_grid.clone();
-            // var quests = [];
-            // while (quests.length < 3) {
+            // TODO: MAYBE insert a card from hand
 
-                // TODO: MAYBE insert a card from hand
+            for (pos in positions.shuffle()) {
+                var quest = collect_quest(pos.x, pos.y, [], visited_quest_tiles);
+                trace('get_quest quest length: ${quest.length}');
+                trace(quest);
+                if (quest.length == 3) {
+                    // for (q in quest) test_grid.set_tile(q.grid_pos.x, q.grid_pos.y, null);
+                    visited_quest_tiles = visited_quest_tiles.concat(quest);
+                    return quest;
+                }
+            }
+            
+            // var tiles = get_adjacent_tiles(start.x, start.y);
+            // if (tiles.empty()) return [];
 
-                var quest = [];
-                var start = get_random_tile();
-                quest.push(start.tile);
-                test_grid.set_tile(start.x, start.y, null);
-                
-                var tiles = get_adjacent_tiles(start.x, start.y);
-                if (tiles.empty()) return []; // abort
+            throw 'No quests found on board!';
 
-                
-                
-            //     quests.push(quest);
-            // }
-            // return quests;
-            return quest;
+            return [];
         }
 
-        while (quests.length < 3) {
-            var newQuest = get_quest(); //quest_deck.take(3);
+        var quest_cards :Array<CardData> = [];
+        while (quest_cards.length < 6) {
+            for (q in get_quest()) {
+                trace('got quest!');
+                quest_cards.push({ suit: q.suit, stacked: q.stacked });
+            }
+            trace('count_all: ${quest_cards.length}');
+        }
+
+        // quest_deck.clear(); // hack
+        quest_deck.add_cards(quest_cards);
+
+        while (quests.length < 2) {
+            trace('creating a new quest');
+            var newQuest = quest_deck.take(3);
             quests.push(newQuest);
             messageSystem.emit(NewQuest(newQuest));
         }
-
-        // do {
-        //     for (y in 0 ... 3) {
-        //         for (x in 0 ... 3) {
-        //             var card = deck.take(1).first();
-        //             grid.set_tile(x, y, card);
-        //         }
-        //     }
-        // } while (is_game_over());
-
-        // for (y in 0 ... 3) {
-        //     for (x in 0 ... 3) {
-        //         handle_place(grid.get_tile(x, y).cardId, x, y);
-        //     }
-        // }
     }
 
     public function do_action(action :Action) {
@@ -367,11 +447,13 @@ class Game {
             }
         }
 
+        // var cards = [ for (t in tiles) grid.get_tile(t.grid_pos.x, t.grid_pos.y) ];
+        // var best_quest = get_best_quest(cards);
+        // return (best_quest != null);
         return true;
     }
 
-    function complete_quest(tiles :Array<Card>) {
-        var cards = [ for (t in tiles) grid.get_tile(t.grid_pos.x, t.grid_pos.y) ];
+    function get_best_quest(cards :Array<Card>) {
         var best_quest_score = 0;
         var best_quest = null;
         for (quest in quests) {
@@ -383,7 +465,24 @@ class Game {
                 best_quest_score = quest_score;
             } 
         }
+        return best_quest;
+    }
 
+    function complete_quest(tiles :Array<Card>) {
+        var cards = [ for (t in tiles) grid.get_tile(t.grid_pos.x, t.grid_pos.y) ];
+        // var best_quest_score = 0;
+        // var best_quest = null;
+        // for (quest in quests) {
+        //     if (!cards_matching(cards, quest)) continue;
+            
+        //     var quest_score = calculate_score(cards, quest);
+        //     if (quest_score > best_quest_score) {
+        //         best_quest = quest;
+        //         best_quest_score = quest_score;
+        //     } 
+        // }
+
+        var best_quest = get_best_quest(cards);        
         if (best_quest == null) return false;
 
         quests.remove(best_quest);
