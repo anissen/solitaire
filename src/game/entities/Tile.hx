@@ -93,6 +93,7 @@ class Tile extends Sprite implements core.models.Deck.ICard {
         var scale_value = (show ? 1.1 : 1.0);
         Actuate.tween(this.scale, 0.2, { x: scale_value, y: scale_value });
         shadow.visible = (!bg.visible); // hack
+        shadow.depth = depth - 0.2;
         var shadow_pos = Vector.Multiply(size, 0.5);
         if (show) shadow_pos = new Vector(shadow_pos.x + 7, shadow_pos.y + 7);
         Actuate.tween(shadow.pos, 0.2, { x: shadow_pos.x, y: shadow_pos.y });

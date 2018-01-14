@@ -4,6 +4,7 @@ class Analytics {
     public static var tracking_id :String;
     public static var client_id :String;
 
+    // https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
     public static function event(category :String, action :String, ?label :String, ?value :Int) {
         var maybe_label = (label != null ? '&el=$label' : '');
         var maybe_value = (value != null ? '&ev=$value' : '');
