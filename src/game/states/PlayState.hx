@@ -272,7 +272,13 @@ class PlayState extends State {
             pos: get_pos(1, -0.6),
             align: center,
             align_vertical: center,
-            text: '$score'
+            text: '$score',
+            
+            letter_spacing: -1.4,
+            sdf: true,
+            shader: Luxe.renderer.shaders.bitmapfont.shader.clone('title-shader'),
+            outline: 0.7,
+            outline_color: new Color().rgb(0xa55004)
         });
 
         // TODO: Make a different deck/quest_deck/game for puzzle mode
@@ -611,7 +617,7 @@ class PlayState extends State {
             switch (game_mode) {
                 case Strive(_): 
                     if (score >= 0) {
-                        scoreText.color.tween(0.3, { r: 0.2, g: 1, b: 0.2 });
+                        scoreText.color.tween(0.3, { r: 0.2, g: 0.8, b: 0.2 });
                         handle_game_over();
                     }
                 default: 
