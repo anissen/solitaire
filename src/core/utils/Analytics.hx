@@ -18,6 +18,7 @@ class Analytics {
     static function analytics_request(url_part :String) {
         var rand :Int = Std.int(Math.random() * 100000000);
         var url = 'https://www.google-analytics.com/collect?v=1&tid=$tracking_id&cid=$client_id&$url_part&z=$rand';
+        com.akifox.asynchttp.AsyncHttp.logEnabled = #if debug true #else false #end ;
         var request = new com.akifox.asynchttp.HttpRequest({ url: url });
         // callback : function(response:HttpResponse):Void {
         //     if (response.isOK) {
