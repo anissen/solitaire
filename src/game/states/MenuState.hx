@@ -128,7 +128,7 @@ class MenuState extends State {
 
         var strive_save = Luxe.io.string_load('save_strive');
         var strive_level = Luxe.io.string_load('strive_level');
-        var strive_mode = game.misc.GameMode.GameMode.Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
+        var strive_mode = game.misc.GameMode.Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
         var strive_text = (strive_save == null ? '' : '~ ') + (strive_level != null ? 'Strive for ${strive_mode.get_strive_score()}' : 'Strive') +(strive_save == null ? '' : ' ~');
         var strive_unlock = 1000;
         var strive_button = new Button({

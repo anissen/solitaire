@@ -289,6 +289,8 @@ class PlayState extends State {
         */
 
         switch (game_mode) {
+            case Tutorial(_):
+                new game.entities.TutorialBox({});
             case Puzzle:
                 deck_cards = [];
                 var stackedIndex = Luxe.utils.random.int(0, 9);
@@ -346,6 +348,22 @@ class PlayState extends State {
                 // };
             default:
         }
+
+        // return game.entities.Notification.Toast({
+        //     text: 'Welcome to Stoneset!',
+        //     color: new Color(1, 0, 1),
+        //     pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2)
+        // }).get_promise();
+
+        // var texts = ['Hello world!', 'Welcome to the game'];
+        // var box = new game.entities.TutorialBox({
+        //     depth: 1000,
+        //     duration: texts.length * 4,
+        //     scene: Luxe.scene,
+        //     texts: texts
+        // });
+        // tiles[0].add(box);
+        // return box.get_promise();
 
         return Promise.resolve();
     }
