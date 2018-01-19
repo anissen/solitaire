@@ -40,7 +40,7 @@ class Settings {
     // static public var QUEST_BG_COLOR = new Color().rgb(0xF6CE8C);
     // static public var CARD_BG_COLOR = new Color().rgb(0xE8B89A);
 
-    static public var BACKGROUND_COLOR = new Color().rgb(0xD5D5D5);
+    static public var BACKGROUND_COLOR = new Color().rgb(0xE0D19A);
     static public var QUEST_BG_COLOR = new Color().rgb(0xDDDDDD);
     static public var BOARD_BG_COLOR = new Color().rgb(0xD3BF8F);
     static public var CARD_BG_COLOR = new Color().rgb(0xCCCCCC);

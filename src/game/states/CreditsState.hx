@@ -61,9 +61,11 @@ class CreditsState extends State {
             color: new Color(0.6, 0.0, 0.6),
             point_size: 26
         });
+        #if web
         link.add(new game.components.MouseUp(function(s) {
-            // Luxe.io.url_open('http://www.andersnissen.com'); // TODO: Does not work on Android :(
+            Luxe.io.url_open('http://www.andersnissen.com');
         }));
+        #end
     }
 
     override function onleave(_) {

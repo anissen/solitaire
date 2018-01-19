@@ -296,7 +296,7 @@ class PlayState extends State {
 
         switch (game_mode) {
             case Tutorial(_):
-                new game.entities.TutorialBox({});
+                // new game.entities.TutorialBox({});
             case Puzzle:
                 deck_cards = [];
                 var stackedIndex = Luxe.utils.random.int(0, 9);
@@ -796,8 +796,8 @@ class PlayState extends State {
 
     function release_grabbed_card() {
         if (grabbed_card == null) return;
-        grabbed_card.show_shadow(false);
         grabbed_card.depth = 3;
+        grabbed_card.show_shadow(false);
         grabbed_card = null;
         pe_continous.stop();
         highlighted_tile.visible = false;
