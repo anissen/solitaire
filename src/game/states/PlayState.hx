@@ -64,6 +64,7 @@ class PlayState extends State {
     var pe_continous_color_life_module :ColorLifeModule;
 
     var highlighted_tile :Sprite;
+    var tutorial :game.entities.TutorialBox;
 
     public function new() {
         super({ name: StateId });
@@ -296,7 +297,7 @@ class PlayState extends State {
 
         switch (game_mode) {
             case Tutorial(_):
-                // new game.entities.TutorialBox({});
+                tutorial = new game.entities.TutorialBox({});
             case Puzzle:
                 deck_cards = [];
                 var stackedIndex = Luxe.utils.random.int(0, 9);
@@ -435,6 +436,8 @@ class PlayState extends State {
             tiles.push(card);
             x++;
         }
+        
+        // return (tween != null ? tween.toPromise() : Promise.resolve()).then(tutorial.point_to(scoreText));
         return (tween != null ? tween.toPromise() : Promise.resolve());
     }
 
@@ -902,6 +905,8 @@ class PlayState extends State {
                 }
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
+            // case luxe.Input.Key.key_p: tutorial.point_to(scoreText).then(tutorial.point_to(tiles.last()));
+            case luxe.Input.Key.key_q: tutorial.show(['This is tutorial', 'More text'], [tiles.first(), tiles[1], tiles.last()]);
             case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Stone Set tweet #StoneSet&url=http://andersnissen.com/');
             #end
             case luxe.Input.Key.escape: Main.SetState(MenuState.StateId);

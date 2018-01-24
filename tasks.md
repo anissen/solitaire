@@ -3,6 +3,7 @@
 
 Need: [what is the INTENT]
 * Tutorial
+    * Tutorial should start immediately (ie. bypass menu) if "tutorial completed" flag is not set in settings
 * App icon -- done?
 * Remove debug hooks, debug view
 * Add some analytics

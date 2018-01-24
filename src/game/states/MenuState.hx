@@ -111,7 +111,7 @@ class MenuState extends State {
         var play_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
             text: (normal_save == null ? 'Normal' : '~ Normal ~'),
-            on_click: Main.SetState.bind(PlayState.StateId)
+            on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Tutorial(game.misc.GameMode.Normal))
         });
 
         // var play_stats = new game.ui.Icon({
