@@ -410,7 +410,7 @@ class PlayState extends State {
     function handle_event(event :core.models.Game.Event) :Promise {
         if (game_over) return Promise.resolve();
         // trace(event);
-        return switch (event) {
+        var promise = switch (event) {
             case NewGame: handle_new_game();
             case Draw(cards): handle_draw(cards);
             case NewQuest(quest): handle_new_quest(quest);
@@ -421,6 +421,22 @@ class PlayState extends State {
             case Score(score, card, correct_order): handle_score(score, card, correct_order);
             case GameOver: handle_game_over();
         }
+
+        return switch (game_mode) {
+            case Tutorial(_): return Promise.all([promise, handle_tutorial_event(event)]);
+            default: return promise;
+        }
+    }
+
+    function handle_tutorial_event(event :core.models.Game.Event) :Promise {
+        return switch (event) {
+            case Draw(cards): handle_tutorial(['These are your gems', 'Enjoy'], [scoreText]); 
+            default: Promise.resolve();
+        }
+    }
+
+    function handle_tutorial(texts, entities) :Promise {
+        return tutorial.show(texts, entities);
     }
 
     function handle_draw(cards :Array<Card>) {
@@ -436,6 +452,11 @@ class PlayState extends State {
             tiles.push(card);
             x++;
         }
+
+        // switch (game_mode) {
+        //     case Tutorial(mode): (tween != null ? tween.toPromise() : Promise.resolve()).then(handle_tutorial(['This is tutorial', 'More text'], [tiles.first(), tiles[1], tiles.last()]));
+        //     default:
+        // }
         
         // return (tween != null ? tween.toPromise() : Promise.resolve()).then(tutorial.point_to(scoreText));
         return (tween != null ? tween.toPromise() : Promise.resolve());

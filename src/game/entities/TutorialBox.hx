@@ -5,6 +5,7 @@ import luxe.Color;
 import luxe.Vector;
 import luxe.Sprite;
 import luxe.tween.Actuate;
+import snow.api.Promise;
 import game.misc.Settings;
 
 typedef TutorialBoxOptions = {
@@ -12,9 +13,10 @@ typedef TutorialBoxOptions = {
 }
 
 class TutorialBox extends Sprite {
-    var text :Text;
-    // var promise :Promise;
-    // var promise_resolve :Void->Void;
+    var label :Text;
+    var tutorial_texts :Array<String> = [];
+    var promise :Promise;
+    var promise_resolve :Void->Void = null;
 
     public function new(_options :TutorialBoxOptions) {
         super({
@@ -24,12 +26,6 @@ class TutorialBox extends Sprite {
             depth: 1000    
         });
 
-        // promise = new Promise(function(resolve, reject) {
-        //     promise_resolve = resolve;
-        // });
-    }
-
-    override function init() {
         var tutorial_shadow = new Sprite({
             parent: this,
             pos: Vector.Divide(this.size, 2),
@@ -38,7 +34,7 @@ class TutorialBox extends Sprite {
             depth: this.depth - 1,
             color: new Color(1, 0, 0)
         });
-        text = new luxe.Text({
+        label = new luxe.Text({
             parent: this,
             pos: Vector.Divide(this.size, 2),
             align: center,
@@ -48,10 +44,20 @@ class TutorialBox extends Sprite {
             text: 'Some tutorial text\ngoes here!',
             depth: 1010
         });
+
+        promise = new Promise(function(resolve, reject) {
+            promise_resolve = resolve;
+            trace('setting promise_resolve to ' + resolve);
+        });
+    }
+
+    override function init() {
+        trace('tutorialbox init');
+        
     }
 
     public function point_to(entity :luxe.Visual) {
-        trace('point_to ');
+        // trace('point_to ');
         var arrow_height = 86 * 0.9 /* scale */;
         var pointing_up = (entity.pos.y < this.pos.y);
         var y = entity.pos.y + (entity.size.y / 3 + arrow_height / 2) * (pointing_up ? 1 : -1);
@@ -60,9 +66,17 @@ class TutorialBox extends Sprite {
             pos: entity.pos,
             texture: Luxe.resources.texture('assets/images/symbols/circle.png'),
             size: Vector.Multiply(entity.size, 1.8),
-            color: new Color(1, 1, 1, 0.1),
+            color: new Color(1, 1, 1, 0.2),
             depth: this.depth - 0.2
         });
+
+        // new Sprite({
+        //     pos: entity.pos,
+        //     texture: Luxe.resources.texture('assets/images/symbols/square.png'),
+        //     size: Vector.Multiply(entity.size, 1.5),
+        //     color: new Color(1, 1, 1, 0.2),
+        //     depth: this.depth - 0.2
+        // });
 
         var arrow = new Sprite({
             pos: new Vector(entity.pos.x, this.pos.y),
@@ -88,14 +102,29 @@ class TutorialBox extends Sprite {
             delay += 0.5;
         }
 
-        text.text = texts.first();
+        tutorial_texts = texts;
+
+        return proceed();
     }
 
-    public function proceed() {
-
+    public function proceed() :Promise {
+        var nextText = tutorial_texts.shift();
+        if (nextText == null) {
+            // if (promise_resolve != null) promise_resolve();
+            // destroy();
+            promise_resolve();
+            return Promise.resolve();
+        }
+        label.text = nextText;
+        return get_promise();
+        // return Promise.resolve();
     }
 
-    // public function get_promise() :Promise {
-    //     return promise;
-    // }
+    override public function onmouseup(event :luxe.Input.MouseEvent) {
+        proceed();
+    }
+
+    public function get_promise() :Promise {
+        return promise;
+    }
 }
