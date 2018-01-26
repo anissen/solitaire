@@ -1,21 +1,29 @@
 
 # Tasks:
 
-Need: [what is the INTENT]
+Need, in order of importance: [what is the INTENT]
 * Tutorial
     * Tutorial should start immediately (ie. bypass menu) if "tutorial completed" flag is not set in settings
 * App icon -- done?
+* Analytics on 
+    * Donation button
+    * Website link
+    * More game play related things
 * Remove debug hooks, debug view
-* Add some analytics
+* Set proper analytics ID
+* Setup itch to use google analytics
+* Set a deterministic random seed per game
+* Put on Google Play beta program
+
+===== Beta launch line =====
+
 * [No default font]
 * Settings screen:
     * Reset tutorial
-    * Music on/off
-    * Sounds on/off
 * About screen:
-    * Credits
-    * Donation link
-* Clean up bundled resources (especially music)
+    * Change text highlight colors
+    * Donation link fix
+* Clean up bundled resources
 * "Invalid sound" should play when making a valid but non-matching selecting
 * Music:
     * desert ambience always looping
@@ -23,9 +31,8 @@ Need: [what is the INTENT]
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Check that Survival has remaining seconds added to score on game over
-* Put on Google Play beta program
-* Set proper analytics ID
-* Set a deterministic random seed per game
+* Make a better highscore list for Strive
+* Move external libs into the repository
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched

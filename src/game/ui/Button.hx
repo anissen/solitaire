@@ -157,18 +157,20 @@ class Button extends luxe.NineSlice {
         ps.destroy();
     }
 
-    public function color_burst(duration :Float = 0.5) {
+    public function color_burst(?duration :Float) {
         var old_color = particle_color.clone();
         particle_color.set(1, 1, 0, 1);
         pe.rate = 32;
         pe.start();
-        particle_color
-            .tween(0.3, { r: old_color.r, g: old_color.g, b: old_color.b, a: old_color.a })
-            .onComplete(function(_) {
-                pe.rate = 8;
-                pe.stop();
-            })
-            .delay(duration);
+        if (duration != null) {
+            particle_color
+                .tween(0.3, { r: old_color.r, g: old_color.g, b: old_color.b, a: old_color.a })
+                .onComplete(function(_) {
+                    pe.rate = 8;
+                    pe.stop();
+                })
+                .delay(duration);
+        }
     }
 
     function get_text() {

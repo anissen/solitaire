@@ -195,7 +195,7 @@ class GameOverState extends State {
             highscore_line.pos.y = count * 25 + 20;
             highscore_line.alpha = 0;
             highscore_line.parent = score_container;
-            if (score.current) highscore_line.color = new Color(0.8, 0.0, 0.8);
+            if (score.current) highscore_line.color = new Color(0.75, 0.0, 0.5);
 
             Actuate.tween(highscore_line, 0.3, { alpha: 1.0 }).delay(0.3 + count * 0.1);
             // Actuate.tween(highscore_line.color, 0.3, { y: count * 25 }).delay(1.0);
