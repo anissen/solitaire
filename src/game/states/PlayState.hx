@@ -410,7 +410,8 @@ class PlayState extends State {
     function handle_event(event :core.models.Game.Event) :Promise {
         if (game_over) return Promise.resolve();
         // trace(event);
-        var promise = switch (event) {
+        // var promise = switch (event) {
+        return switch (event) {
             case NewGame: handle_new_game();
             case Draw(cards): handle_draw(cards);
             case NewQuest(quest): handle_new_quest(quest);
@@ -422,20 +423,25 @@ class PlayState extends State {
             case GameOver: handle_game_over();
         }
 
-        return switch (game_mode) {
-            case Tutorial(_): return Promise.all([promise, handle_tutorial_event(event)]);
-            default: return promise;
-        }
+        // return switch (game_mode) {
+        //     case Tutorial(_): return Promise.all([promise, handle_tutorial_event(event)]);
+        //     default: return promise;
+        // }
     }
 
     function handle_tutorial_event(event :core.models.Game.Event) :Promise {
         return switch (event) {
-            case Draw(cards): handle_tutorial(['These are your gems', 'Enjoy'], [scoreText]); 
+            // case Draw(cards): handle_tutorial(['These are your gems', 'Enjoy'], cast cards);
+            case Draw(cards): handle_tutorial(['These are your gems', 'Enjoy'], cast cards);
             default: Promise.resolve();
         }
     }
 
-    function handle_tutorial(texts, entities) :Promise {
+    function handle_tutorial(texts :Array<String>, entities :Array<luxe.Visual>) :Promise {
+        trace('handle_tutorial');
+        for (entity in entities) {
+            trace(entity);
+        }
         return tutorial.show(texts, entities);
     }
 
@@ -444,6 +450,8 @@ class PlayState extends State {
         var tween = null;
         for (card in cards) {
             var new_pos = get_pos(x, tiles_y + 2 + 0.1);
+            trace('card start pos: ${card.pos}');
+            trace('card new pos: ${new_pos}');
             tween = tween_pos(card, new_pos).delay(x * 0.1);
             card.add(new Clickable(card_clicked));
             // var trail = new game.components.TrailRenderer();
@@ -453,13 +461,20 @@ class PlayState extends State {
             x++;
         }
 
-        // switch (game_mode) {
-        //     case Tutorial(mode): (tween != null ? tween.toPromise() : Promise.resolve()).then(handle_tutorial(['This is tutorial', 'More text'], [tiles.first(), tiles[1], tiles.last()]));
-        //     default:
-        // }
+
+        var promise = (tween != null ? tween.toPromise() : Promise.resolve());
+        switch (game_mode) {
+            // case Tutorial(mode): Promise.all([promise, handle_tutorial(['This is tutorial', 'More text'], cast cards)]);
+            case Tutorial(mode): 
+                Luxe.timer.schedule(1, function() { // hack because promise chaining does not seem to work
+                    handle_tutorial(['This is tutorial', 'More text'], cast cards);
+                });
+                return promise;
+            default:
+        }
         
         // return (tween != null ? tween.toPromise() : Promise.resolve()).then(tutorial.point_to(scoreText));
-        return (tween != null ? tween.toPromise() : Promise.resolve());
+        return promise;
     }
 
     function handle_new_quest(quest :Array<Card>) {

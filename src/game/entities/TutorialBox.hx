@@ -17,13 +17,15 @@ class TutorialBox extends Sprite {
     var tutorial_texts :Array<String> = [];
     var promise :Promise;
     var promise_resolve :Void->Void = null;
+    var tutorial_scene :luxe.Scene = new luxe.Scene();
 
     public function new(_options :TutorialBoxOptions) {
         super({
             name: 'TutorialBox' + Luxe.utils.uniqueid(),
             pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2),
             size: new Vector(Settings.WIDTH, 90),
-            depth: 1000    
+            depth: 1000,
+            scene: tutorial_scene
         });
 
         var tutorial_shadow = new Sprite({
@@ -32,7 +34,8 @@ class TutorialBox extends Sprite {
             texture: Luxe.resources.texture('assets/images/tutorial/box_shadow.png'),
             size: Vector.Multiply(this.size, 2),
             depth: this.depth - 1,
-            color: new Color(1, 0, 0)
+            color: new Color(1, 0, 0),
+            scene: tutorial_scene
         });
         label = new luxe.Text({
             parent: this,
@@ -42,18 +45,18 @@ class TutorialBox extends Sprite {
             color: new Color(0, 0, 0, 1),
             point_size: 22,
             text: 'Some tutorial text\ngoes here!',
-            depth: 1010
+            depth: 1010,
+            scene: tutorial_scene
         });
 
-        promise = new Promise(function(resolve, reject) {
-            promise_resolve = resolve;
-            trace('setting promise_resolve to ' + resolve);
-        });
+        // promise = new Promise(function(resolve, reject) {
+        //     promise_resolve = resolve;
+        //     trace('setting promise_resolve to ' + resolve);
+        // });
     }
 
     override function init() {
         trace('tutorialbox init');
-        
     }
 
     public function point_to(entity :luxe.Visual) {
@@ -67,7 +70,8 @@ class TutorialBox extends Sprite {
             texture: Luxe.resources.texture('assets/images/symbols/circle.png'),
             size: Vector.Multiply(entity.size, 1.8),
             color: new Color(1, 1, 1, 0.2),
-            depth: this.depth - 0.2
+            depth: this.depth - 0.2,
+            scene: tutorial_scene
         });
 
         // new Sprite({
@@ -83,41 +87,52 @@ class TutorialBox extends Sprite {
             texture: Luxe.resources.texture('assets/images/tutorial/arrow.png'),
             scale: new Vector(0.9, 0.9 * (pointing_up ? 1 : -1)),
             depth: this.depth - 0.1,
-            color: new Color(1, 1, 1)
+            color: new Color(1, 1, 1),
+            scene: tutorial_scene
         });
         return Actuate.tween(arrow.pos, 1.0, { y: y });
     }
 
     public function show(texts :Array<String>, entities :Array<luxe.Visual>) {
-        var center_y = 0.0;
-        for (entity in entities) {
-            center_y += (entity.pos.y - Settings.HEIGHT / 2);
-        }
-        this.pos.y = Settings.HEIGHT / 2 + (center_y / entities.length) * 0.4 /* how much to move towards pointing locations */;
-        Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat();
+        promise = new Promise(function(resolve, reject) {
+            promise_resolve = resolve;
 
-        var delay = 0.3;
-        for (entity in entities) {
-            point_to(entity).delay(delay);
-            delay += 0.5;
-        }
+            var center_y = 0.0;
+            for (entity in entities) {
+                center_y += (entity.pos.y - Settings.HEIGHT / 2);
+            }
+            this.pos.y = Settings.HEIGHT / 2 + (center_y / entities.length) * 0.4 /* how much to move towards pointing locations */;
+            Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat();
 
-        tutorial_texts = texts;
+            var delay = 0.3;
+            for (entity in entities) {
+                trace('tutorial card pos: ${entity.pos}');
+                point_to(entity).delay(delay);
+                delay += 0.5;
+            }
 
-        return proceed();
+            tutorial_texts = texts;
+            proceed();
+        });
+
+        return promise;
     }
 
     public function proceed() :Promise {
         var nextText = tutorial_texts.shift();
         if (nextText == null) {
             // if (promise_resolve != null) promise_resolve();
-            // destroy();
+            hide();
             promise_resolve();
             return Promise.resolve();
         }
         label.text = nextText;
         return get_promise();
         // return Promise.resolve();
+    }
+
+    function hide() {
+        tutorial_scene.empty();
     }
 
     override public function onmouseup(event :luxe.Input.MouseEvent) {
