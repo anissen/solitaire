@@ -4,6 +4,18 @@
 Need, in order of importance: [what is the INTENT]
 * Tutorial
     * Tutorial should start immediately (ie. bypass menu) if "tutorial completed" flag is not set in settings
+    * Key items for tutorial
+        * [Play state]
+            * Drag GEMSTONES into sockets
+            * Complete SETS
+            * Collect GEMSTONES
+            * Collect VERTICALLY or HORISONTALLY (or both)
+            * (New cards and sets after each hand -- required info?)
+            * Combine GEMSTONES into "super gemstones" (find better word)
+            * Collect in the right ORDER to gain double points
+            * Compete for the highscore
+        * [Main menu]
+            * Gain points to unlock new play modes
 * App icon -- done?
 * Analytics on 
     * Donation button
