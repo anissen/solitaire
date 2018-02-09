@@ -43,6 +43,8 @@ class CreditsState extends State {
         });
         back_button.scale.set_xy(1/5, 1/5);
 
+        var url_open_func = #if android Main.SnowActivity.url_open #else Luxe.io.url_open #end ;
+
         var madeby = new Text({
             //pos: new Vector(90, 190),
             pos: new Vector(Settings.WIDTH / 2, 170),
@@ -70,14 +72,12 @@ class CreditsState extends State {
             color: new Color(0.75, 0.0, 0.5),
             point_size: 26
         });
-        #if web
         name.add(new game.components.MouseUp(function(s) {
-            Luxe.io.url_open('http://www.andersnissen.com');
+            url_open_func('http://www.andersnissen.com');
         }));
         link.add(new game.components.MouseUp(function(s) {
-            Luxe.io.url_open('http://www.andersnissen.com');
+            url_open_func('http://www.andersnissen.com');
         }));
-        #end
 
         // var donation = new Text({
         //     //pos: new Vector(90, 190),
@@ -88,24 +88,20 @@ class CreditsState extends State {
         //     color: new Color(0.6, 0.0, 0.0),
         //     point_size: 26
         // });
-        // #if web
         // donation.add(new game.components.MouseUp(function(s) {
-        //     Luxe.io.url_open('https://anissen.itch.io/stoneset/donate');
+        //     url_open_func('https://anissen.itch.io/stoneset/donate');
         // }));
-        // #end
 
         var donation_button = new game.ui.Button({
             pos: new Vector(Settings.WIDTH / 2, 360),
             width: 230,
             text: 'Make a donation',
             on_click: function() {
-                Luxe.io.url_open('https://anissen.itch.io/stoneset/donate');
+                url_open_func('https://anissen.itch.io/stoneset/donate');
             },
-            disabled: #if web false #else true #end
+            disabled: false
         });
-        #if web
         donation_button.color_burst();
-        #end
         var donation_text = new Text({
             pos: new Vector(Settings.WIDTH / 2, 425),
             text: 'Thank you for considering donating!\nDonations help keep Stoneset ad-free\nand speeds up improvements.',

@@ -8,6 +8,13 @@ import core.utils.Analytics;
 
 import game.states.*;
 
+#if android
+@:build(snow.api.JNI.declare('org.snowkit.snow.SnowActivity'))
+class SnowActivity {
+    public static function url_open(url:String): Void;
+}
+#end
+
 class Main extends luxe.Game {
     static var states :States;
     static var fade :game.components.Fader;
@@ -128,6 +135,10 @@ class Main extends luxe.Game {
         luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT }).onComplete(function() {
             states.set(MenuState.StateId);  
         });
+
+        // #if android 
+        // Main.SnowActivity.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Stoneset tweet #Stoneset&url=http://andersnissen.com/');
+        // #end
     }
 
     static public function SetState(id :String, ?data :Dynamic) {
