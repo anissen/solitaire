@@ -355,22 +355,9 @@ class PlayState extends State {
                 // };
             default:
         }
-
-        // return game.entities.Notification.Toast({
-        //     text: 'Welcome to Stoneset!',
-        //     color: new Color(1, 0, 1),
-        //     pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2)
-        // }).get_promise();
-
-        // var texts = ['Hello world!', 'Welcome to the game'];
-        // var box = new game.entities.TutorialBox({
-        //     depth: 1000,
-        //     duration: texts.length * 4,
-        //     scene: Luxe.scene,
-        //     texts: texts
-        // });
-        // tiles[0].add(box);
-        // return box.get_promise();
+        
+        //var promise_test
+        return tutorial.show(['Welcome to Stoneset', 'Here is text.'], []);
 
         return Promise.resolve();
     }
@@ -942,8 +929,8 @@ class PlayState extends State {
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
             // case luxe.Input.Key.key_p: tutorial.point_to(scoreText).then(tutorial.point_to(tiles.last()));
-            case luxe.Input.Key.key_q: tutorial.show(['This is tutorial', 'More text'], [tiles.first(), tiles[1], tiles.last()]);
-            case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Stone Set tweet #StoneSet&url=http://andersnissen.com/');
+            // case luxe.Input.Key.key_q: tutorial.show(['This is tutorial', 'More text'], [tiles.first(), tiles[1], tiles.last()]);
+            case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Stoneset tweet #Stoneset&url=http://andersnissen.com/');
             #end
             case luxe.Input.Key.escape: Main.SetState(MenuState.StateId);
         }
