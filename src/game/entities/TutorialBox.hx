@@ -76,15 +76,6 @@ class TutorialBox extends Sprite {
         var pointing_up = (entity.pos.y < this.pos.y);
         var y = entity.pos.y + (entity.size.y / 3 + arrow_height / 2) * (pointing_up ? 1 : -1);
 
-        new Sprite({
-            pos: entity.pos,
-            texture: Luxe.resources.texture('assets/images/symbols/circle.png'),
-            size: Vector.Multiply(entity.size, 1.8),
-            color: new Color(1, 1, 1, 0.2),
-            depth: this.depth - 0.2,
-            scene: tutorial_scene
-        });
-
         // new Sprite({
         //     pos: entity.pos,
         //     texture: Luxe.resources.texture('assets/images/symbols/square.png'),
@@ -103,11 +94,21 @@ class TutorialBox extends Sprite {
         });
     
         return Actuate.tween(arrow.color, 0.3, { a: 1 }).onComplete(function(_) {
-            Actuate.tween(arrow.pos, 1.0, { y: y });
+            Actuate.tween(arrow.pos, 1.0, { y: y }).onComplete(function(_) {
+               new Sprite({
+                    pos: entity.pos,
+                    texture: Luxe.resources.texture('assets/images/symbols/circle.png'),
+                    size: Vector.Multiply(entity.size, 1.8),
+                    color: new Color(1, 1, 1, 0.2),
+                    depth: this.depth - 0.2,
+                    scene: tutorial_scene
+                }); 
+            });
         });
     }
 
-    public function show(texts :Array<String>, entities :Array<luxe.Visual>) {
+    public function show(texts :Array<String>, ?entities :Array<luxe.Visual>) {
+        if (entities == null) entities = [];
         promise = new Promise(function(resolve, reject) {
             promise_resolve = resolve;
 
@@ -115,7 +116,7 @@ class TutorialBox extends Sprite {
             for (entity in entities) {
                 center_y += (entity.pos.y - Settings.HEIGHT / 2);
             }
-            this.pos.y = Settings.HEIGHT / 2 + (center_y / entities.length) * 0.4 /* how much to move towards pointing locations */;
+            this.pos.y = Settings.HEIGHT / 2 + (entities.empty() ? 0.0 : (center_y / entities.length) * 0.4 /* how much to move towards pointing locations */);
             /*
             var old_size_y = this.size.y;
             this.size.y = 0;
@@ -131,7 +132,7 @@ class TutorialBox extends Sprite {
             this.visible = true;
             shadow.visible = true;
             label.visible = true;
-            Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat();
+            Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat().ease(luxe.tween.easing.Sine.easeInOut);
 
             var delay = 0.3;
             for (entity in entities) {
@@ -162,7 +163,10 @@ class TutorialBox extends Sprite {
     }
 
     function hide() {
-        tutorial_scene.empty();
+        this.visible = false;
+        shadow.visible = false;
+        label.visible = false;
+        // TODO: Clear arrows
     }
 
     override public function onmouseup(event :luxe.Input.MouseEvent) {

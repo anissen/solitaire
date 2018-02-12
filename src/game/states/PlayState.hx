@@ -27,6 +27,15 @@ using game.misc.GameMode.GameModeTools;
 
 typedef Card = Tile;
 
+enum TutorialStep {
+    Welcome;
+    WhatIsTheGoal;
+    DrawingCards;
+    PlacingCards;
+    Scoring;
+    // ...
+}
+
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var grabbed_card :Tile = null;
@@ -64,7 +73,12 @@ class PlayState extends State {
     var pe_continous_color_life_module :ColorLifeModule;
 
     var highlighted_tile :Sprite;
+    
     var tutorial :game.entities.TutorialBox;
+    var tutorial_active :Bool;
+    var tutorial_steps :Array<TutorialStep> = [Welcome, WhatIsTheGoal, DrawingCards, PlacingCards];
+    var tutorial_step_index :Int;
+    var tutorial_promise :Promise;
 
     public function new() {
         super({ name: StateId });
@@ -83,7 +97,10 @@ class PlayState extends State {
 
         Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
 
-        Luxe.utils.random.initial = Std.int(10000 * Math.random()); // TODO: Should be incremented for each play
+        Luxe.utils.random.initial = switch (game_mode) {
+            case Tutorial(_): 42;
+            default: Std.int(10000 * Math.random()); // TODO: Should be incremented for each play
+        }
         var could_load_game = load_game();
         if (!could_load_game) handle_new_game();
     }
@@ -101,6 +118,9 @@ class PlayState extends State {
         // counting_score = 0;
         game_over = false;
         Tile.CardId = 0; // reset card Ids
+        tutorial_active = false;
+        tutorial_step_index = 0;
+        tutorial_promise = Promise.resolve();
 
         highlighted_tile = new Sprite({
             texture: Luxe.resources.texture('assets/images/symbols/tile.png'),
@@ -355,9 +375,8 @@ class PlayState extends State {
                 // };
             default:
         }
-        
-        //var promise_test
-        return tutorial.show(['Welcome to {red}Stoneset', 'Here is {brown}text.'], []);
+
+        // handle_tutorial(TutorialStep.Welcome, ['Welcome to {brown}Stoneset.']);
 
         return Promise.resolve();
     }
@@ -397,7 +416,6 @@ class PlayState extends State {
     function handle_event(event :core.models.Game.Event) :Promise {
         if (game_over) return Promise.resolve();
         // trace(event);
-        // var promise = switch (event) {
         return switch (event) {
             case NewGame: handle_new_game();
             case Draw(cards): handle_draw(cards);
@@ -409,27 +427,20 @@ class PlayState extends State {
             case Score(score, card, correct_order): handle_score(score, card, correct_order);
             case GameOver: handle_game_over();
         }
-
-        // return switch (game_mode) {
-        //     case Tutorial(_): return Promise.all([promise, handle_tutorial_event(event)]);
-        //     default: return promise;
-        // }
     }
 
-    function handle_tutorial_event(event :core.models.Game.Event) :Promise {
-        return switch (event) {
-            // case Draw(cards): handle_tutorial(['These are your gems', 'Enjoy'], cast cards);
-            case Draw(cards): handle_tutorial(['These are your gems', 'Enjoy'], cast cards);
-            default: Promise.resolve();
-        }
-    }
+    function handle_tutorial(step :TutorialStep, texts :Array<String>, ?entities :Array<luxe.Visual>) {
+        // TODO: Check if tutorial has already been completed
+        // TODO: Check if the step is the next step, abort otherwise
 
-    function handle_tutorial(texts :Array<String>, entities :Array<luxe.Visual>) :Promise {
-        trace('handle_tutorial');
-        for (entity in entities) {
-            trace(entity);
-        }
-        return tutorial.show(texts, entities);
+        tutorial_active = true;
+        Luxe.timer.schedule(1, function() { // hack because promise chaining does not seem to work
+            tutorial.show(texts, entities).then(function(_) {
+                trace('tutorial step #tutorial_step_index done!');
+                tutorial_step_index++;
+                tutorial_active = false;
+            });
+        });
     }
 
     function handle_draw(cards :Array<Card>) {
@@ -448,24 +459,9 @@ class PlayState extends State {
             x++;
         }
 
+        handle_tutorial(TutorialStep.DrawingCards, ['Each turn you recieve\nthree {brown}gemstones{default}.'], cast cards);
 
-        var promise = (tween != null ? tween.toPromise() : Promise.resolve());
-        switch (game_mode) {
-            // case Tutorial(mode): Promise.all([promise, handle_tutorial(['This is tutorial', 'More text'], cast cards)]);
-            case Tutorial(mode): 
-                Luxe.timer.schedule(1, function() { // hack because promise chaining does not seem to work
-                    handle_tutorial(['You place {brown}gemstones\n{default} in the {brown}sockets.', 'More {red}text'], cast cards).then(function(_) {
-                        trace('tutorial done!');
-                        // TODO: Make a tutorial enum that is set here
-                        return Promise.resolve();
-                    });
-                });
-                return promise;
-            default:
-        }
-        
-        // return (tween != null ? tween.toPromise() : Promise.resolve()).then(tutorial.point_to(scoreText));
-        return promise;
+        return (tween != null ? tween.toPromise() : Promise.resolve());
     }
 
     function handle_new_quest(quest :Array<Card>) {
@@ -662,6 +658,8 @@ class PlayState extends State {
                 scoreText.text = '${Std.int(counting_score - time_penalty)}';
             });
         });
+
+        handle_tutorial(TutorialStep.Scoring, ['Completing {brown}sets {default}increases\nyour score.'], [scoreText]);
 
         return Promise.resolve();
     }
