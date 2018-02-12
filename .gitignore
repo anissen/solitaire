@@ -1,3 +1,7 @@
 bin
 android.project
 asset_sources
+
+fastlane/Appfile
+src/highscores.json
+src/server/temp
