@@ -13,7 +13,7 @@ typedef TutorialBoxOptions = {
 }
 
 class TutorialBox extends Sprite {
-    var label :Text;
+    var label :game.entities.RichText;
     var tutorial_texts :Array<String> = [];
     var promise :Promise;
     var promise_resolve :Void->Void = null;
@@ -38,7 +38,7 @@ class TutorialBox extends Sprite {
             color: new Color(1, 1, 1),
             scene: tutorial_scene
         });
-        label = new luxe.Text({
+        label = new game.entities.RichText({
             parent: this,
             pos: Vector.Divide(this.size, 2),
             align: center,
@@ -47,7 +47,13 @@ class TutorialBox extends Sprite {
             point_size: 22,
             text: 'Some tutorial text\ngoes here!',
             depth: 1010,
-            scene: tutorial_scene
+            scene: tutorial_scene,
+            tags : [
+				{ 
+                    name: "brown", 
+                    color: new Color().rgb(0x964B00)
+                }
+			],
         });
 
         this.visible = false;
@@ -150,6 +156,7 @@ class TutorialBox extends Sprite {
             return Promise.resolve();
         }
         label.text = nextText;
+        label.play();
         return get_promise();
         // return Promise.resolve();
     }

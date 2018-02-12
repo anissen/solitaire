@@ -357,7 +357,7 @@ class PlayState extends State {
         }
         
         //var promise_test
-        return tutorial.show(['Welcome to Stoneset', 'Here is text.'], []);
+        return tutorial.show(['Welcome to {red}Stoneset', 'Here is {brown}text.'], []);
 
         return Promise.resolve();
     }
@@ -454,7 +454,11 @@ class PlayState extends State {
             // case Tutorial(mode): Promise.all([promise, handle_tutorial(['This is tutorial', 'More text'], cast cards)]);
             case Tutorial(mode): 
                 Luxe.timer.schedule(1, function() { // hack because promise chaining does not seem to work
-                    handle_tutorial(['This is tutorial', 'More text'], cast cards);
+                    handle_tutorial(['You place {brown}gemstones\n{default} in the {brown}sockets.', 'More {red}text'], cast cards).then(function(_) {
+                        trace('tutorial done!');
+                        // TODO: Make a tutorial enum that is set here
+                        return Promise.resolve();
+                    });
                 });
                 return promise;
             default:
