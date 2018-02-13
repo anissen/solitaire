@@ -60,10 +60,10 @@ class TutorialBox extends Sprite {
         shadow.visible = false;
         label.visible = false;
 
-        // promise = new Promise(function(resolve, reject) {
-        //     promise_resolve = resolve;
-        //     trace('setting promise_resolve to ' + resolve);
-        // });
+        promise = new Promise(function(resolve, reject) {
+            promise_resolve = resolve;
+            trace('setting promise_resolve to ' + resolve);
+        });
     }
 
     override function init() {
@@ -109,8 +109,10 @@ class TutorialBox extends Sprite {
 
     public function show(texts :Array<String>, ?entities :Array<luxe.Visual>) {
         if (entities == null) entities = [];
-        promise = new Promise(function(resolve, reject) {
-            promise_resolve = resolve;
+        // promise = new Promise(function(resolve, reject) {
+        //     trace('promise_resolve is $promise_resolve');
+        //     trace('setting promise_resolve');
+        //     promise_resolve = resolve;
 
             var center_y = 0.0;
             for (entity in entities) {
@@ -142,10 +144,10 @@ class TutorialBox extends Sprite {
             }
 
             tutorial_texts = texts;
-            proceed();
-        });
+            return proceed();
+        // });
 
-        return promise;
+        // return promise;
     }
 
     public function proceed() :Promise {
@@ -153,6 +155,7 @@ class TutorialBox extends Sprite {
         if (nextText == null) {
             // if (promise_resolve != null) promise_resolve();
             hide();
+            trace('promise_resolve');
             promise_resolve();
             return Promise.resolve();
         }
@@ -163,9 +166,10 @@ class TutorialBox extends Sprite {
     }
 
     function hide() {
-        this.visible = false;
-        shadow.visible = false;
-        label.visible = false;
+        tutorial_scene.empty();
+        // this.visible = false;
+        // shadow.visible = false;
+        // label.visible = false;
         // TODO: Clear arrows
     }
 

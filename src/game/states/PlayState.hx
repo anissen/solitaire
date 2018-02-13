@@ -36,6 +36,8 @@ enum TutorialStep {
     // ...
 }
 
+typedef TutorialData = { step: TutorialStep, texts :Array<String>, entities :Array<luxe.Visual> };
+
 class PlayState extends State {
     static public var StateId :String = 'PlayState';
     var grabbed_card :Tile = null;
@@ -74,11 +76,14 @@ class PlayState extends State {
 
     var highlighted_tile :Sprite;
     
-    var tutorial :game.entities.TutorialBox;
+    var tutorial_box :game.entities.TutorialBox;
     var tutorial_active :Bool;
     var tutorial_steps :Array<TutorialStep> = [Welcome, WhatIsTheGoal, DrawingCards, PlacingCards];
     var tutorial_step_index :Int;
     var tutorial_promise :Promise;
+
+    
+    var tutorial_promise_queue :core.queues.SimplePromiseQueue<TutorialData>;
 
     public function new() {
         super({ name: StateId });
@@ -95,6 +100,9 @@ class PlayState extends State {
         game_mode = cast data;
         if (game_mode == null) game_mode = Normal;
 
+        tutorial_promise_queue = new core.queues.SimplePromiseQueue();
+        tutorial_promise_queue.set_handler(tutorial_to_promise);
+
         Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
 
         Luxe.utils.random.initial = switch (game_mode) {
@@ -103,6 +111,69 @@ class PlayState extends State {
         }
         var could_load_game = load_game();
         if (!could_load_game) handle_new_game();
+    }
+
+    function tutorial(step :TutorialStep, texts :Array<String>, ?entities :Array<luxe.Visual>) {
+        // if (Luxe.io.string_load(id) != null) return Promise.resolve();
+        // Luxe.io.string_save(id, 'done');
+
+        return tutorial_promise_queue.handle({ step: step, texts: texts, entities: entities });
+    }
+
+    function tutorial_to_promise(data :TutorialData) {
+        // tutorial_entity = data.entity;
+        // luxe.tween.Actuate.tween(Luxe, 0.3, { timescale: 0.1 });
+        // var infobox = new game.entities.InfoBox({
+        //     depth: 1000,
+        //     duration: data.texts.length * 4,
+        //     scene: Luxe.scene,
+        //     texts: data.texts
+        // });
+        // infobox.get_promise().then(function() {
+        //     tutorial_entity = null;
+        //     luxe.tween.Actuate.tween(Luxe, 0.1, { timescale: 1.0 });
+        // });
+        // data.entity.add(infobox);
+        // return infobox.get_promise();
+
+        // --------------------
+
+        // trace('tutorial step #${data.step} queued!');
+        // return new Promise(function(resolve, reject) {
+        //     tutorial_active = true;
+        //     trace('tutorial step #${data.step} starting!');
+        //     tutorial_box.show(data.texts, data.entities).then(function(_) {
+        //         trace('tutorial step #${data.step} done!');
+        //         tutorial_step_index++;
+        //         tutorial_active = false;
+        //         resolve();
+        //     });
+        // });
+
+        // --------------------
+
+        // trace('tutorial step #${data.step} starting!');
+        
+        // return tutorial_box.show(data.texts, data.entities).then(function(_) {
+        //     trace('tutorial step #${data.step} done!');
+        //     tutorial_step_index++;
+        //     tutorial_active = false;
+        // });
+
+        // ----------------
+
+        trace('tutorial step #${data.step} queued!');
+        return new Promise(function(resolve, reject) {
+            trace('tutorial step #${data.step} starting!');
+            
+            tutorial_box = new game.entities.TutorialBox({});
+            return tutorial_box.show(data.texts, data.entities).then(function(_) {
+                trace('tutorial step #${data.step} done!');
+                tutorial_step_index++;
+                tutorial_active = false;
+                resolve();
+            });
+        });
     }
 
     function handle_new_game() {
@@ -317,7 +388,7 @@ class PlayState extends State {
 
         switch (game_mode) {
             case Tutorial(_):
-                tutorial = new game.entities.TutorialBox({});
+                // tutorial_box = new game.entities.TutorialBox({});
             case Puzzle:
                 deck_cards = [];
                 var stackedIndex = Luxe.utils.random.int(0, 9);
@@ -363,6 +434,8 @@ class PlayState extends State {
         };
 
         Analytics.event('game', 'start', game_mode.get_game_mode_id());
+
+        tutorial(TutorialStep.Welcome, ['Welcome to {brown}Stoneset.']);
 
         Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
 
@@ -429,6 +502,7 @@ class PlayState extends State {
         }
     }
 
+    /*
     function handle_tutorial(step :TutorialStep, texts :Array<String>, ?entities :Array<luxe.Visual>) {
         // TODO: Check if tutorial has already been completed
         // TODO: Check if the step is the next step, abort otherwise
@@ -442,6 +516,7 @@ class PlayState extends State {
             });
         });
     }
+    */
 
     function handle_draw(cards :Array<Card>) {
         var x = 0;
@@ -459,7 +534,8 @@ class PlayState extends State {
             x++;
         }
 
-        handle_tutorial(TutorialStep.DrawingCards, ['Each turn you recieve\nthree {brown}gemstones{default}.'], cast cards);
+        //handle_tutorial(TutorialStep.DrawingCards, ['Each turn you recieve\nthree {brown}gemstones{default}.'], cast cards);
+        tutorial(TutorialStep.DrawingCards, ['Each turn you recieve\nthree {brown}gemstones{default}.'], cast cards);
 
         return (tween != null ? tween.toPromise() : Promise.resolve());
     }
@@ -659,7 +735,7 @@ class PlayState extends State {
             });
         });
 
-        handle_tutorial(TutorialStep.Scoring, ['Completing {brown}sets {default}increases\nyour score.'], [scoreText]);
+        //handle_tutorial(TutorialStep.Scoring, ['Completing {brown}sets {default}increases\nyour score.'], [scoreText]);
 
         return Promise.resolve();
     }
