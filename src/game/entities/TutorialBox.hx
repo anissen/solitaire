@@ -18,6 +18,7 @@ class TutorialBox extends Sprite {
     var promise :Promise;
     var promise_resolve :Void->Void = null;
     var tutorial_scene :luxe.Scene = new luxe.Scene();
+    var tutorial_temp_scene :luxe.Scene = new luxe.Scene();
     var shadow :Sprite;
 
     public function new(_options :TutorialBoxOptions) {
@@ -45,7 +46,7 @@ class TutorialBox extends Sprite {
             align_vertical: center,
             color: new Color(0, 0, 0, 1),
             point_size: 22,
-            text: 'Some tutorial text\ngoes here!',
+            text: '',
             depth: 1010,
             scene: tutorial_scene,
             tags : [
@@ -59,15 +60,6 @@ class TutorialBox extends Sprite {
         this.visible = false;
         shadow.visible = false;
         label.visible = false;
-
-        promise = new Promise(function(resolve, reject) {
-            promise_resolve = resolve;
-            trace('setting promise_resolve to ' + resolve);
-        });
-    }
-
-    override function init() {
-        trace('tutorialbox init');
     }
 
     public function point_to(entity :luxe.Visual) {
@@ -90,7 +82,7 @@ class TutorialBox extends Sprite {
             scale: new Vector(0.9, 0.9 * (pointing_up ? 1 : -1)),
             depth: this.depth - 0.1,
             color: new Color(1, 1, 1, 0),
-            scene: tutorial_scene
+            scene: tutorial_temp_scene
         });
     
         return Actuate.tween(arrow.color, 0.3, { a: 1 }).onComplete(function(_) {
@@ -101,7 +93,7 @@ class TutorialBox extends Sprite {
                     size: Vector.Multiply(entity.size, 1.8),
                     color: new Color(1, 1, 1, 0.2),
                     depth: this.depth - 0.2,
-                    scene: tutorial_scene
+                    scene: tutorial_temp_scene
                 }); 
             });
         });
@@ -109,16 +101,17 @@ class TutorialBox extends Sprite {
 
     public function show(texts :Array<String>, ?entities :Array<luxe.Visual>) {
         if (entities == null) entities = [];
-        // promise = new Promise(function(resolve, reject) {
+        promise = new Promise(function(resolve, reject) {
         //     trace('promise_resolve is $promise_resolve');
         //     trace('setting promise_resolve');
-        //     promise_resolve = resolve;
+            promise_resolve = resolve;
 
             var center_y = 0.0;
             for (entity in entities) {
                 center_y += (entity.pos.y - Settings.HEIGHT / 2);
             }
-            this.pos.y = Settings.HEIGHT / 2 + (entities.empty() ? 0.0 : (center_y / entities.length) * 0.4 /* how much to move towards pointing locations */);
+            this.pos.y = Settings.HEIGHT / 2;
+            var pos_y = Settings.HEIGHT / 2 + (entities.empty() ? 0.0 : (center_y / entities.length) * 0.4 /* how much to move towards pointing locations */);
             /*
             var old_size_y = this.size.y;
             this.size.y = 0;
@@ -134,20 +127,23 @@ class TutorialBox extends Sprite {
             this.visible = true;
             shadow.visible = true;
             label.visible = true;
-            Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat().ease(luxe.tween.easing.Sine.easeInOut);
+            label.text = '';
+            Actuate.tween(this.pos, 0.5, { y: pos_y }).ease(luxe.tween.easing.Sine.easeInOut).onComplete(function(_) {
+                Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat().ease(luxe.tween.easing.Sine.easeInOut);
 
-            var delay = 0.3;
-            for (entity in entities) {
-                // trace('tutorial card pos: ${entity.pos}');
-                point_to(entity).delay(delay);
-                delay += 0.5;
-            }
+                var delay = 0.3;
+                for (entity in entities) {
+                    // trace('tutorial card pos: ${entity.pos}');
+                    point_to(entity).delay(delay);
+                    delay += 0.5;
+                }
 
-            tutorial_texts = texts;
-            return proceed();
-        // });
+                tutorial_texts = texts;
+                proceed();
+            });
+        });
 
-        // return promise;
+        return promise;
     }
 
     public function proceed() :Promise {
@@ -166,11 +162,11 @@ class TutorialBox extends Sprite {
     }
 
     function hide() {
-        tutorial_scene.empty();
-        // this.visible = false;
-        // shadow.visible = false;
-        // label.visible = false;
-        // TODO: Clear arrows
+        // tutorial_scene.empty();
+        this.visible = false;
+        shadow.visible = false;
+        label.visible = false;
+        tutorial_temp_scene.empty();
     }
 
     override public function onmouseup(event :luxe.Input.MouseEvent) {
