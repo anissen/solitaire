@@ -30,6 +30,7 @@ typedef Card = Tile;
 enum TutorialStep {
     Welcome;
     WhatIsTheGoal;
+    Inventory;
     DrawingCards;
     PlacingCards;
     Scoring;
@@ -78,7 +79,7 @@ class PlayState extends State {
     
     var tutorial_box :game.entities.TutorialBox;
     var tutorial_active :Bool;
-    var tutorial_steps :Array<TutorialStep> = [Welcome, WhatIsTheGoal, DrawingCards, PlacingCards];
+    var tutorial_steps :Array<TutorialStep> = [Welcome, WhatIsTheGoal, Inventory, DrawingCards, PlacingCards, Scoring];
     var tutorial_step_index :Int;
     var tutorial_promise :Promise;
 
@@ -121,7 +122,7 @@ class PlayState extends State {
     }
 
     function tutorial_to_promise(data :TutorialData) {
-        if (data.step != tutorial_steps[tutorial_step_index]) return Promise.resolve();
+        if (tutorial_active || data.step != tutorial_steps[tutorial_step_index]) return Promise.resolve();
         tutorial_active = true;
         return tutorial_box.show(data.texts, data.entities).then(function(_) {
             tutorial_step_index++;
@@ -455,29 +456,11 @@ class PlayState extends State {
         }
     }
 
-    /*
-    function handle_tutorial(step :TutorialStep, texts :Array<String>, ?entities :Array<luxe.Visual>) {
-        // TODO: Check if tutorial has already been completed
-        // TODO: Check if the step is the next step, abort otherwise
-
-        tutorial_active = true;
-        Luxe.timer.schedule(1, function() { // hack because promise chaining does not seem to work
-            tutorial.show(texts, entities).then(function(_) {
-                trace('tutorial step #tutorial_step_index done!');
-                tutorial_step_index++;
-                tutorial_active = false;
-            });
-        });
-    }
-    */
-
     function handle_draw(cards :Array<Card>) {
         var x = 0;
         var tween = null;
         for (card in cards) {
             var new_pos = get_pos(x, tiles_y + 2 + 0.1);
-            trace('card start pos: ${card.pos}');
-            trace('card new pos: ${new_pos}');
             tween = tween_pos(card, new_pos).delay(x * 0.1);
             card.add(new Clickable(card_clicked));
             // var trail = new game.components.TrailRenderer();
@@ -488,7 +471,10 @@ class PlayState extends State {
         }
 
         //handle_tutorial(TutorialStep.DrawingCards, ['Each turn you recieve\nthree {brown}gemstones{default}.'], cast cards);
-        tutorial(TutorialStep.DrawingCards, ['Each turn you recieve\nthree {brown}gemstones{default}.'], cast cards);
+        tutorial(TutorialStep.DrawingCards, ['Drawing all of the gems!'], cast cards); // only shown at draw #2
+
+        tutorial(TutorialStep.Inventory, ['This is your inventory.', 'Each turn you recieve\nthree {brown}gemstones{default}.'], cast cards);
+        tutorial(TutorialStep.PlacingCards, ['You place the {brown}gemstones{default}\nin the {brown}sockets{default}.']);
 
         return (tween != null ? tween.toPromise() : Promise.resolve());
     }
@@ -692,7 +678,7 @@ class PlayState extends State {
         });
 
         //handle_tutorial(TutorialStep.Scoring, ['Completing {brown}sets {default}increases\nyour score.'], [scoreText]);
-        tutorial(TutorialStep.Scoring, ['Completing {brown}sets {default}increases\nyour score.'], [scoreText]);
+        tutorial(TutorialStep.Scoring, ['Completing {brown}sets\n{default}increases your score.'], [scoreText]);
 
         return Promise.resolve();
     }

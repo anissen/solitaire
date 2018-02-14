@@ -19,6 +19,7 @@ class TutorialBox extends Sprite {
     var promise_resolve :Void->Void = null;
     var tutorial_scene :luxe.Scene = new luxe.Scene();
     var tutorial_temp_scene :luxe.Scene = new luxe.Scene();
+    var tutorial_dismissable :Bool;
     var shadow :Sprite;
 
     public function new(_options :TutorialBoxOptions) {
@@ -102,15 +103,13 @@ class TutorialBox extends Sprite {
     public function show(texts :Array<String>, ?entities :Array<luxe.Visual>) {
         if (entities == null) entities = [];
         promise = new Promise(function(resolve, reject) {
-        //     trace('promise_resolve is $promise_resolve');
-        //     trace('setting promise_resolve');
+            tutorial_dismissable = false;
             promise_resolve = resolve;
 
             var center_y = 0.0;
             for (entity in entities) {
                 center_y += (entity.pos.y - Settings.HEIGHT / 2);
             }
-            this.pos.y = Settings.HEIGHT / 2;
             var pos_y = Settings.HEIGHT / 2 + (entities.empty() ? 0.0 : (center_y / entities.length) * 0.4 /* how much to move towards pointing locations */);
             /*
             var old_size_y = this.size.y;
@@ -140,6 +139,9 @@ class TutorialBox extends Sprite {
 
                 tutorial_texts = texts;
                 proceed();
+                Actuate.timer(delay + 0.5).onComplete(function(_) {
+                    tutorial_dismissable = true;
+                });
             });
         });
 
@@ -167,9 +169,11 @@ class TutorialBox extends Sprite {
         shadow.visible = false;
         label.visible = false;
         tutorial_temp_scene.empty();
+        tutorial_dismissable = false;
     }
 
     override public function onmouseup(event :luxe.Input.MouseEvent) {
+        if (!tutorial_dismissable) return;
         proceed();
     }
 
