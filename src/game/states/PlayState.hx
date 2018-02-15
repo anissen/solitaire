@@ -752,7 +752,7 @@ class PlayState extends State {
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
         if (game_over) return;
         if (grabbed_card == null) return;
-        if (!Game.Instance.is_placement_valid(x, y)) {
+        if (tutorial_active || !Game.Instance.is_placement_valid(x, y)) {
             tween_pos(grabbed_card, grabbed_card_origin);
             release_grabbed_card();
             return;
@@ -824,6 +824,7 @@ class PlayState extends State {
 
     function card_clicked(sprite :Sprite) {
         if (game_over) return;
+        if (tutorial_active) return;
         grabbed_card = cast sprite;
         grabbed_card_origin = sprite.pos.clone();
         grabbed_card_offset = Vector.Subtract(Luxe.screen.cursor.pos, Luxe.camera.world_point_to_screen(sprite.pos));
