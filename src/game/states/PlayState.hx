@@ -99,7 +99,7 @@ class PlayState extends State {
         Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
 
         Luxe.utils.random.initial = switch (game_mode) {
-            case Tutorial(_): 42;
+            case Tutorial(_): 41;
             default: Std.int(10000 * Math.random()); // TODO: Should be incremented for each play
         }
         var could_load_game = load_game();
@@ -363,10 +363,22 @@ class PlayState extends State {
 
         Analytics.event('game', 'start', game_mode.get_game_mode_id());
 
-        tutorial(TutorialStep.Welcome, ['Welcome to {brown}Stoneset.']);
+        return tutorial(TutorialStep.Welcome, ['Welcome to {brown}Stoneset{default}.', 'In {brown}Stoneset{default}\nyou forge {brown}gemstones.', 'And complete {brown}sets{default}\nto collect riches!']).then(function() {
+            Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
+        });
 
-        Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
+        /*
+        * goal:
+            * complete sets
+            * get high score
+        * how:
+            * place gems in sockets
+            * collect gems
+            * correct order gives 2x points
+        * super-gems: merge three gems of the same type
+        */
 
+        /*
         switch (game_mode) {
             case Puzzle:
                 Game.Instance.make_puzzle(instantiate_tile);
@@ -377,9 +389,8 @@ class PlayState extends State {
             default:
         }
 
-        // handle_tutorial(TutorialStep.Welcome, ['Welcome to {brown}Stoneset.']);
-
         return Promise.resolve();
+        */
     }
 
     function random_func(v :Int) {
@@ -415,6 +426,10 @@ class PlayState extends State {
     }
 
     public function tutorial(step :TutorialStep, texts :Array<String>, ?entities :Array<luxe.Visual>) :Promise {
+        switch (game_mode) {
+            case Tutorial(_):
+            case _: return Promise.resolve();
+        }
         if (tutorial_box.is_active() || step != tutorial_steps[tutorial_step_index]) return Promise.resolve();
         tutorial_step_index++;
         return tutorial_box.tutorial({ texts: texts, entities: entities });
@@ -450,11 +465,11 @@ class PlayState extends State {
             x++;
         }
 
-        //handle_tutorial(TutorialStep.DrawingCards, ['Each turn you recieve\nthree {brown}gemstones{default}.'], cast cards);
-        tutorial(TutorialStep.DrawingCards, ['Drawing all of the gems!'], cast cards); // only shown at draw #2
+        // tutorial(TutorialStep.DrawingCards, ['Each turn you get a new {brown}set{default}.']);
+        // tutorial(TutorialStep.DrawingCards, ['And three {brown}gemstones{default}.'], cast cards);
 
         tutorial(TutorialStep.Inventory, ['This is your inventory.', 'Each turn you recieve\nthree {brown}gemstones{default}.'], cast cards);
-        tutorial(TutorialStep.PlacingCards, ['You place the {brown}gemstones{default}\nin the {brown}sockets{default}.']);
+        tutorial(TutorialStep.PlacingCards, ['You place {brown}gemstones{default}\nin {brown}sockets{default}.']);
 
         return (tween != null ? tween.toPromise() : Promise.resolve());
     }
@@ -480,7 +495,7 @@ class PlayState extends State {
             delay_count++;
             count++;
         }
-
+        
         tutorial(TutorialStep.WhatIsTheGoal, ['Your goal is to\ncomplete {brown}sets{default}.']);
 
         return (tween != null ? tween.toPromise() : Promise.resolve());
