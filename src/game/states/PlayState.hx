@@ -78,14 +78,9 @@ class PlayState extends State {
     var highlighted_tile :Sprite;
     
     var tutorial_box :game.entities.TutorialBox;
-    var tutorial_active :Bool;
     var tutorial_steps :Array<TutorialStep> = [Welcome, WhatIsTheGoal, Inventory, DrawingCards, PlacingCards, Scoring];
     var tutorial_step_index :Int;
-    var tutorial_promise :Promise;
-
     
-    var tutorial_promise_queue :core.queues.SimplePromiseQueue<TutorialData>;
-
     public function new() {
         super({ name: StateId });
         Game.Instance.listen(handle_event);
@@ -101,9 +96,6 @@ class PlayState extends State {
         game_mode = cast data;
         if (game_mode == null) game_mode = Normal;
 
-        tutorial_promise_queue = new core.queues.SimplePromiseQueue();
-        tutorial_promise_queue.set_handler(tutorial_to_promise);
-
         Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
 
         Luxe.utils.random.initial = switch (game_mode) {
@@ -112,22 +104,6 @@ class PlayState extends State {
         }
         var could_load_game = load_game();
         if (!could_load_game) handle_new_game();
-    }
-
-    function tutorial(step :TutorialStep, texts :Array<String>, ?entities :Array<luxe.Visual>) {
-        // if (Luxe.io.string_load(id) != null) return Promise.resolve();
-        // Luxe.io.string_save(id, 'done');
-
-        return tutorial_promise_queue.handle({ step: step, texts: texts, entities: entities });
-    }
-
-    function tutorial_to_promise(data :TutorialData) {
-        if (tutorial_active || data.step != tutorial_steps[tutorial_step_index]) return Promise.resolve();
-        tutorial_active = true;
-        return tutorial_box.show(data.texts, data.entities).then(function(_) {
-            tutorial_step_index++;
-            tutorial_active = false;
-        });
     }
 
     function handle_new_game() {
@@ -143,9 +119,7 @@ class PlayState extends State {
         // counting_score = 0;
         game_over = false;
         Tile.CardId = 0; // reset card Ids
-        tutorial_active = false;
         tutorial_step_index = 0;
-        tutorial_promise = Promise.resolve();
 
         highlighted_tile = new Sprite({
             texture: Luxe.resources.texture('assets/images/symbols/tile.png'),
@@ -438,6 +412,12 @@ class PlayState extends State {
             35 + tile_size / 2 + tile_x * (tile_size + margin),
             50 + tile_size / 2 + tile_y * (tile_size + margin)
         );
+    }
+
+    public function tutorial(step :TutorialStep, texts :Array<String>, ?entities :Array<luxe.Visual>) :Promise {
+        if (tutorial_box.is_active() || step != tutorial_steps[tutorial_step_index]) return Promise.resolve();
+        tutorial_step_index++;
+        return tutorial_box.tutorial({ texts: texts, entities: entities });
     }
 
     function handle_event(event :core.models.Game.Event) :Promise {
@@ -752,7 +732,7 @@ class PlayState extends State {
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
         if (game_over) return;
         if (grabbed_card == null) return;
-        if (tutorial_active || !Game.Instance.is_placement_valid(x, y)) {
+        if (tutorial_box.is_active() || !Game.Instance.is_placement_valid(x, y)) {
             tween_pos(grabbed_card, grabbed_card_origin);
             release_grabbed_card();
             return;
@@ -824,7 +804,7 @@ class PlayState extends State {
 
     function card_clicked(sprite :Sprite) {
         if (game_over) return;
-        if (tutorial_active) return;
+        if (tutorial_box.is_active()) return;
         grabbed_card = cast sprite;
         grabbed_card_origin = sprite.pos.clone();
         grabbed_card_offset = Vector.Subtract(Luxe.screen.cursor.pos, Luxe.camera.world_point_to_screen(sprite.pos));

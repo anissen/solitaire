@@ -12,6 +12,8 @@ typedef TutorialBoxOptions = {
 
 }
 
+typedef TutorialData = { texts :Array<String>, ?entities :Array<luxe.Visual> };
+
 class TutorialBox extends Sprite {
     var label :game.entities.RichText;
     var tutorial_texts :Array<String> = [];
@@ -20,6 +22,8 @@ class TutorialBox extends Sprite {
     var tutorial_scene :luxe.Scene = new luxe.Scene();
     var tutorial_temp_scene :luxe.Scene = new luxe.Scene();
     var tutorial_dismissable :Bool;
+    var tutorial_active :Bool;
+    var tutorial_promise_queue :core.queues.SimplePromiseQueue<TutorialData>;
     var shadow :Sprite;
 
     public function new(_options :TutorialBoxOptions) {
@@ -61,6 +65,12 @@ class TutorialBox extends Sprite {
         this.visible = false;
         shadow.visible = false;
         label.visible = false;
+
+        tutorial_dismissable = true;
+        tutorial_active = false;
+
+        tutorial_promise_queue = new core.queues.SimplePromiseQueue();
+        tutorial_promise_queue.set_handler(show);
     }
 
     public function point_to(entity :luxe.Visual) {
@@ -100,9 +110,11 @@ class TutorialBox extends Sprite {
         });
     }
 
-    public function show(texts :Array<String>, ?entities :Array<luxe.Visual>) {
+    public function show(data :TutorialData) {
+        var entities = data.entities;
         if (entities == null) entities = [];
         promise = new Promise(function(resolve, reject) {
+            tutorial_active = true;
             tutorial_dismissable = false;
             promise_resolve = resolve;
 
@@ -137,7 +149,7 @@ class TutorialBox extends Sprite {
                     delay += 0.5;
                 }
 
-                tutorial_texts = texts;
+                tutorial_texts = data.texts;
                 proceed();
                 Actuate.timer(delay + 0.5).onComplete(function(_) {
                     tutorial_dismissable = true;
@@ -163,6 +175,13 @@ class TutorialBox extends Sprite {
         // return Promise.resolve();
     }
 
+    public function tutorial(data :TutorialData) :Promise {
+        // if (Luxe.io.string_load(id) != null) return Promise.resolve();
+        // Luxe.io.string_save(id, 'done');
+
+        return tutorial_promise_queue.handle(data);
+    }
+
     function hide() {
         // tutorial_scene.empty();
         this.visible = false;
@@ -170,6 +189,11 @@ class TutorialBox extends Sprite {
         label.visible = false;
         tutorial_temp_scene.empty();
         tutorial_dismissable = false;
+        tutorial_active = false;
+    }
+
+    public function is_active() {
+        return tutorial_active;
     }
 
     override public function onmouseup(event :luxe.Input.MouseEvent) {
