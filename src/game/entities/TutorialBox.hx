@@ -55,10 +55,12 @@ class TutorialBox extends Sprite {
             depth: 1010,
             scene: tutorial_scene,
             tags : [
-				{ 
-                    name: "brown", 
-                    color: new Color().rgb(0x964B00)
-                }
+				{ name: "brown", color: new Color().rgb(0x964B00) },
+                { name: "ruby", color: new Color().rgb(0xd92727) }, // red
+                { name: "emerald", color: new Color().rgb(0x6fcc43) }, // green
+                { name: "sapphire", color: new Color().rgb(0x0db8b5) }, // blue
+                { name: "topaz", color: new Color().rgb(0xf4d60c) }, // yellow
+                { name: "sunstone", color: new Color().rgb(0xfc8f12) }, // orange
 			],
         });
 
@@ -122,7 +124,7 @@ class TutorialBox extends Sprite {
             for (entity in entities) {
                 center_y += (entity.pos.y - Settings.HEIGHT / 2);
             }
-            var pos_y = Settings.HEIGHT / 2 + (entities.empty() ? 0.0 : (center_y / entities.length) * 0.4 /* how much to move towards pointing locations */);
+            var pos_y = Settings.HEIGHT / 2 + (entities.empty() ? 0.0 : (center_y / entities.length) * 0.3 /* how much to move towards pointing locations */);
             /*
             var old_size_y = this.size.y;
             this.size.y = 0;

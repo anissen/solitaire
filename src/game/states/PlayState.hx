@@ -32,7 +32,9 @@ enum TutorialStep {
     WhatIsTheGoal;
     Inventory;
     DrawingCards;
+    DrawingSets;
     PlacingCards;
+    PlacingCards2;
     Scoring;
     // ...
 }
@@ -78,7 +80,7 @@ class PlayState extends State {
     var highlighted_tile :Sprite;
     
     var tutorial_box :game.entities.TutorialBox;
-    var tutorial_steps :Array<TutorialStep> = [Welcome, WhatIsTheGoal, Inventory, DrawingCards, PlacingCards, Scoring];
+    var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, DrawingSets, DrawingCards, Scoring];
     var tutorial_step_index :Int;
     
     public function new() {
@@ -465,11 +467,12 @@ class PlayState extends State {
             x++;
         }
 
-        // tutorial(TutorialStep.DrawingCards, ['Each turn you get a new {brown}set{default}.']);
-        // tutorial(TutorialStep.DrawingCards, ['And three {brown}gemstones{default}.'], cast cards);
+        tutorial(TutorialStep.DrawingSets, ['Each turn you\nget a new {brown}set{default}.']);
+        tutorial(TutorialStep.DrawingCards, ['And three {brown}gemstones{default}.'], cast cards);
 
-        tutorial(TutorialStep.Inventory, ['This is your inventory.', 'Each turn you recieve\nthree {brown}gemstones{default}.'], cast cards);
-        tutorial(TutorialStep.PlacingCards, ['You place {brown}gemstones{default}\nin {brown}sockets{default}.']);
+        tutorial(TutorialStep.Inventory, ['These are your\n{brown}gemstones{default}.'], cast cards);
+        tutorial(TutorialStep.PlacingCards, ['You place {brown}gemstones{default}\nin {brown}sockets{default}.'] /* point to the board */);
+        tutorial(TutorialStep.PlacingCards2, ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.', 'Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.', 'Drag the {ruby}ruby{default}\ninto this {brown}socket{default}.'] /* point to sockets */).then(function(_) { /* enable dragging to specific tiles */ });
 
         return (tween != null ? tween.toPromise() : Promise.resolve());
     }
@@ -496,7 +499,7 @@ class PlayState extends State {
             count++;
         }
         
-        tutorial(TutorialStep.WhatIsTheGoal, ['Your goal is to\ncomplete {brown}sets{default}.']);
+        //tutorial(TutorialStep.WhatIsTheGoal, ['Your goal is to\ncomplete {brown}sets{default}.']);
 
         return (tween != null ? tween.toPromise() : Promise.resolve());
     }
