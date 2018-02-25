@@ -35,9 +35,18 @@ enum TutorialStep {
     DrawingSets;
     PlacingCards;
     PlacingCards2;
+    PlacingCards3;
     Scoring;
     // ...
 }
+
+/*
+* how:
+    * place gems in sockets
+    * collect gems
+    * correct order gives 2x points
+* super-gems: merge three gems of the same type
+*/
 
 typedef TutorialData = { step: TutorialStep, texts :Array<String>, entities :Array<luxe.Visual> };
 
@@ -80,8 +89,10 @@ class PlayState extends State {
     var highlighted_tile :Sprite;
     
     var tutorial_box :game.entities.TutorialBox;
-    var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, DrawingSets, DrawingCards, Scoring];
+    var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, PlacingCards3, DrawingSets, DrawingCards, Scoring];
     var tutorial_step_index :Int;
+    var tutorial_can_drag :Int;
+    var tutorial_can_drop :{ x :Int, y :Int };
     
     public function new() {
         super({ name: StateId });
@@ -122,6 +133,8 @@ class PlayState extends State {
         game_over = false;
         Tile.CardId = 0; // reset card Ids
         tutorial_step_index = 0;
+        tutorial_can_drag = -1;
+        tutorial_can_drop = { x: -1, y: -1 };
 
         highlighted_tile = new Sprite({
             texture: Luxe.resources.texture('assets/images/symbols/tile.png'),
@@ -176,7 +189,7 @@ class PlayState extends State {
         });
         pe_continous = new ParticleEmitter({
 			name: 'card_particle_emitter', 
-			rate: 32,
+			rate: 48,
 			cache_size: 64,
 			cache_wrap: true,
             depth: 9,
@@ -365,20 +378,9 @@ class PlayState extends State {
 
         Analytics.event('game', 'start', game_mode.get_game_mode_id());
 
-        return tutorial(TutorialStep.Welcome, ['Welcome to {brown}Stoneset{default}.', 'In {brown}Stoneset{default}\nyou forge {brown}gemstones.', 'And complete {brown}sets{default}\nto collect riches!']).then(function() {
+        return tutorial(TutorialStep.Welcome, { texts: ['Welcome to {brown}Stoneset{default}.', 'In {brown}Stoneset{default}\nyou forge {brown}gemstones.', 'And complete {brown}sets{default}\nto collect riches!'] }).then(function() {
             Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
         });
-
-        /*
-        * goal:
-            * complete sets
-            * get high score
-        * how:
-            * place gems in sockets
-            * collect gems
-            * correct order gives 2x points
-        * super-gems: merge three gems of the same type
-        */
 
         /*
         switch (game_mode) {
@@ -427,14 +429,14 @@ class PlayState extends State {
         );
     }
 
-    public function tutorial(step :TutorialStep, texts :Array<String>, ?entities :Array<luxe.Visual>) :Promise {
+    public function tutorial(step :TutorialStep, data :game.entities.TutorialBox.TutorialData) :Promise {
         switch (game_mode) {
             case Tutorial(_):
             case _: return Promise.resolve();
         }
         if (tutorial_box.is_active() || step != tutorial_steps[tutorial_step_index]) return Promise.resolve();
         tutorial_step_index++;
-        return tutorial_box.tutorial({ texts: texts, entities: entities });
+        return tutorial_box.tutorial(data);
     }
 
     function handle_event(event :core.models.Game.Event) :Promise {
@@ -467,12 +469,17 @@ class PlayState extends State {
             x++;
         }
 
-        tutorial(TutorialStep.DrawingSets, ['Each turn you\nget a new {brown}set{default}.']);
-        tutorial(TutorialStep.DrawingCards, ['And three {brown}gemstones{default}.'], cast cards);
+        tutorial(TutorialStep.DrawingSets, { texts: ['Each turn you\nget a new {brown}set{default}.'] /* point to the quests */ });
+        tutorial(TutorialStep.DrawingCards, { texts: ['And three {brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ] });
 
-        tutorial(TutorialStep.Inventory, ['These are your\n{brown}gemstones{default}.'], cast cards);
-        tutorial(TutorialStep.PlacingCards, ['You place {brown}gemstones{default}\nin {brown}sockets{default}.'] /* point to the board */);
-        tutorial(TutorialStep.PlacingCards2, ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.', 'Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.', 'Drag the {ruby}ruby{default}\ninto this {brown}socket{default}.'] /* point to sockets */).then(function(_) { /* enable dragging to specific tiles */ });
+        tutorial(TutorialStep.Inventory, { texts: ['These are your\n{brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ] });
+        tutorial(TutorialStep.PlacingCards, { texts: ['{brown}Gemstones{default} are placed\ninto {brown}sockets{default}.'] });
+        tutorial(TutorialStep.PlacingCards2, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(0, tiles_y - 0.6) ], pos_y: (Settings.HEIGHT * (2/3)), do_func: function() { tutorial_can_drag = 0; tutorial_can_drop = { x: 0, y: 0 }; } /*, dismiss_func: cards[0].is_dropped() */ }).then(function(_) { /* enable dragging to specific tiles */ });
+        tutorial(TutorialStep.PlacingCards3, { texts: ['Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.'], points: [ get_pos(1, tiles_y + 1.8), get_pos(1, tiles_y - 0.6) ], pos_y: (Settings.HEIGHT * (2/3)) }).then(function(_) { /* enable dragging to specific tiles */ });
+        // tutorial(TutorialStep.PlacingCards2, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.', 'Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.', 'Drag the {ruby}ruby{default}\ninto this {brown}socket{default}.'] /* point to sockets */ }).then(function(_) { /* enable dragging to specific tiles */ });
+        // tutorial: once a gemstone has been placed in a socket, it cannot be moved
+        // tutorial: collect adjacent gemstones to complete sets
+        // tutorial: collect adjacent gemstones of the same type to create flawless gemstones
 
         return (tween != null ? tween.toPromise() : Promise.resolve());
     }
@@ -676,7 +683,7 @@ class PlayState extends State {
         });
 
         //handle_tutorial(TutorialStep.Scoring, ['Completing {brown}sets {default}increases\nyour score.'], [scoreText]);
-        tutorial(TutorialStep.Scoring, ['Completing {brown}sets\n{default}increases your score.'], [scoreText]);
+        tutorial(TutorialStep.Scoring, { texts: ['Completing {brown}sets\n{default}increases your score.'], entities: [scoreText] });
 
         return Promise.resolve();
     }

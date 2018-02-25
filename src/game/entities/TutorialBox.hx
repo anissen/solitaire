@@ -1,6 +1,5 @@
 package game.entities;
 
-import luxe.Text;
 import luxe.Color;
 import luxe.Vector;
 import luxe.Sprite;
@@ -12,7 +11,7 @@ typedef TutorialBoxOptions = {
 
 }
 
-typedef TutorialData = { texts :Array<String>, ?entities :Array<luxe.Visual> };
+typedef TutorialData = { texts :Array<String>, ?entities :Array<luxe.Visual>, ?points :Array<Vector>, ?pos_y :Float, ?do_func :Void->Void, ?dismiss_func :Void->Void };
 
 class TutorialBox extends Sprite {
     var label :game.entities.RichText;
@@ -75,14 +74,13 @@ class TutorialBox extends Sprite {
         tutorial_promise_queue.set_handler(show);
     }
 
-    public function point_to(entity :luxe.Visual) {
-        // trace('point_to ');
+    public function point_to(point :Vector) {
         var arrow_height = 86 * 0.9 /* scale */;
-        var pointing_up = (entity.pos.y < this.pos.y);
-        var y = entity.pos.y + (entity.size.y / 3 + arrow_height / 2) * (pointing_up ? 1 : -1);
+        var pointing_up = (point.y < this.pos.y);
+        var y = point.y + (arrow_height / 2) * (pointing_up ? 1 : -1);
 
         // new Sprite({
-        //     pos: entity.pos,
+        //     pos: point,
         //     texture: Luxe.resources.texture('assets/images/symbols/square.png'),
         //     size: Vector.Multiply(entity.size, 1.5),
         //     color: new Color(1, 1, 1, 0.2),
@@ -90,7 +88,7 @@ class TutorialBox extends Sprite {
         // });
 
         var arrow = new Sprite({
-            pos: new Vector(entity.pos.x, this.pos.y),
+            pos: new Vector(point.x, this.pos.y),
             texture: Luxe.resources.texture('assets/images/tutorial/arrow.png'),
             scale: new Vector(0.9, 0.9 * (pointing_up ? 1 : -1)),
             depth: this.depth - 0.1,
@@ -100,31 +98,30 @@ class TutorialBox extends Sprite {
     
         return Actuate.tween(arrow.color, 0.3, { a: 1 }).onComplete(function(_) {
             Actuate.tween(arrow.pos, 1.0, { y: y }).onComplete(function(_) {
-               new Sprite({
-                    pos: entity.pos,
-                    texture: Luxe.resources.texture('assets/images/symbols/circle.png'),
-                    size: Vector.Multiply(entity.size, 1.8),
-                    color: new Color(1, 1, 1, 0.2),
-                    depth: this.depth - 0.2,
-                    scene: tutorial_temp_scene
-                }); 
+            //    new Sprite({
+            //         pos: entity.pos,
+            //         texture: Luxe.resources.texture('assets/images/symbols/circle.png'),
+            //         size: Vector.Multiply(entity.size, 1.8),
+            //         color: new Color(1, 1, 1, 0.2),
+            //         depth: this.depth - 0.2,
+            //         scene: tutorial_temp_scene
+            //     }); 
             });
         });
     }
 
     public function show(data :TutorialData) {
-        var entities = data.entities;
-        if (entities == null) entities = [];
         promise = new Promise(function(resolve, reject) {
             tutorial_active = true;
             tutorial_dismissable = false;
             promise_resolve = resolve;
 
+            var points = (data.points != null ? data.points : []).concat(entities_to_points(data.entities));
             var center_y = 0.0;
-            for (entity in entities) {
-                center_y += (entity.pos.y - Settings.HEIGHT / 2);
+            for (point in points) {
+                center_y += (point.y - Settings.HEIGHT / 2);
             }
-            var pos_y = Settings.HEIGHT / 2 + (entities.empty() ? 0.0 : (center_y / entities.length) * 0.3 /* how much to move towards pointing locations */);
+            var pos_y = (data.pos_y != null ? data.pos_y : Settings.HEIGHT / 2 + (points.empty() ? 0.0 : (center_y / points.length) * 0.4 /* how much to move towards pointing locations */));
             /*
             var old_size_y = this.size.y;
             this.size.y = 0;
@@ -145,9 +142,9 @@ class TutorialBox extends Sprite {
                 Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat().ease(luxe.tween.easing.Sine.easeInOut);
 
                 var delay = 0.3;
-                for (entity in entities) {
+                for (point in points) {
                     // trace('tutorial card pos: ${entity.pos}');
-                    point_to(entity).delay(delay);
+                    point_to(point).delay(delay);
                     delay += 0.5;
                 }
 
@@ -182,6 +179,17 @@ class TutorialBox extends Sprite {
         // Luxe.io.string_save(id, 'done');
 
         return tutorial_promise_queue.handle(data);
+    }
+
+    function entities_to_points<T :luxe.Visual>(?entities :Array<T>) :Array<Vector> {
+        if (entities == null || entities.empty()) return [];
+        var points = [];
+        for (entity in entities) {
+            var pointing_up = (entity.pos.y < this.pos.y);
+            var y = entity.pos.y + (entity.size.y / 3) * (pointing_up ? 1 : -1);
+            points.push(new Vector(entity.pos.x, y));
+        }
+        return points;
     }
 
     function hide() {
