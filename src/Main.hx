@@ -49,6 +49,10 @@ class Main extends luxe.Game {
         Analytics.screen('Main');
         #if web
         Analytics.event('platform', 'Web');
+        #elseif android
+        Analytics.event('platform', 'Android');
+        #elseif ios
+        Analytics.event('platform', 'iOS');
         #else
         Analytics.event('platform', Sys.systemName());
         #end
