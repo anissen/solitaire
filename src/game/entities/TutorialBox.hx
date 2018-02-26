@@ -11,7 +11,7 @@ typedef TutorialBoxOptions = {
 
 }
 
-typedef TutorialData = { texts :Array<String>, ?entities :Array<luxe.Visual>, ?points :Array<Vector>, ?pos_y :Float, ?do_func :Void->Void, ?dismiss_func :Void->Void };
+typedef TutorialData = { texts :Array<String>, ?entities :Array<luxe.Visual>, ?points :Array<Vector>, ?pos_y :Float, ?do_func :Void->Void, ?must_be_dismissed :Bool };
 
 class TutorialBox extends Sprite {
     var label :game.entities.RichText;
@@ -112,6 +112,7 @@ class TutorialBox extends Sprite {
 
     public function show(data :TutorialData) {
         promise = new Promise(function(resolve, reject) {
+            if (data.do_func != null) data.do_func();
             tutorial_active = true;
             tutorial_dismissable = false;
             promise_resolve = resolve;
@@ -150,9 +151,11 @@ class TutorialBox extends Sprite {
 
                 tutorial_texts = data.texts;
                 proceed();
-                Actuate.timer(delay + 0.5).onComplete(function(_) {
-                    tutorial_dismissable = true;
-                });
+                if (data.must_be_dismissed == null || data.must_be_dismissed == false) {
+                    Actuate.timer(delay + 0.5).onComplete(function(_) {
+                        tutorial_dismissable = true;
+                    });
+                }
             });
         });
 
@@ -162,16 +165,12 @@ class TutorialBox extends Sprite {
     public function proceed() :Promise {
         var nextText = tutorial_texts.shift();
         if (nextText == null) {
-            // if (promise_resolve != null) promise_resolve();
-            hide();
-            trace('promise_resolve');
-            promise_resolve();
+            dismiss();
             return Promise.resolve();
         }
         label.text = nextText;
         label.play();
         return get_promise();
-        // return Promise.resolve();
     }
 
     public function tutorial(data :TutorialData) :Promise {
@@ -192,8 +191,8 @@ class TutorialBox extends Sprite {
         return points;
     }
 
-    function hide() {
-        // tutorial_scene.empty();
+    function dismiss() {
+        promise_resolve();
         this.visible = false;
         shadow.visible = false;
         label.visible = false;
