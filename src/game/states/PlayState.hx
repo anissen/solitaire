@@ -434,7 +434,7 @@ class PlayState extends State {
             case Tutorial(_):
             case _: return Promise.resolve();
         }
-        if (tutorial_box.is_active() || step != tutorial_steps[tutorial_step_index]) return Promise.resolve();
+        if (/* tutorial_box.is_active() || */ step != tutorial_steps[tutorial_step_index]) return Promise.resolve();
         tutorial_step_index++;
         return tutorial_box.tutorial(data);
     }
@@ -472,9 +472,20 @@ class PlayState extends State {
         tutorial(TutorialStep.DrawingSets, { texts: ['Each turn you\nget a new {brown}set{default}.'] /* point to the quests */ });
         tutorial(TutorialStep.DrawingCards, { texts: ['And three {brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ] });
 
-        tutorial(TutorialStep.Inventory, { texts: ['These are your\n{brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ] });
+        tutorial(TutorialStep.Inventory, { texts: ['These are your\n{brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ], do_func: function() {
+            for (card in cards) {
+                card.remove('Clickable');
+            }
+        } });
         tutorial(TutorialStep.PlacingCards, { texts: ['{brown}Gemstones{default} are placed\ninto {brown}sockets{default}.'] });
-        tutorial(TutorialStep.PlacingCards2, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(0, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), do_func: function() { tutorial_can_drag = 0; tutorial_can_drop = { x: 0, y: 0 }; }, must_be_dismissed: true /* dismiss_func: on_tutorial_card_dropped */ }).then(function(_) { /* enable dragging to specific tiles */ });
+
+
+        tutorial(TutorialStep.PlacingCards2, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(0, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), do_func: function() { 
+            tutorial_can_drag = 0;
+            tutorial_can_drop = { x: 0, y: 0 };
+            cards[0].add(new Clickable(card_clicked));
+        }, must_be_dismissed: true /* dismiss_func: on_tutorial_card_dropped */ }).then(function(_) { /* enable dragging to specific tiles */ });
+
         tutorial(TutorialStep.PlacingCards3, { texts: ['Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.'], points: [ get_pos(1, tiles_y + 1.8), get_pos(1, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)) }).then(function(_) { /* enable dragging to specific tiles */ });
         // tutorial(TutorialStep.PlacingCards2, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.', 'Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.', 'Drag the {ruby}ruby{default}\ninto this {brown}socket{default}.'] /* point to sockets */ }).then(function(_) { /* enable dragging to specific tiles */ });
         // tutorial: once a gemstone has been placed in a socket, it cannot be moved
@@ -776,6 +787,7 @@ class PlayState extends State {
     }
 
     function tile_dragover(sprite :Sprite) {
+        if (tutorial_box != null && tutorial_box.is_active()) return;
         var tile :Tile = cast sprite;
         if (grabbed_card == null && collection.length > 0 && !collection.has(tile)) {
             add_to_collection(tile);
@@ -785,6 +797,7 @@ class PlayState extends State {
     function tile_clicked(sprite :Sprite) {
         if (game_over) return;
         if (grabbed_card != null) return;
+        if (tutorial_box != null && tutorial_box.is_active()) return;
         var tile :Tile = cast sprite;
         add_to_collection(tile);
     }
