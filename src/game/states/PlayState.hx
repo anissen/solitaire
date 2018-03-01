@@ -91,7 +91,6 @@ class PlayState extends State {
     var tutorial_box :game.entities.TutorialBox;
     var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, PlacingCards3, DrawingSets, DrawingCards, Scoring];
     var tutorial_step_index :Int;
-    var tutorial_can_drag :Int;
     var tutorial_can_drop :{ x :Int, y :Int };
     
     public function new() {
@@ -112,7 +111,7 @@ class PlayState extends State {
         Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
 
         Luxe.utils.random.initial = switch (game_mode) {
-            case Tutorial(_): 41;
+            case Tutorial(_): 7;
             default: Std.int(10000 * Math.random()); // TODO: Should be incremented for each play
         }
         var could_load_game = load_game();
@@ -133,7 +132,6 @@ class PlayState extends State {
         game_over = false;
         Tile.CardId = 0; // reset card Ids
         tutorial_step_index = 0;
-        tutorial_can_drag = -1;
         tutorial_can_drop = { x: -1, y: -1 };
 
         highlighted_tile = new Sprite({
@@ -477,16 +475,18 @@ class PlayState extends State {
                 card.remove('Clickable');
             }
         } });
-        tutorial(TutorialStep.PlacingCards, { texts: ['{brown}Gemstones{default} are placed\ninto {brown}sockets{default}.'] });
+        tutorial(TutorialStep.PlacingCards, { texts: ['{brown}Gemstones{default} are placed\ninto {brown}sockets{default}.'], pos_y: (Settings.HEIGHT * (2/3)) });
 
-
-        tutorial(TutorialStep.PlacingCards2, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(0, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), do_func: function() { 
-            tutorial_can_drag = 0;
+        tutorial(TutorialStep.PlacingCards2, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(0, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: true, do_func: function() { 
             tutorial_can_drop = { x: 0, y: 0 };
             cards[0].add(new Clickable(card_clicked));
-        }, must_be_dismissed: true /* dismiss_func: on_tutorial_card_dropped */ }).then(function(_) { /* enable dragging to specific tiles */ });
+        }});
 
-        tutorial(TutorialStep.PlacingCards3, { texts: ['Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.'], points: [ get_pos(1, tiles_y + 1.8), get_pos(1, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)) }).then(function(_) { /* enable dragging to specific tiles */ });
+        tutorial(TutorialStep.PlacingCards3, { texts: ['Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.'], points: [ get_pos(1, tiles_y + 1.8), get_pos(1, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: true, do_func: function() { 
+            tutorial_can_drop = { x: 1, y: 0 };
+            cards[0].add(new Clickable(card_clicked)); // why does this work?
+        }});
+
         // tutorial(TutorialStep.PlacingCards2, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.', 'Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.', 'Drag the {ruby}ruby{default}\ninto this {brown}socket{default}.'] /* point to sockets */ }).then(function(_) { /* enable dragging to specific tiles */ });
         // tutorial: once a gemstone has been placed in a socket, it cannot be moved
         // tutorial: collect adjacent gemstones to complete sets
@@ -848,7 +848,6 @@ class PlayState extends State {
 
     function card_clicked(sprite :Sprite) {
         if (game_over) return;
-        if (tutorial_box.is_active() && tutorial_can_drag < 0) return;
         grabbed_card = cast sprite;
         grabbed_card_origin = sprite.pos.clone();
         grabbed_card_offset = Vector.Subtract(Luxe.screen.cursor.pos, Luxe.camera.world_point_to_screen(sprite.pos));
@@ -876,8 +875,9 @@ class PlayState extends State {
     }
 
     override function onleave(_) {
-        Luxe.scene.empty();
+        if (tutorial_box != null) tutorial_box.dismiss();
         ps.destroy();
+        Luxe.scene.empty();
     }
 
     override function onmousemove(event :luxe.Input.MouseEvent) {
@@ -957,12 +957,15 @@ class PlayState extends State {
         }
     }
 
+    var seed_number = 0;
     override function onkeyup(event :luxe.Input.KeyEvent) {
         switch (event.keycode) {
             #if debug
             case luxe.Input.Key.key_k: handle_game_over();
             case luxe.Input.Key.key_n: {
                 Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
+                Luxe.utils.random.initial = seed_number++;
+                trace('SEED #$seed_number');
                 handle_new_game();
             }
             case luxe.Input.Key.key_m:

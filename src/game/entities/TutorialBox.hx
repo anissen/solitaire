@@ -30,7 +30,7 @@ class TutorialBox extends Sprite {
             name: 'TutorialBox' + Luxe.utils.uniqueid(),
             pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2),
             size: new Vector(Settings.WIDTH, 90),
-            depth: 1000,
+            depth: 9,
             scene: tutorial_scene
         });
 
@@ -51,7 +51,7 @@ class TutorialBox extends Sprite {
             color: new Color(0, 0, 0, 1),
             point_size: 22,
             text: '',
-            depth: 1010,
+            depth: 9.5,
             scene: tutorial_scene,
             tags : [
 				{ name: "brown", color: new Color().rgb(0x964B00) },
@@ -97,7 +97,7 @@ class TutorialBox extends Sprite {
         });
     
         return Actuate.tween(arrow.color, 0.3, { a: 1 }).onComplete(function(_) {
-            Actuate.tween(arrow.pos, 1.0, { y: y }).onComplete(function(_) {
+            Actuate.tween(arrow.pos, 0.7, { y: y }).onComplete(function(_) {
             //    new Sprite({
             //         pos: entity.pos,
             //         texture: Luxe.resources.texture('assets/images/symbols/circle.png'),
@@ -142,11 +142,11 @@ class TutorialBox extends Sprite {
             Actuate.tween(this.pos, 0.5, { y: pos_y }).ease(luxe.tween.easing.Sine.easeInOut).onComplete(function(_) {
                 Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat().ease(luxe.tween.easing.Sine.easeInOut);
 
-                var delay = 0.3;
+                var delay = 0.2;
                 for (point in points) {
                     // trace('tutorial card pos: ${entity.pos}');
                     point_to(point).delay(delay);
-                    delay += 0.5;
+                    delay += 0.4;
                 }
 
                 tutorial_texts = data.texts;
