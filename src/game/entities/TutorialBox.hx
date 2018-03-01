@@ -191,8 +191,8 @@ class TutorialBox extends Sprite {
         return points;
     }
 
-    function dismiss() {
-        promise_resolve();
+    public function dismiss() {
+        if (promise_resolve != null) promise_resolve();
         this.visible = false;
         shadow.visible = false;
         label.visible = false;

@@ -35,7 +35,11 @@ enum TutorialStep {
     DrawingSets;
     PlacingCards;
     PlacingCards2;
+    TilesCannotBeMoved;
     PlacingCards3;
+    PlacingCards4;
+    CollectingSets;
+    DragToCollectSets;
     Scoring;
     // ...
 }
@@ -89,7 +93,7 @@ class PlayState extends State {
     var highlighted_tile :Sprite;
     
     var tutorial_box :game.entities.TutorialBox;
-    var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, PlacingCards3, DrawingSets, DrawingCards, Scoring];
+    var tutorial_steps :Array<TutorialStep> = [ /* Welcome, */ Inventory, PlacingCards, PlacingCards2, PlacingCards3, PlacingCards4, TilesCannotBeMoved, CollectingSets, DragToCollectSets, Scoring, DrawingSets, DrawingCards];
     var tutorial_step_index :Int;
     var tutorial_can_drop :{ x :Int, y :Int };
     
@@ -111,7 +115,7 @@ class PlayState extends State {
         Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
 
         Luxe.utils.random.initial = switch (game_mode) {
-            case Tutorial(_): 7;
+            case Tutorial(_): 12;
             default: Std.int(10000 * Math.random()); // TODO: Should be incremented for each play
         }
         var could_load_game = load_game();
@@ -467,8 +471,9 @@ class PlayState extends State {
             x++;
         }
 
-        tutorial(TutorialStep.DrawingSets, { texts: ['Each turn you\nget a new {brown}set{default}.'] /* point to the quests */ });
-        tutorial(TutorialStep.DrawingCards, { texts: ['And three {brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ] });
+        tutorial(TutorialStep.DrawingSets, { texts: ['Each turn you\nget a new {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7), get_pos(1, tiles_y - 1.7), get_pos(2, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
+        tutorial(TutorialStep.DrawingCards, { texts: ['And three new\n{brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ] });
+
 
         tutorial(TutorialStep.Inventory, { texts: ['These are your\n{brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ], do_func: function() {
             for (card in cards) {
@@ -487,7 +492,13 @@ class PlayState extends State {
             cards[0].add(new Clickable(card_clicked)); // why does this work?
         }});
 
-        // tutorial(TutorialStep.PlacingCards2, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.', 'Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.', 'Drag the {ruby}ruby{default}\ninto this {brown}socket{default}.'] /* point to sockets */ }).then(function(_) { /* enable dragging to specific tiles */ });
+        tutorial(TutorialStep.PlacingCards4, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.'], points: [ get_pos(2, tiles_y + 1.8), get_pos(2, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: true, do_func: function() { 
+            tutorial_can_drop = { x: 2, y: 0 };
+            cards[0].add(new Clickable(card_clicked)); // why does this work?
+        }});
+
+        tutorial(TutorialStep.TilesCannotBeMoved, { texts: ['{brown}Gemstones{default} in {brown}sockets{default}\ncannot be moved.'], pos_y: (Settings.HEIGHT * (2/3)) });
+
         // tutorial: once a gemstone has been placed in a socket, it cannot be moved
         // tutorial: collect adjacent gemstones to complete sets
         // tutorial: collect adjacent gemstones of the same type to create flawless gemstones
@@ -597,6 +608,12 @@ class PlayState extends State {
         pe_burst_color_life_module.end_color_max = new Color(1, 1, 1, 0);
         pe_burst.start();
 
+        tutorial(TutorialStep.CollectingSets, { texts: ['You can now\ncollect this {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
+
+        tutorial(TutorialStep.DragToCollectSets, { texts: ['Connect the {brown}gemstones{default}\nby dragging.'], points: [ get_pos(0, tiles_y - 0.8), get_pos(1, tiles_y - 0.8), get_pos(2, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: false /* TODO: Should be true */, do_func: function() { 
+            // ???
+        }});
+
         return tween.toPromise();
     }
 
@@ -694,7 +711,7 @@ class PlayState extends State {
         });
 
         //handle_tutorial(TutorialStep.Scoring, ['Completing {brown}sets {default}increases\nyour score.'], [scoreText]);
-        tutorial(TutorialStep.Scoring, { texts: ['Completing {brown}sets\n{default}increases your score.'], entities: [scoreText] });
+        tutorial(TutorialStep.Scoring, { texts: ['Completing {brown}sets{default}\nincreases your score.'], entities: [scoreText] });
 
         return Promise.resolve();
     }
