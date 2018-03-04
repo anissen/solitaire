@@ -93,7 +93,7 @@ class PlayState extends State {
     var highlighted_tile :Sprite;
     
     var tutorial_box :game.entities.TutorialBox;
-    var tutorial_steps :Array<TutorialStep> = [ /* Welcome, */ Inventory, PlacingCards, PlacingCards2, PlacingCards3, PlacingCards4, TilesCannotBeMoved, CollectingSets, DragToCollectSets, Scoring, DrawingSets, DrawingCards];
+    var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, PlacingCards3, PlacingCards4, CollectingSets, DragToCollectSets, Scoring, DrawingSets, DrawingCards, TilesCannotBeMoved];
     var tutorial_step_index :Int;
     var tutorial_can_drop :{ x :Int, y :Int };
     
@@ -213,12 +213,19 @@ class PlayState extends State {
         pe_continous.stop();
 		ps.add(pe_continous);
 
-        var back_button = new game.ui.Icon({
-            pos: new Vector(25, 25),
-            texture_path: 'assets/ui/arrowBeige_left.png',
-            on_click: Main.SetState.bind(MenuState.StateId)
-        });
-        back_button.scale.set_xy(1/5, 1/5);
+        var show_back_button = switch (game_mode) {
+            case Tutorial(_): false;
+            case _: true;
+        };
+
+        if (show_back_button) {
+            var back_button = new game.ui.Icon({
+                pos: new Vector(25, 25),
+                texture_path: 'assets/ui/arrowBeige_left.png',
+                on_click: Main.SetState.bind(MenuState.StateId)
+            });
+            back_button.scale.set_xy(1/5, 1/5);
+        }
 
         // quest backgrounds
         for (x in 0 ... 3) {
@@ -610,7 +617,7 @@ class PlayState extends State {
 
         tutorial(TutorialStep.CollectingSets, { texts: ['You can now\ncollect this {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
 
-        tutorial(TutorialStep.DragToCollectSets, { texts: ['Connect the {brown}gemstones{default}\nby dragging.'], points: [ get_pos(0, tiles_y - 0.8), get_pos(1, tiles_y - 0.8), get_pos(2, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: false /* TODO: Should be true */, do_func: function() { 
+        tutorial(TutorialStep.DragToCollectSets, { texts: ['Connect the {brown}gemstones{default}\nby dragging.'], points: [ get_pos(0, tiles_y - 1.2), get_pos(1, tiles_y - 1.2), get_pos(2, tiles_y - 1.2) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: false /* TODO: Should be true */, do_func: function() { 
             // ???
         }});
 
