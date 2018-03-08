@@ -96,6 +96,7 @@ class PlayState extends State {
     var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, PlacingCards3, PlacingCards4, CollectingSets, DragToCollectSets, Scoring, DrawingSets, DrawingCards, TilesCannotBeMoved];
     var tutorial_step_index :Int;
     var tutorial_can_drop :{ x :Int, y :Int };
+    var tutorial_can_collect :Bool;
     
     public function new() {
         super({ name: StateId });
@@ -137,6 +138,7 @@ class PlayState extends State {
         Tile.CardId = 0; // reset card Ids
         tutorial_step_index = 0;
         tutorial_can_drop = { x: -1, y: -1 };
+        tutorial_can_collect = true;
 
         highlighted_tile = new Sprite({
             texture: Luxe.resources.texture('assets/images/symbols/tile.png'),
@@ -341,6 +343,7 @@ class PlayState extends State {
         switch (game_mode) {
             case Tutorial(_):
                 tutorial_box = new game.entities.TutorialBox({});
+                tutorial_can_collect = false;
             case Puzzle:
                 deck_cards = [];
                 var stackedIndex = Luxe.utils.random.int(0, 9);
@@ -617,8 +620,8 @@ class PlayState extends State {
 
         tutorial(TutorialStep.CollectingSets, { texts: ['You can now\ncollect this {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
 
-        tutorial(TutorialStep.DragToCollectSets, { texts: ['Connect the {brown}gemstones{default}\nby dragging.'], points: [ get_pos(0, tiles_y - 1.2), get_pos(1, tiles_y - 1.2), get_pos(2, tiles_y - 1.2) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: false /* TODO: Should be true */, do_func: function() { 
-            // ???
+        tutorial(TutorialStep.DragToCollectSets, { texts: ['Connect the {brown}gemstones{default}\nby dragging.'], points: [ get_pos(0, tiles_y - 0.5), get_pos(1, tiles_y - 0.5), get_pos(2, tiles_y - 0.5) ], pos_y: (Settings.HEIGHT * (3/4) - 20), must_be_dismissed: true, do_func: function() { 
+            tutorial_can_collect = true;
         }});
 
         return tween.toPromise();
@@ -811,7 +814,7 @@ class PlayState extends State {
     }
 
     function tile_dragover(sprite :Sprite) {
-        if (tutorial_box != null && tutorial_box.is_active()) return;
+        if (!tutorial_can_collect) return;
         var tile :Tile = cast sprite;
         if (grabbed_card == null && collection.length > 0 && !collection.has(tile)) {
             add_to_collection(tile);
@@ -821,7 +824,7 @@ class PlayState extends State {
     function tile_clicked(sprite :Sprite) {
         if (game_over) return;
         if (grabbed_card != null) return;
-        if (tutorial_box != null && tutorial_box.is_active()) return;
+        if (!tutorial_can_collect) return;
         var tile :Tile = cast sprite;
         add_to_collection(tile);
     }
@@ -848,6 +851,14 @@ class PlayState extends State {
             var cardIds = [ for (c in collection) c.cardId ];
             clear_collection();
             do_action(Collect(cardIds));
+
+            if (tutorial_box != null && tutorial_box.is_active()) {
+                trace('asdf');
+                trace(tutorial_steps[tutorial_step_index].getName());
+                if (tutorial_can_collect) {
+                    tutorial_box.proceed();
+                }
+            }
         } else {
             for (tile in quest_matches) {
                 tile.set_highlight(false);
@@ -989,7 +1000,6 @@ class PlayState extends State {
             case luxe.Input.Key.key_n: {
                 Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
                 Luxe.utils.random.initial = seed_number++;
-                trace('SEED #$seed_number');
                 handle_new_game();
             }
             case luxe.Input.Key.key_m:
