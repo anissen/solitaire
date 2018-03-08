@@ -18,9 +18,11 @@ class TutorialBox extends Sprite {
     var tutorial_texts :Array<String> = [];
     var promise :Promise;
     var promise_resolve :Void->Void = null;
+    var do_func :Void->Void = null;
     var tutorial_scene :luxe.Scene = new luxe.Scene();
     var tutorial_temp_scene :luxe.Scene = new luxe.Scene();
     var tutorial_dismissable :Bool;
+    var tutorial_must_be_dismissed :Bool;
     var tutorial_active :Bool;
     var tutorial_promise_queue :core.queues.SimplePromiseQueue<TutorialData>;
     var shadow :Sprite;
@@ -68,6 +70,7 @@ class TutorialBox extends Sprite {
         label.visible = false;
 
         tutorial_dismissable = true;
+        tutorial_must_be_dismissed = false;
         tutorial_active = false;
 
         tutorial_promise_queue = new core.queues.SimplePromiseQueue();
@@ -112,9 +115,10 @@ class TutorialBox extends Sprite {
 
     public function show(data :TutorialData) {
         promise = new Promise(function(resolve, reject) {
-            if (data.do_func != null) data.do_func();
             tutorial_active = true;
             tutorial_dismissable = false;
+            tutorial_must_be_dismissed = data.must_be_dismissed;
+            do_func = data.do_func;
             promise_resolve = resolve;
 
             var points = (data.points != null ? data.points : []).concat(entities_to_points(data.entities));
@@ -123,25 +127,12 @@ class TutorialBox extends Sprite {
                 center_y += (point.y - Settings.HEIGHT / 2);
             }
             var pos_y = (data.pos_y != null ? data.pos_y : Settings.HEIGHT / 2 + (points.empty() ? 0.0 : (center_y / points.length) * 0.4 /* how much to move towards pointing locations */));
-            /*
-            var old_size_y = this.size.y;
-            this.size.y = 0;
-            shadow.size.y = 0;
-            var fold_out_duration = 1.5;
-            Actuate.tween(this.size, fold_out_duration, { y: old_size_y });
-            Actuate.tween(shadow.size, fold_out_duration, { y: old_size_y * 2 });
-            Actuate.tween(shadow.pos, fold_out_duration, { y: old_size_y / 2 });
-            // shadow.color.a = 0;
-            // Actuate.tween(shadow.color, fold_out_duration, { a: 1 });
-            */
 
             this.visible = true;
             shadow.visible = true;
             label.visible = true;
             label.text = '';
             Actuate.tween(this.pos, 0.5, { y: pos_y }).ease(luxe.tween.easing.Sine.easeInOut).onComplete(function(_) {
-                Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat().ease(luxe.tween.easing.Sine.easeInOut);
-
                 var delay = 0.2;
                 for (point in points) {
                     // trace('tutorial card pos: ${entity.pos}');
@@ -150,24 +141,37 @@ class TutorialBox extends Sprite {
                 }
 
                 tutorial_texts = data.texts;
-                proceed();
-                if (data.must_be_dismissed == null || data.must_be_dismissed == false) {
-                    Actuate.timer(delay + 0.5).onComplete(function(_) {
-                        tutorial_dismissable = true;
-                    });
-                }
+                proceed(delay + 0.7);
+                // Actuate.timer(delay + 0.5).onComplete(function(_) {
+                //     if (data.do_func != null) data.do_func();
+                //     if (data.must_be_dismissed == null || data.must_be_dismissed == false) {
+                //         Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat().ease(luxe.tween.easing.Sine.easeInOut);
+                //         tutorial_dismissable = true;
+                //     }
+                // });
             });
         });
 
         return promise;
     }
 
-    public function proceed() :Promise {
+    public function proceed(dismiss_time :Float = 0.7) :Promise {
         var nextText = tutorial_texts.shift();
         if (nextText == null) {
             dismiss();
             return Promise.resolve();
         }
+        Actuate.stop(this.pos);
+        Actuate.timer(dismiss_time).onComplete(function(_) {
+            if (do_func != null) {
+                do_func();
+                do_func = null;
+            }
+            if (tutorial_must_be_dismissed == null || tutorial_must_be_dismissed == false) {
+                Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat().ease(luxe.tween.easing.Sine.easeInOut);
+                tutorial_dismissable = true;
+            }
+        });
         label.text = nextText;
         label.play();
         return get_promise();
