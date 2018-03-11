@@ -35,12 +35,14 @@ enum TutorialStep {
     DrawingSets;
     PlacingCards;
     PlacingCards2;
-    TilesCannotBeMoved;
+    StackingTiles;
     PlacingCards3;
     PlacingCards4;
     CollectingSets;
+    CollectingSets2;
     DragToCollectSets;
     Scoring;
+    GoodLuck;
     // ...
 }
 
@@ -93,7 +95,7 @@ class PlayState extends State {
     var highlighted_tile :Sprite;
     
     var tutorial_box :game.entities.TutorialBox;
-    var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, PlacingCards3, PlacingCards4, CollectingSets, DragToCollectSets, Scoring, DrawingSets, DrawingCards, TilesCannotBeMoved];
+    var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, PlacingCards3, PlacingCards4, CollectingSets, CollectingSets2, DragToCollectSets, Scoring, DrawingSets, DrawingCards, StackingTiles, GoodLuck];
     var tutorial_step_index :Int;
     var tutorial_can_drop :{ x :Int, y :Int };
     var tutorial_can_collect :Bool;
@@ -390,7 +392,7 @@ class PlayState extends State {
 
         Analytics.event('game', 'start', game_mode.get_game_mode_id());
 
-        return tutorial(TutorialStep.Welcome, { texts: ['Welcome to {brown}Stoneset{default}.', 'In {brown}Stoneset{default}\nyou forge {brown}gemstones.', 'And complete {brown}sets{default}\nto collect riches!'] }).then(function() {
+        return tutorial(TutorialStep.Welcome, { texts: ['Welcome to {brown}Stoneset{default}.', 'In {brown}Stoneset{default} you\nforge {brown}gemstones.', 'And complete {brown}sets{default}\nto collect riches!'] }).then(function() {
             Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
         });
 
@@ -481,33 +483,27 @@ class PlayState extends State {
             x++;
         }
 
-        tutorial(TutorialStep.DrawingSets, { texts: ['Each turn you\nget a new {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7), get_pos(1, tiles_y - 1.7), get_pos(2, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
-        tutorial(TutorialStep.DrawingCards, { texts: ['And three new\n{brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ] });
-
-
         tutorial(TutorialStep.Inventory, { texts: ['These are your\n{brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ], do_func: function() {
             for (card in cards) {
                 card.remove('Clickable');
             }
         } });
-        tutorial(TutorialStep.PlacingCards, { texts: ['{brown}Gemstones{default} are placed\ninto {brown}sockets{default}.'], pos_y: (Settings.HEIGHT * (2/3)) });
+        tutorial(TutorialStep.PlacingCards, { texts: ['{brown}Gemstones{default} are placed\ninto {brown}sockets{default}.', 'Once placed, {brown}gemstones{default}\ncannot be moved.'], pos_y: (Settings.HEIGHT * (2/3)) });
 
-        tutorial(TutorialStep.PlacingCards2, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(0, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: true, do_func: function() { 
+        tutorial(TutorialStep.PlacingCards2, { texts: ['Drag this {sapphire}sapphire{default}\ninto this {brown}socket{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(0, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: true, do_func: function() { 
             tutorial_can_drop = { x: 0, y: 0 };
             cards[0].add(new Clickable(card_clicked));
         }});
 
-        tutorial(TutorialStep.PlacingCards3, { texts: ['Drag the {topaz}topaz{default}\ninto this {brown}socket{default}.'], points: [ get_pos(1, tiles_y + 1.8), get_pos(1, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: true, do_func: function() { 
+        tutorial(TutorialStep.PlacingCards3, { texts: ['Drag this {topaz}topaz{default}\ninto this {brown}socket{default}.'], points: [ get_pos(1, tiles_y + 1.8), get_pos(1, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: true, do_func: function() { 
             tutorial_can_drop = { x: 1, y: 0 };
             cards[0].add(new Clickable(card_clicked)); // why does this work?
         }});
 
-        tutorial(TutorialStep.PlacingCards4, { texts: ['Drag the {sapphire}sapphire{default}\ninto this {brown}socket{default}.'], points: [ get_pos(2, tiles_y + 1.8), get_pos(2, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: true, do_func: function() { 
+        tutorial(TutorialStep.PlacingCards4, { texts: ['Drag this {sapphire}sapphire{default}\ninto this {brown}socket{default}.'], points: [ get_pos(2, tiles_y + 1.8), get_pos(2, tiles_y - 0.8) ], pos_y: (Settings.HEIGHT * (2/3)), must_be_dismissed: true, do_func: function() { 
             tutorial_can_drop = { x: 2, y: 0 };
             cards[0].add(new Clickable(card_clicked)); // why does this work?
         }});
-
-        tutorial(TutorialStep.TilesCannotBeMoved, { texts: ['{brown}Gemstones{default} in {brown}sockets{default}\ncannot be moved.'], pos_y: (Settings.HEIGHT * (2/3)) });
 
         // tutorial: once a gemstone has been placed in a socket, it cannot be moved
         // tutorial: collect adjacent gemstones to complete sets
@@ -618,7 +614,9 @@ class PlayState extends State {
         pe_burst_color_life_module.end_color_max = new Color(1, 1, 1, 0);
         pe_burst.start();
 
-        tutorial(TutorialStep.CollectingSets, { texts: ['You can now\ncollect this {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
+        tutorial(TutorialStep.CollectingSets, { texts: ['You collect adjacent\n{brown}gemstones{default} to form {brown}sets{default}.'], pos_y: (Settings.HEIGHT * (3/4) - 40) });
+
+        tutorial(TutorialStep.CollectingSets2, { texts: ['You can now\ncollect this {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
 
         tutorial(TutorialStep.DragToCollectSets, { texts: ['Connect the {brown}gemstones{default}\nby dragging.'], points: [ get_pos(0, tiles_y - 0.5), get_pos(1, tiles_y - 0.5), get_pos(2, tiles_y - 0.5) ], pos_y: (Settings.HEIGHT * (3/4) - 20), must_be_dismissed: true, do_func: function() { 
             tutorial_can_collect = true;
@@ -721,7 +719,14 @@ class PlayState extends State {
         });
 
         //handle_tutorial(TutorialStep.Scoring, ['Completing {brown}sets {default}increases\nyour score.'], [scoreText]);
-        tutorial(TutorialStep.Scoring, { texts: ['Completing {brown}sets{default}\nincreases your score.'], entities: [scoreText] });
+        tutorial(TutorialStep.Scoring, { texts: ['Completing {brown}sets{default}\nincreases your score.', '{brown}Gemstones{default} can be\ncollected in any order.', 'Collecting in the correct\norder doubles the points.'], entities: [scoreText] });
+
+        tutorial(TutorialStep.DrawingSets, { texts: ['Each turn you\nget a new {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7), get_pos(1, tiles_y - 1.7), get_pos(2, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
+        tutorial(TutorialStep.DrawingCards, { texts: ['And three new\n{brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ] });
+
+        tutorial(TutorialStep.StackingTiles, { texts: ['This {brown}set{default} has a\n{brown}flawless{default} {ruby}ruby{default}.', '{brown}Flawless gemstones{default}\nmust be forged.', 'Combine three {brown}gemstones{default}\n of the same type...', 'And a {brown}flawless{default} version\nwill be forged.'], points: [ get_pos(1, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
+
+        tutorial(TutorialStep.GoodLuck, { texts: ['Now go make your\nfortune in {brown}Stoneset{default}.', 'Good luck!'] });
 
         return Promise.resolve();
     }
@@ -853,10 +858,8 @@ class PlayState extends State {
             do_action(Collect(cardIds));
 
             if (tutorial_box != null && tutorial_box.is_active()) {
-                trace('asdf');
-                trace(tutorial_steps[tutorial_step_index].getName());
                 if (tutorial_can_collect) {
-                    tutorial_box.proceed();
+                    tutorial_box.proceed(); // TODO: can this cause problems?
                 }
             }
         } else {
