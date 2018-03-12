@@ -14,6 +14,7 @@ class MenuState extends State {
     static public var StateId :String = 'MenuState';
     var title :Text;
     var counting_total_score :Float;
+    var tutorial_box :game.entities.TutorialBox;
 
     public function new() {
         super({ name: StateId });
@@ -184,6 +185,17 @@ class MenuState extends State {
         //     on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Puzzle),
         //     disabled: (total_score < puzzle_unlock)
         // });
+
+        Luxe.io.string_save('tutorial_menu_complete', null); // TODO: TEMP
+        var showTutorial = (Luxe.io.string_load('tutorial_menu_complete') == null);
+        if (showTutorial) {
+            tutorial_box = new game.entities.TutorialBox({ depth: 200 });
+            play_button.enabled = false;
+            tutorial_box.tutorial({ texts: ['This is the main menu!'], pos_y: (Settings.HEIGHT * (1/3)) }).then(function(resolve) {
+                Luxe.io.string_save('tutorial_menu_complete', 'true');
+                play_button.enabled = true;
+            });
+        }
     }
 
     override function onleave(_) {

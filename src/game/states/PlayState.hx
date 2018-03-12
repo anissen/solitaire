@@ -43,16 +43,7 @@ enum TutorialStep {
     DragToCollectSets;
     Scoring;
     GoodLuck;
-    // ...
 }
-
-/*
-* how:
-    * place gems in sockets
-    * collect gems
-    * correct order gives 2x points
-* super-gems: merge three gems of the same type
-*/
 
 typedef TutorialData = { step: TutorialStep, texts :Array<String>, entities :Array<luxe.Visual> };
 
@@ -718,7 +709,6 @@ class PlayState extends State {
             });
         });
 
-        //handle_tutorial(TutorialStep.Scoring, ['Completing {brown}sets {default}increases\nyour score.'], [scoreText]);
         tutorial(TutorialStep.Scoring, { texts: ['Completing {brown}sets{default}\nincreases your score.', '{brown}Gemstones{default} can be\ncollected in any order.', 'Collecting in the correct\norder doubles the points.'], entities: [scoreText] });
 
         tutorial(TutorialStep.DrawingSets, { texts: ['Each turn you\nget a new {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7), get_pos(1, tiles_y - 1.7), get_pos(2, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });

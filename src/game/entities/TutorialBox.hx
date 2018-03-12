@@ -8,7 +8,7 @@ import snow.api.Promise;
 import game.misc.Settings;
 
 typedef TutorialBoxOptions = {
-
+    @:optional var depth :Float;
 }
 
 typedef TutorialData = { texts :Array<String>, ?entities :Array<luxe.Visual>, ?points :Array<Vector>, ?pos_y :Float, ?do_func :Void->Void, ?must_be_dismissed :Bool };
@@ -27,12 +27,12 @@ class TutorialBox extends Sprite {
     var tutorial_promise_queue :core.queues.SimplePromiseQueue<TutorialData>;
     var shadow :Sprite;
 
-    public function new(_options :TutorialBoxOptions) {
+    public function new(options :TutorialBoxOptions) {
         super({
             name: 'TutorialBox' + Luxe.utils.uniqueid(),
             pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2),
             size: new Vector(Settings.WIDTH, 90),
-            depth: 9,
+            depth: (options.depth != null ? options.depth : 9),
             scene: tutorial_scene
         });
 
@@ -53,7 +53,7 @@ class TutorialBox extends Sprite {
             color: new Color(0, 0, 0, 1),
             point_size: 22,
             text: '',
-            depth: 9.5,
+            depth: this.depth + 0.5,
             scene: tutorial_scene,
             tags : [
 				{ name: "brown", color: new Color().rgb(0x964B00) },
@@ -155,7 +155,7 @@ class TutorialBox extends Sprite {
         return promise;
     }
 
-    public function proceed(dismiss_time :Float = 0.7) :Promise {
+    public function proceed(dismiss_time :Float = 1.2) :Promise {
         var nextText = tutorial_texts.shift();
         if (nextText == null) {
             dismiss();
