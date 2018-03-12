@@ -115,6 +115,7 @@ class TutorialBox extends Sprite {
 
     public function show(data :TutorialData) {
         promise = new Promise(function(resolve, reject) {
+            tutorial_temp_scene.empty();
             tutorial_active = true;
             tutorial_dismissable = false;
             tutorial_must_be_dismissed = data.must_be_dismissed;

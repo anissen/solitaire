@@ -191,7 +191,9 @@ class MenuState extends State {
         if (showTutorial) {
             tutorial_box = new game.entities.TutorialBox({ depth: 200 });
             play_button.enabled = false;
-            tutorial_box.tutorial({ texts: ['This is the main menu!'], pos_y: (Settings.HEIGHT * (1/3)) }).then(function(resolve) {
+            tutorial_box.tutorial({ texts: ['This is the normal\n{brown}Play{default} mode.', 'Here you compete for\nthe highscore.'], pos_y: play_button.get_top_pos().y - 85, points: [play_button.get_top_pos()] })
+            .then(tutorial_box.tutorial({ texts: ['More info.'], pos_y: strive_button.get_top_pos().y - 85, points: [strive_button.get_top_pos()] }))
+            .then(function(resolve) {
                 Luxe.io.string_save('tutorial_menu_complete', 'true');
                 play_button.enabled = true;
             });

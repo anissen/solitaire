@@ -116,6 +116,10 @@ class Button extends luxe.NineSlice {
             .onComplete(Luxe.camera.shake.bind(0.5));
     }
 
+    public function get_top_pos() {
+        return new Vector(pos.x + width / 2, pos.y);
+    }
+
     override function onmousemove(event :MouseEvent) {
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (point_inside_AABB(world_pos)) {
