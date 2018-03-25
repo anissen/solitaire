@@ -118,7 +118,7 @@ class TutorialBox extends Sprite {
             tutorial_temp_scene.empty();
             tutorial_active = true;
             tutorial_dismissable = false;
-            tutorial_must_be_dismissed = data.must_be_dismissed;
+            tutorial_must_be_dismissed = (data.must_be_dismissed != null ? data.must_be_dismissed : false);
             do_func = data.do_func;
             promise_resolve = resolve;
 
@@ -162,13 +162,17 @@ class TutorialBox extends Sprite {
             dismiss();
             return Promise.resolve();
         }
+
+        var sound = Luxe.resources.audio(Settings.get_sound_file_path('quest'));
+        Luxe.audio.play(sound.source, 0.5);
+
         Actuate.stop(this.pos);
         Actuate.timer(dismiss_time).onComplete(function(_) {
             if (do_func != null) {
                 do_func();
                 do_func = null;
             }
-            if (tutorial_must_be_dismissed == null || tutorial_must_be_dismissed == false) {
+            if (tutorial_must_be_dismissed == false) {
                 Actuate.tween(this.pos, 0.5, { y: this.pos.y + 2 }).reflect().repeat().ease(luxe.tween.easing.Sine.easeInOut);
                 tutorial_dismissable = true;
             }

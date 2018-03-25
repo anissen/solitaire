@@ -191,12 +191,19 @@ class MenuState extends State {
         if (showTutorial) {
             tutorial_box = new game.entities.TutorialBox({ depth: 200 });
             play_button.enabled = false;
-            tutorial_box.tutorial({ texts: ['This is the normal\n{brown}Play{default} mode.', 'Here you compete for\nthe highscore.'], pos_y: play_button.get_top_pos().y - 85, points: [play_button.get_top_pos()] })
-            .then(tutorial_box.tutorial({ texts: ['More info.'], pos_y: strive_button.get_top_pos().y - 85, points: [strive_button.get_top_pos()] }))
-            .then(function(resolve) {
+
+            function complete_tutorial() {
                 Luxe.io.string_save('tutorial_menu_complete', 'true');
                 play_button.enabled = true;
-            });
+            }
+
+            tutorial_box
+            .tutorial({ texts: ['This is the normal\n{brown}Play{default} mode.', 'Here you compete for\nthe highscore.'], pos_y: play_button.get_top_pos().y - 85, points: [play_button.get_top_pos()] })
+            .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #1.'], pos_y: strive_button.get_top_pos().y - 85, points: [strive_button.get_top_pos()] }))
+            .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #2.', 'Earn points to unlock.'], pos_y: timed_button.get_top_pos().y - 85, points: [timed_button.get_top_pos()] }))
+            // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #2.', 'Earn points to unlock.'], pos_y: timed_button.get_top_pos().y - 85, points: [timed_button.get_top_pos()], do_func: complete_tutorial }));
+            .then(tutorial_box.tutorial({ texts: ['Settings.'], pos_y: config_button.pos.y + 85, points: [config_button.pos] }))
+            .then(tutorial_box.tutorial({ texts: ['About this game.', 'Go here to donate\ntowards the game.'], pos_y: about_button.pos.y + 85, points: [about_button.pos], do_func: complete_tutorial }));
         }
     }
 

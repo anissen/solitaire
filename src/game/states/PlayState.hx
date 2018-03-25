@@ -383,23 +383,12 @@ class PlayState extends State {
 
         Analytics.event('game', 'start', game_mode.get_game_mode_id());
 
-        return tutorial(TutorialStep.Welcome, { texts: ['Welcome to {brown}Stoneset{default}.', 'In {brown}Stoneset{default} you\nforge {brown}gemstones.', 'And complete {brown}sets{default}\nto collect riches!'] }).then(function() {
-            Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
-        });
-
-        /*
-        switch (game_mode) {
-            case Puzzle:
-                Game.Instance.make_puzzle(instantiate_tile);
-                return Promise.resolve();
-                // deck.on_reshuffling = function() {
-                //     handle_game_over();
-                // };
-            default:
+        return switch (game_mode) {
+            case Tutorial(_): tutorial(TutorialStep.Welcome, { texts: ['Welcome to {brown}Stoneset{default}.', 'In {brown}Stoneset{default} you\nforge {brown}gemstones.', 'And complete {brown}sets{default}\nto collect riches!'] }).then(function() {
+                    Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
+                });
+            default: Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck); Promise.resolve();
         }
-
-        return Promise.resolve();
-        */
     }
 
     function random_func(v :Int) {

@@ -185,7 +185,7 @@ class Button extends luxe.NineSlice {
         return (label.text = t);
     }
 
-    function get_enabled() {
+    function get_enabled() :Bool {
         return is_enabled;
     }
 
