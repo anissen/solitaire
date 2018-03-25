@@ -493,7 +493,6 @@ class PlayState extends State {
     }
 
     function handle_new_quest(quest :Array<Card>) {
-        play_sound('quest');
         var count = 0;
         var delay_count = 0;
         var tween = null;
@@ -505,6 +504,7 @@ class PlayState extends State {
             }
             count++;
         }
+        play_sound('quest', get_pos(Math.floor(count / 3), (count % 3) * 0.5));
         for (card in quest) {
             var new_pos = get_pos(Math.floor(count / 3), (count % 3) * 0.5);
             tween = tween_pos(card, new_pos).delay(delay_count * 0.1);
@@ -526,10 +526,10 @@ class PlayState extends State {
     function handle_collected(cards :Array<Card>, quest :Array<Card>, total_score :Int) {
         quest_matches = [];
 
-        play_sound('collect');
+        play_sound('collect', cards.last().pos);
 
         if (total_score > 10) {
-            play_sound('points_devine');
+            play_sound('points_devine', cards.last().pos);
         }
 
         for (card in quest) {
@@ -540,7 +540,7 @@ class PlayState extends State {
     }
 
     function handle_stacked(card :Card) {
-        play_sound('stack');
+        play_sound('stack', card.pos);
         card.stacked = true;
         Luxe.camera.shake(0.5);
 
@@ -568,7 +568,7 @@ class PlayState extends State {
     }
 
     function handle_tile_placed(card :Card, x :Int, y :Int) {
-        play_sound('place');
+        play_sound('place', get_pos(x, y + 2));
         if (card == null) {
             trace('handle_tile_placed: Card was null -- how?!');
             return Promise.resolve();
@@ -612,15 +612,19 @@ class PlayState extends State {
         return Promise.resolve();
     }
 
-    function play_sound(id :String) {
+    function play_sound(id :String, ?pos :Vector) {
         var sound = Luxe.resources.audio(Settings.get_sound_file_path(id));
-        Luxe.audio.play(sound.source);
+        var handle = Luxe.audio.play(sound.source);
+        if (pos != null) {
+            Luxe.audio.pan(handle, pos.x / Settings.WIDTH);
+        }
     }
 
     function handle_score(card_score :Int, card :Card, correct_order :Bool) {
         if (game_over) return Promise.resolve();
 
         var duration = 0.3;
+        var card_pos = card.pos.clone();
         var delay = game.entities.Particle.Count * 0.15;
         var p = new game.entities.Particle({
             pos: card.pos.clone(),
@@ -673,11 +677,11 @@ class PlayState extends State {
             pe_burst.start();
 
             if (card_score <= 1) {
-                play_sound('points_small');
+                play_sound('points_small', card_pos);
             } else if (card_score <= 3) {
-                play_sound('points_big');
+                play_sound('points_big', card_pos);
             } else { // score: 6
-                play_sound('points_huge');
+                play_sound('points_huge', card_pos);
             }
             switch (game_mode) {
                 case Strive(_): 
@@ -779,7 +783,7 @@ class PlayState extends State {
     function grid_clicked(x :Int, y :Int, sprite :Sprite) {
         if (game_over) return;
         if (grabbed_card == null) return;
-        if ((tutorial_box.is_active() && (tutorial_can_drop.x != x || tutorial_can_drop.y != y)) || !Game.Instance.is_placement_valid(x, y)) {
+        if ((tutorial_box != null && tutorial_box.is_active() && (tutorial_can_drop.x != x || tutorial_can_drop.y != y)) || !Game.Instance.is_placement_valid(x, y)) {
             tween_pos(grabbed_card, grabbed_card_origin);
             release_grabbed_card();
             return;
@@ -823,12 +827,12 @@ class PlayState extends State {
         collection.push(tile);
         if (!Game.Instance.is_collection_valid(collection)) {
             trace('!is_collection_valid');
-            play_sound('invalid');
+            play_sound('invalid', tile.pos);
             clear_collection();
             return;
         }
 
-        play_sound('tile_click');
+        play_sound('tile_click', tile.pos);
 
         if (collection.length == 3) {
             trace('collection.length == 3');
