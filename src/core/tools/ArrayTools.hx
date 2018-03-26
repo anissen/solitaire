@@ -48,6 +48,7 @@ class ArrayTools {
     }
 
     static public function last<T>(array :Array<T>) :Null<T> {
+        if (array == null || array.length == 0) return null;
         return array[array.length - 1];
     }
 

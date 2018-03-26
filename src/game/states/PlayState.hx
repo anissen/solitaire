@@ -526,10 +526,11 @@ class PlayState extends State {
     function handle_collected(cards :Array<Card>, quest :Array<Card>, total_score :Int) {
         quest_matches = [];
 
-        play_sound('collect', cards.last().pos);
+        var sound_pos = quest.last().pos;
+        play_sound('collect', sound_pos);
 
         if (total_score > 10) {
-            play_sound('points_devine', cards.last().pos);
+            play_sound('points_devine', sound_pos);
         }
 
         for (card in quest) {
