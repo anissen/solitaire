@@ -188,6 +188,7 @@ class MenuState extends State {
         //     disabled: (total_score < puzzle_unlock)
         // });
 
+        Luxe.io.string_save('tutorial_menu_complete', null); // TODO: TEMP!
         var showTutorial = (Luxe.io.string_load('tutorial_menu_complete') == null);
         if (showTutorial) {
             tutorial_box = new game.entities.TutorialBox({ depth: 200 });
@@ -200,11 +201,11 @@ class MenuState extends State {
 
             tutorial_box
             .tutorial({ texts: ['This is the normal\n{brown}Play{default} mode.', 'Here you compete for\nthe highscore.'], pos_y: play_button.get_top_pos().y - 85, points: [play_button.get_top_pos()] })
-            .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #1.'], pos_y: strive_button.get_top_pos().y - 85, points: [strive_button.get_top_pos()] }))
-            .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #2.', 'Earn points to unlock.'], pos_y: timed_button.get_top_pos().y - 85, points: [timed_button.get_top_pos()] }))
-            // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #2.', 'Earn points to unlock.'], pos_y: timed_button.get_top_pos().y - 85, points: [timed_button.get_top_pos()], do_func: complete_tutorial }));
-            .then(tutorial_box.tutorial({ texts: ['Settings.'], pos_y: config_button.pos.y + 85, points: [config_button.pos] }))
-            .then(tutorial_box.tutorial({ texts: ['About this game.', 'Go here to donate\ntowards the game.'], pos_y: about_button.pos.y + 85, points: [about_button.pos], do_func: complete_tutorial }));
+            .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame modes.', 'Earn points to unlock.'], pos_y: strive_button.get_center_pos().y - 80, points: [Vector.Add(strive_button.get_center_pos(), new Vector(-35, 0)), Vector.Add(timed_button.get_top_pos(), new Vector(35, 0))] }))
+            // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #1.'], pos_y: strive_button.get_top_pos().y - 85, points: [strive_button.get_top_pos()] }))
+            // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #2.', 'Earn points to unlock.'], pos_y: timed_button.get_top_pos().y - 85, points: [timed_button.get_top_pos()] }))
+            .then(tutorial_box.tutorial({ texts: ['Settings menu is here.'], pos_y: config_button.pos.y + 85 + 15, points: [Vector.Add(config_button.pos, new Vector(0, 15))] }))
+            .then(tutorial_box.tutorial({ texts: ['About this game.', 'Go here to donate\ntowards the game.'], pos_y: about_button.pos.y + 85 + 15, points: [Vector.Add(about_button.pos, new Vector(0, 15))], do_func: complete_tutorial }));
         }
     }
 
