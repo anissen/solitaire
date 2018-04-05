@@ -136,7 +136,6 @@ class TutorialBox extends Sprite {
             Actuate.tween(this.pos, 0.5, { y: pos_y }).ease(luxe.tween.easing.Sine.easeInOut).onComplete(function(_) {
                 var delay = 0.2;
                 for (point in points) {
-                    // trace('tutorial card pos: ${entity.pos}');
                     point_to(point).delay(delay);
                     delay += 0.4;
                 }
@@ -165,6 +164,8 @@ class TutorialBox extends Sprite {
 
         var sound = Luxe.resources.audio(Settings.get_sound_file_path('quest'));
         Luxe.audio.play(sound.source, 0.5);
+
+        tutorial_dismissable = false;
 
         Actuate.stop(this.pos);
         Actuate.timer(dismiss_time).onComplete(function(_) {
