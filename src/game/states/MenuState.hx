@@ -109,10 +109,12 @@ class MenuState extends State {
         function get_button_y() {
             return 250 + (button_count++) * button_height;
         }
+        var tutorial_completed = (Luxe.io.string_load('tutorial_complete') == 'true');
+        var normal_game_mode = (tutorial_completed ? game.misc.GameMode.Normal : game.misc.GameMode.Tutorial(game.misc.GameMode.Normal));
         var play_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
             text: (normal_save == null ? 'Normal' : '~ Normal ~'),
-            on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Tutorial(game.misc.GameMode.Normal))
+            on_click: Main.SetState.bind(PlayState.StateId, normal_game_mode)
         });
 
         // var play_stats = new game.ui.Icon({

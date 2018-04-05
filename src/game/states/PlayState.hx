@@ -994,6 +994,13 @@ class PlayState extends State {
                 }
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
+            case luxe.Input.Key.key_q: // skip tutorial
+                tutorial_step_index = tutorial_steps.length;
+                tutorial_can_drop = { x: -1, y: -1 };
+                tutorial_can_collect = true;
+                Luxe.io.string_save('tutorial_complete', 'true');
+                if (tutorial_box != null && tutorial_box.is_active()) tutorial_box.dismiss();
+                trace('Tutorial skipped');
             // case luxe.Input.Key.key_p: tutorial.point_to(scoreText).then(tutorial.point_to(tiles.last()));
             // case luxe.Input.Key.key_q: tutorial.show(['This is tutorial', 'More text'], [tiles.first(), tiles[1], tiles.last()]);
             case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Stoneset tweet #Stoneset&url=http://andersnissen.com/');
