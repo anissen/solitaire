@@ -435,7 +435,6 @@ class PlayState extends State {
 
     function handle_event(event :core.models.Game.Event) :Promise {
         if (game_over) return Promise.resolve();
-        // trace(event);
         return switch (event) {
             case NewGame: handle_new_game();
             case Draw(cards): handle_draw(cards);
@@ -710,7 +709,9 @@ class PlayState extends State {
 
         tutorial(TutorialStep.StackingTiles, { texts: ['This {brown}set{default} has a\n{brown}flawless{default} {ruby}ruby{default}.', '{brown}Flawless gemstones{default}\nmust be forged.', 'Combine three {brown}gemstones{default}\n of the same type...', 'And a {brown}flawless{default} version\nwill be forged.'], points: [ get_pos(1, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
 
-        tutorial(TutorialStep.GoodLuck, { texts: ['Now go make your\nfortune in {brown}Stoneset{default}.', 'Good luck!'] });
+        tutorial(TutorialStep.GoodLuck, { texts: ['Now go make your\nfortune in {brown}Stoneset{default}.', 'Good luck!'], do_func: function() {
+            Luxe.io.string_save('tutorial_complete', 'true');
+        } });
 
         return Promise.resolve();
     }
@@ -751,10 +752,8 @@ class PlayState extends State {
         switch (game_mode) {
             case Timed:
                 scoreText.color.tween(0.3, { r: 0.0, g: 0.0, b: 0.0 });
-                // trace('time_penalty: $time_penalty');
                 counting_score = 0.0;
                 var tween = Actuate.tween(this, time_penalty * 0.05, { counting_score: time_penalty }, true).onUpdate(function() {
-                    // trace('counting_score: $counting_score');
                     scoreText.text = '${Std.int(counting_score)} sec';
                 });
                 return tween.toPromise().then(switch_to_game_over_state.bind(new_game_mode));
@@ -954,8 +953,6 @@ class PlayState extends State {
             events: Game.Instance.save()
         };
 
-        // trace('save_data: $save_data');
-
         var succeeded = Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', haxe.Json.stringify(save_data));
         if (!succeeded) trace('Save failed!');
     }
@@ -967,7 +964,6 @@ class PlayState extends State {
             return false;
         }
         try {
-            // trace('load_data: $data_string');
             var data = haxe.Json.parse(data_string);
             Luxe.utils.random.initial = Std.int(data.seed);
             score = data.score;

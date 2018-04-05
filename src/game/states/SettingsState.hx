@@ -103,14 +103,17 @@ class SettingsState extends State {
         });
 
         var reset_tutorial_enabled = false;
-        if (Luxe.io.string_load('tutorial_enabled') == 'false') reset_tutorial_enabled = true;
+        var tutorial_completed = (Luxe.io.string_load('tutorial_complete') == 'true');
+        if (tutorial_completed) reset_tutorial_enabled = true;
         var reset_tutorial_button :Button;
         reset_tutorial_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y() + button_height),
             text: 'Reset Tutorial',
             on_click: function() {
                 reset_tutorial_button.enabled = false;
-                Luxe.io.string_save('tutorial_enabled', 'true');
+                Luxe.io.string_save('tutorial_complete', null);
+                // Luxe.io.string_save('tutorial_menu_complete', null);
+
             },
             disabled: (!reset_tutorial_enabled)
         });

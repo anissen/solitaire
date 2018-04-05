@@ -186,7 +186,6 @@ class MenuState extends State {
         //     disabled: (total_score < puzzle_unlock)
         // });
 
-        Luxe.io.string_save('tutorial_menu_complete', null); // TODO: TEMP
         var showTutorial = (Luxe.io.string_load('tutorial_menu_complete') == null);
         if (showTutorial) {
             tutorial_box = new game.entities.TutorialBox({ depth: 200 });

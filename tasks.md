@@ -16,6 +16,7 @@ Need, in order of importance: [what is the INTENT]
 * Setup itch to use google analytics
 * Set a deterministic random seed per game
 * Put on Google Play beta program
+* Screenshots on Google Play: Use the images to explain how the game works and what's special about it
 
 ===== Beta launch line =====
 
