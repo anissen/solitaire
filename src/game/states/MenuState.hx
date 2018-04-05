@@ -205,7 +205,7 @@ class MenuState extends State {
             // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #1.'], pos_y: strive_button.get_top_pos().y - 85, points: [strive_button.get_top_pos()] }))
             // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #2.', 'Earn points to unlock.'], pos_y: timed_button.get_top_pos().y - 85, points: [timed_button.get_top_pos()] }))
             .then(tutorial_box.tutorial({ texts: ['Settings menu is here.'], pos_y: config_button.pos.y + 85 + 15, points: [Vector.Add(config_button.pos, new Vector(0, 15))] }))
-            .then(tutorial_box.tutorial({ texts: ['About this game.', 'Go here to donate\ntowards the game.'], pos_y: about_button.pos.y + 85 + 15, points: [Vector.Add(about_button.pos, new Vector(0, 15))], do_func: complete_tutorial }));
+            .then(tutorial_box.tutorial({ texts: ['About this game.', 'Go here to {brown}donate{default}\ntowards the game.'], pos_y: about_button.pos.y + 85 + 15, points: [Vector.Add(about_button.pos, new Vector(0, 15))], do_func: complete_tutorial }));
         }
     }
 
