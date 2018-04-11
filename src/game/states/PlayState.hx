@@ -337,6 +337,7 @@ class PlayState extends State {
             case Tutorial(_):
                 tutorial_box = new game.entities.TutorialBox({});
                 tutorial_can_collect = false;
+                Analytics.event('game', 'tutorial', 'started');
             case Puzzle:
                 deck_cards = [];
                 var stackedIndex = Luxe.utils.random.int(0, 9);
@@ -525,6 +526,8 @@ class PlayState extends State {
     function handle_collected(cards :Array<Card>, quest :Array<Card>, total_score :Int) {
         quest_matches = [];
 
+        Analytics.event('game', 'collect', 'score', total_score);
+
         var sound_pos = quest.last().pos;
         play_sound('collect', sound_pos);
 
@@ -587,6 +590,8 @@ class PlayState extends State {
             card.add(new Clickable(tile_clicked));
             card.add(new DragOver(tile_dragover));
         });
+
+        Analytics.event('game', 'place', '$x,$y');
 
         pe_burst.position.copy_from(card.pos);
         pe_burst_color_life_module.initial_color = card.get_original_color();
@@ -711,6 +716,7 @@ class PlayState extends State {
 
         tutorial(TutorialStep.GoodLuck, { texts: ['Now go make your\nfortune in {brown}Stoneset{default}.', 'Good luck!'], do_func: function() {
             Luxe.io.string_save('tutorial_complete', 'true');
+            Analytics.event('game', 'tutorial', 'finished');
         } });
 
         return Promise.resolve();
@@ -768,7 +774,8 @@ class PlayState extends State {
             case Strive(level): game_mode.get_strive_score() + score;
             default: score;
         };
-        Analytics.event('game', 'over', 'score', the_score);
+        Analytics.event('game', 'over', game_mode.get_game_mode_id());
+        Analytics.event('game', 'score', game_mode.get_game_mode_id(), the_score);
         Luxe.timer.schedule(1.5, function() {
             Main.SetState(GameOverState.StateId, {
                 // client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
@@ -826,7 +833,7 @@ class PlayState extends State {
         tile.set_highlight(true);
         collection.push(tile);
         if (!Game.Instance.is_collection_valid(collection)) {
-            trace('!is_collection_valid');
+            Analytics.event('game', 'collect', 'invalid');
             play_sound('invalid', tile.pos);
             clear_collection();
             return;
@@ -835,7 +842,6 @@ class PlayState extends State {
         play_sound('tile_click', tile.pos);
 
         if (collection.length == 3) {
-            trace('collection.length == 3');
             var cardIds = [ for (c in collection) c.cardId ];
             clear_collection();
             do_action(Collect(cardIds));

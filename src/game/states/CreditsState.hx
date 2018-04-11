@@ -4,6 +4,7 @@ import luxe.Text;
 import luxe.States.State;
 import luxe.Vector;
 import luxe.Color;
+import core.utils.Analytics;
 
 // import game.ui.Button;
 
@@ -73,9 +74,11 @@ class CreditsState extends State {
             point_size: 26
         });
         name.add(new game.components.MouseUp(function(s) {
+            Analytics.event('about', 'clicked', 'name');
             url_open_func('http://www.andersnissen.com');
         }));
         link.add(new game.components.MouseUp(function(s) {
+            Analytics.event('about', 'clicked', 'link');
             url_open_func('http://www.andersnissen.com');
         }));
 
@@ -97,7 +100,11 @@ class CreditsState extends State {
             width: 230,
             text: 'Make a donation',
             on_click: function() {
+                Analytics.event('about', 'clicked', 'donate');
                 url_open_func('https://anissen.itch.io/stoneset/donate');
+                // #if android
+                // Main.SnowActivity.share('Stoneset shared text!');
+                // #end
             },
             disabled: false
         });
