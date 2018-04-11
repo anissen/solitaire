@@ -2,18 +2,12 @@
 # Tasks:
 
 Need, in order of importance: [what is the INTENT]
-* Tutorial
-    * Key items for tutorial
-        * [Main menu]
-            * Gain points to unlock new play modes
+* Tutorial for Strive
+* Tutorial for Survival
 * App icon -- done?
-* Analytics on 
-    * Donation button
-    * Website link
-    * More game play related things
-* Remove debug hooks, debug view
+* Remove debug hooks, debug view -- done?
 * Set proper analytics ID
-* Setup itch to use google analytics
+    * Setup itch to use google analytics
 * Set a deterministic random seed per game
 * Put on Google Play beta program
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
