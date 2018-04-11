@@ -162,7 +162,7 @@ class TutorialBox extends Sprite {
             return Promise.resolve();
         }
 
-        var sound = Luxe.resources.audio(Settings.get_sound_file_path('quest'));
+        var sound = Luxe.resources.audio(Settings.get_sound_file_path('tutorial'));
         Luxe.audio.play(sound.source, 0.5);
 
         tutorial_dismissable = false;
