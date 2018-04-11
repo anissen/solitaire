@@ -196,7 +196,9 @@ class MenuState extends State {
 
             function complete_tutorial() {
                 Luxe.io.string_save('tutorial_menu_complete', 'true');
-                play_button.enabled = true;
+                Luxe.timer.schedule(2.5, function() { // to avoid accidentally clicking on "Play"
+                    play_button.enabled = true;
+                });
             }
 
             tutorial_box
