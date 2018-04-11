@@ -27,7 +27,8 @@
       },
       defines : [
         'NO_PRECOMPILED_HEADERS',
-        'absolute-path'
+        'absolute-path',
+        'no_debug_console'
       ]
     },
 
