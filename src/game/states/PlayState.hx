@@ -106,7 +106,12 @@ class PlayState extends State {
         game_mode = cast data;
         if (game_mode == null) game_mode = Normal;
 
-        Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
+        switch (game_mode) {
+            case Tutorial(mode): Analytics.screen('PlayState/' + mode.get_game_mode_id() + '/' game_mode.get_game_mode_id());
+            default: Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
+        }
+
+        // seed = play_mode + play_count_for_mode_today + date;
 
         Luxe.utils.random.initial = switch (game_mode) {
             case Tutorial(_): 12;
