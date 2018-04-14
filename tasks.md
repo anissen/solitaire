@@ -1,6 +1,6 @@
 
-# Tasks:
 
+Tasks:
 Need, in order of importance: [what is the INTENT]
 * Tutorial for Strive
 * Tutorial for Survival
@@ -47,3 +47,4 @@ Nice:
 * Multi-touch for dragging tiles?
 * Add scoring information to home screen (or e.g. sub-screens)
 * Move the general-purpose parts out of core and into turnabout (and reference it)
+* Share picture of completion (see https://developer.android.com/training/sharing/send.html, https://github.com/Shin-NiL/Godot-Share/blob/master/share/android/GodotShare.java)

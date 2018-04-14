@@ -109,6 +109,7 @@ class MenuState extends State {
         function get_button_y() {
             return 250 + (button_count++) * button_height;
         }
+        // TODO: If tutorial is not completed, disable all play mode buttons!
         var tutorial_completed = (Luxe.io.string_load('tutorial_complete') == 'true');
         var normal_game_mode = (tutorial_completed ? game.misc.GameMode.Normal : game.misc.GameMode.Tutorial(game.misc.GameMode.Normal));
         var play_button = new Button({
@@ -188,7 +189,6 @@ class MenuState extends State {
         //     disabled: (total_score < puzzle_unlock)
         // });
 
-        Luxe.io.string_save('tutorial_menu_complete', null); // TODO: TEMP!
         var showTutorial = (Luxe.io.string_load('tutorial_menu_complete') == null);
         if (showTutorial) {
             tutorial_box = new game.entities.TutorialBox({ depth: 200 });
