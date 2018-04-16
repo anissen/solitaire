@@ -33,6 +33,10 @@ class Main extends luxe.Game {
 
         config.preload.textures.push({ id: 'assets/ui/panel_beigeLight.png' });
 
+        #if ios
+        sys.ssl.Socket.DEFAULT_VERIFY_CERT = false;
+        #end
+
         return config;
     }
 

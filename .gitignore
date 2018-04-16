@@ -1,5 +1,6 @@
 bin
 android.project
+ios.project
 asset_sources
 
 fastlane/Appfile
