@@ -107,7 +107,7 @@ class PlayState extends State {
         if (game_mode == null) game_mode = Normal;
 
         switch (game_mode) {
-            case Tutorial(mode): Analytics.screen('PlayState/' + mode.get_game_mode_id() + '/' game_mode.get_game_mode_id());
+            case Tutorial(mode): Analytics.screen('PlayState/' + mode.get_game_mode_id() + '/' + game_mode.get_game_mode_id());
             default: Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
         }
 
