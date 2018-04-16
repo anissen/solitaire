@@ -10,7 +10,10 @@ Need, in order of importance: [what is the INTENT]
     * Setup itch to use google analytics
 * Set a deterministic random seed per game
 * Put on Google Play beta program
+* More tweeting!
+* Settings: "Music off" does not work
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
+* Should fade to clear color instead of white when switching state
 
 ===== Beta launch line =====
 
@@ -30,6 +33,7 @@ Need, in order of importance: [what is the INTENT]
 * Check that Survival has remaining seconds added to score on game over
 * Make a better highscore list for Strive
 * Move external libs into the repository
+* iOS: Icon, spash screen
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
