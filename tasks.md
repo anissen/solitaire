@@ -1,13 +1,9 @@
 
-
 Tasks:
-Need, in order of importance: [what is the INTENT]
 * Tutorial for Strive
 * Tutorial for Survival
 * App icon -- done?
 * Remove debug hooks, debug view -- done?
-* Set proper analytics ID
-    * Setup itch to use google analytics
 * Set a deterministic random seed per game
 * Put on Google Play beta program
 * More tweeting!
