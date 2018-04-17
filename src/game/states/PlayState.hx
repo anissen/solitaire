@@ -303,13 +303,20 @@ class PlayState extends State {
             }
         }
 
-        score = switch (game_mode) {
+        var play_mode = switch (game_mode) {
+            case Tutorial(mode): mode;
+            default: game_mode;
+        }
+        trace('play_mode: $play_mode');
+        score = switch (play_mode) {
             case Normal: 0;
             case Strive(_): -game_mode.get_strive_score();
             case Timed: 30;
             case Puzzle: 0;
-            case Tutorial(_): 0;
+            case Tutorial(_): throw 'will never happen';
         };
+        trace('score: $score');
+        trace('game_mode.get_strive_score(): ${game_mode.get_strive_score()}');
         counting_score = score;
         time_penalty = 0;
         scoreText = new luxe.Text({
@@ -390,7 +397,15 @@ class PlayState extends State {
         Analytics.event('game', 'start', game_mode.get_game_mode_id());
 
         return switch (game_mode) {
-            case Tutorial(_): tutorial(TutorialStep.Welcome, { texts: ['Welcome to {brown}Stoneset{default}.', 'In {brown}Stoneset{default} you\nforge {brown}gemstones.', 'And complete {brown}sets{default}\nto collect riches!'] }).then(function() {
+            case Tutorial(Normal): tutorial(TutorialStep.Welcome, { texts: ['Welcome to {brown}Stoneset{default}.', 'In {brown}Stoneset{default} you\nforge {brown}gemstones.', 'And complete {brown}sets{default}\nto collect riches!'] }).then(function() {
+                    Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
+                });
+            case Tutorial(Strive(_)): tutorial(TutorialStep.Welcome, { texts: ['Welcome to the\n{brown}Strive{default} game mode.', 'In {brown}Strive{default} you need\nto fulfill a {brown}goal{default}.', 'If you succeed, the {brown}goal{default}\nwill be increased.', 'If you fail, the {brown}goal{default}\nwill be decreased.', 'Strive to complete\nthe highest {brown}goal{default}.', 'Good luck.'] }).then(function() {
+                    finish_tutorial();
+                    Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
+                });
+            case Tutorial(Timed): tutorial(TutorialStep.Welcome, { texts: ['Welcome to the\n{brown}Survival{default} game mode.', 'In {brown}Survival{default} you need\nto act quickly.', 'Instead of points\nyou have seconds.', 'You must survive as\nlong as possible.', 'Good luck.'] }).then(function() {
+                    finish_tutorial();
                     Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
                 });
             default: Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck); Promise.resolve();
@@ -694,7 +709,7 @@ class PlayState extends State {
                 play_sound('points_huge', card_pos);
             }
             switch (game_mode) {
-                case Strive(_): 
+                case Strive(_) | Tutorial(Strive(_)):
                     if (score >= 0) {
                         scoreText.color.tween(0.3, { r: 0.2, g: 0.8, b: 0.2 });
                         handle_game_over();
@@ -720,8 +735,7 @@ class PlayState extends State {
         tutorial(TutorialStep.StackingTiles, { texts: ['This {brown}set{default} has a\n{brown}flawless{default} {ruby}ruby{default}.', '{brown}Flawless gemstones{default}\nmust be forged.', 'Combine three {brown}gemstones{default}\n of the same type...', 'And a {brown}flawless{default} version\nwill be forged.'], points: [ get_pos(1, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
 
         tutorial(TutorialStep.GoodLuck, { texts: ['Now go make your\nfortune in {brown}Stoneset{default}.', 'Good luck!'], do_func: function() {
-            Luxe.io.string_save('tutorial_complete', 'true');
-            Analytics.event('game', 'tutorial', 'finished');
+            finish_tutorial();
         } });
 
         return Promise.resolve();
@@ -735,7 +749,7 @@ class PlayState extends State {
 
         var new_game_mode :GameMode = game_mode;
         switch (game_mode) {
-            case Strive(level):
+            case Strive(level) | Tutorial(Strive(level)):
                 var win = (score >= 0); // strive score starts negative
                 var new_level = (win ? level + 1 : level - 1);
                 if (new_level < 1) new_level = 1;
@@ -744,7 +758,7 @@ class PlayState extends State {
                 play_sound(win ? 'won' : 'lost');
             case Normal:
                 play_sound('won');
-            case Timed:
+            case Timed | Tutorial(Timed):
                 score = Std.int(time_penalty); // set the score to be the time survived
                 play_sound((counting_score - time_penalty > 0) ? 'won' : 'lost');
             case Puzzle:
@@ -761,7 +775,7 @@ class PlayState extends State {
         }
 
         switch (game_mode) {
-            case Timed:
+            case Timed | Tutorial(Timed):
                 scoreText.color.tween(0.3, { r: 0.0, g: 0.0, b: 0.0 });
                 counting_score = 0.0;
                 var tween = Actuate.tween(this, time_penalty * 0.05, { counting_score: time_penalty }, true).onUpdate(function() {
@@ -774,14 +788,15 @@ class PlayState extends State {
     }
 
     function switch_to_game_over_state(next_game_mode :GameMode) {
-        var the_score :Int = switch (game_mode) {
-            case Timed: Std.int(time_penalty);
-            case Strive(level): game_mode.get_strive_score() + score;
-            default: score;
-        };
-        Analytics.event('game', 'over', game_mode.get_game_mode_id());
-        Analytics.event('game', 'score', game_mode.get_game_mode_id(), the_score);
         Luxe.timer.schedule(1.5, function() {
+            var the_score :Int = switch (game_mode) {
+                case Timed | Tutorial(Timed): Std.int(time_penalty);
+                case Strive(level) | Tutorial(Strive(level)): game_mode.get_strive_score() + score;
+                default: score;
+            };
+            Analytics.event('game', 'over', game_mode.get_game_mode_id());
+            Analytics.event('game', 'score', game_mode.get_game_mode_id(), the_score);
+
             Main.SetState(GameOverState.StateId, {
                 // client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
                 // name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
@@ -938,7 +953,7 @@ class PlayState extends State {
         var textScale = scoreText.scale.x; 
         if (textScale > 1) scoreText.scale.set_xy(textScale - dt, textScale - dt);
         switch (game_mode) {
-            case Timed if (!game_over):
+            case Timed | Tutorial(Timed) if (!game_over && (tutorial_box == null || !tutorial_box.is_active())):
                 time_penalty += dt;
                 scoreText.text = '${Std.int(counting_score - time_penalty)}';
                 if ((counting_score - time_penalty) < 0) {
@@ -986,6 +1001,20 @@ class PlayState extends State {
         }
     }
 
+    function finish_tutorial() {
+        tutorial_step_index = tutorial_steps.length;
+        tutorial_can_drop = { x: -1, y: -1 };
+        tutorial_can_collect = true;
+        switch (game_mode) {
+            case Tutorial(Normal): Luxe.io.string_save('tutorial_complete', 'true');
+            case Tutorial(Strive(_)): Luxe.io.string_save('tutorial_complete_strive', 'true');
+            case Tutorial(Timed): Luxe.io.string_save('tutorial_complete_timed', 'true');
+            default: 
+        }
+        if (tutorial_box != null && tutorial_box.is_active()) tutorial_box.dismiss();
+        Analytics.event('game', 'tutorial', 'finished');
+    }
+
     var seed_number = 0;
     override function onkeyup(event :luxe.Input.KeyEvent) {
         switch (event.keycode) {
@@ -1006,11 +1035,7 @@ class PlayState extends State {
             case luxe.Input.Key.key_s: save_game();
             case luxe.Input.Key.key_l: load_game();
             case luxe.Input.Key.key_q: // skip tutorial
-                tutorial_step_index = tutorial_steps.length;
-                tutorial_can_drop = { x: -1, y: -1 };
-                tutorial_can_collect = true;
-                Luxe.io.string_save('tutorial_complete', 'true');
-                if (tutorial_box != null && tutorial_box.is_active()) tutorial_box.dismiss();
+                finish_tutorial();
                 trace('Tutorial skipped');
             // case luxe.Input.Key.key_p: tutorial.point_to(scoreText).then(tutorial.point_to(tiles.last()));
             // case luxe.Input.Key.key_q: tutorial.show(['This is tutorial', 'More text'], [tiles.first(), tiles[1], tiles.last()]);

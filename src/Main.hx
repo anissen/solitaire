@@ -48,7 +48,11 @@ class Main extends luxe.Game {
         }
         trace('clientId: $clientId');
 
-        Analytics.tracking_id = 'UA-64844180-1';
+        #if debug
+        Analytics.tracking_id = 'UA-117762148-1';
+        #else
+        Analytics.tracking_id = 'UA-117779824-1';
+        #end
         Analytics.client_id = clientId;
         Analytics.screen('Main');
         #if web

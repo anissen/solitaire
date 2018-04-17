@@ -109,7 +109,6 @@ class MenuState extends State {
         function get_button_y() {
             return 250 + (button_count++) * button_height;
         }
-        // TODO: If tutorial is not completed, disable all play mode buttons!
         var tutorial_completed = (Luxe.io.string_load('tutorial_complete') == 'true');
         var normal_game_mode = (tutorial_completed ? game.misc.GameMode.Normal : game.misc.GameMode.Tutorial(game.misc.GameMode.Normal));
         var play_button = new Button({
@@ -132,21 +131,25 @@ class MenuState extends State {
 
         var strive_save = Luxe.io.string_load('save_strive');
         var strive_level = Luxe.io.string_load('strive_level');
+        var strive_tutorial_completed = (Luxe.io.string_load('tutorial_complete_strive') == 'true');
         var strive_mode = game.misc.GameMode.Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
+        var strive_game_mode = (strive_tutorial_completed ? strive_mode : game.misc.GameMode.Tutorial(strive_mode));
         var strive_text = (strive_save == null ? '' : '~ ') + (strive_level != null ? 'Strive for ${strive_mode.get_strive_score()}' : 'Strive') +(strive_save == null ? '' : ' ~');
         var strive_unlock = 1000;
         var strive_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
             text: (total_score < strive_unlock ? 'Unlock: ${strive_unlock - total_score}' : strive_text),
-            on_click: Main.SetState.bind(PlayState.StateId, strive_mode),
+            on_click: Main.SetState.bind(PlayState.StateId, strive_game_mode),
             disabled: (total_score < strive_unlock)
         });
 
         var timed_unlock = 2000;
+        var timed_tutorial_completed = false; //(Luxe.io.string_load('tutorial_complete_timed') == 'true');
+        var timed_game_mode = (timed_tutorial_completed ? game.misc.GameMode.Timed : game.misc.GameMode.Tutorial(game.misc.GameMode.Timed));
         var timed_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
             text: (total_score < timed_unlock ? 'Unlock: ${timed_unlock - total_score}' : 'Survival'),
-            on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Timed),
+            on_click: Main.SetState.bind(PlayState.StateId, timed_game_mode),
             disabled: (total_score < timed_unlock)
         });
 
@@ -164,7 +167,7 @@ class MenuState extends State {
             // }
             strive_button.text = (counting_total_score < strive_unlock ? 'Unlock: ${Std.int(strive_unlock - counting_total_score)}' : strive_text);
             var was_enabled = strive_button.enabled;
-            strive_button.enabled = (counting_total_score >= strive_unlock);
+            strive_button.enabled = tutorial_completed && (counting_total_score >= strive_unlock);
             if (!was_enabled && strive_button.enabled) {
                 Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('points_devine')).source);
                 Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('ui_click')).source);
@@ -172,7 +175,7 @@ class MenuState extends State {
 
             timed_button.text = (counting_total_score < timed_unlock ? 'Unlock: ${Std.int(timed_unlock - counting_total_score)}' : 'Survival');
             was_enabled = timed_button.enabled;
-            timed_button.enabled = (counting_total_score >= timed_unlock);
+            timed_button.enabled = tutorial_completed && (counting_total_score >= timed_unlock);
             if (!was_enabled && timed_button.enabled) {
                 Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('points_devine')).source);
                 Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('ui_click')).source);
@@ -193,11 +196,15 @@ class MenuState extends State {
         if (showTutorial) {
             tutorial_box = new game.entities.TutorialBox({ depth: 200 });
             play_button.enabled = false;
+            strive_button.enabled = false;
+            timed_button.enabled = false;
 
             function complete_tutorial() {
                 Luxe.io.string_save('tutorial_menu_complete', 'true');
                 Luxe.timer.schedule(2.5, function() { // to avoid accidentally clicking on "Play"
                     play_button.enabled = true;
+                    strive_button.enabled = true;
+                    timed_button.enabled = true;
                 });
             }
 

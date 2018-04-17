@@ -1,9 +1,6 @@
 
 Tasks:
-* Tutorial for Strive
-* Tutorial for Survival
 * App icon -- done?
-* Remove debug hooks, debug view -- done?
 * Set a deterministic random seed per game
 * Put on Google Play beta program
 * More tweeting!
