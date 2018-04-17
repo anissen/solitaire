@@ -34,17 +34,18 @@ class DragPan extends Component {
         if(visual == null) throw 'Invalid entity type';
     }
 
-    override function onmousedown(e :MouseEvent) {
-        if (!dragging && e.button == button) {
+    override function onmousedown(event :MouseEvent) {
+        if (!dragging && event.button == button) {
             mouse_down = true;
             inertia_time = 0;
-            drag_start.set_xy(e.pos.x, e.pos.y);
+            var world_pos = Luxe.camera.screen_point_to_world(event.pos);
+            drag_start.set_xy(world_pos.x, world_pos.y);
             drag_start_pos.set_xy(pos.x, pos.y);
         }
     }
 
-    override function onmouseup(e :MouseEvent) {
-        if (e.button == button) {
+    override function onmouseup(event :MouseEvent) {
+        if (event.button == button) {
             mouse_down = false;
             if (dragging) {
                 dragging = false;
@@ -53,10 +54,11 @@ class DragPan extends Component {
         }
     }
 
-    override function onmousemove(e :MouseEvent) {
+    override function onmousemove(event :MouseEvent) {
         if (mouse_down) {
             dragging = true;
-            var drag_diff_y = (drag_start.y - e.pos.y);
+            var world_pos = Luxe.camera.screen_point_to_world(event.pos);
+            var drag_diff_y = (drag_start.y - world_pos.y);
             var previous_pos = pos.y;
             pos.y = luxe.utils.Maths.clamp(drag_start_pos.y - drag_diff_y, y_top, y_bottom);
             drag_velocity = pos.y - previous_pos;
