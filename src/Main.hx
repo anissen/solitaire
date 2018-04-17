@@ -12,6 +12,7 @@ import game.states.*;
 @:build(snow.api.JNI.declare('org.snowkit.snow.SnowActivity'))
 class SnowActivity {
     public static function url_open(url:String): Void;
+    // public static function share(text:String): Void;
 }
 #end
 
