@@ -13,7 +13,6 @@ Need, in order of importance: [what is the INTENT]
 * More tweeting!
 * Settings: "Music off" does not work
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
-* Should fade to clear color instead of white when switching state
 
 ===== Beta launch line =====
 
@@ -32,7 +31,7 @@ Need, in order of importance: [what is the INTENT]
     * theme-5 plays on puzzle
 * Check that Survival has remaining seconds added to score on game over
 * Make a better highscore list for Strive
-* Move external libs into the repository
+* Move external libs into the repository (e.g. as git submodules)
 * iOS: Icon, spash screen
 
 Bugs:
