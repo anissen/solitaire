@@ -28,7 +28,7 @@ class TrailRenderer extends Component {
 	override function init() {
 		points = [pos.clone()];
 
-		trailGeometry = new Geometry({batcher: Luxe.renderer.batcher, primitive_type: PrimitiveType.triangles});
+		trailGeometry = new Geometry({ batcher: Luxe.renderer.batcher, primitive_type: PrimitiveType.triangles });
 		trailGeometry.depth = depth;
 	}
 
@@ -43,7 +43,9 @@ class TrailRenderer extends Component {
 	}
 
 	override function onremoved() {
-		Luxe.renderer.batcher.remove(trailGeometry);
+		if (trailGeometry != null) {
+			Luxe.renderer.batcher.remove(trailGeometry);
+		}
 	}
 
 	function cullPoints() {

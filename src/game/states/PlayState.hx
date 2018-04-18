@@ -90,6 +90,8 @@ class PlayState extends State {
     var tutorial_step_index :Int;
     var tutorial_can_drop :{ x :Int, y :Int };
     var tutorial_can_collect :Bool;
+
+    var sounds_playing :Int;
     
     public function new() {
         super({ name: StateId });
@@ -105,6 +107,8 @@ class PlayState extends State {
 
         game_mode = cast data;
         if (game_mode == null) game_mode = Normal;
+
+        Luxe.audio.on(luxe.Audio.AudioEvent.ae_end, sound_stopped);
 
         switch (game_mode) {
             case Tutorial(mode): Analytics.screen('PlayState/' + mode.get_game_mode_id() + '/' + game_mode.get_game_mode_id());
@@ -133,6 +137,7 @@ class PlayState extends State {
         // score = 0;
         // counting_score = 0;
         game_over = false;
+        sounds_playing = 0;
         Tile.CardId = 0; // reset card Ids
         tutorial_step_index = 0;
         tutorial_can_drop = { x: -1, y: -1 };
@@ -635,11 +640,20 @@ class PlayState extends State {
     }
 
     function play_sound(id :String, ?pos :Vector) {
+        if (sounds_playing >= 4) {
+            return; // don't play too many simultainous sounds (is not being triggered on web)
+        }
         var sound = Luxe.resources.audio(Settings.get_sound_file_path(id));
         var handle = Luxe.audio.play(sound.source);
         if (pos != null) {
             Luxe.audio.pan(handle, pos.x / Settings.WIDTH);
         }
+        sounds_playing++;
+    }
+
+    function sound_stopped(h) {
+        sounds_playing--;
+        if (sounds_playing < 0) sounds_playing = 0;
     }
 
     function handle_score(card_score :Int, card :Card, correct_order :Bool) {
@@ -922,6 +936,8 @@ class PlayState extends State {
         if (tutorial_box != null) tutorial_box.dismiss();
         ps.destroy();
         Luxe.scene.empty();
+
+        Luxe.audio.off(luxe.Audio.AudioEvent.ae_end, sound_stopped);
     }
 
     override function onmousemove(event :luxe.Input.MouseEvent) {
