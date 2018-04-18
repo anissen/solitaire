@@ -33,7 +33,7 @@ class MenuState extends State {
 
         title = new Text({
             text: 'Stoneset',
-            pos: new Vector(Settings.WIDTH / 2, 80),
+            pos: new Vector(Settings.WIDTH / 2, 180),
             point_size: 42,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
@@ -45,7 +45,7 @@ class MenuState extends State {
             outline: 0.75,
             outline_color: new Color().rgb(0xa55004),
         });
-        luxe.tween.Actuate.tween(title, 3.0, { outline: 0.65, letter_spacing: -1.5 }).reflect().repeat();
+        luxe.tween.Actuate.tween(title, 3.0, { outline: 0.65, letter_spacing: -1.25 }).reflect().repeat();
 
         var config_button = new game.ui.Icon({
             pos: new Vector(35, 35),
@@ -107,7 +107,7 @@ class MenuState extends State {
         var button_height = 60;
         var button_count = 0;
         function get_button_y() {
-            return 250 + (button_count++) * button_height;
+            return 275 + (button_count++) * button_height;
         }
         var tutorial_completed = (Luxe.io.string_load('tutorial_complete') == 'true');
         var normal_game_mode = (tutorial_completed ? game.misc.GameMode.Normal : game.misc.GameMode.Tutorial(game.misc.GameMode.Normal));

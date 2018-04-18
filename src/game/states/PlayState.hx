@@ -307,7 +307,6 @@ class PlayState extends State {
             case Tutorial(mode): mode;
             default: game_mode;
         }
-        trace('play_mode: $play_mode');
         score = switch (play_mode) {
             case Normal: 0;
             case Strive(_): -game_mode.get_strive_score();
@@ -315,8 +314,6 @@ class PlayState extends State {
             case Puzzle: 0;
             case Tutorial(_): throw 'will never happen';
         };
-        trace('score: $score');
-        trace('game_mode.get_strive_score(): ${game_mode.get_strive_score()}');
         counting_score = score;
         time_penalty = 0;
         scoreText = new luxe.Text({
