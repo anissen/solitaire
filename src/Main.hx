@@ -85,7 +85,7 @@ class Main extends luxe.Game {
             depth: -1000,
             scene: new luxe.Scene()
         });
-        var size = 160;
+        var size = 170;
         nineslice.create(new luxe.Vector(Settings.WIDTH / 2 - size / 2, Settings.HEIGHT / 2 - size / 2), size, size);
         nineslice.size = new luxe.Vector(size, size);
         luxe.tween.Actuate.tween(nineslice.color, 0.3, { a: 1.0 });
