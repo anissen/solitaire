@@ -640,9 +640,12 @@ class PlayState extends State {
     }
 
     function play_sound(id :String, ?pos :Vector) {
+        #if sys // does not work on web
         if (sounds_playing >= 4) {
+            // trace('skipping sound! ($sounds_playing playing)');
             return; // don't play too many simultainous sounds (is not being triggered on web)
         }
+        #end
         var sound = Luxe.resources.audio(Settings.get_sound_file_path(id));
         var handle = Luxe.audio.play(sound.source);
         if (pos != null) {
@@ -788,8 +791,9 @@ class PlayState extends State {
         switch (game_mode) {
             case Timed | Tutorial(Timed):
                 scoreText.color.tween(0.3, { r: 0.0, g: 0.0, b: 0.0 });
-                counting_score = 0.0;
-                var tween = Actuate.tween(this, time_penalty * 0.05, { counting_score: time_penalty }, true).onUpdate(function() {
+                var remaining_time = (counting_score - time_penalty);
+                counting_score = remaining_time;
+                var tween = Actuate.tween(this, time_penalty * 0.05, { counting_score: remaining_time + time_penalty }, true).onUpdate(function() {
                     scoreText.text = '${Std.int(counting_score)} sec';
                 });
                 return tween.toPromise().then(switch_to_game_over_state.bind(new_game_mode));
@@ -801,7 +805,7 @@ class PlayState extends State {
     function switch_to_game_over_state(next_game_mode :GameMode) {
         Luxe.timer.schedule(1.5, function() {
             var the_score :Int = switch (game_mode) {
-                case Timed | Tutorial(Timed): Std.int(time_penalty);
+                case Timed | Tutorial(Timed): Std.int(counting_score);
                 case Strive(level) | Tutorial(Strive(level)): game_mode.get_strive_score() + score;
                 default: score;
             };

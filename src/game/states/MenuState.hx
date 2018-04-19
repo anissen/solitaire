@@ -203,8 +203,8 @@ class MenuState extends State {
                 Luxe.io.string_save('tutorial_menu_complete', 'true');
                 Luxe.timer.schedule(2.5, function() { // to avoid accidentally clicking on "Play"
                     play_button.enabled = true;
-                    strive_button.enabled = true;
-                    timed_button.enabled = true;
+                    strive_button.enabled = tutorial_completed && (counting_total_score >= strive_unlock);
+                    timed_button.enabled = tutorial_completed && (counting_total_score >= timed_unlock);
                 });
             }
 
@@ -222,22 +222,11 @@ class MenuState extends State {
         Luxe.scene.empty();
     }
 
-    #if sys
     override function onkeyup(event :luxe.Input.KeyEvent) {
+        #if sys
         if (event.keycode == luxe.Input.Key.escape) {
             Luxe.shutdown();
         }
+        #end
     }
-    // #else
-    // override function onkeyup(event :luxe.Input.KeyEvent) {
-    //     if (event.keycode == luxe.Input.Key.key_p) {
-    //         trace('plus');
-    //         title.outline += 0.1;
-    //     } else if (event.keycode == luxe.Input.Key.key_m) {
-    //         trace('minus');
-    //         title.outline -= 0.1;
-    //     }
-    //     trace('outline: ${title.outline}');
-    // }
-    #end
 }

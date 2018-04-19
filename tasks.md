@@ -10,11 +10,8 @@ Tasks:
 ===== Beta launch line =====
 
 * [No default font]
-* Settings screen:
-    * Reset tutorial
-* About screen:
-    * Change text highlight colors
-    * Donation link fix
+* iOS app icon
+* iOS launch icon
 * Clean up bundled resources
 * "Invalid sound" should play when making a valid but non-matching selecting
 * Music:
@@ -22,15 +19,12 @@ Tasks:
     * temple of the mystics starting on main menu and playing in normal and strive
     * theme-3 plays on survival
     * theme-5 plays on puzzle
-* Check that Survival has remaining seconds added to score on game over
 * Make a better highscore list for Strive
 * Move external libs into the repository (e.g. as git submodules)
-* iOS: Icon, spash screen
 
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
-* Survival can give invalid score (probably due to last score occuring _after_ game over)
 * If game starts with audio disabled, enabling audio does not start the music
 
 Nice:
