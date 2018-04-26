@@ -1,11 +1,12 @@
 
 Tasks:
 * App icon -- done?
-* Set a deterministic random seed per game
 * Put on Google Play beta program
 * More tweeting!
 * Settings: "Music off" does not work
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
+* Email list
+* Landing page (stoneset.info?/stoneset.dk?)
 
 ===== Beta launch line =====
 

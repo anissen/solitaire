@@ -2,11 +2,11 @@ package;
 
 import luxe.GameConfig;
 import luxe.States;
-
 import game.misc.Settings;
 import core.utils.Analytics;
-
 import game.states.*;
+
+using game.misc.GameMode;
 
 #if android
 @:build(snow.api.JNI.declare('org.snowkit.snow.SnowActivity'))
@@ -127,6 +127,17 @@ class Main extends luxe.Game {
         if (Luxe.io.string_load('audio_enabled') == 'false') {
             Luxe.audio.active = false;
             Luxe.audio.suspend();
+        }
+
+        var now = Date.now();
+        var date_string = '' + now.getDate() + 0 /* to ensure uniqueness */ + now.getMonth() + now.getFullYear();
+        //trace('date_string: $date_string');
+        if (Luxe.io.string_load('today') != date_string) {
+            //trace('setting new date string: $date_string');
+            Luxe.io.string_save('today', date_string);
+            Luxe.io.string_save(GameMode.Normal.get_game_mode_id() + '_plays_today', '0');
+            Luxe.io.string_save(GameMode.Strive(0).get_game_mode_id() + '_plays_today', '0');
+            Luxe.io.string_save(GameMode.Timed.get_game_mode_id() + '_plays_today', '0');
         }
 
         // Luxe.audio.loop(Luxe.resources.audio('assets/music/ogg/desert-ambience-cropped.ogg').source);

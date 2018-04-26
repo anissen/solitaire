@@ -115,14 +115,30 @@ class PlayState extends State {
             default: Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
         }
 
-        // seed = play_mode + play_count_for_mode_today + date;
+        var could_load_game = load_game();
+        if (!could_load_game) start_new_game();
+    }
+
+    function start_new_game() {
+        var plays_today = Luxe.io.string_load(game_mode.get_game_mode_id() + '_plays_today');
+        if (plays_today == null) plays_today = '0';
+        //trace('${game_mode.get_game_mode_id()} games today: $plays_today');
+        //trace('... now ${game_mode.get_game_mode_id()} games today: ${Std.parseInt(plays_today) + 1}');
+        var number_of_plays_today = Std.parseInt(plays_today) + 1;
+        // trace('... now ${game_mode.get_game_mode_id()} games today: $number_of_plays_today');
+        Analytics.event('game', 'plays_daily', game_mode.get_game_mode_id(), number_of_plays_today);
+        Luxe.io.string_save(game_mode.get_game_mode_id() + '_plays_today', '$number_of_plays_today');
 
         Luxe.utils.random.initial = switch (game_mode) {
-            case Tutorial(_): 12;
-            default: Std.int(10000 * Math.random()); // TODO: Should be incremented for each play
+            case Tutorial(Normal): 12;
+            default:
+                var now = Date.now();
+                var seed_string = '' + (game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + 0 /* to ensure uniqueness */ + now.getDate() + 0 /* to ensure uniqueness */ + now.getMonth() + now.getFullYear();
+                //trace('seed_string: $seed_string');
+                Std.parseInt(seed_string);
         }
-        var could_load_game = load_game();
-        if (!could_load_game) handle_new_game();
+
+        handle_new_game();
     }
 
     function handle_new_game() {
@@ -1038,9 +1054,13 @@ class PlayState extends State {
             #if debug
             case luxe.Input.Key.key_k: handle_game_over();
             case luxe.Input.Key.key_n: {
+                trace('debug: starting a new game');
                 Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
-                Luxe.utils.random.initial = seed_number++;
-                handle_new_game();
+                start_new_game();
+            }
+            case luxe.Input.Key.key_r: {
+                trace('debug: resetting games played today');
+                Luxe.io.string_save(game_mode.get_game_mode_id() + '_plays_today', '0');
             }
             case luxe.Input.Key.key_m:
                 Luxe.audio.active = !Luxe.audio.active;
