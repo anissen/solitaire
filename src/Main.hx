@@ -159,7 +159,7 @@ class Main extends luxe.Game {
         luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT }).onComplete(function() {
             var showTutorial = (Luxe.io.string_load('tutorial_complete') == null);
             if (showTutorial) {
-                states.set(PlayState.StateId, game.misc.GameMode.Tutorial(game.misc.GameMode.Normal));
+                states.set(PlayState.StateId, GameMode.Tutorial(GameMode.Normal));
             } else {
                 states.set(MenuState.StateId);
             }

@@ -426,7 +426,9 @@ class PlayState extends State {
                     finish_tutorial();
                     Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
                 });
-            default: Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck); Promise.resolve();
+            default: 
+                Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
+                Promise.resolve();
         }
     }
 
