@@ -130,7 +130,7 @@ class Main extends luxe.Game {
         }
 
         var now = Date.now();
-        var date_string = '' + now.getDate() + 0 /* to ensure uniqueness */ + now.getMonth() + now.getFullYear();
+        var date_string = '' + now.getDate() + now.getMonth() + now.getFullYear();
         //trace('date_string: $date_string');
         if (Luxe.io.string_load('today') != date_string) {
             //trace('setting new date string: $date_string');
