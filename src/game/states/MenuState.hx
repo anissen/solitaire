@@ -5,7 +5,7 @@ import luxe.States.State;
 import luxe.Vector;
 import luxe.Color;
 import luxe.tween.Actuate;
-
+import game.misc.GameMode;
 import game.ui.Button;
 
 using game.misc.GameMode.GameModeTools;
@@ -110,7 +110,7 @@ class MenuState extends State {
             return 275 + (button_count++) * button_height;
         }
         var tutorial_completed = (Luxe.io.string_load('tutorial_complete') == 'true');
-        var normal_game_mode = (tutorial_completed ? game.misc.GameMode.Normal : game.misc.GameMode.Tutorial(game.misc.GameMode.Normal));
+        var normal_game_mode = (tutorial_completed ? Normal : Tutorial(Normal));
         var play_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
             text: (normal_save == null ? 'Normal' : '~ Normal ~'),
@@ -132,8 +132,8 @@ class MenuState extends State {
         var strive_save = Luxe.io.string_load('save_strive');
         var strive_level = Luxe.io.string_load('strive_level');
         var strive_tutorial_completed = (Luxe.io.string_load('tutorial_complete_strive') == 'true');
-        var strive_mode = game.misc.GameMode.Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
-        var strive_game_mode = (strive_tutorial_completed ? strive_mode : game.misc.GameMode.Tutorial(strive_mode));
+        var strive_mode = Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
+        var strive_game_mode = (strive_tutorial_completed ? strive_mode : Tutorial(strive_mode));
         var strive_text = (strive_save == null ? '' : '~ ') + (strive_level != null ? 'Strive for ${strive_mode.get_strive_score()}' : 'Strive') +(strive_save == null ? '' : ' ~');
         var strive_unlock = 1000;
         var strive_button = new Button({
@@ -144,8 +144,8 @@ class MenuState extends State {
         });
 
         var timed_unlock = 2000;
-        var timed_tutorial_completed = false; //(Luxe.io.string_load('tutorial_complete_timed') == 'true');
-        var timed_game_mode = (timed_tutorial_completed ? game.misc.GameMode.Timed : game.misc.GameMode.Tutorial(game.misc.GameMode.Timed));
+        var timed_tutorial_completed = (Luxe.io.string_load('tutorial_complete_timed') == 'true');
+        var timed_game_mode = (timed_tutorial_completed ? Timed : Tutorial(Timed));
         var timed_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),
             text: (total_score < timed_unlock ? 'Unlock: ${timed_unlock - total_score}' : 'Survival'),
@@ -188,7 +188,7 @@ class MenuState extends State {
         // var puzzle_button = new Button({
         //     pos: new Vector(Settings.WIDTH / 2, get_button_y()),
         //     text: (total_score < puzzle_unlock ? 'Unlock: ${puzzle_unlock - total_score}' : 'Puzzle'),
-        //     on_click: Main.SetState.bind(PlayState.StateId, game.misc.GameMode.Puzzle),
+        //     on_click: Main.SetState.bind(PlayState.StateId, Puzzle),
         //     disabled: (total_score < puzzle_unlock)
         // });
 
@@ -226,6 +226,16 @@ class MenuState extends State {
         #if sys
         if (event.keycode == luxe.Input.Key.escape) {
             Luxe.shutdown();
+        }
+        #end
+        #if debug
+        switch (event.keycode) {
+            case luxe.Input.Key.key_1: Main.SetState(PlayState.StateId, Normal);
+            case luxe.Input.Key.key_2:
+                var strive_level = Luxe.io.string_load('strive_level');
+                var strive_mode = Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
+                Main.SetState(PlayState.StateId, strive_mode);
+            case luxe.Input.Key.key_3: Main.SetState(PlayState.StateId, Timed);
         }
         #end
     }
