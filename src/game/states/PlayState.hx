@@ -523,6 +523,11 @@ class PlayState extends State {
             cards[0].add(new Clickable(card_clicked)); // why does this work?
         }});
 
+        // hack to save initial normal and strive games
+        if (Luxe.io.string_load('save_${game_mode.get_game_mode_id()}') == null) {
+            save_game();
+        }
+
         // tutorial: once a gemstone has been placed in a socket, it cannot be moved
         // tutorial: collect adjacent gemstones to complete sets
         // tutorial: collect adjacent gemstones of the same type to create flawless gemstones
@@ -1003,6 +1008,7 @@ class PlayState extends State {
     }
 
     function save_game() {
+        // trace('save_game');
         if (game_over) return; // do not try to save game when game is over!
         if (!game_mode.persistable_game_mode()) return; // game mode should not be saved
 
@@ -1011,12 +1017,15 @@ class PlayState extends State {
             score: score,
             events: Game.Instance.save()
         };
+        // trace('save_data:');
+        // trace(save_data);
 
         var succeeded = Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', haxe.Json.stringify(save_data));
         if (!succeeded) trace('Save failed!');
     }
 
     function load_game() {
+        // trace('load_game');
         var data_string = Luxe.io.string_load('save_${game_mode.get_game_mode_id()}');
         if (data_string == null) {
             trace('Save not found or failed to load!');
@@ -1026,6 +1035,8 @@ class PlayState extends State {
             var data = haxe.Json.parse(data_string);
             Luxe.utils.random.initial = Std.int(data.seed);
             score = data.score;
+            // trace('data:');
+            // trace(data);
             Game.Instance.load(data.events);
             return true;
         } catch (e :Dynamic) {

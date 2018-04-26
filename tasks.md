@@ -3,8 +3,8 @@ Tasks:
 * App icon -- done?
 * Put on Google Play beta program
 * More tweeting!
-* Settings: "Music off" does not work
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
+* Bug: Settings: "Music off" does not work
 * Email list
 * Landing page (stoneset.info?/stoneset.dk?)
 

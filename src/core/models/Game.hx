@@ -311,6 +311,7 @@ class Game {
     }
 
     public function load(s :String) {
+        messageSystem.reset();
         messageSystem.emit(NewGame);
         messageSystem.deserialize(s);
     }
