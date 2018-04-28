@@ -1,6 +1,5 @@
 
 Tasks:
-* App icon -- done?
 * Put on Google Play beta program
 * More tweeting!
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
