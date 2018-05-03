@@ -20,6 +20,7 @@ class Main extends luxe.Game {
     static var states :States;
     static var fade :game.components.Fader;
     // static var music_handles :Array<luxe.Audio.AudioHandle> = [];
+    static var music_handle :luxe.Audio.AudioHandle;
     var start_time :Float;
     var nineslice :luxe.NineSlice;
 
@@ -108,6 +109,22 @@ class Main extends luxe.Game {
 		new game.misc.ArcProgress(parcel, new luxe.Color().rgb(0x914D50), start);
     }
 
+    static public function start_music() {
+        var state = Luxe.audio.state_of(music_handle);
+        if (state == luxe.Audio.AudioState.as_playing) return;
+
+        var music_source = Luxe.resources.audio(Settings.get_music_file_path('Temple_of_the_Mystics')).source;
+        music_handle = Luxe.audio.loop(music_source);
+        Luxe.audio.volume(music_handle, 0.2);
+    }
+
+    static public function stop_music() {
+        var state = Luxe.audio.state_of(music_handle);
+        if (state != luxe.Audio.AudioState.as_playing) return;
+
+        Luxe.audio.stop(music_handle);
+    }
+
     function start() {
         Luxe.renderer.font = Luxe.resources.font('assets/fonts/clemente/clemente.fnt');
 
@@ -152,8 +169,10 @@ class Main extends luxe.Game {
         //     Luxe.audio.volume(handle, 0.2);
         // }
 
-        var music_handle = Luxe.audio.loop(Luxe.resources.audio(Settings.get_music_file_path('Temple_of_the_Mystics')).source);
-        Luxe.audio.volume(music_handle, 0.2);
+        var music_enabled = Luxe.io.string_load('music_enabled');
+        if (music_enabled == null || music_enabled == 'true') {
+            start_music();
+        }
 
         luxe.tween.Actuate.tween(nineslice.pos, 0.3, { x: 0, y: 0 });
         luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT }).onComplete(function() {

@@ -82,7 +82,11 @@ class SettingsState extends State {
                 } else {
                     Luxe.audio.resume();
                     music_enabled = true;
-                    if (Luxe.io.string_load('music_enabled') == 'false') music_enabled = false;
+                    if (Luxe.io.string_load('music_enabled') == 'false') {
+                        music_enabled = false;
+                    } else {
+                        Main.start_music();
+                    }
                     music_button.enabled = true;
                     music_button.text = (music_enabled ? 'Music On' : 'Music Off');
                 }
@@ -98,6 +102,11 @@ class SettingsState extends State {
                 music_button.text = (music_enabled ? 'Music On' : 'Music Off');
                 // Luxe.audio.stop();
                 Luxe.io.string_save('music_enabled', (music_enabled ? 'true' : 'false'));
+                if (music_enabled) {
+                    Main.start_music();
+                } else {
+                    Main.stop_music();
+                }
             },
             disabled: (!audio_enabled)
         });

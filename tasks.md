@@ -3,7 +3,6 @@ Tasks:
 * Put on Google Play beta program
 * More tweeting!
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
-* Bug: Settings: "Music off" does not work
 * Email list
 * Landing page (stoneset.info?/stoneset.dk?)
 
@@ -25,7 +24,6 @@ Tasks:
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
-* If game starts with audio disabled, enabling audio does not start the music
 
 Nice:
 * Global highscores
