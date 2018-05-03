@@ -28,11 +28,7 @@ Bugs:
 Nice:
 * Global highscores
 * On-screen keyboard for entering name for highscores
-* Share score via twitter
-* Score indicator on the main menu
-* Puzzle mode
-* Achievements? { Intent: Gotta catch'em all }
-* Multi-touch for dragging tiles?
 * Add scoring information to home screen (or e.g. sub-screens)
-* Move the general-purpose parts out of core and into turnabout (and reference it)
+* Achievements? { Intent: Gotta catch'em all }
+* Share score via twitter
 * Share picture of completion (see https://developer.android.com/training/sharing/send.html, https://github.com/Shin-NiL/Godot-Share/blob/master/share/android/GodotShare.java)
