@@ -341,8 +341,7 @@ class PlayState extends State {
             pos: get_pos(1, -0.6),
             align: center,
             align_vertical: center,
-            text: '$score',
-            
+            text: '$score', // Seed test: '' + Luxe.utils.random.initial
             letter_spacing: -1.4,
             sdf: true,
             shader: Luxe.renderer.shaders.bitmapfont.shader.clone('title-shader'),
