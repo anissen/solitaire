@@ -628,7 +628,7 @@ class PlayState extends State {
 
         Luxe.next(function() { // Hack to prevent tile_clicked to be triggered immediately
             if (card == null || card.destroyed) {
-                trace('No component is added to card -- card is null or destroyed');
+                // trace('No component is added to card -- card is null or destroyed');
                 return; // might happen when replaying (that card is removed in the same frame)
             }
             card.add(new Clickable(tile_clicked));

@@ -24,6 +24,7 @@ Tasks:
 Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
+* Links do not work on iOS and macOS
 
 Nice:
 * Global highscores
