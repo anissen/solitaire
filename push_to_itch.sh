@@ -2,13 +2,13 @@
 rm -rf bin/web
 rm -rf bin/web.build
 flow build web
-butler push bin/web anissen/solitaire:web
+butler push bin/web anissen/stoneset:web
 
 # build for mac
 rm -rf bin/mac64
 rm -rf bin/mac64.build
 flow build mac
-butler push bin/mac64 anissen/solitaire:mac
+butler push bin/mac64 anissen/stoneset:mac
 
 # build for android
 # cd android.project
@@ -17,4 +17,4 @@ butler push bin/mac64 anissen/solitaire:mac
 # rm release-build/*
 # cp app/build/outputs/apk/app-release-unsigned.apk release-build/app-release-unsigned.apk
 # cd ..
-# butler push android.project/release-build anissen/solitaire:android
+# butler push android.project/release-build anissen/stoneset:android
