@@ -8,6 +8,15 @@ Tasks:
 
 ===== Beta launch line =====
 
+BETA FEEDBACK (Doom):
+* Man kan ikke tage felter på skrå?
+* Flawless gems kan ikke bruges som alm. gems
+* "Back button" burde gå tilbage i menuer
+* Game mode unlock: Jeg troede at man skulle have det i ét spil
+* Det er ikke tydeligt at man kan samle i ikke-lige linjer
+* Disable Settings and Abort state while main menu tutorial is active
+END
+
 * [No default font]
 * iOS app icon
 * iOS launch icon
