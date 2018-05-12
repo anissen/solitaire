@@ -153,6 +153,8 @@ class GameOverState extends State {
         var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
         var local_scores = [];
         if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
+        local_scores.push(score);
+        Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
 
         var highscores = [ for (s in local_scores) { score: s, name: 'You', current: false } ];
         highscores.push({ score: score, name: 'You', current: true });
@@ -162,13 +164,19 @@ class GameOverState extends State {
                 if (a.current) return -1;
                 if (b.current) return 1;
             }
-            return a.score - b.score;
+            return b.score - a.score;
         });
 
-        local_scores.push(score);
-        Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
+        var highscore_lines = [];
+        var count = 0;
+        for (highscore in highscores) {
+            count++;
+            var highscore_line = new HighscoreLine('$count', highscore.score, highscore.name);
+            if (highscore.current) highscore_line.color = new Color(0.75, 0.0, 0.5);
+            highscore_lines.push(highscore_line);
+        }
 
-        show_highscores(highscores);
+        show_highscores(game_mode, highscore_lines);
 
         // Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {
         //     var my_highscore_line = new HighscoreLine('$my_highscore_rank', highscore.score, highscore.name, highscores_count * 50 + 620);
@@ -180,8 +188,8 @@ class GameOverState extends State {
         // });
     }
 
-    function show_highscores(highscores :Array<{ score :Int, name :String, current :Bool }>) {
-        highscores.sort(function(a, b) { return b.score - a.score; });
+    function show_highscores(game_mode :game.misc.GameMode.GameMode, highscore_lines :Array<HighscoreLine>) {
+        //highscores.sort(function(a, b) { return b.score - a.score; });
 
         var score_container = new luxe.Visual({});
         score_container.color.a = 0;
@@ -189,13 +197,11 @@ class GameOverState extends State {
         
         // TODO: Try adding a batcher with clipping rectangle
         var count = 0;
-        for (score in highscores) {
+        for (highscore_line in highscore_lines) {
             count++;
-            var highscore_line = new HighscoreLine('$count', score.score, score.name);
             highscore_line.pos.y = count * 25 + 20;
             highscore_line.alpha = 0;
             highscore_line.parent = score_container;
-            if (score.current) highscore_line.color = new Color(0.75, 0.0, 0.5);
 
             Actuate.tween(highscore_line, 0.3, { alpha: 1.0 }).delay(0.3 + count * 0.1);
             // Actuate.tween(highscore_line.color, 0.3, { y: count * 25 }).delay(1.0);
