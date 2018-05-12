@@ -183,10 +183,6 @@ class Main extends luxe.Game {
                 states.set(MenuState.StateId);
             }
         });
-
-        // #if android 
-        // Main.SnowActivity.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Stoneset tweet #Stoneset&url=http://andersnissen.com/');
-        // #end
     }
 
     static public function SetState(id :String, ?data :Dynamic) {
