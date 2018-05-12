@@ -12,7 +12,7 @@ class Analytics {
     }
 
     public static function screen(screen :String) {
-        analytics_request('t=pageview&dh=stoneset&dp=$screen&dt=$screen');
+        analytics_request('t=screenview&an=Stoneset&av=0.0.0&aid=com.anissen.stoneset&aiid=com.android.vending&cd=$screen');
     }
 
     static function analytics_request(url_part :String) {
