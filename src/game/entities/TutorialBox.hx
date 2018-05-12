@@ -169,7 +169,7 @@ class TutorialBox extends Sprite {
 
         Actuate.stop(this.pos);
         Actuate.timer(dismiss_time).onComplete(function(_) {
-            if (do_func != null) {
+            if (tutorial_texts.empty() && do_func != null) {
                 do_func();
                 do_func = null;
             }
