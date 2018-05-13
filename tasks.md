@@ -27,7 +27,6 @@ END
     * temple of the mystics starting on main menu and playing in normal and strive
     * theme-3 plays on survival
     * theme-5 plays on puzzle
-* Make a better highscore list for Strive
 * Move external libs into the repository (e.g. as git submodules)
 
 Bugs:

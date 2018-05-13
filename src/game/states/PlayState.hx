@@ -838,7 +838,8 @@ class PlayState extends State {
                 // client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
                 // name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
                 score: the_score,
-                game_mode: next_game_mode
+                game_mode: game_mode,
+                next_game_mode: next_game_mode
             });
         });
         return Promise.resolve();

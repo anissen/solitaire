@@ -5,6 +5,7 @@ import luxe.States.State;
 import luxe.Vector;
 import luxe.Color;
 import luxe.tween.Actuate;
+import game.misc.GameMode.GameMode;
 
 using game.misc.GameMode.GameModeTools;
 
@@ -20,7 +21,7 @@ class HighscoreLine extends luxe.Entity {
         rankText = new luxe.Text({
             parent: this,
             pos: new Vector(60, 0),
-            text: '$rank.',
+            text: rank,
             point_size: 24,
             align: right,
             align_vertical: center,
@@ -124,26 +125,26 @@ class GameOverState extends State {
         back_button.scale.set_xy(1/5, 1/5);
         back_button.depth = 100;
 
-        var data :{ client :String, score :Int, name :String, game_mode :game.misc.GameMode.GameMode } = cast d;
+        var data :{ client :String, score :Int, name :String, game_mode :GameMode, next_game_mode :GameMode } = cast d;
+        var score = data.score;
+        var game_mode = data.game_mode;
+        var next_game_mode = data.next_game_mode;
 
-        var play_text = switch (data.game_mode) {
+        var play_text = switch (next_game_mode) {
             case Normal: 'Play';
-            case Strive(level): 'Strive: ${data.game_mode.get_strive_score()}';
+            case Strive(level): 'Strive: ${next_game_mode.get_strive_score()}';
             case Timed: 'Survival';
             case Puzzle: 'Puzzle';
-            case Tutorial(game_mode): 'Tutorial'; // never shown
+            case Tutorial(_): 'Tutorial'; // never shown
         };
 
         var play_button = new game.ui.Button({
             pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT - 40),
             text: play_text,
             on_click: function() {
-                Main.SetState(PlayState.StateId, data.game_mode);
+                Main.SetState(PlayState.StateId, next_game_mode);
             }
         });
-
-        var score = data.score;
-        var game_mode = data.game_mode;
 
         var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
         if (total_score == null) total_score = 0;
@@ -159,24 +160,45 @@ class GameOverState extends State {
         var highscores = [ for (s in local_scores) { score: s, name: 'You', current: false } ];
         highscores.push({ score: score, name: 'You', current: true });
         
-        highscores.sort(function(a, b) {
-            if (a.score == b.score) {
-                if (a.current) return -1;
-                if (b.current) return 1;
-            }
-            return b.score - a.score;
-        });
-
         var highscore_lines = [];
-        var count = 0;
-        for (highscore in highscores) {
-            count++;
-            var highscore_line = new HighscoreLine('$count', highscore.score, highscore.name);
-            if (highscore.current) highscore_line.color = new Color(0.75, 0.0, 0.5);
-            highscore_lines.push(highscore_line);
+        switch (game_mode) {
+            case Strive(level):
+                var strive_level = Std.parseInt(Luxe.io.string_load('strive_highlevel'));
+                if (strive_level == null) strive_level = 0;
+                var strive_highscore = Std.parseInt(Luxe.io.string_load('strive_highscore'));
+                if (strive_highscore == null) strive_highscore = 0;
+                if (score >= game_mode.get_strive_score()) {
+                    if (level > strive_level)     Luxe.io.string_save('strive_highlevel', '$level');
+                    if (score > strive_highscore) Luxe.io.string_save('strive_highscore', '$score');
+                }
+
+                var max_level = (level > strive_level ? level : strive_level);
+                for (i in 0 ... max_level) {
+                    var strive_mode = Strive(max_level - i);
+                    var highscore_line = new HighscoreLine('#${max_level - i}', strive_mode.get_strive_score(), 'You');
+                    if (game_mode.equals(strive_mode)) {
+                        highscore_line.color = ((score >= game_mode.get_strive_score()) ? new Color(0.0, 0.75, 0.0) : new Color(0.75, 0.0, 0.0));
+                    }
+                    highscore_lines.push(highscore_line);
+                } 
+            default:
+                highscores.sort(function(a, b) {
+                    if (a.score == b.score) {
+                        if (a.current) return -1;
+                        if (b.current) return 1;
+                    }
+                    return b.score - a.score;
+                });
+                var count = 0;
+                for (highscore in highscores) {
+                    count++;
+                    var highscore_line = new HighscoreLine('$count.', highscore.score, highscore.name);
+                    if (highscore.current) highscore_line.color = new Color(0.75, 0.0, 0.5);
+                    highscore_lines.push(highscore_line);
+                }
         }
 
-        show_highscores(game_mode, highscore_lines);
+        show_highscores(highscore_lines);
 
         // Actuate.tween(bg.color, 1.0, { a: 0.95 }).onComplete(function() {
         //     var my_highscore_line = new HighscoreLine('$my_highscore_rank', highscore.score, highscore.name, highscores_count * 50 + 620);
@@ -188,7 +210,7 @@ class GameOverState extends State {
         // });
     }
 
-    function show_highscores(game_mode :game.misc.GameMode.GameMode, highscore_lines :Array<HighscoreLine>) {
+    function show_highscores(highscore_lines :Array<HighscoreLine>) {
         //highscores.sort(function(a, b) { return b.score - a.score; });
 
         var score_container = new luxe.Visual({});
@@ -196,6 +218,7 @@ class GameOverState extends State {
         // score_container.clip_rect = new luxe.Rectangle(0, 50, Settings.WIDTH / 2, Settings.HEIGHT / 2 - 50);
         
         // TODO: Try adding a batcher with clipping rectangle
+        // TODO: Fade in/out at the top/bottom
         var count = 0;
         for (highscore_line in highscore_lines) {
             count++;
@@ -227,9 +250,9 @@ class GameOverState extends State {
         Luxe.scene.empty();
     }
 
-    override function onmouseup(event :luxe.Input.MouseEvent) {
-        if (event.button == luxe.Input.MouseButton.right) {
-            Main.SetState(PlayState.StateId);
-        }
-    }
+    // override function onmouseup(event :luxe.Input.MouseEvent) {
+    //     if (event.button == luxe.Input.MouseButton.right) {
+    //         Main.SetState(PlayState.StateId);
+    //     }
+    // }
 }
