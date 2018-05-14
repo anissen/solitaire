@@ -1,0 +1,4 @@
+• Better Strive highscore list
+• Android back button goes back in menus
+• Fix glitch in the tutorial
+• Other minor fixes
