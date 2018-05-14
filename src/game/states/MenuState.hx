@@ -216,6 +216,14 @@ class MenuState extends State {
             .then(tutorial_box.tutorial({ texts: ['Settings menu is here.'], pos_y: config_button.pos.y + 85 + 15, points: [Vector.Add(config_button.pos, new Vector(0, 15))] }))
             .then(tutorial_box.tutorial({ texts: ['About {brown}Stoneset{default}.', 'Go here to {brown}donate{default}\ntowards the game.'], pos_y: about_button.pos.y + 85 + 15, points: [Vector.Add(about_button.pos, new Vector(0, 15))], do_func: complete_tutorial }));
         }
+
+        #if debug
+        new Text({
+            pos: new Vector(Settings.WIDTH / 2, get_button_y()),
+            text: 'Debug: back',
+            align: luxe.Text.TextAlign.center
+        });
+        #end
     }
 
     override function onleave(_) {
@@ -238,5 +246,8 @@ class MenuState extends State {
             case luxe.Input.Key.key_3: Main.SetState(PlayState.StateId, Timed);
         }
         #end
+        if (event.keycode == luxe.Input.Key.ac_back) {
+            Luxe.shutdown();
+        }
     }
 }

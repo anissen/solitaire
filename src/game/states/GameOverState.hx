@@ -245,6 +245,12 @@ class GameOverState extends State {
         }
     }
 
+    override function onkeyup(event :luxe.Input.KeyEvent) {
+        if (event.keycode == luxe.Input.Key.ac_back) {
+            Main.SetState(MenuState.StateId);
+        }
+    }
+
     override function onleave(_) {
         Luxe.camera.remove('CameraPan');
         Luxe.scene.empty();

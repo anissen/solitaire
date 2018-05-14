@@ -1091,6 +1091,7 @@ class PlayState extends State {
             // case luxe.Input.Key.key_q: tutorial.show(['This is tutorial', 'More text'], [tiles.first(), tiles[1], tiles.last()]);
             case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Stoneset tweet #Stoneset&url=http://andersnissen.com/');
             #end
+            case luxe.Input.Key.ac_back: if (tutorial_box == null || !tutorial_box.is_active()) Main.SetState(MenuState.StateId);
             case luxe.Input.Key.escape: Main.SetState(MenuState.StateId);
         }
     }

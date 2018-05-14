@@ -9,12 +9,13 @@ Tasks:
 ===== Beta launch line =====
 
 BETA FEEDBACK (Doom):
-* Man kan ikke tage felter på skrå?
-* Flawless gems kan ikke bruges som alm. gems
-* "Back button" burde gå tilbage i menuer
-* Game mode unlock: Jeg troede at man skulle have det i ét spil
-* Det er ikke tydeligt at man kan samle i ikke-lige linjer
-* Disable Settings and Abort state while main menu tutorial is active
+[ ] Man kan ikke tage felter på skrå?
+[ ] Flawless gems kan ikke bruges som alm. gems
+[x] "Back button" burde gå tilbage i menuer
+[ ] Game mode unlock: Jeg troede at man skulle have det i ét spil
+[ ] Det er ikke tydeligt at man kan samle i ikke-lige linjer
+[ ] Disable Settings and Abort state while main menu tutorial is active
+[ ] Strive regler ikke helt forstået (Sean)
 END
 
 * [No default font]

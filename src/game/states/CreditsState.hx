@@ -119,6 +119,12 @@ class CreditsState extends State {
         });
     }
 
+    override function onkeyup(event :luxe.Input.KeyEvent) {
+        if (event.keycode == luxe.Input.Key.ac_back) {
+            Main.SetState(MenuState.StateId);
+        }
+    }
+
     override function onleave(_) {
         Luxe.scene.empty();
     }
