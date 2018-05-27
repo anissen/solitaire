@@ -154,15 +154,17 @@ class GameOverState extends State {
         var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
         var local_scores = [];
         if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
-        local_scores.push(score);
-        Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
 
         var highscores = [ for (s in local_scores) { score: s, name: 'You', current: false } ];
         highscores.push({ score: score, name: 'You', current: true });
+
+        local_scores.push(score); // code is HERE to prevent duplicate own scores
+
+        Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
         
         var highscore_lines = [];
         switch (game_mode) {
-            case Strive(level):
+            case Strive(level) | Tutorial(Strive(level)):
                 var strive_level = Std.parseInt(Luxe.io.string_load('strive_highlevel'));
                 if (strive_level == null) strive_level = 0;
                 var strive_highscore = Std.parseInt(Luxe.io.string_load('strive_highscore'));

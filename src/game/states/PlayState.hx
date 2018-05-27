@@ -687,8 +687,15 @@ class PlayState extends State {
         var duration = 0.3;
         var card_pos = card.pos.clone();
         var delay = game.entities.Particle.Count * 0.15;
+        var particle_pos = card.pos.clone();
+        var is_loading = (particle_pos.y > Settings.HEIGHT); // hack to avoid particle rain when game loads
+        if (is_loading) { // hack to avoid particle rain when game loads
+            particle_pos.y = scoreText.pos.y + 20;
+            duration *= 0.1;
+            delay *= 0.1;
+        }
         var p = new game.entities.Particle({
-            pos: card.pos.clone(),
+            pos: particle_pos,
             texture: card.texture,
             size: new Vector(tile_size, tile_size),
             color: card.color.clone(),
@@ -698,6 +705,9 @@ class PlayState extends State {
             duration: duration,
             delay: delay
         });
+        if (is_loading) {
+            p.visible = false;
+        }
         if (correct_order) {
             var trail = new game.components.TrailRenderer();
             trail.trailColor.fromColor(card.color);
@@ -707,9 +717,12 @@ class PlayState extends State {
             p.add(trail);
         }
 
+        score += card_score;
+        var temp_score = score;
+
         Actuate.tween(p.size, duration, { x: tile_size * 0.25, y: tile_size * 0.25 }).delay(delay).onComplete(function() {
             if (p != null && !p.destroyed) p.destroy();
-            score += card_score;
+            
             var textScale = scoreText.scale.x;
             if (textScale < 1.5) {
                 textScale += 0.1 * card_score;
@@ -752,13 +765,8 @@ class PlayState extends State {
                     }
                 default: 
             }
-            // var strive_score = get_strive_score();
-            // if (strive_score > 0 && score >= strive_score) {
-            //     scoreText.color.tween(0.3, { r: 0.2, g: 1, b: 0.2 });
-            //     handle_game_over();
-            // }
-            Actuate.tween(this, (score - counting_score) * 0.02, { counting_score: score }, true).onUpdate(function() {
-                // var temp_score = Std.int(counting_score) - strive_score;
+
+            Actuate.tween(this, (temp_score - counting_score) * 0.02, { counting_score: temp_score }, true).onUpdate(function() {
                 scoreText.text = '${Std.int(counting_score - time_penalty)}';
             });
         });
@@ -804,7 +812,7 @@ class PlayState extends State {
                 play_sound('won');
         }
 
-        var delay = 0.0;
+        var delay = 0.1;
         for (tile in tiles) {
             tile.show_tile_graphics(false).delay(delay);
             delay += 0.05;
@@ -825,7 +833,7 @@ class PlayState extends State {
     }
 
     function switch_to_game_over_state(next_game_mode :GameMode) {
-        Luxe.timer.schedule(1.5, function() {
+        Luxe.timer.schedule(2.0, function() {
             var the_score :Int = switch (game_mode) {
                 case Timed | Tutorial(Timed): Std.int(counting_score);
                 case Strive(level) | Tutorial(Strive(level)): game_mode.get_strive_score() + score;

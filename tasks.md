@@ -4,20 +4,39 @@ Tasks:
 * More tweeting!
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
 * Email list
+    * https://tinyletter.com
 * Landing page (stoneset.info?/stoneset.dk?)
+    * https://startbootstrap.com/template-overviews/new-age/
+    * https://startbootstrap.com/template-overviews/freelancer/
+    * https://startbootstrap.com/template-overviews/grayscale/
 
 ===== Beta launch line =====
 
-BETA FEEDBACK (Doom):
+BETA FEEDBACK
+Doom:
 [ ] Man kan ikke tage felter på skrå?
-[ ] Flawless gems kan ikke bruges som alm. gems
+[-] Flawless gems kan ikke bruges som alm. gems
 [x] "Back button" burde gå tilbage i menuer
 [ ] Game mode unlock: Jeg troede at man skulle have det i ét spil
 [ ] Det er ikke tydeligt at man kan samle i ikke-lige linjer
 [ ] Disable Settings and Abort state while main menu tutorial is active
 [ ] Strive regler ikke helt forstået (Sean)
+[ ] Audio var disabled men blev pludseligt enabled (Sean)
+[x] Hvis man dør mens spillet loader, får man forkert antal point (Mikkel)
+
+GOLD Niels & Daniel:
+[x] Highscore list viser own highscore to gange
+[x] Strive tutorial viser den forkerte highscore (fra Normal)
+[ ] Vis back button efter Strive tutorial (glæder måske også for Survival?)
+
+GOLD Rene:
+[ ] Bedre forklaring af flawless gems
 END
 
+* Global highscores
+    * On-screen keyboard for entering name for highscores
+    * Button(s) to toggle between local/global highscores
+* Being able to view highscore list without having to finish a game
 * [No default font]
 * iOS app icon
 * iOS launch icon
@@ -31,13 +50,13 @@ END
 * Move external libs into the repository (e.g. as git submodules)
 
 Bugs:
+* Sometimes Normal starts an empty blank screen (How to reproduce?)
+* In some cases, two tiles can be collected and simply disappears
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
 * Links do not work on iOS and macOS
 
 Nice:
-* Global highscores
-* On-screen keyboard for entering name for highscores
 * Add scoring information to home screen (or e.g. sub-screens)
 * Achievements? { Intent: Gotta catch'em all }
 * Share score via twitter
