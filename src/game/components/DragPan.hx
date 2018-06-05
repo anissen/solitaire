@@ -9,7 +9,7 @@ import luxe.Vector;
 class DragPan extends Component {
     public var y_top :Float;
     public var y_bottom :Float;
-    public var button : MouseButton;
+    public var button :MouseButton;
 
     var mouse_down :Bool = false;
     var dragging :Bool = false;

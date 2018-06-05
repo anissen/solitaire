@@ -18,8 +18,6 @@ class Analytics {
     static function analytics_request(url_part :String) {
         var rand :Int = Std.int(Math.random() * 100000000);
         var url = 'https://www.google-analytics.com/collect?v=1&tid=$tracking_id&cid=$client_id&$url_part&z=$rand';
-        com.akifox.asynchttp.AsyncHttp.logEnabled = false;
-        // com.akifox.asynchttp.AsyncHttp.logEnabled = #if debug true #else false #end ;
         var request = new com.akifox.asynchttp.HttpRequest({ url: url });
         // callback : function(response:HttpResponse):Void {
         //     if (response.isOK) {
@@ -30,20 +28,5 @@ class Analytics {
         //     }
         // }  
         request.send();
-
-        // #if web
-        // var http = new haxe.Http(url);
-        // // http.onData = function(data) {
-        // //     trace('Result: $data');
-        // // };
-        // // http.onError = function(err) {
-        // //     trace('Error: $err');
-        // // };
-        // // http.onStatus = function(status) {
-        // //     trace('Status: $status');
-        // // };
-        // http.async = true;
-        // http.request();
-        // #end
     }
 }

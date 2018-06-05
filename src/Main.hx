@@ -48,7 +48,6 @@ class Main extends luxe.Game {
             clientId = '${haxe.Timer.stamp()}'.split('.').join('');
             Luxe.io.string_save('clientId', clientId);
         }
-        trace('clientId: $clientId');
 
         #if debug
         Analytics.tracking_id = 'UA-117762148-1';

@@ -16,11 +16,11 @@ class Fader extends Component {
         });
     }
 
-    public function fade_out(?t :Float = 0.3) {
+    public function fade_out(?t :Float = 0.25) {
         return overlay.color.tween(t, { a: 1 });
     }
 
-    public function fade_in(?t :Float = 0.3) {
+    public function fade_in(?t :Float = 0.25) {
         return overlay.color.tween(t, { a: 0 });
     }
 
