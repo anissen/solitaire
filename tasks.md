@@ -36,6 +36,10 @@ END
 * Global highscores
     * On-screen keyboard for entering name for highscores
     * Button(s) to toggle between local/global highscores
+    * Handle Strive and Survival game modes
+    * Highscore button in play mode
+    * LATER: View all high scores
+    * LATER: Ranking
 * Being able to view highscore list without having to finish a game
 * [No default font]
 * iOS app icon
