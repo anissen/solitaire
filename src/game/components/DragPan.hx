@@ -10,6 +10,7 @@ class DragPan extends Component {
     public var y_top :Float;
     public var y_bottom :Float;
     public var button :MouseButton;
+    public var ondrag :Void->Void = null;
 
     var mouse_down :Bool = false;
     var dragging :Bool = false;
@@ -18,7 +19,7 @@ class DragPan extends Component {
     var visual :luxe.Visual;
 
     var drag_velocity :Float;
-    var inertia_duration :Float = 0.5;
+    var inertia_duration :Float = 1.2;
     var inertia_time :Float;
 
     override function init() {
@@ -62,6 +63,7 @@ class DragPan extends Component {
             var previous_pos = pos.y;
             pos.y = luxe.utils.Maths.clamp(drag_start_pos.y - drag_diff_y, y_top, y_bottom);
             drag_velocity = pos.y - previous_pos;
+            if (ondrag != null) ondrag();
         }
     }
 
@@ -71,6 +73,7 @@ class DragPan extends Component {
             var progress = (inertia_duration - inertia_time) / inertia_duration;
             drag_velocity = luxe.utils.Maths.lerp(drag_velocity, 0, progress);
             inertia_time -= dt;
+            if (ondrag != null) ondrag();
         }
     }
 }

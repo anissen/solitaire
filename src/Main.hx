@@ -35,6 +35,8 @@ class Main extends luxe.Game {
 
         config.preload.textures.push({ id: 'assets/ui/panel_beigeLight.png' });
 
+        com.akifox.asynchttp.AsyncHttp.logEnabled = false;
+
         #if ios
         sys.ssl.Socket.DEFAULT_VERIFY_CERT = false;
         #end
@@ -91,7 +93,7 @@ class Main extends luxe.Game {
         luxe.tween.Actuate.tween(nineslice.color, 0.3, { a: 1.0 });
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'star.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png', 'ring.png'].map(function(i) return 'images/symbols/$i');
-        var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/cog.png', 'ui/book.png'];
+        var ui = ['ui/buttonLong_brown_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/cog.png', 'ui/book.png', 'ui/holy-grail.png'];
         var tutorial = ['images/tutorial/box_shadow.png', 'images/tutorial/arrow.png'];
         var sounds = ['invalid', 'lost', 'place', 'points_big', 'points_huge', 'points_small', 'points_devine', 'quest', 'slide', 'stack', 'tile_click', 'ui_click', 'won', 'collect', 'tutorial'];
         var music = ['Temple_of_the_Mystics' /*, 'desert-ambience-cropped.ogg' */];

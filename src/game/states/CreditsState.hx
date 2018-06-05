@@ -23,7 +23,7 @@ class CreditsState extends State {
     override function onenter(data :Dynamic) {
         title = new Text({
             text: 'About',
-            pos: new Vector(Settings.WIDTH / 2, 80),
+            pos: new Vector(Settings.WIDTH / 2, 70),
             point_size: 36,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,

@@ -843,8 +843,7 @@ class PlayState extends State {
             Analytics.event('game', 'score', game_mode.get_game_mode_id(), the_score);
 
             Main.SetState(GameOverState.StateId, {
-                // client: 'my-client-id-'  + Math.floor(1000 * Math.random()), // TODO: Get client ID from server initially, store it locally
-                // name: 'Name' + Math.floor(1000 * Math.random()), // TODO: Use correct name
+                user_id: Std.parseInt(Luxe.io.string_load('clientId')),
                 score: the_score,
                 game_mode: game_mode,
                 next_game_mode: next_game_mode
