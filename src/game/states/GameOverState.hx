@@ -18,7 +18,7 @@ class HighscoreLine extends luxe.Entity {
     public var color(get, set) :Color;
 
     public function new(rank :String, score :Int, name :String) {
-        super({ name: '$rank.$score.$name' });
+        super({ name: '$rank.$score.$name', name_unique: true });
         rankText = new luxe.Text({
             parent: this,
             pos: new Vector(60, 0),
@@ -263,6 +263,8 @@ class GameOverState extends State {
 
         var url = #if debug 'http://localhost:3000/scores/' #else 'https://anissen-solitaire.herokuapp.com/scores/' #end ;
 
+        // TODO: Make a map for holding the data and use it in both js and other platforms
+
         #if js
             var http = new haxe.Http(url);
             http.onData = function(data :String) {
@@ -306,8 +308,7 @@ class GameOverState extends State {
                     trace('DONE ${response.status}');
                     trace(response.content);
                     global_highscores = response.toJson();
-                    if (json == null) {
-                        show_error('Error.');
+                    if (global_highscores == null) {
                     } else {
                         show_global_highscores();
                     }
@@ -453,10 +454,10 @@ class GameOverState extends State {
 
     function get_fade_value(line_y :Float) {
         var y = score_container.pos.y + line_y;
-        var top_fade_y = (title.pos.y + 50);
-        var top_hide_y = (title.pos.y + 15);
-        var bottom_fade_y = (play_button.pos.y - 40);
-        var bottom_hide_y = (play_button.pos.y - 5);
+        var top_fade_y = (title.pos.y + 60);
+        var top_hide_y = (title.pos.y + 20);
+        var bottom_fade_y = (play_button.pos.y - 50);
+        var bottom_hide_y = (play_button.pos.y - 10);
         if (y < top_hide_y) {
             return 0.0;
         } else if (y < top_fade_y) {
