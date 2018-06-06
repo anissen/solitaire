@@ -85,7 +85,7 @@ enum HighscoreMode {
 
 class GameOverState extends State {
     static public var StateId :String = 'GameOverState';
-    var highscore_mode :HighscoreMode = Global;
+    var highscore_mode :HighscoreMode;
     var game_mode :GameMode;
     var score :Int;
     var local_highscores :Array<LocalHighscore>;
@@ -94,16 +94,25 @@ class GameOverState extends State {
     var title :Text;
     var score_container :luxe.Visual;
     var play_button :game.ui.Button;
+    var error_text :String;
 
     public function new() {
         super({ name: StateId });
     }
 
     override function init() {
-        highscore_lines_scene = new Scene();
+        
     }
 
     override function onenter(d :Dynamic) {
+
+        highscore_mode = Global;
+        local_highscores = null;
+        global_highscores = null;
+        highscore_lines_scene = new Scene();
+        score_container = null;
+        error_text = '';
+
         // var http = new haxe.Http("http://localhost:1337/highscore");
         // http.addParameter('user_id', data.user_id);
         // http.addParameter('name', data.name);
@@ -274,7 +283,8 @@ class GameOverState extends State {
             }
             http.onError = function(error :String) {
                 trace('error: $error');
-                Luxe.next(show_error.bind(error));
+                error_text = error;
+                Luxe.next(show_error);
             }
             http.onStatus = function(status :Int) {
                 trace('status: $status');
@@ -309,31 +319,34 @@ class GameOverState extends State {
                     trace(response.content);
                     global_highscores = response.toJson();
                     if (global_highscores == null) {
-                        Luxe.next(show_error.bind('Error.'));
+                        error_text = 'Error';
+                        Luxe.next(show_error);
                     } else {
                         Luxe.next(show_global_highscores);
                     }
                 } else {
                     trace('ERROR ${response.status} ${response.error}');
-                    Luxe.next(show_error.bind(response.error));
+                    error_text = response.error;
+                    Luxe.next(show_error);
                 }
             }
             var request = new com.akifox.asynchttp.HttpRequest({ url: url, content: haxe.Json.stringify(content), callback: callback });
             request.method = com.akifox.asynchttp.HttpMethod.POST;
             request.contentType = 'application/json';
             request.send();
-            #end
+        #end
     }
 
-    function show_error(text :String) {
+    function show_error() {
         new luxe.Text({
             pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2),
-            text: text,
+            text: error_text,
             point_size: 24,
             align: center,
             align_vertical: center,
-            color: new Color(0.75, 0.0, 0.0, 0.0),
-            depth: 10
+            color: new Color(0.75, 0.0, 0.0),
+            depth: 10,
+            scene: highscore_lines_scene
         });
     }
     
@@ -345,6 +358,10 @@ class GameOverState extends State {
 
         title.text = 'Global Highscores';
         highscore_mode = Global;
+
+        if (global_highscores == null) {
+            show_error();
+        }
 
         var clientId = Std.parseInt(Luxe.io.string_load('clientId'));
 
@@ -481,7 +498,7 @@ class GameOverState extends State {
 
     override function onleave(_) {
         Actuate.reset();
-        Luxe.camera.remove('CameraPan');
+        highscore_lines_scene.empty();
         Luxe.scene.empty();
     }
 }
