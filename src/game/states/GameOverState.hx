@@ -105,43 +105,12 @@ class GameOverState extends State {
     }
 
     override function onenter(d :Dynamic) {
-
         highscore_mode = Global;
         local_highscores = null;
         global_highscores = null;
         highscore_lines_scene = new Scene();
         score_container = null;
         error_text = '';
-
-        // var http = new haxe.Http("http://localhost:1337/highscore");
-        // http.addParameter('user_id', data.user_id);
-        // http.addParameter('name', data.name);
-        // http.addParameter('score', '${data.score}');
-        // http.onError = function(http_data) {
-        //     trace('error: $http_data');
-        //     var local_scores_str = Luxe.io.string_load('scores_${data.game_mode.get_game_mode_id()}');
-        //     var local_scores = [];
-        //     if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
-
-        //     var highscores = [ for (s in local_scores) { score: s, name: 'You' } ];
-
-        //     show_highscores(highscores);
-        // }
-        // http.onStatus = function(http_data) {
-        //     trace('status: $http_data');
-        // }
-        // http.onData = function(http_data) {
-        //     trace('data: $http_data');
-        //     var scores :Array<Highscore> = [];
-        //     try {
-        //         scores = haxe.Json.parse(http_data);
-        //     } catch (e :Dynamic) {
-        //         trace('Error parsing data: $e');
-        //     }
-
-        //     show_highscores(scores);
-        // }
-        // http.request();
 
         var back_button = new game.ui.Icon({
             pos: new Vector(25, 25),
@@ -150,20 +119,6 @@ class GameOverState extends State {
         });
         back_button.scale.set_xy(1/5, 1/5);
         back_button.depth = 100;
-
-        // var toggle_highscores_button = new game.ui.Icon({
-        //     pos: new Vector(Settings.WIDTH - 25, 25),
-        //     texture_path: 'assets/ui/arrowBeige_left.png',
-        //     on_click: function() {
-        //         switch (highscore_mode) {
-        //             case Global: show_local_highscores();
-        //             case Local: show_global_highscores();
-        //         }
-        //     }
-        // });
-        // toggle_highscores_button.scale.set_xy(1/5, 1/5);
-        // toggle_highscores_button.flipx = true;
-        // toggle_highscores_button.depth = 100;
 
         var highscores_button = new game.ui.Icon({
             pos: new Vector(Settings.WIDTH - 35, 35),
@@ -212,18 +167,6 @@ class GameOverState extends State {
             outline_color: new Color().rgb(0xa55004),
         });
 
-        // var toggle_highscores_button = new game.ui.Button({
-        //     pos: new Vector(Settings.WIDTH / 2, 100),
-        //     width: Settings.WIDTH - 20,
-        //     text: 'Global Highscores',
-        //     on_click: function() {
-        //         switch (highscore_mode) {
-        //             case Global: show_local_highscores();
-        //             case Local: show_global_highscores();
-        //         }
-        //     }
-        // });
-
         var data :DataType = cast d;
         score = data.score;
         game_mode = data.game_mode;
@@ -261,7 +204,6 @@ class GameOverState extends State {
 
         Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
         
-        // show_local_highscores(game_mode, score, highscores);
         update_global_highscores(data);
     }
 
@@ -427,15 +369,10 @@ class GameOverState extends State {
     }
 
     function show_highscores(highscore_lines :Array<HighscoreLine>) {
-        //highscores.sort(function(a, b) { return b.score - a.score; });
-
         score_container = new luxe.Visual({});
         score_container.color.a = 0;
         highscore_lines_scene.add(score_container);
-        // score_container.clip_rect = new luxe.Rectangle(0, 50, Settings.WIDTH / 2, Settings.HEIGHT / 2 - 50);
-        
-        // TODO: Try adding a batcher with clipping rectangle
-        // TODO: Fade in/out at the top/bottom
+
         var count = 0;
         for (highscore_line in highscore_lines) {
             count++;
@@ -444,16 +381,7 @@ class GameOverState extends State {
             highscore_line.parent = score_container;
 
             Actuate.tween(highscore_line, 0.3, { alpha: get_fade_value(highscore_line.pos.y) }).delay(0.1 + count * 0.05);
-            // Actuate.tween(highscore_line.color, 0.3, { y: count * 25 }).delay(1.0);
-            // if (score.user_id == highscore.user_id) {
-            //     highscore_line.color = new Color(0.4, 0.4, 0.4, 0.0);
-            //     Actuate.tween(Luxe.camera.view.center, 2.0, { y: count * 50 }, true).onUpdate( function() {
-            //         Luxe.camera.transform.pos.set_xy(Luxe.camera.view.pos.x, Luxe.camera.view.pos.y); // TODO: Clamp to pan viewport
-            //     });
-            // }
         }
-        // Luxe.camera.transform.pos.y = count * 50;
-        // if (score_container.has('DragPan')) score_container.remove('DragPan');
         var highscore_list_height = (count * 25 + 100);
         if (highscore_list_height > Settings.HEIGHT) {
             var pan = new game.components.DragPan({ name: 'DragPan' });
@@ -483,7 +411,6 @@ class GameOverState extends State {
         } else if (y > bottom_hide_y) {
             return 0.0;
         } else if (y > bottom_fade_y) {
-            trace(1.0 - (y - bottom_fade_y) / (bottom_hide_y - bottom_fade_y));
             return 1.0 - (y - bottom_fade_y) / (bottom_hide_y - bottom_fade_y);
         } else {
             return 1.0;
