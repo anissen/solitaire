@@ -270,11 +270,11 @@ class GameOverState extends State {
             http.onData = function(data :String) {
                 trace('data: $data');
                 global_highscores = haxe.Json.parse(data);
-                show_global_highscores();
+                Luxe.next(show_global_highscores);
             }
             http.onError = function(error :String) {
                 trace('error: $error');
-                show_error(error);
+                Luxe.next(show_error.bind(error));
             }
             http.onStatus = function(status :Int) {
                 trace('status: $status');
@@ -309,12 +309,13 @@ class GameOverState extends State {
                     trace(response.content);
                     global_highscores = response.toJson();
                     if (global_highscores == null) {
+                        Luxe.next(show_error.bind('Error.'));
                     } else {
-                        show_global_highscores();
+                        Luxe.next(show_global_highscores);
                     }
                 } else {
                     trace('ERROR ${response.status} ${response.error}');
-                    show_error(response.error);
+                    Luxe.next(show_error.bind(response.error));
                 }
             }
             var request = new com.akifox.asynchttp.HttpRequest({ url: url, content: haxe.Json.stringify(content), callback: callback });
