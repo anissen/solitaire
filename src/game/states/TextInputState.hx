@@ -79,43 +79,39 @@ class TextInputState extends State {
         //     return 275 + (button_count++) * button_height;
         // }
         var count = 0;
-        var letters = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 2 3 4 5'.split(' ');
+        var letters = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 1 2 3 4 5'.split(' ');
         for (letter in letters) {
-            if (letter == '2') {
-                count += 4;
-                continue;
-            }
-            if (letter != '2') {
-                var text = letter;
-                if (letter == '3' || letter == '4' || letter == '5') {
-                    if (letter == '3') text = 'Aa';
-                    if (letter == '4') text = 'Erase';
-                    if (letter == '5') text = 'Done';
-                    var button = new Button({
-                        // pos: new Vector(10 + (button_width / 2) + (button_width + margin) * (count % 5), (Settings.HEIGHT - 250 - 10 - (button_height / 2)) + (button_height + margin) * Std.int(count / 5)),
-                        pos: new Vector(10 + (letter == '3' ? button_width / 2 : button_width) + (button_width + margin) * (count % 5), (Settings.HEIGHT - 300 - 10 - (button_height / 2)) + (button_height + margin) * Std.int(count / 5)),
-                        width: (letter == '3' ? button_width : button_width * 2 + margin),
-                        height: button_height,
-                        text: text,
-                        on_click: function() {}
-                    });
-                    button.scale.set_xy(1.0, 0);
-                    Actuate.tween(button.scale, 0.2, { y: 1.0}).delay(1.0 + count * 0.02);
-                    count += (letter == '3' ? 1 : 2);
-                    continue;
-                } else {
-                    var button = new PlainButton({
-                        // pos: new Vector(10 + (button_width / 2) + (button_width + margin) * (count % 5), (Settings.HEIGHT - 250 - 10 - (button_height / 2)) + (button_height + margin) * Std.int(count / 5)),
-                        pos: new Vector(10 + (button_width / 2) + (button_width + margin) * (count % 5), (Settings.HEIGHT - 300 - 10 - (button_height / 2)) + (button_height + margin) * Std.int(count / 5)),
-                        width: button_width,
-                        height: button_height,
-                        text: text,
-                        on_click: function() {}
-                    });
-                    button.scale.set_xy(1.0, 0);
-                    Actuate.tween(button.scale, 0.2, { y: 1.0}).delay(0.5 + count * 0.02);
-                    count++;
-                }
+            var text = letter;
+            if (letter == '3') {
+                count += 1;
+            } else if (letter == '1' || letter == '2' || letter == '4' || letter == '5') {
+                if (letter == '1') text = 'Space';
+                if (letter == '2') text = 'Erase';
+                if (letter == '4') text = 'Caps';
+                if (letter == '5') text = 'Done';
+                var button = new Button({
+                    // pos: new Vector(10 + (button_width / 2) + (button_width + margin) * (count % 5), (Settings.HEIGHT - 250 - 10 - (button_height / 2)) + (button_height + margin) * Std.int(count / 5)),
+                    pos: new Vector(10 + button_width + (button_width + margin) * (count % 5), (Settings.HEIGHT - 300 - 10 - (button_height / 2)) + (button_height + margin) * Std.int(count / 5)),
+                    width: button_width * 2 + margin,
+                    height: button_height,
+                    text: text,
+                    on_click: function() {}
+                });
+                button.scale.set_xy(1.0, 0);
+                Actuate.tween(button.scale, 0.2, { y: 1.0}).delay(1.5 + count * 0.02);
+                count += 2;
+            } else {
+                var button = new PlainButton({
+                    // pos: new Vector(10 + (button_width / 2) + (button_width + margin) * (count % 5), (Settings.HEIGHT - 250 - 10 - (button_height / 2)) + (button_height + margin) * Std.int(count / 5)),
+                    pos: new Vector(10 + (button_width / 2) + (button_width + margin) * (count % 5), (Settings.HEIGHT - 300 - 10 - (button_height / 2)) + (button_height + margin) * Std.int(count / 5)),
+                    width: button_width,
+                    height: button_height,
+                    text: text,
+                    on_click: function() {}
+                });
+                button.scale.set_xy(1.0, 0);
+                Actuate.tween(button.scale, 0.2, { y: 1.0}).delay(1.0 + count * 0.02);
+                count++;
             }
         }
     }
