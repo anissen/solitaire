@@ -6,11 +6,7 @@ import luxe.Text;
 import luxe.Color;
 import luxe.tween.Actuate;
 
-import particles.ParticleSystem;
-import particles.ParticleEmitter;
-import particles.modules.*;
-
-typedef ButtonOptions = {
+typedef PlainButtonOptions = {
     pos :Vector,
     ?width :Int,
     ?height :Int,
@@ -20,22 +16,19 @@ typedef ButtonOptions = {
     on_click :Void->Void
 }
 
-class Button extends luxe.NineSlice {
+class PlainButton extends luxe.NineSlice {
     var label :Text;
     var hovered :Bool = false;
     var on_click :Void->Void;
     var is_enabled :Bool = true;
-    var ps :ParticleSystem;
-    var pe :ParticleEmitter;
-    var particle_color :Color;
     var start_pos :Vector;
     public var text (get, set) :String;
     public var enabled (get, set) :Bool;
 
-    public function new(options :ButtonOptions) {
+    public function new(options :PlainButtonOptions) {
         super({
             name_unique: true,
-            texture: Luxe.resources.texture('assets/ui/buttonLong_brown_pressed.png'),
+            texture: Luxe.resources.texture('assets/ui/buttonLong_teal_pressed.png'),
             top: 20,
             left: 20,
             right: 20,
@@ -62,60 +55,14 @@ class Button extends luxe.NineSlice {
             color: new luxe.Color(1.0, 1.0, 1.0),
             depth: this.depth + 0.1,
 
-            letter_spacing: -1.4,
+            letter_spacing: -1.0,
             sdf: true,
             shader: Luxe.renderer.shaders.bitmapfont.shader.clone('title-shader'),
             outline: 0.7,
             outline_color: new Color().rgb(0xa55004)
         });
 
-        Actuate.tween(label, 3.0, { letter_spacing: -0.5 }).reflect().repeat();
-
         enabled = !disabled;
-
-        particle_color = new Color(1, 1, 1, 0.5);
-        ps = new ParticleSystem();
-        pe = new ParticleEmitter({
-			name: 'tile_particle_emitter', 
-			rate: 8,
-			cache_size: 32,
-			cache_wrap: true,
-			modules: [
-				new AreaSpawnModule({
-                    size: new Vector(width, height),
-                    inside: false
-                }),
-				new LifeTimeModule({
-					lifetime: 0.5,
-					lifetime_max: 1
-				}),
-                new ColorLifeModule({
-                    initial_color: particle_color
-                }),
-				new SizeLifeModule({
-					initial_size: new Vector(5,5),
-					end_size: new Vector(2,2)
-				}),
-				new DirectionModule({
-					direction: 0,
-					direction_variance: 360,
-                    speed: 10
-				})
-                // new particles.modules.RadialAccelModule({
-                //     accel: 500
-                // })
-			]
-		});
-        pe.stop();
-		ps.add(pe);
-        pe.position.copy_from(options.pos);
-
-        this.scale.y = 0;
-        Actuate
-            .tween(this.scale, 0.3, { y: 1 })
-            .delay(Math.random() * 0.2)
-            .ease(luxe.tween.easing.Cubic.easeInOut)
-            .onComplete(Luxe.camera.shake.bind(0.5));
     }
 
     public function get_top_pos() {
@@ -132,7 +79,6 @@ class Button extends luxe.NineSlice {
             if (!hovered) {
                 hovered = true;
                 color.tween(0.1, { r: 1.0, g: 0.9, b: 0.9 });
-                pe.start();
                 Actuate
                     .tween(this.pos, 0.3, { y: this.pos.y + 2 })
                     .reflect()
@@ -142,7 +88,6 @@ class Button extends luxe.NineSlice {
         } else {
             if (hovered) {
                 hovered = false;
-                pe.stop();
                 Actuate.stop(this.pos);
                 Actuate.tween(this.pos, 0.3, { y: start_pos.y });
                 color.tween(0.1, { r: 1.0, g: 1.0, b: 1.0 });
@@ -155,32 +100,6 @@ class Button extends luxe.NineSlice {
         if (point_inside_AABB(world_pos)) {
             play_sound('ui_click');
             on_click();
-        }
-    }
-
-    override public function update(dt :Float) {
-        super.update(dt);
-        ps.update(dt);
-    }
-
-    override public function ondestroy() {
-        super.ondestroy();
-        ps.destroy();
-    }
-
-    public function color_burst(?duration :Float) {
-        var old_color = particle_color.clone();
-        particle_color.set(1, 1, 0, 1);
-        pe.rate = 32;
-        pe.start();
-        if (duration != null) {
-            particle_color
-                .tween(0.3, { r: old_color.r, g: old_color.g, b: old_color.b, a: old_color.a })
-                .onComplete(function(_) {
-                    pe.rate = 8;
-                    pe.stop();
-                })
-                .delay(duration);
         }
     }
 
