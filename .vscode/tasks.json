@@ -22,5 +22,5 @@
         }
     },
     "chooserIndex": 1,
-    "showOutput": "never"
+    // "showOutput": "never"
 }

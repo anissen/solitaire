@@ -122,6 +122,8 @@ class PlainButton extends luxe.NineSlice {
             color.tween(0.3, { a: 1.0 });
             label.outline_color.tween(0.3, { r: 0.65, g: 0.31, b: 0.02 });
         } else {
+            Actuate.stop(this.pos);
+            Actuate.tween(this.pos, 0.3, { y: start_pos.y });
             color.tween(0.3, { a: 0.2 });
             label.outline_color.tween(0.3, { r: 0.5, g: 0.5, b: 0.5 });
         }

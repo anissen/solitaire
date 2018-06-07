@@ -36,10 +36,10 @@ class Button extends luxe.NineSlice {
         super({
             name_unique: true,
             texture: Luxe.resources.texture('assets/ui/buttonLong_brown_pressed.png'),
-            top: 20,
+            top: 15,
             left: 20,
             right: 20,
-            bottom: 20,
+            bottom: 15,
             color: new Color(1, 1, 1, 1),
             depth: 100
         });
@@ -203,6 +203,9 @@ class Button extends luxe.NineSlice {
             color.tween(0.3, { a: 1.0 });
             label.outline_color.tween(0.3, { r: 0.65, g: 0.31, b: 0.02 });
         } else {
+            if (pe != null) pe.stop();
+            Actuate.stop(this.pos);
+            Actuate.tween(this.pos, 0.3, { y: start_pos.y });
             color.tween(0.3, { a: 0.2 });
             label.outline_color.tween(0.3, { r: 0.5, g: 0.5, b: 0.5 });
         }
