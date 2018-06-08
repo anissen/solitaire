@@ -842,12 +842,19 @@ class PlayState extends State {
             Analytics.event('game', 'over', game_mode.get_game_mode_id());
             Analytics.event('game', 'score', game_mode.get_game_mode_id(), the_score);
 
-            Main.SetState(GameOverState.StateId, {
+            var data = {
                 user_id: Std.parseInt(Luxe.io.string_load('clientId')),
                 score: the_score,
                 game_mode: game_mode,
                 next_game_mode: next_game_mode
-            });
+            };
+
+            var name = Luxe.io.string_load('user_name');
+            if (name == null || name.length == 0) {
+                Main.SetState(TextInputState.StateId, { done_func: Main.SetState.bind(GameOverState.StateId, data) });
+            } else {
+                Main.SetState(GameOverState.StateId, data);
+            }
         });
         return Promise.resolve();
     }

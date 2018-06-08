@@ -44,8 +44,8 @@ class TextInputState extends State {
             bottom: 20
         });
 
-        nineslice.create(new Vector(20, 60), 20, 50);
-        nineslice.size = new luxe.Vector(20, 50);
+        nineslice.create(new Vector(20, 60), 32, 50);
+        nineslice.size = new luxe.Vector(32, 50);
         Actuate.tween(nineslice.size, 1.0, { x: Settings.WIDTH - 40 }).delay(0.3);
 
         var nameText = new Text({

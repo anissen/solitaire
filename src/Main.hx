@@ -11,7 +11,7 @@ using game.misc.GameMode;
 #if android
 @:build(snow.api.JNI.declare('org.snowkit.snow.SnowActivity'))
 class SnowActivity {
-    public static function url_open(url:String): Void;
+    public static function url_open(url:String) :Void;
     // public static function share(text:String): Void;
 }
 #end

@@ -14,6 +14,7 @@ typedef IconOptions = {
 class Icon extends Sprite {
     var hovered :Bool = false;
     var on_click :Void->Void;
+    var start_pos :Vector;
 
     public function new(options :IconOptions) {
         super({
@@ -22,6 +23,7 @@ class Icon extends Sprite {
             pos: options.pos
         });
         on_click = options.on_click;
+        start_pos = options.pos.clone();
     }
 
     override function init() {
@@ -49,6 +51,7 @@ class Icon extends Sprite {
             if (hovered) {
                 hovered = false;
                 Actuate.stop(this.pos);
+                Actuate.tween(this.pos, 0.3, { y: start_pos.y });
                 color.tween(0.1, { a: 1.0 });
             }
         }

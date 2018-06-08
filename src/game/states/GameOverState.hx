@@ -211,6 +211,7 @@ class GameOverState extends State {
         var plays_today = Std.parseInt(Luxe.io.string_load(data.game_mode.get_game_mode_id() + '_plays_today'));
         var now = Date.now();
         var seed_string = '' + (data.game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
+        var user_name = Luxe.io.string_load('user_name');
 
         var url = #if debug 'http://localhost:3000/scores/' #else 'https://anissen-solitaire.herokuapp.com/scores/' #end ;
 
@@ -232,7 +233,7 @@ class GameOverState extends State {
                 trace('status: $status');
             }
             http.addParameter('user_id', '' + data.user_id);
-            http.addParameter('user_name', '' + 'Test Name'); // TODO: Implement!
+            http.addParameter('user_name', user_name);
             http.addParameter('score', '' + data.score);
             http.addParameter('seed', seed_string);
             http.addParameter('year', '' + now.getFullYear());
@@ -245,7 +246,7 @@ class GameOverState extends State {
         #else
             var content = {
                 user_id: data.user_id,
-                user_name: 'Test Name', // TODO: Implement!
+                user_name: user_name,
                 score: data.score,
                 seed: Std.parseInt(seed_string),
                 year: now.getFullYear(),
