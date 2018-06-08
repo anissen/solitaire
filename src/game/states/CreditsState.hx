@@ -48,7 +48,7 @@ class CreditsState extends State {
 
         var madeby = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 170),
+            pos: new Vector(Settings.WIDTH / 2, 130),
             text: 'Made by',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -57,16 +57,22 @@ class CreditsState extends State {
         });
         var name = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 230),
+            pos: new Vector(Settings.WIDTH / 2, 160),
             text: 'Anders Nissen',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
             color: new Color().rgb(0x68460e),
-            point_size: 26
+            point_size: 26,
+
+            letter_spacing: 0,
+            sdf: true,
+            shader: Luxe.renderer.shaders.bitmapfont.shader.clone('title-shader'),
+            outline: 0.75,
+            outline_color: new Color()
         });
         var link = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 265),
+            pos: new Vector(Settings.WIDTH / 2, 190),
             text: 'andersnissen.com',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -80,6 +86,28 @@ class CreditsState extends State {
         link.add(new game.components.MouseUp(function(s) {
             Analytics.event('about', 'clicked', 'link');
             url_open_func('http://www.andersnissen.com');
+        }));
+
+        var icons_by = new Text({
+            //pos: new Vector(90, 190),
+            pos: new Vector(Settings.WIDTH / 2, 250),
+            text: 'Icons by',
+            align: TextAlign.center,
+            align_vertical: TextAlign.center,
+            color: new Color().rgb(0x956416),
+            point_size: 26
+        });
+        var icons_link = new Text({
+            //pos: new Vector(90, 190),
+            pos: new Vector(Settings.WIDTH / 2, 280),
+            text: 'game-icons.net',
+            align: TextAlign.center,
+            align_vertical: TextAlign.center,
+            color: new Color(0.75, 0.0, 0.5),
+            point_size: 26
+        });
+        icons_link.add(new game.components.MouseUp(function(s) {
+            url_open_func('https://game-icons.net/');
         }));
 
         // var donation = new Text({
@@ -96,7 +124,7 @@ class CreditsState extends State {
         // }));
 
         var donation_button = new game.ui.Button({
-            pos: new Vector(Settings.WIDTH / 2, 360),
+            pos: new Vector(Settings.WIDTH / 2, 350),
             width: 230,
             text: 'Make a donation',
             on_click: function() {
@@ -110,7 +138,7 @@ class CreditsState extends State {
         });
         donation_button.color_burst();
         var donation_text = new Text({
-            pos: new Vector(Settings.WIDTH / 2, 425),
+            pos: new Vector(Settings.WIDTH / 2, 420),
             text: 'Thank you for considering donating!\nDonations help keep Stoneset ad-free\nand speeds up improvements.',
             align: TextAlign.center,
             align_vertical: TextAlign.center,

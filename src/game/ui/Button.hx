@@ -17,6 +17,7 @@ typedef ButtonOptions = {
     ?font_size :Int,
     ?text :String,
     ?disabled :Bool,
+    ?no_shake :Bool,
     on_click :Void->Void
 }
 
@@ -115,7 +116,7 @@ class Button extends luxe.NineSlice {
             .tween(this.scale, 0.3, { y: 1 })
             .delay(Math.random() * 0.2)
             .ease(luxe.tween.easing.Cubic.easeInOut)
-            .onComplete(Luxe.camera.shake.bind(0.5));
+            .onComplete((options.no_shake == true) ? function() {} : Luxe.camera.shake.bind(0.5));
     }
 
     public function get_top_pos() {

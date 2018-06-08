@@ -46,7 +46,6 @@ class TextInputState extends State {
 
         nineslice.create(new Vector(20, 60), 32, 50);
         nineslice.size = new luxe.Vector(32, 50);
-        Actuate.tween(nineslice.size, 1.0, { x: Settings.WIDTH - 40 }).delay(0.3);
 
         var nameText = new Text({
             text: '',
@@ -55,13 +54,12 @@ class TextInputState extends State {
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
             color: new luxe.Color().rgb(0x964B00),
-
-            letter_spacing: 0,
-            sdf: true,
-            // shader: Luxe.renderer.shaders.bitmapfont.shader.clone('title-shader'),
-            outline: 0.75,
-            outline_color: new Color()
+            letter_spacing: 0
         });
+        nameText.color.a = 0.0;
+
+        Actuate.tween(nineslice.size, 1.0, { x: Settings.WIDTH - 40 }).delay(0.3);
+        Actuate.tween(nameText.color, 0.3, { a: 1.0 }).delay(1.3);
 
         var button_height = 45;
         var button_width = 45;
@@ -114,6 +112,7 @@ class TextInputState extends State {
                     width: (button_width + margin) * size - margin,
                     height: button_height,
                     text: text,
+                    no_shake: true,
                     on_click: function() {
                         if (letter == '1') update_name(name + ' ');
                         if (letter == '2' && name.length > 0) update_name(name.substr(0, name.length - 1));

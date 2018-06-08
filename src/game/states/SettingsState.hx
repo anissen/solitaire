@@ -111,6 +111,14 @@ class SettingsState extends State {
             disabled: (!audio_enabled)
         });
 
+        new Button({
+            pos: new Vector(Settings.WIDTH / 2, get_button_y() + button_height),
+            text: 'Change Name',
+            on_click: function() {
+                Main.SetState(TextInputState.StateId, { done_func: Main.SetState.bind(SettingsState.StateId) });
+            }
+        });
+
         var reset_tutorial_enabled = false;
         var tutorial_completed = (Luxe.io.string_load('tutorial_complete') == 'true');
         if (tutorial_completed) reset_tutorial_enabled = true;
