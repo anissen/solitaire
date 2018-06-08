@@ -5,6 +5,7 @@ import luxe.States.State;
 import luxe.Vector;
 import luxe.Color;
 import luxe.Scene;
+import luxe.Sprite;
 import luxe.tween.Actuate;
 import game.misc.GameMode.GameMode;
 
@@ -95,6 +96,7 @@ class GameOverState extends State {
     var score_container :luxe.Visual;
     var play_button :game.ui.Button;
     var error_text :String;
+    var loading_icon :Sprite;
 
     public function new() {
         super({ name: StateId });
@@ -132,7 +134,7 @@ class GameOverState extends State {
         });
         highscores_button.scale.set_xy(1/5, 1/5);
         highscores_button.color.a = 0.75;
-        new luxe.Sprite({
+        new Sprite({
             texture: Luxe.resources.texture('assets/ui/holy-grail.png'),
             parent: highscores_button,
             pos: new Vector(128, 128),
@@ -166,6 +168,16 @@ class GameOverState extends State {
             outline: 0.75,
             outline_color: new Color().rgb(0xa55004),
         });
+
+        loading_icon = new Sprite({
+            texture: Luxe.resources.texture('assets/ui/egyptian-walk.png'),
+            pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2),
+            scale: new Vector(0.3, 0.3),
+            color: new Color().rgb(0xa55004),
+            depth: 110
+        });
+        loading_icon.color.a = 0.2;
+        Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
 
         var data :DataType = cast d;
         score = data.score;
@@ -281,6 +293,7 @@ class GameOverState extends State {
     }
 
     function show_error() {
+        loading_icon.visible = false;
         new luxe.Text({
             pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2),
             text: error_text,
@@ -298,6 +311,7 @@ class GameOverState extends State {
             for (child in score_container.children) Actuate.stop(child);
         }
         highscore_lines_scene.empty();
+        loading_icon.visible = false;
 
         title.text = 'Global Highscores';
         highscore_mode = Global;
@@ -324,6 +338,7 @@ class GameOverState extends State {
             for (child in score_container.children) Actuate.stop(child);
         }
         highscore_lines_scene.empty();
+        loading_icon.visible = false;
 
         title.text = 'Local Highscores';
         highscore_mode = Local;
