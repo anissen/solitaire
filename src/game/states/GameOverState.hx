@@ -385,9 +385,9 @@ class GameOverState extends State {
     }
 
     function show_highscores(highscore_lines :Array<HighscoreLine>) {
-        score_container = new luxe.Visual({});
+        score_container = new luxe.Visual({ name: 'score_container', scene: highscore_lines_scene });
         score_container.color.a = 0;
-        highscore_lines_scene.add(score_container);
+        // highscore_lines_scene.add(score_container);
 
         var count = 0;
         for (highscore_line in highscore_lines) {
