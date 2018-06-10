@@ -6,3 +6,4 @@ asset_sources
 fastlane/Appfile
 src/highscores.json
 src/server/temp
+media/screenshots_appstore

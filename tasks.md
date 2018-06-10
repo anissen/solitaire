@@ -34,16 +34,18 @@ GOLD Rene:
 END
 
 * Global highscores
-    * On-screen keyboard for entering name for highscores
-    * Button(s) to toggle between local/global highscores
-    * Handle Strive and Survival game modes
-    * Highscore button in play mode
-    * LATER: View all high scores
-    * LATER: Ranking
+    [x] On-screen keyboard for entering name for highscores
+    [x] Button(s) to toggle between local/global highscores
+    [?] Handle Strive and Survival game modes
+    [ ] Highscore button in play mode
+    [ ] Handle Strive global highscore mode
+    [ ] LATER: View all high scores
+    [ ] LATER: Ranking
 * Being able to view highscore list without having to finish a game
 * [No default font]
 * iOS app icon
 * iOS launch icon
+* Images in tutorial to explain "collecting", "correct set order", "make a flawless gem"
 * Clean up bundled resources
 * "Invalid sound" should play when making a valid but non-matching selecting
 * Music:
