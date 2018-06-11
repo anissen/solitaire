@@ -107,12 +107,16 @@ class GameOverState extends State {
     }
 
     override function onenter(d :Dynamic) {
-        highscore_mode = Global;
         local_highscores = null;
         global_highscores = null;
         highscore_lines_scene = new Scene();
         score_container = null;
         error_text = '';
+
+        var data :DataType = cast d;
+        score = data.score;
+        game_mode = data.game_mode;
+        var next_game_mode = data.next_game_mode;
 
         var back_button = new game.ui.Icon({
             pos: new Vector(25, 25),
@@ -122,26 +126,33 @@ class GameOverState extends State {
         back_button.scale.set_xy(1/5, 1/5);
         back_button.depth = 100;
 
-        var highscores_button = new game.ui.Icon({
-            pos: new Vector(Settings.WIDTH - 35, 35),
-            texture_path: 'assets/ui/circular.png',
-            on_click: function() {
-                switch (highscore_mode) {
-                    case Global: show_local_highscores();
-                    case Local:  show_global_highscores();
+        var is_strive_mode = switch (game_mode) {
+            case Strive(_): true;
+            default: false;
+        };
+        highscore_mode = (is_strive_mode ? Local : Global);
+        if (!is_strive_mode) { // TODO: Handle Strive global highscore mode
+            var highscores_button = new game.ui.Icon({
+                pos: new Vector(Settings.WIDTH - 35, 35),
+                texture_path: 'assets/ui/circular.png',
+                on_click: function() {
+                    switch (highscore_mode) {
+                        case Global: show_local_highscores();
+                        case Local:  show_global_highscores();
+                    }
                 }
-            }
-        });
-        highscores_button.scale.set_xy(1/5, 1/5);
-        highscores_button.color.a = 0.75;
-        new Sprite({
-            texture: Luxe.resources.texture('assets/ui/holy-grail.png'),
-            parent: highscores_button,
-            pos: new Vector(128, 128),
-            scale: new Vector(0.3, 0.3),
-            color: new Color().rgb(0x8C7D56),
-            depth: 110
-        });
+            });
+            highscores_button.scale.set_xy(1/5, 1/5);
+            highscores_button.color.a = 0.75;
+            new Sprite({
+                texture: Luxe.resources.texture('assets/ui/holy-grail.png'),
+                parent: highscores_button,
+                pos: new Vector(128, 128),
+                scale: new Vector(0.3, 0.3),
+                color: new Color().rgb(0x8C7D56),
+                depth: 110
+            });
+        }
 
         /*
         Normal: Top 100 (/All time high)
@@ -155,7 +166,7 @@ class GameOverState extends State {
         */
 
         title = new Text({
-            text: 'Global Highscores',
+            text: (is_strive_mode ? 'Local Highscores' : 'Global Highscores'),
             pos: new Vector(Settings.WIDTH / 2, 70),
             point_size: 26,
             align: luxe.Text.TextAlign.center,
@@ -179,11 +190,6 @@ class GameOverState extends State {
         loading_icon.color.a = 0.2;
         Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
 
-        var data :DataType = cast d;
-        score = data.score;
-        game_mode = data.game_mode;
-        var next_game_mode = data.next_game_mode;
-
         var play_text = switch (next_game_mode) {
             case Normal: 'Play';
             case Strive(level): 'Strive: ${next_game_mode.get_strive_score()}';
@@ -200,6 +206,9 @@ class GameOverState extends State {
             }
         });
 
+        var user_name = Luxe.io.string_load('user_name');
+        if (user_name == null || user_name.length == 0) user_name = 'You';
+
         var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
         if (total_score == null) total_score = 0;
         total_score += score;
@@ -209,8 +218,8 @@ class GameOverState extends State {
         var local_scores = [];
         if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
 
-        local_highscores = [ for (s in local_scores) { score: s, name: 'You', current: false } ];
-        local_highscores.push({ score: score, name: 'You', current: true });
+        local_highscores = [ for (s in local_scores) { score: s, name: user_name, current: false } ];
+        local_highscores.push({ score: score, name: user_name, current: true });
 
         local_scores.push(score); // code is HERE to prevent duplicate own scores
 
@@ -225,7 +234,7 @@ class GameOverState extends State {
         var seed_string = '' + (data.game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
         var user_name = Luxe.io.string_load('user_name');
 
-        var url = #if debug 'http://localhost:3000/scores/' #else 'https://anissen-solitaire.herokuapp.com/scores/' #end ;
+        var url = 'https://anissen-solitaire.herokuapp.com/scores/'; //#if (debug && !android) 'http://localhost:3000/scores/' #else 'https://anissen-solitaire.herokuapp.com/scores/' #end ;
 
         // TODO: Make a map for holding the data and use it in both js and other platforms
 
@@ -277,7 +286,10 @@ class GameOverState extends State {
                         error_text = 'Error';
                         Luxe.next(show_error);
                     } else {
-                        Luxe.next(show_global_highscores);
+                        switch (data.game_mode) {
+                            case Strive(_): Luxe.next(show_local_highscores);
+                            default: Luxe.next(show_global_highscores);
+                        }
                     }
                 } else {
                     trace('ERROR ${response.status} ${response.error}');
@@ -343,25 +355,65 @@ class GameOverState extends State {
         title.text = 'Local Highscores';
         highscore_mode = Local;
 
+        // var user_name = Luxe.io.string_load('user_name');
+        // if (user_name == null || user_name.length == 0) user_name = 'You';
+
         var highscore_lines = [];
         switch (game_mode) {
             case Strive(level) | Tutorial(Strive(level)):
-                var strive_level = Std.parseInt(Luxe.io.string_load('strive_highlevel'));
-                if (strive_level == null) strive_level = 0;
+                var highest_level_played = Std.parseInt(Luxe.io.string_load('strive_highest_level_played'));
+                if (highest_level_played == null) highest_level_played = 0;
+                if (level > highest_level_played)  Luxe.io.string_save('strive_highest_level_played', '$level');
+
                 var strive_highscore = Std.parseInt(Luxe.io.string_load('strive_highscore'));
                 if (strive_highscore == null) strive_highscore = 0;
+                var highest_level_won = Std.parseInt(Luxe.io.string_load('strive_highest_level_won'));
+                if (highest_level_won == null) highest_level_won = 0;
                 if (score >= game_mode.get_strive_score()) {
-                    if (level > strive_level)     Luxe.io.string_save('strive_highlevel', '$level');
-                    if (score > strive_highscore) Luxe.io.string_save('strive_highscore', '$score');
+                    if (level > highest_level_won) {
+                        highest_level_won = level;
+                        Luxe.io.string_save('strive_highest_level_won', '$highest_level_won');
+                    }
+                    if (score > strive_highscore) {
+                        strive_highscore = score;
+                        Luxe.io.string_save('strive_highscore', '$score');
+                    }
                 }
 
-                var max_level = (level > strive_level ? level : strive_level);
+                var max_level = (level > highest_level_played ? level : highest_level_played);
+                trace('level: $level');
+                trace('highest_level_played: $highest_level_played');
+                trace('max_level: $max_level');
                 for (i in 0 ... max_level) {
-                    var strive_mode = Strive(max_level - i);
-                    var highscore_line = new HighscoreLine('#${max_level - i}', strive_mode.get_strive_score(), 'You');
-                    if (game_mode.equals(strive_mode)) {
-                        highscore_line.color = ((score >= game_mode.get_strive_score()) ? new Color(0.0, 0.75, 0.0) : new Color(0.75, 0.0, 0.0));
+                    trace('i: $i');
+                    var level_counter = (max_level - i);
+                    var strive_mode = Strive(level_counter);
+                    var description = 'Lost';
+                    var color = new Color(0.5, 0.0, 0.0);
+                    // if (level_counter > highest_level_won) {
+                    //     description = 'Lost';
+                    //     color = new Color(0.5, 0.0, 0.0);
+                    // }
+                    if (level_counter == highest_level_won) {
+                        description = 'Highscore';
+                        color = new Color(0.5, 0.0, 0.5);
                     }
+                    if (level_counter < level) {
+                        description = 'Won';
+                        color = new Color(0.0, 0.5, 0.0);
+                    }
+                    if (game_mode.equals(strive_mode)) {
+                        var won_game = (score >= game_mode.get_strive_score());
+                        description = (won_game ? 'Won!' : 'Lost!');
+                    }
+                    var highscore_line = new HighscoreLine('', strive_mode.get_strive_score(), description);
+                    highscore_line.color = color;
+                    if (game_mode.equals(strive_mode)) {
+                        var won_game = (score >= game_mode.get_strive_score());
+                        highscore_line.color = new Color(0.75, 0.1, 0.1);
+                        if (won_game) highscore_line.color = ((level_counter == highest_level_won) ? new Color(0.5, 0.0, 0.5) : new Color(0.1, 0.75, 0.1));
+                    }
+                    
                     highscore_lines.push(highscore_line);
                 } 
             default:

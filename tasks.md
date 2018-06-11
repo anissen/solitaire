@@ -46,6 +46,7 @@ END
 * iOS app icon
 * iOS launch icon
 * Images in tutorial to explain "collecting", "correct set order", "make a flawless gem"
+* Error-handling on http-requests
 * Clean up bundled resources
 * "Invalid sound" should play when making a valid but non-matching selecting
 * Music:
