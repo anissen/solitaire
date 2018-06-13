@@ -19,7 +19,7 @@ class DragPan extends Component {
     var visual :luxe.Visual;
 
     var drag_velocity :Float;
-    var inertia_duration :Float = 1.2;
+    var inertia_duration :Float = 2.0;
     var inertia_time :Float;
 
     override function init() {
