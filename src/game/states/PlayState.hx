@@ -846,7 +846,8 @@ class PlayState extends State {
                 user_id: Std.parseInt(Luxe.io.string_load('clientId')),
                 score: the_score,
                 game_mode: game_mode,
-                next_game_mode: next_game_mode
+                next_game_mode: next_game_mode,
+                actions_data: Game.Instance.get_actions_data()
             };
 
             var name = Luxe.io.string_load('user_name');

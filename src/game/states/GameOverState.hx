@@ -254,71 +254,92 @@ class GameOverState extends State {
 
         var url = 'https://anissen-solitaire.herokuapp.com/scores/'; //#if (debug && !android) 'http://localhost:3000/scores/' #else 'https://anissen-solitaire.herokuapp.com/scores/' #end ;
 
-        // TODO: Make a map for holding the data and use it in both js and other platforms
+        var data_map = [
+            'user_id' => '' + data.user_id,
+            'user_name' => user_name,
+            'score' => '' + data.score,
+            'seed' => seed_string,
+            'year' => '' + now.getFullYear(),
+            'month' => '' + now.getMonth(),
+            'day' => '' + now.getDate(),
+            'game_mode' => '' + data.game_mode.getIndex(),
+            'game_count' => '' + plays_today,
+            'actions' => '' // + data.actions_data
+        ];
 
         #if js
-            var http = new haxe.Http(url);
-            http.onData = function(data :String) {
-                trace('data: $data');
-                global_highscores = haxe.Json.parse(data);
-                Luxe.next(show_global_highscores);
-            }
-            http.onError = function(error :String) {
-                trace('error: $error');
-                error_text = error;
+
+        var http = new haxe.Http(url);
+        http.onData = function(data :String) {
+            // trace('data: $data');
+            global_highscores = haxe.Json.parse(data);
+            Luxe.next(show_global_highscores);
+        }
+        http.onError = function(error :String) {
+            // trace('error: $error');
+            error_text = error;
+            Luxe.next(show_error);
+        }
+        // http.onStatus = function(status :Int) {
+        //     trace('status: $status');
+        // }
+        
+        for (key in data_map) {
+            http.addParameter(key, data_map[key]);
+        }
+
+        // http.addParameter('user_id', '' + data.user_id);
+        // http.addParameter('user_name', user_name);
+        // http.addParameter('score', '' + data.score);
+        // http.addParameter('seed', seed_string);
+        // http.addParameter('year', '' + now.getFullYear());
+        // http.addParameter('month', '' + now.getMonth());
+        // http.addParameter('day', '' + now.getDate());
+        // http.addParameter('game_mode', '' + data.game_mode.getIndex());
+        // http.addParameter('game_count', '' + plays_today);
+        // http.addParameter('actions', '');
+        http.request(true);
+
+        #else
+
+        // var content = {
+        //     user_id: data.user_id,
+        //     user_name: user_name,
+        //     score: data.score,
+        //     seed: Std.parseInt(seed_string),
+        //     year: now.getFullYear(),
+        //     month: now.getMonth(),
+        //     day: now.getDate(),
+        //     game_mode: data.game_mode.getIndex(),
+        //     game_count: plays_today,
+        //     actions: ''
+        // };
+
+        function callback(response :com.akifox.asynchttp.HttpResponse) {
+            if (response.isOK) {
+                // trace('DONE ${response.status}');
+                // trace(response.content);
+                global_highscores = response.toJson();
+                if (global_highscores == null) {
+                    error_text = 'Error';
+                    Luxe.next(show_error);
+                } else {
+                    switch (data.game_mode) {
+                        case Strive(_): Luxe.next(show_local_highscores);
+                        default: Luxe.next(show_global_highscores);
+                    }
+                }
+            } else {
+                // trace('ERROR ${response.status} ${response.error}');
+                error_text = response.error;
                 Luxe.next(show_error);
             }
-            http.onStatus = function(status :Int) {
-                trace('status: $status');
-            }
-            http.addParameter('user_id', '' + data.user_id);
-            http.addParameter('user_name', user_name);
-            http.addParameter('score', '' + data.score);
-            http.addParameter('seed', seed_string);
-            http.addParameter('year', '' + now.getFullYear());
-            http.addParameter('month', '' + now.getMonth());
-            http.addParameter('day', '' + now.getDate());
-            http.addParameter('game_mode', '' + data.game_mode.getIndex());
-            http.addParameter('game_count', '' + plays_today);
-            http.addParameter('actions', '');
-            http.request(true);
-        #else
-            var content = {
-                user_id: data.user_id,
-                user_name: user_name,
-                score: data.score,
-                seed: Std.parseInt(seed_string),
-                year: now.getFullYear(),
-                month: now.getMonth(),
-                day: now.getDate(),
-                game_mode: data.game_mode.getIndex(),
-                game_count: plays_today,
-                actions: ''
-            };
-            function callback(response :com.akifox.asynchttp.HttpResponse) {
-                if (response.isOK) {
-                    trace('DONE ${response.status}');
-                    trace(response.content);
-                    global_highscores = response.toJson();
-                    if (global_highscores == null) {
-                        error_text = 'Error';
-                        Luxe.next(show_error);
-                    } else {
-                        switch (data.game_mode) {
-                            case Strive(_): Luxe.next(show_local_highscores);
-                            default: Luxe.next(show_global_highscores);
-                        }
-                    }
-                } else {
-                    trace('ERROR ${response.status} ${response.error}');
-                    error_text = response.error;
-                    Luxe.next(show_error);
-                }
-            }
-            var request = new com.akifox.asynchttp.HttpRequest({ url: url, content: haxe.Json.stringify(content), callback: callback });
-            request.method = com.akifox.asynchttp.HttpMethod.POST;
-            request.contentType = 'application/json';
-            request.send();
+        }
+        var request = new com.akifox.asynchttp.HttpRequest({ url: url, content: haxe.Json.stringify(data_map), callback: callback });
+        request.method = com.akifox.asynchttp.HttpMethod.POST;
+        request.contentType = 'application/json';
+        request.send();
+
         #end
     }
 

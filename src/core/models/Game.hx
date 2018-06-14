@@ -57,6 +57,10 @@ class Game {
         new_turn();
     }
 
+    public function get_actions_data() {
+        return messageSystem.serialize();
+    }
+
     public function make_puzzle(instantiate_func :CardData->Card) {
         // var random_cards = [
         //     { suit: 0, stacked: false },
