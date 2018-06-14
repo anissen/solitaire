@@ -115,7 +115,7 @@ class Game {
         // 3+3+3+3 = 12
         // 3+2+3+3 = 11
 
-        /* TODO:
+        /* 
          (New) idea:
          Place 9 random tiles on the grid. Make a "worm" find and remove a connected subset of the tiles. Randomly place between 0 and 3 of cards on hand onto grid. Repeat. The collected tiles form the quests.
          Consider using stacked tiles?
@@ -190,13 +190,13 @@ class Game {
         // }
 
         function collect_quest(x :Int, y :Int, quest :Array<Card>, visited :Array<Card>) {
-            trace('collect_quest x: $x, y: $y');
-            trace('quest length: ${quest.length}');
+            // trace('collect_quest x: $x, y: $y');
+            // trace('quest length: ${quest.length}');
             var tile = grid.get_tile(x, y);
             if (tile == null) return [];
             if (visited.has(tile)) return [];
             quest.push(tile);
-            trace('quest tile added!');
+            // trace('quest tile added!');
             if (quest.length == 3) return quest;
 
             var new_visited = visited.copy();
@@ -220,12 +220,11 @@ class Game {
 
         var visited_quest_tiles = [];
         function get_quest() {
-            // TODO: MAYBE insert a card from hand
 
             for (pos in positions.shuffle()) {
                 var quest = collect_quest(pos.x, pos.y, [], visited_quest_tiles);
-                trace('get_quest quest length: ${quest.length}');
-                trace(quest);
+                // trace('get_quest quest length: ${quest.length}');
+                // trace(quest);
                 if (quest.length == 3) {
                     // for (q in quest) test_grid.set_tile(q.grid_pos.x, q.grid_pos.y, null);
                     visited_quest_tiles = visited_quest_tiles.concat(quest);
@@ -244,17 +243,17 @@ class Game {
         var quest_cards :Array<CardData> = [];
         while (quest_cards.length < 6) {
             for (q in get_quest()) {
-                trace('got quest!');
+                // trace('got quest!');
                 quest_cards.push({ suit: q.suit, stacked: q.stacked });
             }
-            trace('count_all: ${quest_cards.length}');
+            // trace('count_all: ${quest_cards.length}');
         }
 
         // quest_deck.clear(); // hack
         quest_deck.add_cards(quest_cards);
 
         while (quests.length < 2) {
-            trace('creating a new quest');
+            // trace('creating a new quest');
             var newQuest = quest_deck.take(3);
             quests.push(newQuest);
             messageSystem.emit(NewQuest(newQuest));

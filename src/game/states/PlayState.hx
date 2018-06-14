@@ -1081,11 +1081,13 @@ class PlayState extends State {
             #if debug
             case luxe.Input.Key.key_k: handle_game_over();
             case luxe.Input.Key.key_n: {
+                @SuppressWarning("checkstyle:Trace")
                 trace('debug: starting a new game');
                 Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
                 start_new_game();
             }
             case luxe.Input.Key.key_r: {
+                @SuppressWarning("checkstyle:Trace")
                 trace('debug: resetting games played today');
                 Luxe.io.string_save(game_mode.get_game_mode_id() + '_plays_today', '0');
             }
@@ -1100,6 +1102,7 @@ class PlayState extends State {
             case luxe.Input.Key.key_l: load_game();
             case luxe.Input.Key.key_q: // skip tutorial
                 finish_tutorial();
+                @SuppressWarning("checkstyle:Trace")
                 trace('Tutorial skipped');
             // case luxe.Input.Key.key_p: tutorial.point_to(scoreText).then(tutorial.point_to(tiles.last()));
             // case luxe.Input.Key.key_q: tutorial.show(['This is tutorial', 'More text'], [tiles.first(), tiles[1], tiles.last()]);

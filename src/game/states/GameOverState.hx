@@ -75,9 +75,27 @@ class HighscoreLine extends luxe.Entity {
     }
 }
 
-typedef DataType = { user_id :Int, score :Int, name :String, game_mode :GameMode, next_game_mode :GameMode };
-typedef LocalHighscore = { score :Int, name :String, current :Bool };
-typedef GlobalHighscore = { score :Int, name :String, user_id :Int, user_name :String };
+typedef DataType = { 
+    user_id :Int,
+    score :Int,
+    name :String,
+    game_mode :GameMode,
+    next_game_mode :GameMode,
+    actions_data :String
+};
+
+typedef LocalHighscore = { 
+    score :Int,
+    name :String,
+    current :Bool
+};
+
+typedef GlobalHighscore = { 
+    score :Int,
+    name :String,
+    user_id :Int,
+    user_name :String
+};
 
 enum HighscoreMode {
     Global;
@@ -381,11 +399,7 @@ class GameOverState extends State {
                 }
 
                 var max_level = (level > highest_level_played ? level : highest_level_played);
-                trace('level: $level');
-                trace('highest_level_played: $highest_level_played');
-                trace('max_level: $max_level');
                 for (i in 0 ... max_level) {
-                    trace('i: $i');
                     var level_counter = (max_level - i);
                     var strive_mode = Strive(level_counter);
                     var description = 'Lost';
