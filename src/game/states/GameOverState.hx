@@ -256,6 +256,7 @@ class GameOverState extends State {
         var now = Date.now();
         var seed_string = '' + (data.game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
         var user_name = Luxe.io.string_load('user_name');
+        var strive_goal = data.game_mode.get_strive_score();
 
         var url = 'https://anissen-solitaire.herokuapp.com/scores/'; //#if (debug && !android) 'http://localhost:3000/scores/' #else 'https://anissen-solitaire.herokuapp.com/scores/' #end ;
 
@@ -263,6 +264,7 @@ class GameOverState extends State {
             'user_id' => '' + data.user_id,
             'user_name' => user_name,
             'score' => '' + data.score,
+            'strive_goal' => '' + strive_goal,
             'seed' => seed_string,
             'year' => '' + now.getFullYear(),
             'month' => '' + now.getMonth(),
@@ -285,40 +287,14 @@ class GameOverState extends State {
             error_text = error;
             Luxe.next(show_error);
         }
-        // http.onStatus = function(status :Int) {
-        //     trace('status: $status');
-        // }
         
-        for (key in data_map) {
+        for (key in data_map.keys()) {
             http.addParameter(key, data_map[key]);
         }
 
-        // http.addParameter('user_id', '' + data.user_id);
-        // http.addParameter('user_name', user_name);
-        // http.addParameter('score', '' + data.score);
-        // http.addParameter('seed', seed_string);
-        // http.addParameter('year', '' + now.getFullYear());
-        // http.addParameter('month', '' + now.getMonth());
-        // http.addParameter('day', '' + now.getDate());
-        // http.addParameter('game_mode', '' + data.game_mode.getIndex());
-        // http.addParameter('game_count', '' + plays_today);
-        // http.addParameter('actions', '');
         http.request(true);
 
         #else
-
-        // var content = {
-        //     user_id: data.user_id,
-        //     user_name: user_name,
-        //     score: data.score,
-        //     seed: Std.parseInt(seed_string),
-        //     year: now.getFullYear(),
-        //     month: now.getMonth(),
-        //     day: now.getDate(),
-        //     game_mode: data.game_mode.getIndex(),
-        //     game_count: plays_today,
-        //     actions: ''
-        // };
 
         function callback(response :com.akifox.asynchttp.HttpResponse) {
             if (response.isOK) {
