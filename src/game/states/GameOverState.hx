@@ -242,8 +242,13 @@ class GameOverState extends State {
         local_scores.push(score); // code is HERE to prevent duplicate own scores
 
         Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
-        
-        update_global_highscores(data);
+
+        if (is_strive_mode) {
+            show_local_highscores();
+            update_global_highscores(data); // just update, don't show the global scores yet
+        } else {
+            update_global_highscores(data);
+        }
     }
 
     function update_global_highscores(data :DataType) {
@@ -325,7 +330,7 @@ class GameOverState extends State {
                     Luxe.next(show_error);
                 } else {
                     switch (data.game_mode) {
-                        case Strive(_): Luxe.next(show_local_highscores);
+                        case Strive(_): // don't do anything; for now Strive only shows local scores
                         default: Luxe.next(show_global_highscores);
                     }
                 }
