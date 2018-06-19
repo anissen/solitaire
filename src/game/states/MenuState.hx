@@ -219,9 +219,10 @@ class MenuState extends State {
 
         #if debug
         new Text({
-            pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: 'Debug: back',
-            align: luxe.Text.TextAlign.center
+            pos: new Vector(Settings.WIDTH / 2, 50),
+            text: 'Debug',
+            align: luxe.Text.TextAlign.center,
+            color: new Color(0.0, 0.0, 1.0)
         });
         #end
     }
