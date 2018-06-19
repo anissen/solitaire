@@ -115,6 +115,7 @@ class GameOverState extends State {
     var play_button :game.ui.Button;
     var error_text :String;
     var loading_icon :Sprite;
+    var loading_global_data :Bool;
 
     public function new() {
         super({ name: StateId });
@@ -130,6 +131,7 @@ class GameOverState extends State {
         highscore_lines_scene = new Scene();
         score_container = null;
         error_text = '';
+        loading_global_data = false;
 
         var data :DataType = cast d;
         score = data.score;
@@ -206,7 +208,7 @@ class GameOverState extends State {
             depth: 110
         });
         loading_icon.color.a = 0.2;
-        Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
+        loading_icon.visible = false;
 
         var play_text = switch (next_game_mode) {
             case Normal: 'Play';
@@ -252,13 +254,17 @@ class GameOverState extends State {
     }
 
     function update_global_highscores(data :DataType) {
+        loading_icon.visible = true;
+        Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
+        loading_global_data = true;
+
         var plays_today = Std.parseInt(Luxe.io.string_load(data.game_mode.get_game_mode_id() + '_plays_today'));
         var now = Date.now();
         var seed_string = '' + (data.game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
         var user_name = Luxe.io.string_load('user_name');
         var strive_goal = data.game_mode.get_strive_score();
 
-        var url = 'https://anissen-solitaire.herokuapp.com/scores/'; //#if (debug && !android) 'http://localhost:3000/scores/' #else 'https://anissen-solitaire.herokuapp.com/scores/' #end ;
+        var url = #if (debug && !android) 'http://localhost:3000/scores/' #else 'https://stoneset.herokuapp.com/scores/' #end ;
 
         var data_map = [
             'user_id' => '' + data.user_id,
@@ -278,11 +284,13 @@ class GameOverState extends State {
 
         var http = new haxe.Http(url);
         http.onData = function(data :String) {
+            loading_global_data = false;
             // trace('data: $data');
             global_highscores = haxe.Json.parse(data);
             Luxe.next(show_global_highscores);
         }
         http.onError = function(error :String) {
+            loading_global_data = false;
             // trace('error: $error');
             error_text = error;
             Luxe.next(show_error);
@@ -297,6 +305,7 @@ class GameOverState extends State {
         #else
 
         function callback(response :com.akifox.asynchttp.HttpResponse) {
+            loading_global_data = false;
             if (response.isOK) {
                 // trace('DONE ${response.status}');
                 // trace(response.content);
@@ -305,9 +314,9 @@ class GameOverState extends State {
                     error_text = 'Error';
                     Luxe.next(show_error);
                 } else {
-                    switch (data.game_mode) {
-                        case Strive(_): // don't do anything; for now Strive only shows local scores
-                        default: Luxe.next(show_global_highscores);
+                    switch (highscore_mode) {
+                        case Local: // don't do anything
+                        case Global: Luxe.next(show_global_highscores);
                     }
                 }
             } else {
@@ -339,7 +348,7 @@ class GameOverState extends State {
     }
     
     function show_global_highscores() {
-        if (score_container != null) {
+        if (score_container != null && !score_container.destroyed) {
             for (child in score_container.children) Actuate.stop(child);
         }
         highscore_lines_scene.empty();
@@ -348,8 +357,15 @@ class GameOverState extends State {
         title.text = 'Global Highscores';
         highscore_mode = Global;
 
+        if (loading_global_data) {
+            loading_icon.visible = true;
+            Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
+            return;
+        }
+
         if (global_highscores == null) {
             show_error();
+            return;
         }
 
         var clientId = Std.parseInt(Luxe.io.string_load('clientId'));
@@ -366,7 +382,7 @@ class GameOverState extends State {
     }
 
     function show_local_highscores() {
-        if (score_container != null) {
+        if (score_container != null && !score_container.destroyed) {
             for (child in score_container.children) Actuate.stop(child);
         }
         highscore_lines_scene.empty();
