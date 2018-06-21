@@ -264,7 +264,7 @@ class GameOverState extends State {
         var user_name = Luxe.io.string_load('user_name');
         var strive_goal = data.game_mode.get_strive_score();
 
-        var url = #if (debug && !android) 'http://localhost:3000/scores/' #else 'https://stoneset.herokuapp.com/scores/' #end ;
+        var url = Settings.SERVER_URL + 'scores/';
 
         var data_map = [
             'user_id' => '' + data.user_id,

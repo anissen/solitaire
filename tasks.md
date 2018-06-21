@@ -9,6 +9,7 @@ Tasks:
     * https://startbootstrap.com/template-overviews/new-age/
     * https://startbootstrap.com/template-overviews/freelancer/
     * https://startbootstrap.com/template-overviews/grayscale/
+* Update andersnissen.com
 
 ===== Beta launch line =====
 

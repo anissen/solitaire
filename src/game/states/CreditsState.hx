@@ -3,6 +3,7 @@ package game.states;
 import luxe.Text;
 import luxe.States.State;
 import luxe.Vector;
+import luxe.Sprite;
 import luxe.Color;
 import core.utils.Analytics;
 
@@ -70,6 +71,16 @@ class CreditsState extends State {
             outline: 0.75,
             outline_color: new Color()
         });
+        new Sprite({
+            parent: name,
+            pos: new Vector(0, -5), // to avoid the two link-sprites overlapping
+            size: new Vector(name.text_bounds.w, name.text_bounds.h),
+            color: new Color(1.0, 0.0, 0.0, 0.0)
+        }).add(new game.components.MouseUp(function(s) {
+            Analytics.event('about', 'clicked', 'name');
+            url_open_func('http://www.andersnissen.com');
+        }));
+
         var link = new Text({
             //pos: new Vector(90, 190),
             pos: new Vector(Settings.WIDTH / 2, 190),
@@ -79,11 +90,11 @@ class CreditsState extends State {
             color: new Color(0.75, 0.0, 0.5),
             point_size: 26
         });
-        name.add(new game.components.MouseUp(function(s) {
-            Analytics.event('about', 'clicked', 'name');
-            url_open_func('http://www.andersnissen.com');
-        }));
-        link.add(new game.components.MouseUp(function(s) {
+        new Sprite({
+            parent: link,
+            size: new Vector(link.text_bounds.w, link.text_bounds.h),
+            color: new Color(1.0, 0.0, 0.0, 0.0)
+        }).add(new game.components.MouseUp(function(s) {
             Analytics.event('about', 'clicked', 'link');
             url_open_func('http://www.andersnissen.com');
         }));
@@ -106,7 +117,11 @@ class CreditsState extends State {
             color: new Color(0.75, 0.0, 0.5),
             point_size: 26
         });
-        icons_link.add(new game.components.MouseUp(function(s) {
+        new Sprite({
+            parent: icons_link,
+            size: new Vector(icons_link.text_bounds.w, icons_link.text_bounds.h),
+            color: new Color(1.0, 0.0, 0.0, 0.0)
+        }).add(new game.components.MouseUp(function(s) {
             url_open_func('https://game-icons.net/');
         }));
 

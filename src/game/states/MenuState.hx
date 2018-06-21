@@ -2,6 +2,7 @@ package game.states;
 
 import luxe.Text;
 import luxe.States.State;
+import luxe.Sprite;
 import luxe.Vector;
 import luxe.Color;
 import luxe.tween.Actuate;
@@ -25,7 +26,7 @@ class MenuState extends State {
     }
 
     override function onenter(data :Dynamic) {
-        var icon = new luxe.Sprite({
+        var icon = new Sprite({
             pos: new Vector(Settings.WIDTH / 2 - 20, 80),
             texture: Luxe.resources.texture('assets/ui/pyramids.png'),
             scale: new Vector(0.5, 0.5)
@@ -54,7 +55,7 @@ class MenuState extends State {
         });
         config_button.scale.set_xy(1/5, 1/5);
         config_button.color.a = 0.75;
-        new luxe.Sprite({
+        new Sprite({
             texture: Luxe.resources.texture('assets/ui/cog.png'),
             parent: config_button,
             pos: new Vector(128, 128),
@@ -70,7 +71,7 @@ class MenuState extends State {
         });
         about_button.scale.set_xy(1/5, 1/5);
         about_button.color.a = 0.75;
-        new luxe.Sprite({
+        new Sprite({
             texture: Luxe.resources.texture('assets/ui/book.png'),
             parent: about_button,
             pos: new Vector(128, 128),
@@ -80,7 +81,7 @@ class MenuState extends State {
         });
 
         /*
-        var star = new luxe.Sprite({
+        var star = new Sprite({
             pos: new Vector(55, 190),
             texture: Luxe.resources.texture('assets/images/symbols/star.png'),
             scale: new Vector(0.15, 0.15),
@@ -216,6 +217,23 @@ class MenuState extends State {
             .then(tutorial_box.tutorial({ texts: ['Settings menu is here.'], pos_y: config_button.pos.y + 85 + 15, points: [Vector.Add(config_button.pos, new Vector(0, 15))] }))
             .then(tutorial_box.tutorial({ texts: ['About {brown}Stoneset{default}.', 'Go here to {brown}donate{default}\ntowards the game.'], pos_y: about_button.pos.y + 85 + 15, points: [Vector.Add(about_button.pos, new Vector(0, 15))], do_func: complete_tutorial }));
         }
+
+        var link = new Text({
+            pos: new Vector(Settings.WIDTH / 2, get_button_y() - 10),
+            text: 'Beta Feedback',
+            align: TextAlign.center,
+            align_vertical: TextAlign.center,
+            color: new Color(0.75, 0.0, 0.5),
+            point_size: 26
+        });
+        new Sprite({
+            parent: link,
+            size: new Vector(link.text_bounds.w, link.text_bounds.h),
+            color: new Color(1.0, 0.0, 0.0, 0.0)
+        }).add(new game.components.MouseUp(function(s) {
+            var url_open_func = #if android Main.SnowActivity.url_open #else Luxe.io.url_open #end ;
+            url_open_func('mailto:andnis+stoneset@gmail.com');
+        }));
 
         #if debug
         new Text({
