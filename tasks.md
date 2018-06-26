@@ -32,7 +32,16 @@ GOLD Niels & Daniel:
 
 GOLD Rene:
 [ ] Bedre forklaring af flawless gems
-END
+
+Kim:
+[ ] Flyt + klik på symbol sætter åbenbart en ny origin for symbolet
+[ ] "Audio off" bliver deaktiveret ved at minimere/restore app'en
+[ ] Knapper kan flyttes ved at holde en finger på knappen og tappe andetsteds
+[ ] Knapper på "change name" skærmen kan trykkes før de er tween'et ind
+[ ] Crash ved klik på "Play" på game over skærm, efter skift til local highscore
+END BETA FEEDBACK
+
+* Crash when starting a normal game, then finishing another game mode and resuming the normal game
 
 * Global highscores
     [x] On-screen keyboard for entering name for highscores
