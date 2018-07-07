@@ -843,7 +843,7 @@ class PlayState extends State {
             Analytics.event('game', 'score', game_mode.get_game_mode_id(), the_score);
 
             var data = {
-                user_id: Std.parseInt(Luxe.io.string_load('clientId')),
+                user_id: Luxe.io.string_load('clientId'),
                 score: the_score,
                 game_mode: game_mode,
                 next_game_mode: next_game_mode,

@@ -46,8 +46,8 @@ class Main extends luxe.Game {
 
     override function ready() {
         var clientId = Luxe.io.string_load('clientId');
-        if (clientId == null || Std.parseInt(clientId) == null || Std.parseInt(clientId) <= 0) {
-            clientId = '${haxe.Timer.stamp()}'.split('.').join('').substr(-10); // use last 10 characters
+        if (clientId == null) {
+            clientId = '${haxe.Timer.stamp()}'.split('.').join('');
             Luxe.io.string_save('clientId', clientId);
         }
 
