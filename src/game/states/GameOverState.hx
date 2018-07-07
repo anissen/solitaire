@@ -76,7 +76,7 @@ class HighscoreLine extends luxe.Entity {
 }
 
 typedef DataType = { 
-    user_id :Int,
+    user_id :String,
     score :Int,
     name :String,
     game_mode :GameMode,
@@ -93,7 +93,7 @@ typedef LocalHighscore = {
 typedef GlobalHighscore = { 
     score :Int,
     name :String,
-    user_id :Int,
+    user_id :String,
     user_name :String
 };
 
@@ -253,9 +253,21 @@ class GameOverState extends State {
         }
     }
 
+    function get_non_tutorial_game_mode() {
+        return switch (game_mode) {
+            case Tutorial(mode): mode;
+            default: game_mode;
+        }
+    }
+
     function update_global_highscores(data :DataType) {
-        loading_icon.visible = true;
-        Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
+        switch (highscore_mode) {
+            case Local: // don't show loading icon in local mode
+            case Global: {
+                loading_icon.visible = true;
+                Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
+            }
+        }
         loading_global_data = true;
 
         var plays_today = Std.parseInt(Luxe.io.string_load(data.game_mode.get_game_mode_id() + '_plays_today'));
@@ -275,7 +287,7 @@ class GameOverState extends State {
             'year' => '' + now.getFullYear(),
             'month' => '' + now.getMonth(),
             'day' => '' + now.getDate(),
-            'game_mode' => '' + data.game_mode.getIndex(),
+            'game_mode' => '' + get_non_tutorial_game_mode().getIndex(),
             'game_count' => '' + plays_today,
             'actions' => '' // + data.actions_data
         ];
@@ -368,7 +380,7 @@ class GameOverState extends State {
             return;
         }
 
-        var clientId = Std.parseInt(Luxe.io.string_load('clientId'));
+        var clientId = Luxe.io.string_load('clientId');
 
         var highscore_lines = [];
         var count = 0;
