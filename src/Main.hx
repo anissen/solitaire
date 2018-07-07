@@ -99,15 +99,15 @@ class Main extends luxe.Game {
         var music = ['Temple_of_the_Mystics' /*, 'desert-ambience-cropped.ogg' */];
 
         var parcel = new luxe.Parcel({
-			load_time_spacing: 0,
-			load_start_delay: 0,
-			textures: [ for (icon in icons.concat(ui).concat(tutorial)) { id: 'assets/' + icon } ],
-			sounds: [ for (sound in sounds) { id: Settings.get_sound_file_path(sound), is_stream: false } ]
+            load_time_spacing: 0,
+            load_start_delay: 0,
+            textures: [ for (icon in icons.concat(ui).concat(tutorial)) { id: 'assets/' + icon } ],
+            sounds: [ for (sound in sounds) { id: Settings.get_sound_file_path(sound), is_stream: false } ]
                     .concat([for (m in music) { id: Settings.get_music_file_path(m), is_stream: true }]),
             fonts: [{ id: 'assets/fonts/clemente/clemente.fnt' } ]
-		});
+        });
 
-		new game.misc.ArcProgress(parcel, new luxe.Color().rgb(0x914D50), start);
+        new game.misc.ArcProgress(parcel, new luxe.Color().rgb(0x914D50), start);
     }
 
     static public function start_music() {
@@ -130,7 +130,7 @@ class Main extends luxe.Game {
         Luxe.renderer.font = Luxe.resources.font('assets/fonts/clemente/clemente.fnt');
 
         var end = haxe.Timer.stamp();
-        trace('startup took ${end - start_time} seconds'); 
+        // trace('startup took ${end - start_time} seconds'); 
         Analytics.event('startup', 'finished', 'duration', Std.int(end - start_time));
 
         luxe.tween.Actuate.defaultEase = luxe.tween.easing.Quad.easeIn;

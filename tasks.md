@@ -10,6 +10,7 @@ Tasks:
     * https://startbootstrap.com/template-overviews/freelancer/
     * https://startbootstrap.com/template-overviews/grayscale/
 * Update andersnissen.com
+* Change donation to use paypal.me/andersnissen
 
 ===== Beta launch line =====
 
@@ -42,6 +43,7 @@ Kim:
 END BETA FEEDBACK
 
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
+* Implement "Change name" functionality
 
 * Global highscores
     [x] On-screen keyboard for entering name for highscores
