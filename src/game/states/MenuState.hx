@@ -14,6 +14,8 @@ using game.misc.GameMode.GameModeTools;
 class MenuState extends State {
     static public var StateId :String = 'MenuState';
     var title :Text;
+    var rankText :Text;
+    var winsText :Text;
     var counting_total_score :Float;
     var tutorial_box :game.entities.TutorialBox;
 
@@ -34,7 +36,7 @@ class MenuState extends State {
 
         title = new Text({
             text: 'Stoneset',
-            pos: new Vector(Settings.WIDTH / 2, 180),
+            pos: new Vector(Settings.WIDTH / 2, 140),
             point_size: 42,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
@@ -80,35 +82,52 @@ class MenuState extends State {
             depth: 110
         });
 
-        /*
+        // var star_button = new game.ui.Icon({
+        //     pos: new Vector(55, 210),
+        //     texture_path: 'assets/ui/circular.png',
+        //     on_click: function() {}
+        // });
+        // star_button.scale.set_xy(1/5, 1/5);
+        // star_button.color.a = 0.75;
+
         var star = new Sprite({
-            pos: new Vector(55, 190),
-            texture: Luxe.resources.texture('assets/images/symbols/star.png'),
-            scale: new Vector(0.15, 0.15),
-            color: new Color().rgb(0xFFFFFF),
+            pos: new Vector(90, 227),
+            texture: Luxe.resources.texture('assets/ui/round-star.png'),
+            scale: new Vector(0.06, 0.06),
+            color: new Color().rgb(0x956416), //new Color().rgb(0xFFFFFF),
             depth: 10
         });
         luxe.tween.Actuate
             .tween(star, 10.0, { rotation_z: 360 })
             .ease(luxe.tween.easing.Linear.easeNone)
-            .repeat(); // spin faster when gaining points?
+            .repeat(); // spin faster when gaining points? or simply change scale
 
-        new Text({
-            pos: new Vector(90, 190),
-            text: 'Rank 3/853',
+        rankText = new Text({
+            pos: new Vector(Settings.WIDTH / 2, 190),
+            text: '',
+            align: TextAlign.center,
+            align_vertical: TextAlign.center,
+            color: new Color(0.75, 0.0, 0.5), //new Color().rgb(0x956416),
+            point_size: 26
+        });
+
+        winsText = new Text({
+            pos: new Vector(115, 230),
+            text: '',
             align: TextAlign.left,
             align_vertical: TextAlign.center,
             color: new Color().rgb(0x956416),
             point_size: 26
         });
-        */
+
+        get_rank();
 
         var normal_save = Luxe.io.string_load('save_normal');
 
         var button_height = 60;
         var button_count = 0;
         function get_button_y() {
-            return 275 + (button_count++) * button_height;
+            return 285 + (button_count++) * button_height;
         }
         var tutorial_completed = (Luxe.io.string_load('tutorial_complete') == 'true');
         var normal_game_mode = (tutorial_completed ? Normal : Tutorial(Normal));
@@ -243,6 +262,33 @@ class MenuState extends State {
             color: new Color(0.0, 0.0, 1.0)
         });
         #end
+    }
+
+    function get_rank() {
+        var clientId = Luxe.io.string_load('clientId');
+        if (clientId == null) {
+            rankText.text = 'Rank ???';
+            return;
+        }
+
+        function callback(response :com.akifox.asynchttp.HttpResponse) {
+            if (response.isOK) {
+                var data = response.toJson();
+                if (data.rank < 0) { // player has no data yet
+                    rankText.text = 'Rank: ?';
+                    winsText.text = '${data.wins} wins';
+                } else {
+                    rankText.text = 'Rank ${data.rank + 1}/${data.players}'; // e.g. 1/10
+                    winsText.text = '${data.wins} wins';
+                }
+            } else {
+                rankText.text = 'Rank N/A';
+                winsText.text = '1234';
+            }
+        }
+        var url = Settings.SERVER_URL + 'rank/$clientId';
+        var request = new com.akifox.asynchttp.HttpRequest({ url: url, callback: callback });
+        request.send();
     }
 
     override function onleave(_) {
