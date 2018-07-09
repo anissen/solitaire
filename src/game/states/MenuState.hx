@@ -275,15 +275,15 @@ class MenuState extends State {
             if (response.isOK) {
                 var data = response.toJson();
                 if (data.rank < 0) { // player has no data yet
-                    rankText.text = 'Rank: ?';
+                    rankText.text = 'Rank';
                     winsText.text = '${data.wins} wins';
                 } else {
-                    rankText.text = 'Rank ${data.rank + 1}/${data.players}'; // e.g. 1/10
+                    rankText.text = 'Rank ${data.rank + 1}';
                     winsText.text = '${data.wins} wins';
                 }
             } else {
                 rankText.text = 'Rank N/A';
-                winsText.text = '1234';
+                winsText.text = 'N/A';
             }
         }
         var url = Settings.SERVER_URL + 'rank/$clientId';
