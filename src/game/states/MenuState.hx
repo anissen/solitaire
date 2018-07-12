@@ -8,6 +8,8 @@ import luxe.Color;
 import luxe.tween.Actuate;
 import game.misc.GameMode;
 import game.ui.Button;
+import core.utils.AsyncHttpUtils;
+import core.utils.AsyncHttpUtils.HttpCallback;
 
 using game.misc.GameMode.GameModeTools;
 
