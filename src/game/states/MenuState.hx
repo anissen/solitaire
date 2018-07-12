@@ -38,7 +38,7 @@ class MenuState extends State {
 
         title = new Text({
             text: 'Stoneset',
-            pos: new Vector(Settings.WIDTH / 2, 140),
+            pos: new Vector(Settings.WIDTH / 2, 100),
             point_size: 42,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
@@ -84,8 +84,30 @@ class MenuState extends State {
             depth: 110
         });
 
+        var rankIcon = new Sprite({
+            pos: new Vector(90, 187),
+            texture: Luxe.resources.texture('assets/ui/holy-grail.png'),
+            scale: new Vector(0.065, 0.065),
+            color: new Color(0.75, 0.0, 0.5), //new Color().rgb(0x956416),
+            depth: 10
+        });
+        luxe.tween.Actuate
+            .tween(rankIcon.scale, 4.0, { x: 0.075, y: 0.075 })
+            .ease(luxe.tween.easing.Linear.easeNone)
+            .reflect()
+            .repeat();
+        
+        rankText = new Text({
+            pos: new Vector(115, 190),
+            text: '',
+            align: TextAlign.left,
+            align_vertical: TextAlign.center,
+            color: new Color(0.75, 0.0, 0.5), //new Color().rgb(0x956416),
+            point_size: 26
+        });
+
         // var star_button = new game.ui.Icon({
-        //     pos: new Vector(55, 210),
+        //     pos: new Vector(90, 227),
         //     texture_path: 'assets/ui/circular.png',
         //     on_click: function() {}
         // });
@@ -103,15 +125,6 @@ class MenuState extends State {
             .tween(star, 10.0, { rotation_z: 360 })
             .ease(luxe.tween.easing.Linear.easeNone)
             .repeat(); // spin faster when gaining points? or simply change scale
-
-        rankText = new Text({
-            pos: new Vector(Settings.WIDTH / 2, 190),
-            text: '',
-            align: TextAlign.center,
-            align_vertical: TextAlign.center,
-            color: new Color(0.75, 0.0, 0.5), //new Color().rgb(0x956416),
-            point_size: 26
-        });
 
         winsText = new Text({
             pos: new Vector(115, 230),
@@ -258,7 +271,7 @@ class MenuState extends State {
 
         #if debug
         new Text({
-            pos: new Vector(Settings.WIDTH / 2, 50),
+            pos: new Vector(Settings.WIDTH / 2, 20),
             text: 'Debug',
             align: luxe.Text.TextAlign.center,
             color: new Color(0.0, 0.0, 1.0)
