@@ -36,6 +36,8 @@ class Icon extends Sprite {
     }
 
     override function onmousemove(event :MouseEvent) {
+        if (!visible) return;
+        
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (point_inside_AABB(world_pos)) {
             if (!hovered) {

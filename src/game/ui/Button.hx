@@ -128,6 +128,8 @@ class Button extends luxe.NineSlice {
     }
 
     override function onmousemove(event :MouseEvent) {
+        if (!visible) return;
+        
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (point_inside_AABB(world_pos)) {
             if (!hovered) {
@@ -200,6 +202,9 @@ class Button extends luxe.NineSlice {
     function set_enabled(value :Bool) {
         if (is_enabled == value) return value;
         is_enabled = value;
+
+        if (!visible) visible = true;
+
         if (value) {
             color.tween(0.3, { a: 1.0 });
             label.outline_color.tween(0.3, { r: 0.65, g: 0.31, b: 0.02 });
