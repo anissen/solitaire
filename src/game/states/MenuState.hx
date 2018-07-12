@@ -271,24 +271,24 @@ class MenuState extends State {
             return;
         }
 
-        function callback(response :com.akifox.asynchttp.HttpResponse) {
-            if (response.isOK) {
-                var data = response.toJson();
-                if (data.rank < 0) { // player has no data yet
+        var url = Settings.SERVER_URL + 'rank/$clientId';
+        AsyncHttpUtils.get(url, function(data :HttpCallback) {
+            if (Main.GetStateId() != MenuState.StateId) return;
+            
+            if (data.error == null) {
+                var json = data.json;
+                if (json.rank < 0) { // player has no data yet
                     rankText.text = 'Rank';
-                    winsText.text = '${data.wins} wins';
+                    winsText.text = '${json.wins} wins';
                 } else {
-                    rankText.text = 'Rank ${data.rank + 1}';
-                    winsText.text = '${data.wins} wins';
+                    rankText.text = 'Rank ${json.rank + 1}';
+                    winsText.text = '${json.wins} wins';
                 }
             } else {
                 rankText.text = 'Rank N/A';
                 winsText.text = 'N/A';
             }
-        }
-        var url = Settings.SERVER_URL + 'rank/$clientId';
-        var request = new com.akifox.asynchttp.HttpRequest({ url: url, callback: callback });
-        request.send();
+        });
     }
 
     override function onleave(_) {

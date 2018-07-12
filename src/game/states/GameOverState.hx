@@ -8,6 +8,8 @@ import luxe.Scene;
 import luxe.Sprite;
 import luxe.tween.Actuate;
 import game.misc.GameMode.GameMode;
+import core.utils.AsyncHttpUtils;
+import core.utils.AsyncHttpUtils.HttpCallback;
 
 using game.misc.GameMode.GameModeTools;
 
@@ -113,6 +115,7 @@ class GameOverState extends State {
     var title :Text;
     var score_container :luxe.Visual;
     var play_button :game.ui.Button;
+    // var retry_button :game.ui.Button;
     var error_text :String;
     var loading_icon :Sprite;
     var loading_global_data :Bool;
@@ -226,6 +229,15 @@ class GameOverState extends State {
             }
         });
 
+        // retry_button = new game.ui.Button({
+        //     pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 60),
+        //     text: 'Try again',
+        //     on_click: function() {
+        //         update_global_highscores(data);
+        //     }
+        // });
+        // retry_button.visible = false;
+
         var user_name = Luxe.io.string_load('user_name');
         if (user_name == null || user_name.length == 0) user_name = 'You';
 
@@ -269,6 +281,7 @@ class GameOverState extends State {
             }
         }
         loading_global_data = true;
+        // retry_button.visible = false;
 
         var plays_today = Std.parseInt(Luxe.io.string_load(data.game_mode.get_game_mode_id() + '_plays_today'));
         var now = Date.now();
@@ -292,36 +305,14 @@ class GameOverState extends State {
             'actions' => '' // + data.actions_data
         ];
 
-        #if js
+        AsyncHttpUtils.post(url, data_map, function(data :HttpCallback) {
+            if (Main.GetStateId() != GameOverState.StateId) return;
 
-        var http = new haxe.Http(url);
-        http.onData = function(data :String) {
             loading_global_data = false;
-            // trace('data: $data');
-            global_highscores = haxe.Json.parse(data);
-            Luxe.next(show_global_highscores);
-        }
-        http.onError = function(error :String) {
-            loading_global_data = false;
-            // trace('error: $error');
-            error_text = error;
-            Luxe.next(show_error);
-        }
-        
-        for (key in data_map.keys()) {
-            http.addParameter(key, data_map[key]);
-        }
-
-        http.request(true);
-
-        #else
-
-        function callback(response :com.akifox.asynchttp.HttpResponse) {
-            loading_global_data = false;
-            if (response.isOK) {
+            if (data.error == null) {
                 // trace('DONE ${response.status}');
                 // trace(response.content);
-                global_highscores = response.toJson();
+                global_highscores = data.json;
                 if (global_highscores == null) {
                     error_text = 'Error';
                     Luxe.next(show_error);
@@ -333,16 +324,63 @@ class GameOverState extends State {
                 }
             } else {
                 // trace('ERROR ${response.status} ${response.error}');
-                error_text = response.error;
+                error_text = data.error;
+                // retry_button.visible = true;
                 Luxe.next(show_error);
             }
-        }
-        var request = new com.akifox.asynchttp.HttpRequest({ url: url, content: haxe.Json.stringify(data_map), callback: callback });
-        request.method = com.akifox.asynchttp.HttpMethod.POST;
-        request.contentType = 'application/json';
-        request.send();
+        });
 
-        #end
+        // #if js
+
+        // var http = new haxe.Http(url);
+        // http.onData = function(data :String) {
+        //     loading_global_data = false;
+        //     // trace('data: $data');
+        //     global_highscores = haxe.Json.parse(data);
+        //     Luxe.next(show_global_highscores);
+        // }
+        // http.onError = function(error :String) {
+        //     loading_global_data = false;
+        //     // trace('error: $error');
+        //     error_text = error;
+        //     Luxe.next(show_error);
+        // }
+        
+        // for (key in data_map.keys()) {
+        //     http.addParameter(key, data_map[key]);
+        // }
+
+        // http.request(true);
+
+        // #else
+
+        // function callback(response :com.akifox.asynchttp.HttpResponse) {
+        //     loading_global_data = false;
+        //     if (response.isOK) {
+        //         // trace('DONE ${response.status}');
+        //         // trace(response.content);
+        //         global_highscores = response.toJson();
+        //         if (global_highscores == null) {
+        //             error_text = 'Error';
+        //             Luxe.next(show_error);
+        //         } else {
+        //             switch (highscore_mode) {
+        //                 case Local: // don't do anything
+        //                 case Global: Luxe.next(show_global_highscores);
+        //             }
+        //         }
+        //     } else {
+        //         // trace('ERROR ${response.status} ${response.error}');
+        //         error_text = response.error;
+        //         Luxe.next(show_error);
+        //     }
+        // }
+        // var request = new com.akifox.asynchttp.HttpRequest({ url: url, content: haxe.Json.stringify(data_map), callback: callback });
+        // request.method = com.akifox.asynchttp.HttpMethod.POST;
+        // request.contentType = 'application/json';
+        // request.send();
+
+        // #end
     }
 
     function show_error() {

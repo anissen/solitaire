@@ -197,6 +197,10 @@ class Main extends luxe.Game {
         });
     }
 
+    static public function GetStateId() :String {
+        return states.current_state.name;
+    }
+
     #if debug
     override function onkeyup(event :luxe.Input.KeyEvent) {
         if (event.keycode == luxe.Input.Key.key_d) {

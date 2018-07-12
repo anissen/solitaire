@@ -1,5 +1,7 @@
 package core.utils;
 
+import core.utils.AsyncHttpUtils;
+
 class Analytics { 
     public static var tracking_id :String;
     public static var client_id :String;
@@ -18,15 +20,6 @@ class Analytics {
     static function analytics_request(url_part :String) {
         var rand :Int = Std.int(Math.random() * 100000000);
         var url = 'https://www.google-analytics.com/collect?v=1&tid=$tracking_id&cid=$client_id&$url_part&z=$rand';
-        var request = new com.akifox.asynchttp.HttpRequest({ url: url });
-        // callback : function(response:HttpResponse):Void {
-        //     if (response.isOK) {
-        //         trace(response.content);
-        //         trace('DONE ${response.status}');
-        //     } else {
-        //         trace('ERROR ${response.status} ${response.error}');
-        //     }
-        // }  
-        request.send();
+        AsyncHttpUtils.get(url);
     }
 }
