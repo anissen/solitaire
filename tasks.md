@@ -53,6 +53,7 @@ END BETA FEEDBACK
     [ ] Handle Strive global highscore mode
     [ ] LATER: View all high scores
     [ ] LATER: Ranking
+* BUG: month numbers starts at 0 when uploading the the server (e.g. july is 6)
 * Being able to view highscore list without having to finish a game
 * [No default font]
 * iOS app icon
@@ -71,7 +72,7 @@ END BETA FEEDBACK
 Bugs:
 * Sometimes Normal starts an empty blank screen (How to reproduce?)
 * In some cases, two tiles can be collected and simply disappears
-* If quest has [a, b, b] and [a, b] is collected the first [a, b, _] should be highlighted in quests matched
+* If quest has [a, b, b] and [a, b] is collected the first [a, b, \_] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
 * Links do not work on iOS and macOS
 
