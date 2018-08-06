@@ -17,6 +17,7 @@ class MenuState extends State {
     static public var StateId :String = 'MenuState';
     var title :Text;
     var rankText :Text;
+    var winsIcon :Sprite;
     var winsText :Text;
     var counting_total_score :Float;
     var tutorial_box :game.entities.TutorialBox;
@@ -115,7 +116,7 @@ class MenuState extends State {
         // star_button.scale.set_xy(1/5, 1/5);
         // star_button.color.a = 0.75;
 
-        var star = new Sprite({
+        winsIcon = new Sprite({
             pos: new Vector(90, 227),
             texture: Luxe.resources.texture('assets/ui/round-star.png'),
             scale: new Vector(0.06, 0.06),
@@ -123,7 +124,7 @@ class MenuState extends State {
             depth: 10
         });
         luxe.tween.Actuate
-            .tween(star, 10.0, { rotation_z: 360 })
+            .tween(winsIcon, 10.0, { rotation_z: 360 })
             .ease(luxe.tween.easing.Linear.easeNone)
             .repeat(); // spin faster when gaining points? or simply change scale
 
@@ -301,9 +302,9 @@ class MenuState extends State {
                 var rank :Int = json.rank + 1;
                 var wins :Int = json.wins;
                 var players :Int = json.players;
-
-                Luxe.io.string_save('rank', '$rank');
-                Luxe.io.string_save('wins', '$wins');
+                // TODO: uncommented for testing
+                // Luxe.io.string_save('rank', '$rank');
+                // Luxe.io.string_save('wins', '$wins');
 
                 var old_rank = (old_rank_str != null ? Std.parseInt(old_rank_str) : players);
                 var old_wins = (old_wins_str != null ? Std.parseInt(old_wins_str) : 0);
@@ -333,8 +334,107 @@ class MenuState extends State {
             trace('rank_changed! old_rank: $old_rank, rank: $rank');
         }
 
+        for (w in old_wins ... wins) {
+            create_particle((w - old_wins) * 0.4);
+        }
+
         winsText.color.a = 1.0;
         rankText.color.a = 1.0;
+    }
+
+    function create_particle(delay :Float) {
+        var duration = 0.6;
+        var size = 48;
+
+        var random_positions = [
+            new Vector(-size / 2, Std.random(Settings.HEIGHT)), // left side
+            new Vector(Std.random(Settings.WIDTH), -size / 2), // top side
+            new Vector(Settings.WIDTH + size / 2, Std.random(Settings.HEIGHT)), // right side
+            new Vector(Std.random(Settings.WIDTH), Settings.HEIGHT + size / 2), // bottom side
+        ];
+
+        var p = new game.entities.Particle({
+            pos: random_positions.random(),
+            texture: Luxe.resources.texture('assets/ui/round-star.png'),
+            size: new Vector(size, size),
+            color: new Color().rgb(0x956416),
+            depth: 100,
+
+            target: winsIcon.pos,
+            duration: duration,
+            delay: delay
+        });
+
+        var trail = new game.components.TrailRenderer();
+        trail.trailColor.fromColor(p.color);
+        trail.trailColor.a = 0.7;
+        trail.startSize = 6;
+        trail.maxLength = 75;
+        trail.depth = p.depth - 0.1;
+        p.add(trail);
+
+        // score += card_score;
+        // var temp_score = score;
+
+        Actuate.tween(p.size, duration, { x: size * 0.5, y: size * 0.5 }).delay(delay).onComplete(function() {
+            if (p != null && !p.destroyed) p.destroy();
+            
+            var textScale = winsText.scale.x;
+            if (textScale < 1.5) {
+                textScale += 0.3;
+                winsText.scale.set_xy(textScale, textScale);
+                winsIcon.scale.set_xy(textScale * 0.06, textScale * 0.06);
+            }
+            var ring_symbol = new Sprite({
+                texture: Luxe.resources.texture('assets/images/symbols/ring.png'),
+                size: new Vector(32, 32),
+                pos: winsIcon.pos,
+                color: new Color().rgb(0x956416)
+            });
+            Actuate.tween(ring_symbol.color, 0.1, { a: 1.0 });
+            Actuate.tween(ring_symbol.color, 0.1, { a: 0.0 }).delay(0.3);
+            Actuate.tween(ring_symbol.size, 0.5, { x: 128, y: 128 }).onComplete(function() {
+                if (!ring_symbol.destroyed) ring_symbol.destroy();
+            });
+
+            Luxe.camera.shake(2);
+
+            // pe_burst.position.copy_from(scoreText.pos);
+            // var color = card.get_original_color();
+            // color.a = 0.5;
+            // pe_burst_color_life_module.initial_color = color;
+            // pe_burst_color_life_module.end_color = color;
+            // pe_burst_color_life_module.end_color_max = new Color(1, 1, 1, 0);
+            // pe_burst.start();
+
+            // if (card_score <= 1) {
+            //     play_sound('points_small', card_pos);
+            // } else if (card_score <= 3) {
+            //     play_sound('points_big', card_pos);
+            // } else { // score: 6
+                // play_sound('points_huge', card_pos);
+            // }
+            // switch (game_mode) {
+            //     case Strive(_) | Tutorial(Strive(_)):
+            //         if (score >= 0) {
+            //             scoreText.color.tween(0.3, { r: 0.2, g: 0.8, b: 0.2 });
+            //             handle_game_over();
+            //         }
+            //     default: 
+            // }
+
+            // Actuate.tween(this, (temp_score - counting_score) * 0.02, { counting_score: temp_score }, true).onUpdate(function() {
+            //     scoreText.text = '${Std.int(counting_score - time_penalty)}';
+            // });
+        });
+    }
+
+    override function update(dt :Float) {
+        var textScale = winsText.scale.x; 
+        if (textScale > 1) {
+            winsText.scale.set_xy(textScale - dt, textScale - dt);
+            winsIcon.scale.set_xy((textScale - dt) * 0.06, (textScale - dt) * 0.06);
+        }
     }
 
     override function onleave(_) {
@@ -355,6 +455,7 @@ class MenuState extends State {
                 var strive_mode = Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
                 Main.SetState(PlayState.StateId, strive_mode);
             case luxe.Input.Key.key_3: Main.SetState(PlayState.StateId, Timed);
+            case luxe.Input.Key.key_t: update_global_stats(5, 10, 7, 5);
         }
         #end
         if (event.keycode == luxe.Input.Key.ac_back) {
