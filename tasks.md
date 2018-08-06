@@ -11,6 +11,9 @@ Tasks:
     * https://startbootstrap.com/template-overviews/grayscale/
 * Update andersnissen.com
 * Change donation to use paypal.me/andersnissen
+* Notify spiludvikling.dk (facebook)
+* Notify dkgame (twitter)
+* Create facebook page
 
 ===== Beta launch line =====
 
@@ -44,6 +47,11 @@ END BETA FEEDBACK
 
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
 * Implement "Change name" functionality
+* Use a logging package for heroku to be able to see logs
+* Implement ability to view all highscores for a game mode, sorted by day (and maybe also by game count)
+* Save and restore last rank and win count
+* Effects for when rank and/or win count is increased
+* SERVER: Implement crash handler (pm2/forever)
 
 * Global highscores
     [x] On-screen keyboard for entering name for highscores
@@ -53,7 +61,6 @@ END BETA FEEDBACK
     [ ] Handle Strive global highscore mode
     [ ] LATER: View all high scores
     [ ] LATER: Ranking
-* BUG: month numbers starts at 0 when uploading the the server (e.g. july is 6)
 * Being able to view highscore list without having to finish a game
 * [No default font]
 * iOS app icon

@@ -99,12 +99,13 @@ class MenuState extends State {
         
         rankText = new Text({
             pos: new Vector(115, 190),
-            text: '',
+            text: 'Rank ' + Luxe.io.string_load('rank'),
             align: TextAlign.left,
             align_vertical: TextAlign.center,
-            color: new Color(0.75, 0.0, 0.5), //new Color().rgb(0x956416),
+            color: new Color(0.75, 0.0, 0.5),
             point_size: 26
         });
+        rankText.color.a = 0.5;
 
         // var star_button = new game.ui.Icon({
         //     pos: new Vector(90, 227),
@@ -128,12 +129,13 @@ class MenuState extends State {
 
         winsText = new Text({
             pos: new Vector(115, 230),
-            text: '',
+            text: Luxe.io.string_load('wins'),
             align: TextAlign.left,
             align_vertical: TextAlign.center,
             color: new Color().rgb(0x956416),
             point_size: 26
         });
+        winsText.color.a = 0.5;
 
         get_rank();
 
@@ -283,27 +285,56 @@ class MenuState extends State {
         var clientId = Luxe.io.string_load('clientId');
         if (clientId == null) {
             rankText.text = 'Rank ???';
+            winsText.text = '???';
             return;
         }
+
+        var old_rank_str = Luxe.io.string_load('rank');
+        var old_wins_str = Luxe.io.string_load('wins');
 
         var url = Settings.SERVER_URL + 'rank/$clientId';
         AsyncHttpUtils.get(url, function(data :HttpCallback) {
             if (Main.GetStateId() != MenuState.StateId) return;
-            
+
             if (data.error == null) {
                 var json = data.json;
+                var rank :Int = json.rank + 1;
+                var wins :Int = json.wins;
+                var players :Int = json.players;
+
+                Luxe.io.string_save('rank', '$rank');
+                Luxe.io.string_save('wins', '$wins');
+
+                var old_rank = (old_rank_str != null ? Std.parseInt(old_rank_str) : players);
+                var old_wins = (old_wins_str != null ? Std.parseInt(old_wins_str) : 0);
+
+                update_global_stats(old_wins, wins, old_rank, rank);
+
                 if (json.rank < 0) { // player has no data yet
                     rankText.text = 'Rank';
-                    winsText.text = '${json.wins} wins';
+                    winsText.text = '$wins';
                 } else {
-                    rankText.text = 'Rank ${json.rank + 1}';
-                    winsText.text = '${json.wins} wins';
+                    rankText.text = 'Rank $rank';
+                    winsText.text = '$wins';
                 }
             } else {
                 rankText.text = 'Rank N/A';
                 winsText.text = 'N/A';
             }
         });
+    }
+    
+    function update_global_stats(old_wins :Int, wins :Int, old_rank :Int, rank :Int) {
+        trace('update_global_stats:: old_wins: $old_wins, wins: $wins, old_rank: $old_rank, rank: $rank');
+        if (wins != old_wins) {
+            trace('wins_changed! old_wins: $old_wins, wins: $wins');
+        }
+        if (rank != old_rank) {
+            trace('rank_changed! old_rank: $old_rank, rank: $rank');
+        }
+
+        winsText.color.a = 1.0;
+        rankText.color.a = 1.0;
     }
 
     override function onleave(_) {
