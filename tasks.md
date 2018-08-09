@@ -75,6 +75,8 @@ END BETA FEEDBACK
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Move external libs into the repository (e.g. as git submodules)
+* Update Sparkle library
+* Area particle effect when won/lost
 
 Bugs:
 * Sometimes Normal starts an empty blank screen (How to reproduce?)

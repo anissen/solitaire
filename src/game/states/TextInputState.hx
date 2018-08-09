@@ -123,7 +123,7 @@ class TextInputState extends State {
                         if (letter == '5') {
                             if (name.charAt(name.length - 1) == ' ') name = name.substr(0, name.length - 1);
                             Luxe.io.string_save('user_name', name);
-                            data.done_func();
+                            data.done_func(name);
                         }
                     }
                 });

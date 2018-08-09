@@ -115,7 +115,15 @@ class SettingsState extends State {
             pos: new Vector(Settings.WIDTH / 2, get_button_y() + button_height),
             text: 'Change Name',
             on_click: function() {
-                Main.SetState(TextInputState.StateId, { done_func: Main.SetState.bind(SettingsState.StateId) });
+                Main.SetState(TextInputState.StateId, { 
+                    done_func: function(user_name :String) {
+                        core.utils.AsyncHttpUtils.post(Settings.SERVER_URL + 'change_name/', [
+                            "user_id" => Luxe.io.string_load('clientId'),
+                            "user_name" => user_name
+                        ]);
+                        Main.SetState(SettingsState.StateId);
+                    }
+                });
             }
         });
 
