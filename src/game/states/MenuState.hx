@@ -11,6 +11,10 @@ import game.ui.Button;
 import core.utils.AsyncHttpUtils;
 import core.utils.AsyncHttpUtils.HttpCallback;
 
+import particles.ParticleSystem;
+import particles.ParticleEmitter;
+import particles.modules.*;
+
 using game.misc.GameMode.GameModeTools;
 
 class MenuState extends State {
@@ -22,15 +26,55 @@ class MenuState extends State {
     var counting_total_score :Float;
     var tutorial_box :game.entities.TutorialBox;
 
+    var ps :ParticleSystem; 
+    var pe_burst :ParticleEmitter;
+    var pe_burst_color_life_module :ColorLifeModule;
+
     public function new() {
         super({ name: StateId });
     }
 
     override function init() {
-
+        
     }
 
     override function onenter(data :Dynamic) {
+        ps = new ParticleSystem();
+        pe_burst_color_life_module = new ColorLifeModule({
+            initial_color : new Color(1,0,1,1),
+            end_color : new Color(0,0,1,1),
+            end_color_max : new Color(1,0,0,1)
+        });
+        pe_burst = new ParticleEmitter({
+			name: 'tile_particle_emitter', 
+			rate: 128,
+			cache_size: 64,
+			cache_wrap: true,
+			duration: 0.15,
+			modules: [
+				new AreaSpawnModule({
+                    size: new Vector(120, 25),
+                    inside: false
+                }),
+				new LifeTimeModule({
+					lifetime: 0.15,
+					lifetime_max: 0.3
+				}),
+                pe_burst_color_life_module,
+				new SizeLifeModule({
+					initial_size: new Vector(10,10),
+					end_size: new Vector(5,5)
+				}),
+				new DirectionModule({
+					direction: 0,
+					direction_variance: 360,
+                    speed: 100
+				})
+			]
+		});
+        pe_burst.stop();
+		ps.add(pe_burst);
+
         var icon = new Sprite({
             pos: new Vector(Settings.WIDTH / 2 - 20, 80),
             texture: Luxe.resources.texture('assets/ui/pyramids.png'),
@@ -334,16 +378,31 @@ class MenuState extends State {
             trace('rank_changed! old_rank: $old_rank, rank: $rank');
         }
 
-        for (w in old_wins ... wins) {
-            create_particle((w - old_wins) * 0.4);
+        var max_particles = ((wins - old_wins) <= 10 ? (wins - old_wins) : 10);
+
+        for (w in 0 ... max_particles) {
+            create_particle(w * 0.35, w);
+        }
+
+        if (rank != old_rank) {
+            var delay = (wins > old_wins ? (max_particles * 0.35 + 0.5) : 0.0);
+            Actuate.timer(delay).onComplete(function() {
+                pe_burst.position.copy_from(new Vector(Settings.WIDTH / 2, rankText.pos.y));
+
+                pe_burst_color_life_module.initial_color = (rank < old_rank ? new Color(1, 0, 1) : new Color(0, 0, 0));
+                pe_burst_color_life_module.end_color = new Color(1, 1, 1, 1);
+                pe_burst.duration = 0.5;
+
+                pe_burst.start();
+            });
         }
 
         winsText.color.a = 1.0;
         rankText.color.a = 1.0;
     }
 
-    function create_particle(delay :Float) {
-        var duration = 0.6;
+    function create_particle(delay :Float, particleCount :Int) {
+        var duration = 0.5;
         var size = 48;
 
         var random_positions = [
@@ -373,9 +432,6 @@ class MenuState extends State {
         trail.depth = p.depth - 0.1;
         p.add(trail);
 
-        // score += card_score;
-        // var temp_score = score;
-
         Actuate.tween(p.size, duration, { x: size * 0.5, y: size * 0.5 }).delay(delay).onComplete(function() {
             if (p != null && !p.destroyed) p.destroy();
             
@@ -399,33 +455,22 @@ class MenuState extends State {
 
             Luxe.camera.shake(2);
 
-            // pe_burst.position.copy_from(scoreText.pos);
-            // var color = card.get_original_color();
-            // color.a = 0.5;
-            // pe_burst_color_life_module.initial_color = color;
-            // pe_burst_color_life_module.end_color = color;
-            // pe_burst_color_life_module.end_color_max = new Color(1, 1, 1, 0);
-            // pe_burst.start();
+            pe_burst.position.copy_from(new Vector(Settings.WIDTH / 2, winsText.pos.y));
 
-            // if (card_score <= 1) {
-            //     play_sound('points_small', card_pos);
-            // } else if (card_score <= 3) {
-            //     play_sound('points_big', card_pos);
-            // } else { // score: 6
-                // play_sound('points_huge', card_pos);
-            // }
-            // switch (game_mode) {
-            //     case Strive(_) | Tutorial(Strive(_)):
-            //         if (score >= 0) {
-            //             scoreText.color.tween(0.3, { r: 0.2, g: 0.8, b: 0.2 });
-            //             handle_game_over();
-            //         }
-            //     default: 
-            // }
+            pe_burst_color_life_module.initial_color = new Color().rgb(0x956416);
+            pe_burst_color_life_module.end_color = new Color(1, 1, 1, 1);
 
-            // Actuate.tween(this, (temp_score - counting_score) * 0.02, { counting_score: temp_score }, true).onUpdate(function() {
-            //     scoreText.text = '${Std.int(counting_score - time_penalty)}';
-            // });
+            pe_burst.duration = 0.15;
+
+            pe_burst.start();
+
+            var sound = switch (particleCount) {
+                case 0 | 1: 'points_small';
+                case 2 | 3: 'points_big';
+                case 4 | 5: 'points_huge';
+                default: 'points_devine';
+            }
+            Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path(sound)).source);
         });
     }
 
@@ -435,10 +480,12 @@ class MenuState extends State {
             winsText.scale.set_xy(textScale - dt, textScale - dt);
             winsIcon.scale.set_xy((textScale - dt) * 0.06, (textScale - dt) * 0.06);
         }
+        ps.update(dt);
     }
 
     override function onleave(_) {
         Luxe.scene.empty();
+        ps.destroy();
     }
 
     override function onkeyup(event :luxe.Input.KeyEvent) {
