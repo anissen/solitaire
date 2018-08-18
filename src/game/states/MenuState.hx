@@ -354,14 +354,6 @@ class MenuState extends State {
                 var old_wins = (old_wins_str != null ? Std.parseInt(old_wins_str) : 0);
 
                 update_global_stats(old_wins, wins, old_rank, rank);
-
-                if (json.rank < 0) { // player has no data yet
-                    rankText.text = 'Rank';
-                    winsText.text = '$wins';
-                } else {
-                    rankText.text = 'Rank $rank';
-                    winsText.text = '$wins';
-                }
             } else {
                 rankText.text = 'Rank N/A';
                 winsText.text = 'N/A';
@@ -370,18 +362,18 @@ class MenuState extends State {
     }
     
     function update_global_stats(old_wins :Int, wins :Int, old_rank :Int, rank :Int) {
-        trace('update_global_stats:: old_wins: $old_wins, wins: $wins, old_rank: $old_rank, rank: $rank');
-        if (wins != old_wins) {
-            trace('wins_changed! old_wins: $old_wins, wins: $wins');
-        }
-        if (rank != old_rank) {
-            trace('rank_changed! old_rank: $old_rank, rank: $rank');
-        }
+        // trace('update_global_stats:: old_wins: $old_wins, wins: $wins, old_rank: $old_rank, rank: $rank');
+        // if (wins != old_wins) {
+        //     trace('wins_changed! old_wins: $old_wins, wins: $wins');
+        // }
+        // if (rank != old_rank) {
+        //     trace('rank_changed! old_rank: $old_rank, rank: $rank');
+        // }
 
         var max_particles = ((wins - old_wins) <= 10 ? (wins - old_wins) : 10);
 
         for (w in 0 ... max_particles) {
-            create_particle(w * 0.35, w);
+            create_particle(w * 0.35, w, Math.ceil(old_wins + (w + 1) * (wins - old_wins) / max_particles));
         }
 
         if (rank != old_rank) {
@@ -394,6 +386,12 @@ class MenuState extends State {
                 pe_burst.duration = 0.5;
 
                 pe_burst.start();
+
+                if (rank <= 0) { // player has no data yet
+                    rankText.text = 'Rank';
+                } else {
+                    rankText.text = 'Rank $rank';
+                }
             });
         }
 
@@ -401,7 +399,7 @@ class MenuState extends State {
         rankText.color.a = 1.0;
     }
 
-    function create_particle(delay :Float, particleCount :Int) {
+    function create_particle(delay :Float, particleCount :Int, wins :Int) {
         var duration = 0.5;
         var size = 48;
 
@@ -464,6 +462,8 @@ class MenuState extends State {
 
             pe_burst.start();
 
+            winsText.text = '$wins';
+
             var sound = switch (particleCount) {
                 case 0 | 1: 'points_small';
                 case 2 | 3: 'points_big';
@@ -502,7 +502,7 @@ class MenuState extends State {
                 var strive_mode = Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
                 Main.SetState(PlayState.StateId, strive_mode);
             case luxe.Input.Key.key_3: Main.SetState(PlayState.StateId, Timed);
-            case luxe.Input.Key.key_t: update_global_stats(5, 10, 7, 5);
+            case luxe.Input.Key.key_t: update_global_stats(5, 8, 7, 6);
         }
         #end
         if (event.keycode == luxe.Input.Key.ac_back) {
