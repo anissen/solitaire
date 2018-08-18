@@ -21,17 +21,13 @@ BETA FEEDBACK
 Doom:
 [ ] Man kan ikke tage felter på skrå?
 [-] Flawless gems kan ikke bruges som alm. gems
-[x] "Back button" burde gå tilbage i menuer
 [ ] Game mode unlock: Jeg troede at man skulle have det i ét spil
 [ ] Det er ikke tydeligt at man kan samle i ikke-lige linjer
 [ ] Disable Settings and Abort state while main menu tutorial is active
 [ ] Strive regler ikke helt forstået (Sean)
 [ ] Audio var disabled men blev pludseligt enabled (Sean)
-[x] Hvis man dør mens spillet loader, får man forkert antal point (Mikkel)
 
 GOLD Niels & Daniel:
-[x] Highscore list viser own highscore to gange
-[x] Strive tutorial viser den forkerte highscore (fra Normal)
 [ ] Vis back button efter Strive tutorial (glæder måske også for Survival?)
 
 GOLD Rene:
@@ -45,12 +41,8 @@ Kim:
 [ ] Crash ved klik på "Play" på game over skærm, efter skift til local highscore
 END BETA FEEDBACK
 
-* Crash when starting a normal game, then finishing another game mode and resuming the normal game
-* Implement "Change name" functionality
 * Use a logging package for heroku to be able to see logs
 * Implement ability to view all highscores for a game mode, sorted by day (and maybe also by game count)
-* Save and restore last rank and win count
-* Effects for when rank and/or win count is increased
 * SERVER: Implement crash handler (pm2/forever)
 
 * Global highscores
@@ -63,10 +55,7 @@ END BETA FEEDBACK
     [ ] LATER: Ranking
 * Being able to view highscore list without having to finish a game
 * [No default font]
-* iOS app icon
-* iOS launch icon
 * Images in tutorial to explain "collecting", "correct set order", "make a flawless gem"
-* Error-handling on http-requests
 * Clean up bundled resources
 * "Invalid sound" should play when making a valid but non-matching selecting
 * Music:
@@ -77,13 +66,18 @@ END BETA FEEDBACK
 * Move external libs into the repository (e.g. as git submodules)
 * Update Sparkle library
 * Area particle effect when won/lost
+* Star-icon with number on Normal/Survival to indicate the number of potential stars to be won in the next game
 
 Bugs:
-* Sometimes Normal starts an empty blank screen (How to reproduce?)
+* Crash when starting a normal game, then finishing another game mode and resuming the normal game
 * In some cases, two tiles can be collected and simply disappears
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, \_] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
 * Links do not work on iOS and macOS
+
+iOS specific:
+* iOS app icon
+* iOS launch icon
 
 Nice:
 * Add scoring information to home screen (or e.g. sub-screens)
