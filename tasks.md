@@ -66,7 +66,7 @@ END BETA FEEDBACK
 * Move external libs into the repository (e.g. as git submodules)
 * Update Sparkle library
 * Area particle effect when won/lost
-* Star-icon with number on Normal/Survival to indicate the number of potential stars to be won in the next game
+* Make a "retry"-button if the server cannot be contacted
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
