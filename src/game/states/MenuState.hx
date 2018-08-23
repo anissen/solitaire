@@ -316,6 +316,19 @@ class MenuState extends State {
             url_open_func('mailto:andnis+stoneset@gmail.com');
         }));
 
+        var url = Settings.SERVER_URL + 'plays/${next_game_seed(GameMode.Normal)}';
+        AsyncHttpUtils.get(url, function(data :HttpCallback) {
+            if (Main.GetStateId() != MenuState.StateId) return;
+
+            if (data.error == null) {
+                var json = data.json;
+                var plays :Int = json.plays;
+                play_button.text += ' ($plays)';
+            } else {
+                play_button.text += ' (?)';
+            }
+        });
+
         #if debug
         new Text({
             pos: new Vector(Settings.WIDTH / 2, 20),
@@ -324,6 +337,15 @@ class MenuState extends State {
             color: new Color(0.0, 0.0, 1.0)
         });
         #end
+    }
+
+    function next_game_seed(game_mode :GameMode) {
+        var plays_today = Luxe.io.string_load(game_mode.get_game_mode_id() + '_plays_today');
+        if (plays_today == null) plays_today = '0';
+
+        var now = Date.now();
+        var seed_string = '' + (game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
+        return Std.parseInt(seed_string);
     }
 
     function get_rank() {
