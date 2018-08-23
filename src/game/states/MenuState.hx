@@ -346,9 +346,9 @@ class MenuState extends State {
                 var rank :Int = json.rank + 1;
                 var wins :Int = json.wins;
                 var players :Int = json.players;
-                // TODO: uncommented for testing
-                // Luxe.io.string_save('rank', '$rank');
-                // Luxe.io.string_save('wins', '$wins');
+
+                Luxe.io.string_save('rank', '$rank');
+                Luxe.io.string_save('wins', '$wins');
 
                 var old_rank = (old_rank_str != null ? Std.parseInt(old_rank_str) : players);
                 var old_wins = (old_wins_str != null ? Std.parseInt(old_wins_str) : 0);
