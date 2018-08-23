@@ -316,18 +316,8 @@ class MenuState extends State {
             url_open_func('mailto:andnis+stoneset@gmail.com');
         }));
 
-        var url = Settings.SERVER_URL + 'plays/${next_game_seed(GameMode.Normal)}';
-        AsyncHttpUtils.get(url, function(data :HttpCallback) {
-            if (Main.GetStateId() != MenuState.StateId) return;
-
-            if (data.error == null) {
-                var json = data.json;
-                var plays :Int = json.plays;
-                play_button.text += ' ($plays)';
-            } else {
-                play_button.text += ' (?)';
-            }
-        });
+        plays_for_game_mode(Normal, play_button);
+        plays_for_game_mode(Timed, timed_button);
 
         #if debug
         new Text({
@@ -337,6 +327,39 @@ class MenuState extends State {
             color: new Color(0.0, 0.0, 1.0)
         });
         #end
+    }
+
+    function plays_for_game_mode(game_mode :GameMode, button :Button) {
+        var url = Settings.SERVER_URL + 'plays/${next_game_seed(game_mode)}';
+        AsyncHttpUtils.get(url, function(data :HttpCallback) {
+            if (Main.GetStateId() != MenuState.StateId) return;
+
+            if (data.error != null) return;
+
+            var json = data.json;
+            var plays :Int = json.plays;
+            if (plays <= 0) return;
+            
+            new Sprite({
+                parent: button,
+                pos: new Vector(176, 22),
+                texture: Luxe.resources.texture('assets/ui/round-star.png'),
+                scale: new Vector(0.06, 0.06),
+                color: new Color().rgb(0xFFFFFF), // .rgb(0x956416)
+                depth: 200
+            });
+
+            new Text({
+                parent: button,
+                pos: new Vector(176, 26),
+                text: '$plays',
+                align: TextAlign.center,
+                align_vertical: TextAlign.center,
+                color: new Color().rgb(0x956416),
+                point_size: 18,
+                depth: 220
+            });
+        });
     }
 
     function next_game_seed(game_mode :GameMode) {
