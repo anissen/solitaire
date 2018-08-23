@@ -79,6 +79,7 @@ class HighscoreLine extends luxe.Entity {
 
 typedef DataType = { 
     user_id :String,
+    seed :Int,
     score :Int,
     name :String,
     game_mode :GameMode,
@@ -285,7 +286,6 @@ class GameOverState extends State {
 
         var plays_today = Std.parseInt(Luxe.io.string_load(data.game_mode.get_game_mode_id() + '_plays_today'));
         var now = Date.now();
-        var seed_string = '' + (data.game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
         var user_name = Luxe.io.string_load('user_name');
         var strive_goal = data.game_mode.get_strive_score();
 
@@ -296,7 +296,7 @@ class GameOverState extends State {
             'user_name' => user_name,
             'score' => '' + data.score,
             'strive_goal' => '' + strive_goal,
-            'seed' => seed_string,
+            'seed' => '' + data.seed,
             'year' => '' + now.getFullYear(),
             'month' => '' + now.getMonth(),
             'day' => '' + now.getDate(),

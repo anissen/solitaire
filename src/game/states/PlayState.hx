@@ -134,7 +134,6 @@ class PlayState extends State {
             default:
                 var now = Date.now();
                 var seed_string = '' + (game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
-                //trace('seed_string: $seed_string');
                 Std.parseInt(seed_string);
         }
 
@@ -844,6 +843,7 @@ class PlayState extends State {
 
             var data = {
                 user_id: Luxe.io.string_load('clientId'),
+                seed: Std.int(Luxe.utils.random.initial),
                 score: the_score,
                 game_mode: game_mode,
                 next_game_mode: next_game_mode,
