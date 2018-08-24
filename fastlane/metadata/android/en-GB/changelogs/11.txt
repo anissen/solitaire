@@ -1,0 +1,3 @@
+Visual improvements to rank/wins.
+Show number of plays for next normal and survival game.
+Actually implemented change name functionality.
