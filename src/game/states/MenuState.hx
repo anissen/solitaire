@@ -340,7 +340,7 @@ class MenuState extends State {
             var plays :Int = json.plays;
             if (plays <= 0) return;
             
-            new Sprite({
+            var starIcon = new Sprite({
                 parent: button,
                 pos: new Vector(176, 22),
                 texture: Luxe.resources.texture('assets/ui/round-star.png'),
@@ -349,7 +349,7 @@ class MenuState extends State {
                 depth: 200
             });
 
-            new Text({
+            var playsText = new Text({
                 parent: button,
                 pos: new Vector(176, 26),
                 text: '$plays',
@@ -359,6 +359,11 @@ class MenuState extends State {
                 point_size: 18,
                 depth: 220
             });
+
+            starIcon.scale.set_xy(0.0, 0.0);
+            playsText.scale.set_xy(0.0, 0.0);
+            Actuate.tween(starIcon.scale, 0.3, { x: 0.06, y: 0.06 });
+            Actuate.tween(playsText.scale, 0.3, { x: 1, y: 1 }).delay(0.1);
         });
     }
 

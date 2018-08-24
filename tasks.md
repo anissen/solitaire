@@ -14,6 +14,7 @@ Tasks:
 * Notify spiludvikling.dk (facebook)
 * Notify dkgame (twitter)
 * Create facebook page
+* Update Google Play screenshots (they are outdated)
 
 ===== Beta launch line =====
 
