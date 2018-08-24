@@ -317,7 +317,7 @@ class MenuState extends State {
         }));
 
         plays_for_game_mode(Normal, play_button);
-        plays_for_game_mode(Timed, timed_button);
+        if (tutorial_completed && (total_score >= timed_unlock)) plays_for_game_mode(Timed, timed_button);
 
         #if debug
         new Text({
