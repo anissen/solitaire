@@ -310,8 +310,6 @@ class GameOverState extends State {
 
             loading_global_data = false;
             if (data.error == null) {
-                // trace('DONE ${response.status}');
-                // trace(response.content);
                 global_highscores = data.json;
                 if (global_highscores == null) {
                     error_text = 'Error';
@@ -323,64 +321,11 @@ class GameOverState extends State {
                     }
                 }
             } else {
-                // trace('ERROR ${response.status} ${response.error}');
                 error_text = data.error;
                 // retry_button.visible = true;
                 Luxe.next(show_error);
             }
         });
-
-        // #if js
-
-        // var http = new haxe.Http(url);
-        // http.onData = function(data :String) {
-        //     loading_global_data = false;
-        //     // trace('data: $data');
-        //     global_highscores = haxe.Json.parse(data);
-        //     Luxe.next(show_global_highscores);
-        // }
-        // http.onError = function(error :String) {
-        //     loading_global_data = false;
-        //     // trace('error: $error');
-        //     error_text = error;
-        //     Luxe.next(show_error);
-        // }
-        
-        // for (key in data_map.keys()) {
-        //     http.addParameter(key, data_map[key]);
-        // }
-
-        // http.request(true);
-
-        // #else
-
-        // function callback(response :com.akifox.asynchttp.HttpResponse) {
-        //     loading_global_data = false;
-        //     if (response.isOK) {
-        //         // trace('DONE ${response.status}');
-        //         // trace(response.content);
-        //         global_highscores = response.toJson();
-        //         if (global_highscores == null) {
-        //             error_text = 'Error';
-        //             Luxe.next(show_error);
-        //         } else {
-        //             switch (highscore_mode) {
-        //                 case Local: // don't do anything
-        //                 case Global: Luxe.next(show_global_highscores);
-        //             }
-        //         }
-        //     } else {
-        //         // trace('ERROR ${response.status} ${response.error}');
-        //         error_text = response.error;
-        //         Luxe.next(show_error);
-        //     }
-        // }
-        // var request = new com.akifox.asynchttp.HttpRequest({ url: url, content: haxe.Json.stringify(data_map), callback: callback });
-        // request.method = com.akifox.asynchttp.HttpMethod.POST;
-        // request.contentType = 'application/json';
-        // request.send();
-
-        // #end
     }
 
     function show_error() {
@@ -441,9 +386,6 @@ class GameOverState extends State {
         title.text = 'Local Highscores';
         highscore_mode = Local;
 
-        // var user_name = Luxe.io.string_load('user_name');
-        // if (user_name == null || user_name.length == 0) user_name = 'You';
-
         var highscore_lines = [];
         switch (game_mode) {
             case Strive(level) | Tutorial(Strive(level)):
@@ -472,10 +414,6 @@ class GameOverState extends State {
                     var strive_mode = Strive(level_counter);
                     var description = 'Lost';
                     var color = new Color(0.5, 0.0, 0.0);
-                    // if (level_counter > highest_level_won) {
-                    //     description = 'Lost';
-                    //     color = new Color(0.5, 0.0, 0.0);
-                    // }
                     if (level_counter == highest_level_won) {
                         description = 'Highscore';
                         color = new Color(0.5, 0.0, 0.5);
@@ -521,7 +459,6 @@ class GameOverState extends State {
     function show_highscores(highscore_lines :Array<HighscoreLine>) {
         score_container = new luxe.Visual({ name: 'score_container', scene: highscore_lines_scene });
         score_container.color.a = 0;
-        // highscore_lines_scene.add(score_container);
 
         var count = 0;
         for (highscore_line in highscore_lines) {
