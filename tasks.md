@@ -10,7 +10,6 @@ Tasks:
     * https://startbootstrap.com/template-overviews/freelancer/
     * https://startbootstrap.com/template-overviews/grayscale/
 * Update andersnissen.com
-* Change donation to use paypal.me/andersnissen
 * Notify spiludvikling.dk (facebook)
 * Notify dkgame (twitter)
 * Create facebook page
@@ -47,13 +46,10 @@ END BETA FEEDBACK
 * SERVER: Implement crash handler (pm2/forever)
 
 * Global highscores
-    [x] On-screen keyboard for entering name for highscores
-    [x] Button(s) to toggle between local/global highscores
     [?] Handle Strive and Survival game modes
     [ ] Highscore button in play mode
     [ ] Handle Strive global highscore mode
     [ ] LATER: View all high scores
-    [ ] LATER: Ranking
 * Being able to view highscore list without having to finish a game
 * [No default font]
 * Images in tutorial to explain "collecting", "correct set order", "make a flawless gem"
@@ -67,18 +63,23 @@ END BETA FEEDBACK
 * Move external libs into the repository (e.g. as git submodules)
 * Update Sparkle library
 * Area particle effect when won/lost
+* Put stars on the highscore list for each player beaten
 * Make a "retry"-button if the server cannot be contacted
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
-* In some cases, two tiles can be collected and simply disappears
+* In some cases, two tiles can be collected and simply disappears (reported by Niels and Daniel)
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, \_] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
 * Links do not work on iOS and macOS
+* Random crash when play
 
 iOS specific:
 * iOS app icon
 * iOS launch icon
+* Donations must (probably) be removed
+    * Donation link
+    * Donation tutorial text
 
 Nice:
 * Add scoring information to home screen (or e.g. sub-screens)
