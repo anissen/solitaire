@@ -17,6 +17,7 @@ class HighscoreLine extends luxe.Entity {
     var rankText :Text;
     var scoreText :Text;
     var nameText :Text;
+    public var icon :Sprite = null;
     public var alpha(get, set) :Float;
     public var color(get, set) :Color;
 
@@ -58,6 +59,7 @@ class HighscoreLine extends luxe.Entity {
         rankText.color.a = alpha;
         scoreText.color.a = alpha;
         nameText.color.a = alpha;
+        if (icon != null) icon.color.a = alpha / 2;
         return alpha;
     }
 
@@ -371,6 +373,16 @@ class GameOverState extends State {
             count++;
             var highscore_line = new HighscoreLine('$count.', highscore.score, '' + highscore.user_name);
             if (highscore.user_id == clientId) highscore_line.color = new Color(0.75, 0.0, 0.5);
+            if (score > highscore.score) {
+                highscore_line.icon = new Sprite({
+                    parent: highscore_line,
+                    pos: new Vector(Settings.WIDTH - 35, 0),
+                    texture: Luxe.resources.texture('assets/ui/round-star.png'),
+                    scale: new Vector(0.04, 0.04),
+                    color: new Color().rgb(0x956416),
+                    depth: 5
+                });
+            }
             highscore_lines.push(highscore_line);
         }
         show_highscores(highscore_lines);

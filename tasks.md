@@ -83,6 +83,7 @@ iOS specific:
 
 Nice:
 * Add scoring information to home screen (or e.g. sub-screens)
+* Make Strive into a "Journey" mode with a (linear) map
 * Achievements? { Intent: Gotta catch'em all }
 * Share score via twitter
 * Share picture of completion (see https://developer.android.com/training/sharing/send.html, https://github.com/Shin-NiL/Godot-Share/blob/master/share/android/GodotShare.java)
