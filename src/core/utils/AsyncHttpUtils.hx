@@ -11,9 +11,9 @@ class AsyncHttpUtils {
             if (callback == null) return;
 
             if (response.isOK) {
-                callback({ json: response.toJson() });
+                Luxe.next(callback.bind({ json: response.toJson() }));
             } else {
-                callback({ error: response.error });
+                Luxe.next(callback.bind({ error: response.error }));
             }
         }
 
@@ -33,12 +33,12 @@ class AsyncHttpUtils {
             http.onData = function(data :String) {
                 if (callback == null) return;
 
-                callback({ json: haxe.Json.parse(data) });
+                Luxe.next(callback.bind({ json: haxe.Json.parse(data) }));
             }
             http.onError = function(error :String) {
                 if (callback == null) return;
 
-                callback({ error: error });
+                Luxe.next(callback.bind({ error: error }));
             }
             
             for (key in data.keys()) {
@@ -53,9 +53,9 @@ class AsyncHttpUtils {
                 if (callback == null) return;
 
                 if (response.isOK) {
-                    callback({ json: response.toJson() });
+                    Luxe.next(callback.bind({ json: response.toJson() }));
                 } else {
-                    callback({ error: response.error });
+                    Luxe.next(callback.bind({ error: response.error }));
                 }
             }
             var request = new com.akifox.asynchttp.HttpRequest({ url: url, content: haxe.Json.stringify(data), callback: callbackWrapper });
