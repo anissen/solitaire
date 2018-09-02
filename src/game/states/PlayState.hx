@@ -127,7 +127,6 @@ class PlayState extends State {
         var number_of_plays_today = Std.parseInt(plays_today) + 1;
         // trace('... now ${game_mode.get_game_mode_id()} games today: $number_of_plays_today');
         Analytics.event('game', 'plays_daily', game_mode.get_game_mode_id(), number_of_plays_today);
-        Luxe.io.string_save(game_mode.get_game_mode_id() + '_plays_today', '$number_of_plays_today');
 
         Luxe.utils.random.initial = switch (game_mode) {
             case Tutorial(Normal): 12;
