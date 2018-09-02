@@ -63,8 +63,8 @@ END BETA FEEDBACK
 * Move external libs into the repository (e.g. as git submodules)
 * Update Sparkle library
 * Area particle effect when won/lost
-* Put stars on the highscore list for each player beaten
 * Make a "retry"-button if the server cannot be contacted
+* Use limits on { games-played-star, highscores, ranking, ... } to account for MANY users
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
@@ -73,6 +73,7 @@ Bugs:
 * Clicking on grid selects multiple tiles
 * Links do not work on iOS and macOS
 * Random crash when play
+* Tutorial game mode are sent to server as game_mode 4
 
 iOS specific:
 * iOS app icon
@@ -83,6 +84,7 @@ iOS specific:
 
 Nice:
 * Add scoring information to home screen (or e.g. sub-screens)
+* Make the wins icon to a button that shows the changes since last time (#wins, #loses, MAYBE who you won over/lost to)
 * Make Strive into a "Journey" mode with a (linear) map
 * Achievements? { Intent: Gotta catch'em all }
 * Share score via twitter
