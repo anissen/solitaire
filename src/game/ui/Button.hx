@@ -116,7 +116,7 @@ class Button extends luxe.NineSlice {
             .tween(this.scale, 0.3, { y: 1 })
             .delay(Math.random() * 0.2)
             .ease(luxe.tween.easing.Cubic.easeInOut)
-            .onComplete((options.no_shake == true) ? function() {} : Luxe.camera.shake.bind(0.5));
+            .onComplete((options.no_shake == true || !visible) ? function() {} : Luxe.camera.shake.bind(0.5));
     }
 
     public function get_top_pos() {
@@ -169,6 +169,12 @@ class Button extends luxe.NineSlice {
     override public function ondestroy() {
         super.ondestroy();
         ps.destroy();
+    }
+
+    override public function set_visible(visible :Bool) {
+        super.visible = false;
+        label.visible = visible;
+        return visible;
     }
 
     public function color_burst(?duration :Float) {
@@ -226,6 +232,7 @@ class Button extends luxe.NineSlice {
     /** Returns true if a point is inside the AABB unrotated */
     public function point_inside_AABB(_p :Vector) :Bool {
         if (!enabled) return false;
+        if (!visible) return false;
         if (pos == null) return false;
         if (size == null) return false;
 

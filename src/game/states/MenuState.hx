@@ -129,15 +129,32 @@ class MenuState extends State {
             depth: 110
         });
 
+        var rank_button = new game.ui.Icon({
+            pos: new Vector(87, 185),
+            texture_path: 'assets/ui/circular_light.png',
+            on_click: Main.SetState.bind(GameOverState.StateId, { 
+                user_id: Luxe.io.string_load('clientId'),
+                seed: 0,
+                score: 0,
+                game_mode: Normal,
+                next_game_mode: Normal,
+                actions_data: [],
+                highscore_mode: GameOverState.HighscoreMode.Rank
+            })
+        });
+        rank_button.scale.set_xy(1/5, 1/5);
+        rank_button.color.a = 0.75;
+
         var rankIcon = new Sprite({
-            pos: new Vector(90, 187),
+            parent: rank_button,
+            pos: Vector.Multiply(rank_button.size, 0.5),
             texture: Luxe.resources.texture('assets/ui/holy-grail.png'),
-            scale: new Vector(0.065, 0.065),
-            color: new Color(0.75, 0.0, 0.5), //new Color().rgb(0x956416),
+            scale: new Vector(0.05 * 5, 0.05 * 5),
+            color: new Color(0.75, 0.0, 0.5),
             depth: 10
         });
         luxe.tween.Actuate
-            .tween(rankIcon.scale, 4.0, { x: 0.075, y: 0.075 })
+            .tween(rankIcon.scale, 4.0, { x: 0.06 * 5, y: 0.06 * 5 })
             .ease(luxe.tween.easing.Linear.easeNone)
             .reflect()
             .repeat();
@@ -152,25 +169,17 @@ class MenuState extends State {
         });
         rankText.color.a = 0.5;
 
-        // var star_button = new game.ui.Icon({
-        //     pos: new Vector(90, 227),
-        //     texture_path: 'assets/ui/circular.png',
-        //     on_click: function() {}
-        // });
-        // star_button.scale.set_xy(1/5, 1/5);
-        // star_button.color.a = 0.75;
-
         winsIcon = new Sprite({
-            pos: new Vector(90, 227),
+            pos: new Vector(87, 227),
             texture: Luxe.resources.texture('assets/ui/round-star.png'),
             scale: new Vector(0.06, 0.06),
-            color: new Color().rgb(0x956416), //new Color().rgb(0xFFFFFF),
+            color: new Color().rgb(0x956416),
             depth: 10
         });
         luxe.tween.Actuate
             .tween(winsIcon, 10.0, { rotation_z: 360 })
             .ease(luxe.tween.easing.Linear.easeNone)
-            .repeat(); // spin faster when gaining points? or simply change scale
+            .repeat();
 
         winsText = new Text({
             pos: new Vector(115, 230),

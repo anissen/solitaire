@@ -25,17 +25,17 @@ class HighscoreLine extends luxe.Entity {
         super({ name: '$rank.$score.$name', name_unique: true });
         rankText = new luxe.Text({
             parent: this,
-            pos: new Vector(60, 0),
+            pos: new Vector(80, 0),
             text: rank,
             point_size: 24,
             align: right,
             align_vertical: center,
-            color: new Color(0.8, 0.8, 0.8, 0.0),
+            color: new Color(0.7, 0.7, 0.7, 0.0),
             depth: 10
         });
         scoreText = new luxe.Text({
             parent: this,
-            pos: new Vector(115, 0),
+            pos: new Vector(135, 0),
             text: '$score',
             point_size: 24,
             align: right,
@@ -45,7 +45,7 @@ class HighscoreLine extends luxe.Entity {
         });
         nameText = new luxe.Text({
             parent: this,
-            pos: new Vector(125, 0),
+            pos: new Vector(145, 0),
             text: name,
             point_size: 24,
             align: left,
@@ -86,7 +86,8 @@ typedef DataType = {
     name :String,
     game_mode :GameMode,
     next_game_mode :GameMode,
-    actions_data :String
+    actions_data :String,
+    ?highscore_mode :HighscoreMode
 };
 
 typedef LocalHighscore = { 
@@ -105,6 +106,7 @@ typedef GlobalHighscore = {
 enum HighscoreMode {
     Global;
     Local;
+    Rank;
 }
 
 class GameOverState extends State {
@@ -157,7 +159,13 @@ class GameOverState extends State {
             default: false;
         };
         highscore_mode = (is_strive_mode ? Local : Global);
-        if (!is_strive_mode) { // TODO: Handle Strive global highscore mode
+        if (data.highscore_mode == Rank) highscore_mode = Rank;
+        var is_rank_mode = switch (highscore_mode) {
+            case Rank: true;
+            default: false;
+        };
+
+        if (!is_strive_mode && !is_rank_mode) { // TODO: Handle Strive global highscore mode
             var highscores_button = new game.ui.Icon({
                 pos: new Vector(Settings.WIDTH - 35, 35),
                 texture_path: 'assets/ui/circular.png',
@@ -165,6 +173,7 @@ class GameOverState extends State {
                     switch (highscore_mode) {
                         case Global: show_local_highscores();
                         case Local:  show_global_highscores();
+                        case Rank:
                     }
                 }
             });
@@ -231,6 +240,7 @@ class GameOverState extends State {
                 Main.SetState(PlayState.StateId, next_game_mode);
             }
         });
+        if (is_rank_mode) play_button.visible = false;
 
         // retry_button = new game.ui.Button({
         //     pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 60),
@@ -264,7 +274,11 @@ class GameOverState extends State {
             show_local_highscores();
             update_global_highscores(data); // just update, don't show the global scores yet
         } else {
-            update_global_highscores(data);
+            if (is_rank_mode) {
+                show_rank();
+            } else {
+                update_global_highscores(data);
+            }
         }
     }
 
@@ -278,7 +292,7 @@ class GameOverState extends State {
     function update_global_highscores(data :DataType) {
         switch (highscore_mode) {
             case Local: // don't show loading icon in local mode
-            case Global: {
+            case Global | Rank: {
                 loading_icon.visible = true;
                 Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
             }
@@ -315,17 +329,17 @@ class GameOverState extends State {
                 global_highscores = data.json;
                 if (global_highscores == null) {
                     error_text = 'Error';
-                    Luxe.next(show_error);
+                    show_error();
                 } else {
                     switch (highscore_mode) {
-                        case Local: // don't do anything
-                        case Global: Luxe.next(show_global_highscores);
+                        case Local | Rank: // don't do anything
+                        case Global: show_global_highscores;
                     }
                 }
             } else {
                 error_text = data.error;
                 // retry_button.visible = true;
-                Luxe.next(show_error);
+                show_error;
             }
         });
     }
@@ -376,12 +390,16 @@ class GameOverState extends State {
             if (score > highscore.score) {
                 highscore_line.icon = new Sprite({
                     parent: highscore_line,
-                    pos: new Vector(Settings.WIDTH - 35, 0),
+                    pos: new Vector(20, 0),
                     texture: Luxe.resources.texture('assets/ui/round-star.png'),
-                    scale: new Vector(0.04, 0.04),
+                    scale: new Vector(0.045, 0.045),
                     color: new Color().rgb(0x956416),
                     depth: 5
                 });
+                luxe.tween.Actuate
+                    .tween(highscore_line.icon, 10.0, { rotation_z: 360 })
+                    .ease(luxe.tween.easing.Linear.easeNone)
+                    .repeat();
             }
             highscore_lines.push(highscore_line);
         }
@@ -468,6 +486,47 @@ class GameOverState extends State {
         show_highscores(highscore_lines);
     }
 
+    function show_rank() {
+        loading_icon.visible = true;
+        Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
+
+        title.text = 'Rankings';
+        highscore_mode = Rank;
+
+        var url = Settings.SERVER_URL + 'rank';
+        AsyncHttpUtils.get(url, function(data :HttpCallback) {
+            if (Main.GetStateId() != GameOverState.StateId) return;
+
+            loading_icon.visible = false;
+            if (data.error == null) {
+                if (data.json == null) {
+                    error_text = 'Error';
+                    show_error;
+                } else {
+                    var clientId = Luxe.io.string_load('clientId');
+                    var json :Array<{ user_id :String, user_name :String, total_wins :Int }> = data.json;
+                    var highscore_lines = [];
+                    var rank = 0;
+                    var last_wins = -1;
+                    for (rankJson in json) {
+                        if (rankJson.total_wins != last_wins) rank++;
+                        if (rank > 100) break; // only show the first 100 ranked players (+ ties)
+
+                        var highscore_line = new HighscoreLine('$rank.', rankJson.total_wins, rankJson.user_name);
+                        if (rankJson.user_id == clientId) highscore_line.color = new Color(0.75, 0.0, 0.5);
+                        highscore_line.color.a = 0;
+                        highscore_lines.push(highscore_line);
+                        last_wins = rankJson.total_wins;
+                    }
+                    show_highscores(highscore_lines);
+                }
+            } else {
+                error_text = data.error;
+                show_error;
+            }
+        });
+    }
+
     function show_highscores(highscore_lines :Array<HighscoreLine>) {
         score_container = new luxe.Visual({ name: 'score_container', scene: highscore_lines_scene });
         score_container.color.a = 0;
@@ -501,8 +560,8 @@ class GameOverState extends State {
         var y = score_container.pos.y + line_y;
         var top_fade_y = (title.pos.y + 60);
         var top_hide_y = (title.pos.y + 20);
-        var bottom_fade_y = (play_button.pos.y - 50);
-        var bottom_hide_y = (play_button.pos.y - 10);
+        var bottom_fade_y = (play_button.visible ? play_button.pos.y - 50 : Settings.HEIGHT - 50);
+        var bottom_hide_y = (play_button.visible ? play_button.pos.y - 10 : Settings.HEIGHT - 10);
         if (y < top_hide_y) {
             return 0.0;
         } else if (y < top_fade_y) {
