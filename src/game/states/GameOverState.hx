@@ -365,7 +365,11 @@ class GameOverState extends State {
     
     function show_global_highscores() {
         if (score_container != null && !score_container.destroyed) {
-            for (child in score_container.children) Actuate.stop(child);
+            for (child in score_container.children) {
+                Actuate.stop(child);
+                var highscore_line = cast (child, HighscoreLine);
+                if (highscore_line != null && highscore_line.icon != null) Actuate.stop(highscore_line.icon);
+            }
         }
         highscore_lines_scene.empty();
         loading_icon.visible = false;
@@ -413,7 +417,11 @@ class GameOverState extends State {
 
     function show_local_highscores() {
         if (score_container != null && !score_container.destroyed) {
-            for (child in score_container.children) Actuate.stop(child);
+            for (child in score_container.children) {
+                Actuate.stop(child);
+                var highscore_line = cast (child, HighscoreLine);
+                if (highscore_line != null && highscore_line.icon != null) Actuate.stop(highscore_line.icon);
+            }
         }
         highscore_lines_scene.empty();
         loading_icon.visible = false;
