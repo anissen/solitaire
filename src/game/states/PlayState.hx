@@ -208,12 +208,12 @@ class PlayState extends State {
         });
         pe_continous = new ParticleEmitter({
 			name: 'card_particle_emitter', 
-			rate: 48,
+			rate: 50,
 			cache_size: 64,
 			cache_wrap: true,
             depth: 9,
-            lifetime: 0.3,
-            lifetime_max: 0.6,
+            lifetime: 0.4,
+            lifetime_max: 0.8,
 			modules: [
                 new RadialSpawnModule({
                     radius: 10
@@ -583,7 +583,7 @@ class PlayState extends State {
     function handle_stacked(card :Card) {
         play_sound('stack', card.pos);
         card.stacked = true;
-        Luxe.camera.shake(0.5);
+        Luxe.camera.shake(2.0);
 
         var ring_symbol = new Sprite({
             texture: Luxe.resources.texture('assets/images/symbols/ring.png'),
@@ -631,6 +631,8 @@ class PlayState extends State {
         });
 
         Analytics.event('game', 'place', '$x,$y');
+
+        Luxe.camera.shake(0.5);
 
         pe_burst.position.x = card.pos.x;
         pe_burst.position.y = card.pos.y;
@@ -736,7 +738,7 @@ class PlayState extends State {
                 if (!ring_symbol.destroyed) ring_symbol.destroy();
             });
 
-            Luxe.camera.shake(card_score * (1 / 3));
+            Luxe.camera.shake(card_score * (1 / 2));
 
             pe_burst.position.x = scoreText.pos.x;
             pe_burst.position.y = scoreText.pos.y;
