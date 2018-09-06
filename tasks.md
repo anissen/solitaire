@@ -61,11 +61,10 @@ END BETA FEEDBACK
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Move external libs into the repository (e.g. as git submodules)
-* Update Sparkle library
 * Area particle effect when won/lost
 * Make a "retry"-button if the server cannot be contacted
 * Use limits on { games-played-star, highscores, ranking, ... } to account for MANY users
-* Strive highscores should only show won games on the server
+* Make a version file that Analytics reads from
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game

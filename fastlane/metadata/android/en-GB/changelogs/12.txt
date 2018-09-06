@@ -1,0 +1,3 @@
+Added a ranking screen.
+Many minor tweaks.
+Improved stability.
