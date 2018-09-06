@@ -25,7 +25,7 @@ class HighscoreLine extends luxe.Entity {
         super({ name: '$rank.$score.$name', name_unique: true });
         rankText = new luxe.Text({
             parent: this,
-            pos: new Vector(80, 0),
+            pos: new Vector(60, 0),
             text: rank,
             point_size: 24,
             align: right,
@@ -35,7 +35,7 @@ class HighscoreLine extends luxe.Entity {
         });
         scoreText = new luxe.Text({
             parent: this,
-            pos: new Vector(135, 0),
+            pos: new Vector(115, 0),
             text: '$score',
             point_size: 24,
             align: right,
@@ -45,7 +45,7 @@ class HighscoreLine extends luxe.Entity {
         });
         nameText = new luxe.Text({
             parent: this,
-            pos: new Vector(145, 0),
+            pos: new Vector(125, 0),
             text: name,
             point_size: 24,
             align: left,
@@ -395,7 +395,7 @@ class GameOverState extends State {
             if (score > highscore.score) {
                 highscore_line.icon = new Sprite({
                     parent: highscore_line,
-                    pos: new Vector(20, 0),
+                    pos: new Vector(Settings.WIDTH - 30, 0),
                     texture: Luxe.resources.texture('assets/ui/round-star.png'),
                     scale: new Vector(0.045, 0.045),
                     color: new Color().rgb(0x956416),
