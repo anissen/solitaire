@@ -65,19 +65,21 @@ END BETA FEEDBACK
 * Area particle effect when won/lost
 * Make a "retry"-button if the server cannot be contacted
 * Use limits on { games-played-star, highscores, ranking, ... } to account for MANY users
+* Strive highscores should only show won games on the server
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
 * In some cases, two tiles can be collected and simply disappears (reported by Niels and Daniel)
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, \_] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
-* Links do not work on iOS and macOS
 * Random crash when play
-* Tutorial game mode are sent to server as game_mode 4
+* Tutorial game mode are sent to server as game_mode 4 (how??)
+* Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
 
 iOS specific:
 * iOS app icon
 * iOS launch icon
+* Links do not work on iOS and macOS
 * Donations must (probably) be removed
     * Donation link
     * Donation tutorial text

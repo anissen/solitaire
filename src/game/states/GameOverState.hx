@@ -338,7 +338,7 @@ class GameOverState extends State {
                 } else {
                     switch (highscore_mode) {
                         case Local | Rank: // don't do anything
-                        case Global: show_global_highscores;
+                        case Global: show_global_highscores();
                     }
                 }
             } else {
