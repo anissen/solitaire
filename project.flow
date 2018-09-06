@@ -23,6 +23,7 @@
       dependencies : {
         luxe : '*',
         sparkler : '*',
+        "sparkler_modules" : '*',
         "akifox-asynchttp": '*'
       },
       defines : [

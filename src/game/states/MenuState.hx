@@ -11,9 +11,9 @@ import game.ui.Button;
 import core.utils.AsyncHttpUtils;
 import core.utils.AsyncHttpUtils.HttpCallback;
 
-import particles.ParticleSystem;
-import particles.ParticleEmitter;
-import particles.modules.*;
+import sparkler.ParticleSystem;
+import sparkler.ParticleEmitter;
+import sparkler.modules.*;
 
 using game.misc.GameMode.GameModeTools;
 
@@ -41,9 +41,9 @@ class MenuState extends State {
     override function onenter(data :Dynamic) {
         ps = new ParticleSystem();
         pe_burst_color_life_module = new ColorLifeModule({
-            initial_color : new Color(1,0,1,1),
-            end_color : new Color(0,0,1,1),
-            end_color_max : new Color(1,0,0,1)
+            initial_color : new sparkler.data.Color(1,0,1,1),
+            end_color : new sparkler.data.Color(0,0,1,1),
+            end_color_max : new sparkler.data.Color(1,0,0,1)
         });
         pe_burst = new ParticleEmitter({
 			name: 'tile_particle_emitter', 
@@ -51,19 +51,17 @@ class MenuState extends State {
 			cache_size: 64,
 			cache_wrap: true,
 			duration: 0.15,
+            lifetime: 0.15,
+            lifetime_max: 0.3,
 			modules: [
 				new AreaSpawnModule({
-                    size: new Vector(120, 25),
-                    inside: false
+                    size: new sparkler.data.Vector(120, 25),
+                    // inside: false
                 }),
-				new LifeTimeModule({
-					lifetime: 0.15,
-					lifetime_max: 0.3
-				}),
                 pe_burst_color_life_module,
 				new SizeLifeModule({
-					initial_size: new Vector(10,10),
-					end_size: new Vector(5,5)
+					initial_size: new sparkler.data.Vector(10,10),
+					end_size: new sparkler.data.Vector(5,5)
 				}),
 				new DirectionModule({
 					direction: 0,
@@ -93,7 +91,7 @@ class MenuState extends State {
             sdf: true,
             shader: Luxe.renderer.shaders.bitmapfont.shader.clone('title-shader'),
             outline: 0.75,
-            outline_color: new Color().rgb(0xa55004),
+            outline_color: new Color().rgb(0xa55004)
         });
         luxe.tween.Actuate.tween(title, 3.0, { outline: 0.65, letter_spacing: -1.25 }).reflect().repeat();
 
@@ -438,10 +436,11 @@ class MenuState extends State {
         if (rank != old_rank) {
             var delay = (wins > old_wins ? (max_particles * 0.35 + 0.5) : 0.0);
             Actuate.timer(delay).onComplete(function() {
-                pe_burst.position.copy_from(new Vector(Settings.WIDTH / 2, rankText.pos.y));
+                pe_burst.position.x = Settings.WIDTH / 2;
+                pe_burst.position.y = rankText.pos.y;
 
-                pe_burst_color_life_module.initial_color = (rank < old_rank ? new Color(1, 0, 1) : new Color(0, 0, 0));
-                pe_burst_color_life_module.end_color = new Color(1, 1, 1, 1);
+                pe_burst_color_life_module.initial_color.from_json(rank < old_rank ? new sparkler.data.Color(1, 0, 1) : new sparkler.data.Color(0, 0, 0));
+                pe_burst_color_life_module.end_color.from_json(new sparkler.data.Color(1, 1, 1, 1));
                 pe_burst.duration = 0.5;
 
                 pe_burst.start();
@@ -512,10 +511,11 @@ class MenuState extends State {
 
             Luxe.camera.shake(2);
 
-            pe_burst.position.copy_from(new Vector(Settings.WIDTH / 2, winsText.pos.y));
+            pe_burst.position.x = Settings.WIDTH / 2;
+            pe_burst.position.y = winsText.pos.y;
 
-            pe_burst_color_life_module.initial_color = new Color().rgb(0x956416);
-            pe_burst_color_life_module.end_color = new Color(1, 1, 1, 1);
+            pe_burst_color_life_module.initial_color.from_json(new sparkler.data.Color(0.584313, 0.392156, 0.086274));
+            pe_burst_color_life_module.end_color.from_json(new sparkler.data.Color(1, 1, 1, 1));
 
             pe_burst.duration = 0.15;
 

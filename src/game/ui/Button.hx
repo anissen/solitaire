@@ -6,9 +6,9 @@ import luxe.Text;
 import luxe.Color;
 import luxe.tween.Actuate;
 
-import particles.ParticleSystem;
-import particles.ParticleEmitter;
-import particles.modules.*;
+import sparkler.ParticleSystem;
+import sparkler.ParticleEmitter;
+import sparkler.modules.*;
 
 typedef ButtonOptions = {
     pos :Vector,
@@ -28,7 +28,7 @@ class Button extends luxe.NineSlice {
     var is_enabled :Bool = true;
     var ps :ParticleSystem;
     var pe :ParticleEmitter;
-    var particle_color :Color;
+    var particle_color :sparkler.data.Color;
     var start_pos :Vector;
     public var text (get, set) :String;
     public var enabled (get, set) :Bool;
@@ -74,42 +74,40 @@ class Button extends luxe.NineSlice {
 
         enabled = !disabled;
 
-        particle_color = new Color(1, 1, 1, 0.5);
+        particle_color = new sparkler.data.Color(1, 1, 1, 0.5);
         ps = new ParticleSystem();
         pe = new ParticleEmitter({
 			name: 'tile_particle_emitter', 
 			rate: 8,
 			cache_size: 32,
 			cache_wrap: true,
+            lifetime: 0.5,
+            lifetime_max: 1,
+            depth: depth + 10,
 			modules: [
-				new AreaSpawnModule({
-                    size: new Vector(width, height),
-                    inside: false
+				new AreaEdgeSpawnModule({
+                    size: new sparkler.data.Vector(width, height),
+                    size_max: new sparkler.data.Vector(width, height),
+                    // inside: false
                 }),
-				new LifeTimeModule({
-					lifetime: 0.5,
-					lifetime_max: 1
-				}),
                 new ColorLifeModule({
                     initial_color: particle_color
                 }),
 				new SizeLifeModule({
-					initial_size: new Vector(5,5),
-					end_size: new Vector(2,2)
+					initial_size: new sparkler.data.Vector(5,5),
+					end_size: new sparkler.data.Vector(2,2)
 				}),
 				new DirectionModule({
 					direction: 0,
 					direction_variance: 360,
                     speed: 10
 				})
-                // new particles.modules.RadialAccelModule({
-                //     accel: 500
-                // })
 			]
 		});
         pe.stop();
 		ps.add(pe);
-        pe.position.copy_from(options.pos);
+        pe.position.x = options.pos.x;
+        pe.position.y = options.pos.y;
 
         this.scale.y = 0;
         Actuate
@@ -178,13 +176,12 @@ class Button extends luxe.NineSlice {
     }
 
     public function color_burst(?duration :Float) {
-        var old_color = particle_color.clone();
-        particle_color.set(1, 1, 0, 1);
+        var old_color = particle_color.to_json();
+        particle_color.from_json({ r: 1, g: 1, b: 0, a: 1 });
         pe.rate = 32;
         pe.start();
         if (duration != null) {
-            particle_color
-                .tween(0.3, { r: old_color.r, g: old_color.g, b: old_color.b, a: old_color.a })
+            Actuate.tween(particle_color, 0.3, { r: old_color.r, g: old_color.g, b: old_color.b, a: old_color.a })
                 .onComplete(function(_) {
                     pe.rate = 8;
                     pe.stop();

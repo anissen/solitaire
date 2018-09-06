@@ -72,6 +72,7 @@ class Main extends luxe.Game {
 
         Luxe.camera.size = new luxe.Vector(Settings.WIDTH, Settings.HEIGHT);
         Luxe.renderer.clear_color = Settings.BACKGROUND_COLOR;
+        sparkler.ParticleSystem.renderer = new sparkler.render.luxe.LuxeRenderer();
         
         fade = new game.components.Fader({ name: 'fade' });
         Luxe.camera.add(fade);

@@ -18,9 +18,9 @@ import core.models.Game;
 import core.utils.Analytics;
 import game.misc.GameMode.GameMode;
 
-import particles.ParticleSystem;
-import particles.ParticleEmitter;
-import particles.modules.*;
+import sparkler.ParticleSystem;
+import sparkler.ParticleEmitter;
+import sparkler.modules.*;
 
 using game.tools.TweenTools;
 using game.misc.GameMode.GameModeTools;
@@ -170,9 +170,9 @@ class PlayState extends State {
         ps = new ParticleSystem();
 
         pe_burst_color_life_module = new ColorLifeModule({
-            initial_color : new Color(1,0,1,1),
-            end_color : new Color(0,0,1,1),
-            end_color_max : new Color(1,0,0,1)
+            initial_color : new sparkler.data.Color(1,0,1,1),
+            end_color : new sparkler.data.Color(0,0,1,1),
+            end_color_max : new sparkler.data.Color(1,0,0,1)
         });
         pe_burst = new ParticleEmitter({
 			name: 'tile_particle_emitter', 
@@ -180,18 +180,16 @@ class PlayState extends State {
 			cache_size: 64,
 			cache_wrap: true,
 			duration: 0.1,
+            lifetime: 0.15,
+            lifetime_max: 0.3,
 			modules: [
 				new RadialSpawnModule({
                     radius: 5
                 }),
-				new LifeTimeModule({
-					lifetime: 0.15,
-					lifetime_max: 0.3
-				}),
                 pe_burst_color_life_module,
 				new SizeLifeModule({
-					initial_size: new Vector(10,10),
-					end_size: new Vector(5,5)
+					initial_size: new sparkler.data.Vector(10,10),
+					end_size: new sparkler.data.Vector(5,5)
 				}),
 				new DirectionModule({
 					direction: 0,
@@ -204,9 +202,9 @@ class PlayState extends State {
 		ps.add(pe_burst);
 
         pe_continous_color_life_module = new ColorLifeModule({
-            initial_color : new Color(1,0,1,0.5),
-            end_color : new Color(0,0,1,0),
-            end_color_max : new Color(1,0,0,0.5)
+            initial_color : new sparkler.data.Color(1,0,1,0.5),
+            end_color : new sparkler.data.Color(0,0,1,0),
+            end_color_max : new sparkler.data.Color(1,0,0,0.5)
         });
         pe_continous = new ParticleEmitter({
 			name: 'card_particle_emitter', 
@@ -214,18 +212,16 @@ class PlayState extends State {
 			cache_size: 64,
 			cache_wrap: true,
             depth: 9,
+            lifetime: 0.3,
+            lifetime_max: 0.6,
 			modules: [
                 new RadialSpawnModule({
                     radius: 10
                 }),
-				new LifeTimeModule({
-					lifetime: 0.3,
-					lifetime_max: 0.6
-				}),
                 pe_continous_color_life_module,
 				new SizeLifeModule({
-					initial_size: new Vector(10,10),
-					end_size: new Vector(5,5)
+					initial_size: new sparkler.data.Vector(10,10),
+					end_size: new sparkler.data.Vector(5,5)
 				})
 			]
 		});
@@ -601,12 +597,13 @@ class PlayState extends State {
             if (!ring_symbol.destroyed) ring_symbol.destroy();
         });
 
-        pe_burst.position.copy_from(card.pos);
+        pe_burst.position.x = card.pos.x;
+        pe_burst.position.y = card.pos.y;
         var color = card.get_original_color();
         color.a = 0.5;
-        pe_burst_color_life_module.initial_color = color;
-        pe_burst_color_life_module.end_color = color;
-        pe_burst_color_life_module.end_color_max = new Color(1, 1, 1, 0);
+        pe_burst_color_life_module.initial_color.from_json(color);
+        pe_burst_color_life_module.end_color.from_json(color);
+        pe_burst_color_life_module.end_color_max = new sparkler.data.Color(1, 1, 1, 0);
         pe_burst.start();
 
         return Promise.resolve();
@@ -635,10 +632,11 @@ class PlayState extends State {
 
         Analytics.event('game', 'place', '$x,$y');
 
-        pe_burst.position.copy_from(card.pos);
-        pe_burst_color_life_module.initial_color = card.get_original_color();
-        pe_burst_color_life_module.end_color = card.get_original_color();
-        pe_burst_color_life_module.end_color_max = new Color(1, 1, 1, 0);
+        pe_burst.position.x = card.pos.x;
+        pe_burst.position.y = card.pos.y;
+        pe_burst_color_life_module.initial_color.from_json(card.get_original_color());
+        pe_burst_color_life_module.end_color.from_json(card.get_original_color());
+        pe_burst_color_life_module.end_color_max = new sparkler.data.Color(1, 1, 1, 0);
         pe_burst.start();
 
         tutorial(TutorialStep.CollectingSets, { texts: ['You collect adjacent\n{brown}gemstones{default} to form {brown}sets{default}.'], pos_y: (Settings.HEIGHT * (3/4) - 40) });
@@ -740,12 +738,13 @@ class PlayState extends State {
 
             Luxe.camera.shake(card_score * (1 / 3));
 
-            pe_burst.position.copy_from(scoreText.pos);
+            pe_burst.position.x = scoreText.pos.x;
+            pe_burst.position.y = scoreText.pos.y;
             var color = card.get_original_color();
             color.a = 0.5;
-            pe_burst_color_life_module.initial_color = color;
-            pe_burst_color_life_module.end_color = color;
-            pe_burst_color_life_module.end_color_max = new Color(1, 1, 1, 0);
+            pe_burst_color_life_module.initial_color.from_json(color);
+            pe_burst_color_life_module.end_color.from_json(color);
+            pe_burst_color_life_module.end_color_max = new sparkler.data.Color(1, 1, 1, 0);
             pe_burst.start();
 
             if (card_score <= 1) {
@@ -953,12 +952,13 @@ class PlayState extends State {
         grabbed_card.depth = 10;
         grabbed_card.show_shadow(true);
         
-        pe_continous.position.copy_from(grabbed_card.pos);
+        pe_continous.position.x = grabbed_card.pos.x;
+        pe_continous.position.y = grabbed_card.pos.y;
         var color = grabbed_card.get_original_color();
         color.a = 0.5;
-        pe_continous_color_life_module.initial_color = color;
-        pe_continous_color_life_module.end_color = color;
-        pe_continous_color_life_module.end_color_max = new Color(1, 1, 1, 0);
+        pe_continous_color_life_module.initial_color.from_json(color);
+        pe_continous_color_life_module.end_color.from_json(color);
+        pe_continous_color_life_module.end_color_max = new sparkler.data.Color(1, 1, 1, 0);
         pe_continous.start();
 
         clear_collection();
@@ -986,7 +986,8 @@ class PlayState extends State {
         if (grabbed_card != null) {
             var world_pos = Luxe.camera.screen_point_to_world(Vector.Subtract(event.pos, grabbed_card_offset));
             grabbed_card.pos = world_pos;
-            pe_continous.position.copy_from(world_pos);
+            pe_continous.position.x = world_pos.x;
+            pe_continous.position.y = world_pos.y;
         }
     }
 
