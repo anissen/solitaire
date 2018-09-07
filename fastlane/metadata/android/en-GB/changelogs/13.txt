@@ -1,0 +1,5 @@
+Now with 100% fewer crashes at startup.
+Also:
+Added a ranking screen.
+Many minor tweaks.
+Improved stability.

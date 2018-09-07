@@ -21,7 +21,11 @@ platform :android do
       task: 'assemble',
       build_type: 'Release'
     )
-    upload_to_play_store(track: 'beta')
+    mapping_path = File.absolute_path "../android.project/app/build/outputs/mapping/release/mapping.txt"
+    upload_to_play_store(
+        mapping: mapping_path,
+        track: 'beta'
+    )
   
     # sh "your_script.sh"
     # You can also use other beta testing services here
