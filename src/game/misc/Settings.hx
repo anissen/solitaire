@@ -60,5 +60,5 @@ class Settings {
     static public var WIDTH  = 270;
     static public var HEIGHT = 480;
 
-    static public var SERVER_URL = #if (debug && !android) 'http://localhost:3000/' #else 'https://stoneset.herokuapp.com/' #end ;
+    static public var SERVER_URL = #if (debug && !android && !ios) 'http://localhost:3000/' #else 'https://stoneset.herokuapp.com/' #end ;
 }

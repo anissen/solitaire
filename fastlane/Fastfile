@@ -21,9 +21,9 @@ platform :android do
       task: 'assemble',
       build_type: 'Release'
     )
-    mapping_path = File.absolute_path "../android.project/app/build/outputs/mapping/release/mapping.txt"
+    #mapping_path = File.absolute_path "../android.project/app/build/outputs/mapping/release/mapping.txt"
     upload_to_play_store(
-        mapping: mapping_path,
+        #mapping: mapping_path,
         track: 'beta'
     )
   

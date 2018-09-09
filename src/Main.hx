@@ -37,6 +37,7 @@ class Main extends luxe.Game {
         config.preload.textures.push({ id: 'assets/ui/panel_beigeLight.png' });
 
         com.akifox.asynchttp.AsyncHttp.logEnabled = false;
+        com.akifox.asynchttp.AsyncHttp.logErrorEnabled = true;
 
         #if ios
         sys.ssl.Socket.DEFAULT_VERIFY_CERT = false;

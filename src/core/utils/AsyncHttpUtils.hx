@@ -7,17 +7,17 @@ typedef HttpCallback = {
 
 class AsyncHttpUtils {
     public static function get(url :String, ?callback :HttpCallback -> Void) {
-        function callbackWrapper(response :com.akifox.asynchttp.HttpResponse) {
-            if (callback == null) return;
-
-            if (response.isOK) {
-                Luxe.next(callback.bind({ json: response.toJson() }));
-            } else {
-                Luxe.next(callback.bind({ error: response.error }));
-            }
-        }
-
         try {
+            function callbackWrapper(response :com.akifox.asynchttp.HttpResponse) {
+                if (callback == null) return;
+
+                if (response.isOK) {
+                    Luxe.next(callback.bind({ json: response.toJson() }));
+                } else {
+                    Luxe.next(callback.bind({ error: response.error }));
+                }
+            }
+
             var request = new com.akifox.asynchttp.HttpRequest({ url: url, callback: callbackWrapper });
             request.send();
         } catch (e :Dynamic) {

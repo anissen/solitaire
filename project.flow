@@ -28,6 +28,7 @@
       },
       defines : [
         'NO_PRECOMPILED_HEADERS',
+        'HXCPP_STACK_TRACE',
         'absolute-path',
         'no_debug_console'
       ]

@@ -65,6 +65,8 @@ END BETA FEEDBACK
 * Make a "retry"-button if the server cannot be contacted
 * Use limits on { games-played-star, highscores, ranking, ... } to account for MANY users
 * Make a version file that Analytics reads from
+* Speed up text and arrows in tutorial
+* Make the background take up the entire screen (?)
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
@@ -74,6 +76,8 @@ Bugs:
 * Random crash when play
 * Tutorial game mode are sent to server as game_mode 4 (how??)
 * Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
+* Text in plays-stars on menu screen are on top of tutorial
+* Plays decreasing with each view of menu screen 
 
 iOS specific:
 * iOS app icon
