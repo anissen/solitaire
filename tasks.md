@@ -77,7 +77,6 @@ Bugs:
 * Tutorial game mode are sent to server as game_mode 4 (how??)
 * Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
 * Text in plays-stars on menu screen are on top of tutorial
-* Plays decreasing with each view of menu screen 
 
 iOS specific:
 * iOS app icon

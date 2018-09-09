@@ -240,47 +240,46 @@ class GameOverState extends State {
                 Main.SetState(PlayState.StateId, next_game_mode);
             }
         });
-        if (is_rank_mode) play_button.visible = false;
-
-        // retry_button = new game.ui.Button({
-        //     pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 60),
-        //     text: 'Try again',
-        //     on_click: function() {
-        //         update_global_highscores(data);
-        //     }
-        // });
-        // retry_button.visible = false;
-
-        var user_name = Luxe.io.string_load('user_name');
-        if (user_name == null || user_name.length == 0) user_name = 'You';
-
-        var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
-        if (total_score == null) total_score = 0;
-        total_score += score;
-        Luxe.io.string_save('total_score', '$total_score');
-
-        var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
-        var local_scores = [];
-        if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
-
-        local_highscores = [ for (s in local_scores) { score: s, name: user_name, current: false } ];
-        local_highscores.push({ score: score, name: user_name, current: true });
-
-        local_scores.push(score); // code is HERE to prevent duplicate own scores
-
-        // Update the plays today value
-        var plays_today = Luxe.io.string_load(game_mode.get_game_mode_id() + '_plays_today');
-        if (plays_today == null) plays_today = '0';
-        var number_of_plays_today = Std.parseInt(plays_today) + 1;
-        Luxe.io.string_save(game_mode.get_game_mode_id() + '_plays_today', '$number_of_plays_today');
-        Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
-
-        if (is_strive_mode) {
-            show_local_highscores();
-            update_global_highscores(data); // just update, don't show the global scores yet
+        if (is_rank_mode) {
+            play_button.visible = false;
+            show_rank();
         } else {
-            if (is_rank_mode) {
-                show_rank();
+            // retry_button = new game.ui.Button({
+            //     pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 60),
+            //     text: 'Try again',
+            //     on_click: function() {
+            //         update_global_highscores(data);
+            //     }
+            // });
+            // retry_button.visible = false;
+
+            var user_name = Luxe.io.string_load('user_name');
+            if (user_name == null || user_name.length == 0) user_name = 'You';
+
+            var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
+            if (total_score == null) total_score = 0;
+            total_score += score;
+            Luxe.io.string_save('total_score', '$total_score');
+
+            var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
+            var local_scores = [];
+            if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
+
+            local_highscores = [ for (s in local_scores) { score: s, name: user_name, current: false } ];
+            local_highscores.push({ score: score, name: user_name, current: true });
+
+            local_scores.push(score); // code is HERE to prevent duplicate own scores
+
+            // Update the plays today value
+            var plays_today = Luxe.io.string_load(game_mode.get_game_mode_id() + '_plays_today');
+            if (plays_today == null) plays_today = '0';
+            var number_of_plays_today = Std.parseInt(plays_today) + 1;
+            Luxe.io.string_save(game_mode.get_game_mode_id() + '_plays_today', '$number_of_plays_today');
+            Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
+
+            if (is_strive_mode) {
+                show_local_highscores();
+                update_global_highscores(data); // just update, don't show the global scores yet
             } else {
                 update_global_highscores(data);
             }
