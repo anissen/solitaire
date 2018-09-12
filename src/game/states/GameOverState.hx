@@ -570,10 +570,10 @@ class GameOverState extends State {
 
     function get_fade_value(line_y :Float) {
         var y = score_container.pos.y + line_y;
-        var top_fade_y = (title.pos.y + 60);
-        var top_hide_y = (title.pos.y + 20);
-        var bottom_fade_y = (play_button.visible ? play_button.pos.y - 50 : Settings.HEIGHT - 50);
-        var bottom_hide_y = (play_button.visible ? play_button.pos.y - 10 : Settings.HEIGHT - 10);
+        var top_fade_y = (title.pos.y + 65);
+        var top_hide_y = (title.pos.y + 25);
+        var bottom_fade_y = (play_button.visible ? play_button.pos.y - 55 : Settings.HEIGHT - 55);
+        var bottom_hide_y = (play_button.visible ? play_button.pos.y - 15 : Settings.HEIGHT - 15);
         if (y < top_hide_y) {
             return 0.0;
         } else if (y < top_fade_y) {
