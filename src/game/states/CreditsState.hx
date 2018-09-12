@@ -24,8 +24,8 @@ class CreditsState extends State {
     override function onenter(data :Dynamic) {
         title = new Text({
             text: 'About',
-            pos: new Vector(Settings.WIDTH / 2, 70),
-            point_size: 36,
+            pos: new Vector(Settings.WIDTH / 2, 50),
+            point_size: 30,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
             color: new luxe.Color(1.0, 1.0, 1.0),
@@ -49,7 +49,7 @@ class CreditsState extends State {
 
         var madeby = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 130),
+            pos: new Vector(Settings.WIDTH / 2, 120),
             text: 'Made by',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -58,7 +58,7 @@ class CreditsState extends State {
         });
         var name = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 160),
+            pos: new Vector(Settings.WIDTH / 2, 150),
             text: 'Anders Nissen',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -83,7 +83,7 @@ class CreditsState extends State {
 
         var link = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 190),
+            pos: new Vector(Settings.WIDTH / 2, 180),
             text: 'andersnissen.com',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -101,7 +101,7 @@ class CreditsState extends State {
 
         var icons_by = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 250),
+            pos: new Vector(Settings.WIDTH / 2, 245),
             text: 'Icons by',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -110,7 +110,7 @@ class CreditsState extends State {
         });
         var icons_link = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 280),
+            pos: new Vector(Settings.WIDTH / 2, 275),
             text: 'game-icons.net',
             align: TextAlign.center,
             align_vertical: TextAlign.center,

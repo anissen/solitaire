@@ -22,8 +22,8 @@ class SettingsState extends State {
     override function onenter(data :Dynamic) {
         title = new Text({
             text: 'Settings',
-            pos: new Vector(Settings.WIDTH / 2, 70),
-            point_size: 36,
+            pos: new Vector(Settings.WIDTH / 2, 50),
+            point_size: 30,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
             color: new luxe.Color(1.0, 1.0, 1.0),

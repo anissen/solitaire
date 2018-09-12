@@ -202,7 +202,7 @@ class GameOverState extends State {
 
         title = new Text({
             text: (is_strive_mode ? 'Local Highscores' : 'Global Highscores'),
-            pos: new Vector(Settings.WIDTH / 2, 70),
+            pos: new Vector(Settings.WIDTH / 2, 50),
             point_size: 26,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
