@@ -1,0 +1,1 @@
+Bump minimum Android SDK version requirement to 17 to avoid warnings on Android Pie.
