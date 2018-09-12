@@ -555,7 +555,7 @@ class GameOverState extends State {
         var highscore_list_height = (count * 25 + 100);
         if (highscore_list_height > Settings.HEIGHT) {
             var pan = new game.components.DragPan({ name: 'DragPan' });
-            pan.y_top = Settings.HEIGHT - highscore_list_height;
+            pan.y_top = Settings.HEIGHT - highscore_list_height - 40;
             pan.y_bottom = 0;
             pan.ondrag = update_fading.bind(highscore_lines);
             score_container.add(pan);

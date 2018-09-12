@@ -79,7 +79,6 @@ Bugs:
 * Tutorial game mode are sent to server as game_mode 4 (how??)
 * Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
 * Text in plays-stars on menu screen are on top of tutorial
-* The last few (1 on Android, 3 on web) entries in the highscore list (at last ranking) are missing from the list
 
 iOS specific:
 * iOS app icon
