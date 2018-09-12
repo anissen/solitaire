@@ -343,7 +343,7 @@ class GameOverState extends State {
             } else {
                 error_text = data.error;
                 // retry_button.visible = true;
-                show_error;
+                show_error();
             }
         });
     }
@@ -513,7 +513,7 @@ class GameOverState extends State {
             if (data.error == null) {
                 if (data.json == null) {
                     error_text = 'Error';
-                    show_error;
+                    show_error();
                 } else {
                     var clientId = Luxe.io.string_load('clientId');
                     var json :Array<{ user_id :String, user_name :String, total_wins :Int }> = data.json;
@@ -534,7 +534,7 @@ class GameOverState extends State {
                 }
             } else {
                 error_text = data.error;
-                show_error;
+                show_error();
             }
         });
     }
