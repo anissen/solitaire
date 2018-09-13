@@ -67,7 +67,10 @@ class MenuState extends State {
 					direction: 0,
 					direction_variance: 360,
                     speed: 100
-				})
+				}),
+                new RotationModule({
+                    initial_rotation: Math.random() * 2 * Math.PI
+                })
 			]
 		});
         pe_burst.stop();
@@ -474,6 +477,7 @@ class MenuState extends State {
             size: new Vector(size, size),
             color: new Color().rgb(0x956416),
             depth: 100,
+            rotation_z: Math.random() * 2 * Math.PI,
 
             target: winsIcon.pos,
             duration: duration,

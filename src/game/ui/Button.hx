@@ -101,7 +101,10 @@ class Button extends luxe.NineSlice {
 					direction: 0,
 					direction_variance: 360,
                     speed: 10
-				})
+				}),
+                new RotationModule({
+                    initial_rotation: Math.random() * 2 * Math.PI
+                })
 			]
 		});
         pe.stop();

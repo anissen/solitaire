@@ -195,7 +195,10 @@ class PlayState extends State {
 					direction: 0,
 					direction_variance: 360,
                     speed: 100
-				})
+				}),
+                new RotationModule({
+                    initial_rotation: Math.random() * 2 * Math.PI
+                })
 			]
 		});
         pe_burst.stop();
@@ -222,7 +225,10 @@ class PlayState extends State {
 				new SizeLifeModule({
 					initial_size: new sparkler.data.Vector(10,10),
 					end_size: new sparkler.data.Vector(5,5)
-				})
+				}),
+                new RotationModule({
+                    initial_rotation: Math.random() * 2 * Math.PI
+                })
 			]
 		});
         pe_continous.stop();
