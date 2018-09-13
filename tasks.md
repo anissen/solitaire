@@ -63,10 +63,9 @@ END BETA FEEDBACK
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Move external libs into the repository (e.g. as git submodules)
-* Area particle effect when won/lost
+* Area particle effect when won/lost (?)
 * Make a "retry"-button if the server cannot be contacted
 * Use limits on { games-played-star, highscores, ranking, ... } to account for MANY users
-* Make a version file that Analytics reads from
 * Speed up text and arrows in tutorial
 * Make the background take up the entire screen (?)
 
@@ -76,9 +75,7 @@ Bugs:
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, \_] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
 * Random crash when play
-* Tutorial game mode are sent to server as game_mode 4 (how??)
 * Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
-* Text in plays-stars on menu screen are on top of tutorial
 
 iOS specific:
 * iOS app icon

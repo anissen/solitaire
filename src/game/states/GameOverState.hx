@@ -202,7 +202,7 @@ class GameOverState extends State {
 
         title = new Text({
             text: (is_strive_mode ? 'Local Highscores' : 'Global Highscores'),
-            pos: new Vector(Settings.WIDTH / 2, 50),
+            pos: new Vector(Settings.WIDTH / 2, 70),
             point_size: 26,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
@@ -271,10 +271,10 @@ class GameOverState extends State {
             local_scores.push(score); // code is HERE to prevent duplicate own scores
 
             // Update the plays today value
-            var plays_today = Luxe.io.string_load(game_mode.get_game_mode_id() + '_plays_today');
+            var plays_today = Luxe.io.string_load(get_non_tutorial_game_mode().get_game_mode_id() + '_plays_today');
             if (plays_today == null) plays_today = '0';
             var number_of_plays_today = Std.parseInt(plays_today) + 1;
-            Luxe.io.string_save(game_mode.get_game_mode_id() + '_plays_today', '$number_of_plays_today');
+            Luxe.io.string_save(get_non_tutorial_game_mode().get_game_mode_id() + '_plays_today', '$number_of_plays_today');
             Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
 
             if (is_strive_mode) {
@@ -304,7 +304,7 @@ class GameOverState extends State {
         loading_global_data = true;
         // retry_button.visible = false;
 
-        var plays_today = Std.parseInt(Luxe.io.string_load(data.game_mode.get_game_mode_id() + '_plays_today'));
+        var plays_today = Std.parseInt(Luxe.io.string_load(get_non_tutorial_game_mode().get_game_mode_id() + '_plays_today'));
         var now = Date.now();
         var user_name = Luxe.io.string_load('user_name');
         var strive_goal = data.game_mode.get_strive_score();

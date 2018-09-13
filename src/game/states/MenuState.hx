@@ -353,7 +353,7 @@ class MenuState extends State {
                 texture: Luxe.resources.texture('assets/ui/round-star.png'),
                 scale: new Vector(0.06, 0.06),
                 color: new Color().rgb(0xFFFFFF), // .rgb(0x956416)
-                depth: 200
+                depth: 150
             });
 
             var playsText = new Text({
@@ -364,7 +364,7 @@ class MenuState extends State {
                 align_vertical: TextAlign.center,
                 color: new Color().rgb(0x956416),
                 point_size: 18,
-                depth: 220
+                depth: 151
             });
 
             starIcon.scale.set_xy(0.0, 0.0);
