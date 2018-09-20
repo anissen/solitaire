@@ -534,12 +534,14 @@ class Game {
         // Only look at the quests in normal order (not reversed)
         for (quest in quests) {
             var quest_copy = [ for (tile in quest) { suit: tile.suit, stacked: tile.stacked, tile: tile } ];
+
             // trace(quest_copy);
             var quest_matches = [];
 
             for (tile in tiles) {
                 var match = false;
                 for (quest_card in quest_copy) {
+                    // TODO: Handle special case where quest is [a,a,b] and [a, b] is selected. That is, if the first matches and the LAST also matches, select the second and last instead.
                     if (tile.suit == quest_card.suit && tile.stacked == quest_card.stacked) {
                         quest_matches.push(quest_card.tile);
                         quest_copy.remove(quest_card);

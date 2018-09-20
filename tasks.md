@@ -64,7 +64,6 @@ END BETA FEEDBACK
     * temple of the mystics starting on main menu and playing in normal and strive
     * theme-3 plays on survival
     * theme-5 plays on puzzle
-* Area particle effect when won/lost (?)
 * Make a "retry"-button if the server cannot be contacted
 * Speed up text and arrows in tutorial
 * Make the background take up the entire screen (?)
