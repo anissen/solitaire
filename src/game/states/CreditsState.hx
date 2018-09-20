@@ -39,11 +39,11 @@ class CreditsState extends State {
         // luxe.tween.Actuate.tween(title, 3.0, { outline: 0.65, letter_spacing: -1.5 }).reflect().repeat();
 
         var back_button = new game.ui.Icon({
-            pos: new Vector(25, 25),
+            pos: new Vector(30, 30),
             texture_path: 'assets/ui/arrowBeige_left.png',
             on_click: Main.SetState.bind(MenuState.StateId)
         });
-        back_button.scale.set_xy(1/5, 1/5);
+        back_button.scale.set_xy(1/4, 1/4);
 
         var url_open_func = #if android Main.SnowActivity.url_open #else Luxe.io.url_open #end ;
 

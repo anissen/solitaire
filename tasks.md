@@ -69,7 +69,6 @@ END BETA FEEDBACK
 * Use limits on { games-played-star, highscores, ranking, ... } to account for MANY users
 * Speed up text and arrows in tutorial
 * Make the background take up the entire screen (?)
-* Make "back button" slighty bigger -- it's very hard to hit on iOS
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game

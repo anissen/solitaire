@@ -241,11 +241,11 @@ class PlayState extends State {
 
         if (show_back_button) {
             var back_button = new game.ui.Icon({
-                pos: new Vector(25, 25),
+                pos: new Vector(30, 30),
                 texture_path: 'assets/ui/arrowBeige_left.png',
                 on_click: Main.SetState.bind(MenuState.StateId)
             });
-            back_button.scale.set_xy(1/5, 1/5);
+            back_button.scale.set_xy(1/4, 1/4);
         }
 
         // quest backgrounds
