@@ -66,7 +66,6 @@ END BETA FEEDBACK
     * theme-5 plays on puzzle
 * Area particle effect when won/lost (?)
 * Make a "retry"-button if the server cannot be contacted
-* Use limits on { games-played-star, highscores, ranking, ... } to account for MANY users
 * Speed up text and arrows in tutorial
 * Make the background take up the entire screen (?)
 

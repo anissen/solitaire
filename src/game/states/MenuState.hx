@@ -362,7 +362,7 @@ class MenuState extends State {
             var playsText = new Text({
                 parent: button,
                 pos: new Vector(176, 26),
-                text: '$plays',
+                text: (plays <= 99 ? '$plays' : '+'),
                 align: TextAlign.center,
                 align_vertical: TextAlign.center,
                 color: new Color().rgb(0x956416),
