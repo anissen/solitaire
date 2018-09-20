@@ -48,7 +48,7 @@ class ArcProgress extends ParcelProgress {
 			text: '',
 			align: center,
 			align_vertical: center,
-			point_size: 14 * Luxe.screen.device_pixel_ratio
+			point_size: 18
 		});
 
 		parcel.load();
