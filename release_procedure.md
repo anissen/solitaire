@@ -10,3 +10,5 @@
     * Android Studio: Build number
 
 3. Run fastlane beta
+
+4. Commit and push
