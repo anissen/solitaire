@@ -66,6 +66,7 @@ END BETA FEEDBACK
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
 * Speed up text and arrows in tutorial
+* Remove tutorial saying "your get three new gems each turn" + "you get a new quest each turn"
 * Make the background take up the entire screen (?)
 
 Bugs:
@@ -77,6 +78,8 @@ Bugs:
 * Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
 * Crash when resuming app (on android) after being inactive for a long time. Resuming on the menu screen in poor network conditions.
 * Game seed may not be unique (see score 99, Niels on day 8, month 8)
+* Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
+* After the first Survival game, the play button said "Tutorial" and the next game was identical (same seed: 5124818) (reported by Anne)
 
 iOS specific:
 * iOS app icon
