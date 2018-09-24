@@ -808,6 +808,7 @@ class PlayState extends State {
             case Normal:
                 play_sound('won');
             case Timed | Tutorial(Timed):
+                new_game_mode = Timed;
                 score = Std.int(time_penalty); // set the score to be the time survived
                 play_sound((counting_score - time_penalty > 0) ? 'won' : 'lost');
             case Puzzle:

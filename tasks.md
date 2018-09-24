@@ -79,7 +79,6 @@ Bugs:
 * Crash when resuming app (on android) after being inactive for a long time. Resuming on the menu screen in poor network conditions.
 * Game seed may not be unique (see score 99, Niels on day 8, month 8)
 * Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
-* After the first Survival game, the play button said "Tutorial" and the next game was identical (same seed: 5124818) (reported by Anne)
 
 iOS specific:
 * iOS app icon
