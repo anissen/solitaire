@@ -270,11 +270,15 @@ class GameOverState extends State {
 
             local_scores.push(score); // code is HERE to prevent duplicate own scores
 
-            // Update the plays today value
-            var plays_today = Luxe.io.string_load(get_non_tutorial_game_mode().get_game_mode_id() + '_plays_today');
-            if (plays_today == null) plays_today = '0';
-            var number_of_plays_today = Std.parseInt(plays_today) + 1;
-            Luxe.io.string_save(get_non_tutorial_game_mode().get_game_mode_id() + '_plays_today', '$number_of_plays_today');
+            var now = Date.now();
+            var date_string = '' + now.getDate() + now.getMonth() + now.getFullYear();
+            if (Luxe.io.string_load(game_mode.get_non_tutorial_game_mode_id() + '_play_date') == date_string) { // only update plays today if it is still "today"
+                // Update the plays today value
+                var plays_today = Luxe.io.string_load(game_mode.get_non_tutorial_game_mode_id() + '_plays_today');
+                if (plays_today == null) plays_today = '0';
+                var number_of_plays_today = Std.parseInt(plays_today) + 1;
+                Luxe.io.string_save(game_mode.get_non_tutorial_game_mode_id() + '_plays_today', '$number_of_plays_today');
+            }
             Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
 
             if (is_strive_mode) {

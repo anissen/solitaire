@@ -128,6 +128,9 @@ class PlayState extends State {
         // trace('... now ${game_mode.get_game_mode_id()} games today: $number_of_plays_today');
         Analytics.event('game', 'plays_daily', game_mode.get_non_tutorial_game_mode_id(), number_of_plays_today);
 
+        var now = Date.now();
+        Luxe.io.string_save(game_mode.get_non_tutorial_game_mode_id() + '_play_date', '' + now.getDate() + now.getMonth() + now.getFullYear());
+
         Luxe.utils.random.initial = switch (game_mode) {
             case Tutorial(Normal): 12;
             default:
