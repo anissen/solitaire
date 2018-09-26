@@ -317,7 +317,7 @@ class GameOverState extends State {
             'year' => '' + now.getFullYear(),
             'month' => '' + now.getMonth(),
             'day' => '' + now.getDate(),
-            'game_mode' => '' + get_non_tutorial_game_mode().getIndex(),
+            'game_mode' => '' + game_mode.get_non_tutorial_game_mode_index(),
             'game_count' => '' + plays_today,
             'actions' => '' // + data.actions_data
         ];
