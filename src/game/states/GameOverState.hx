@@ -286,13 +286,6 @@ class GameOverState extends State {
         }
     }
 
-    function get_non_tutorial_game_mode() {
-        return switch (game_mode) {
-            case Tutorial(mode): mode;
-            default: game_mode;
-        }
-    }
-
     function update_global_highscores(data :DataType) {
         switch (highscore_mode) {
             case Local: // don't show loading icon in local mode
@@ -304,7 +297,7 @@ class GameOverState extends State {
         loading_global_data = true;
         // retry_button.visible = false;
 
-        var plays_today = Std.parseInt(Luxe.io.string_load(get_non_tutorial_game_mode().get_game_mode_id() + '_plays_today'));
+        var plays_today = Std.parseInt(Luxe.io.string_load(game_mode.get_non_tutorial_game_mode_id() + '_plays_today'));
         var now = Date.now();
         var user_name = Luxe.io.string_load('user_name');
         var strive_goal = data.game_mode.get_strive_score();

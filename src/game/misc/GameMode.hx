@@ -20,6 +20,21 @@ class GameModeTools {
         return game_mode.getName().toLowerCase();
     }
 
+    static public function get_non_tutorial_game_mode(game_mode :GameMode) :GameMode {
+        return switch (game_mode) {
+            case Tutorial(mode): mode;
+            default: game_mode;
+        }
+    }
+
+    static public function get_non_tutorial_game_mode_id(game_mode :GameMode) :String {
+        return get_game_mode_id(get_non_tutorial_game_mode(game_mode));
+    }
+
+    static public function get_non_tutorial_game_mode_index(game_mode :GameMode) :Int {
+        return get_non_tutorial_game_mode(game_mode).getIndex();
+    }
+
     static public function persistable_game_mode(game_mode :GameMode) :Bool {
         return switch (game_mode) {
             case Normal: true;

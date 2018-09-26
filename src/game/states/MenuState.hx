@@ -378,11 +378,11 @@ class MenuState extends State {
     }
 
     function next_game_seed(game_mode :GameMode) {
-        var plays_today = Luxe.io.string_load(game_mode.get_game_mode_id() + '_plays_today');
+        var plays_today = Luxe.io.string_load(game_mode.get_non_tutorial_game_mode_id() + '_plays_today');
         if (plays_today == null) plays_today = '0';
 
         var now = Date.now();
-        var seed_string = '' + (game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + 0 + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
+        var seed_string = '' + (game_mode.get_non_tutorial_game_mode_index() + 1 /* to avoid zero */) + plays_today + 0 + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
         return Std.parseInt(seed_string);
     }
 

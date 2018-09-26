@@ -120,20 +120,19 @@ class PlayState extends State {
     }
 
     function start_new_game() {
-        var plays_today = Luxe.io.string_load(game_mode.get_game_mode_id() + '_plays_today');
+        var plays_today = Luxe.io.string_load(game_mode.get_non_tutorial_game_mode_id() + '_plays_today');
         if (plays_today == null) plays_today = '0';
         //trace('${game_mode.get_game_mode_id()} games today: $plays_today');
         //trace('... now ${game_mode.get_game_mode_id()} games today: ${Std.parseInt(plays_today) + 1}');
         var number_of_plays_today = Std.parseInt(plays_today) + 1;
         // trace('... now ${game_mode.get_game_mode_id()} games today: $number_of_plays_today');
-        Analytics.event('game', 'plays_daily', game_mode.get_game_mode_id(), number_of_plays_today);
+        Analytics.event('game', 'plays_daily', game_mode.get_non_tutorial_game_mode_id(), number_of_plays_today);
 
         Luxe.utils.random.initial = switch (game_mode) {
             case Tutorial(Normal): 12;
             default:
-                var now = Date.now();
                 // e.g 1-2-0-26-8-18
-                var seed_string = '' + (game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + 0 + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
+                var seed_string = '' + (game_mode.get_non_tutorial_game_mode_index() + 1 /* to avoid zero */) + plays_today + 0 + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
                 Std.parseInt(seed_string);
         }
 
