@@ -382,7 +382,7 @@ class MenuState extends State {
         if (plays_today == null) plays_today = '0';
 
         var now = Date.now();
-        var seed_string = '' + (game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
+        var seed_string = '' + (game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + 0 + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
         return Std.parseInt(seed_string);
     }
 

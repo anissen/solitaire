@@ -77,7 +77,6 @@ Bugs:
 * Random crash when play
 * Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
 * Crash when resuming app (on android) after being inactive for a long time. Resuming on the menu screen in poor network conditions.
-* Game seed may not be unique (see score 99, Niels on day 8, month 8)
 * Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
 
 iOS specific:

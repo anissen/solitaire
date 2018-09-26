@@ -132,7 +132,8 @@ class PlayState extends State {
             case Tutorial(Normal): 12;
             default:
                 var now = Date.now();
-                var seed_string = '' + (game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
+                // e.g 1-2-0-26-8-18
+                var seed_string = '' + (game_mode.getIndex() + 1 /* to avoid zero */) + plays_today + 0 + now.getDate() + now.getMonth() + (now.getFullYear() - 2000);
                 Std.parseInt(seed_string);
         }
 
