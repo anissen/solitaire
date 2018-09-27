@@ -77,6 +77,8 @@ Bugs:
 * Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
 * Crash when resuming app (on android) after being inactive for a long time. Resuming on the menu screen in poor network conditions.
 * Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
+* Possible bug: Resetting tutorial would cause a player to get multiple scores on that game seed
+* MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:
 * iOS app icon
