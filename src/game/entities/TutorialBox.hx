@@ -99,8 +99,8 @@ class TutorialBox extends Sprite {
             scene: tutorial_temp_scene
         });
     
-        return Actuate.tween(arrow.color, 0.3, { a: 1 }).onComplete(function(_) {
-            Actuate.tween(arrow.pos, 0.7, { y: y }).onComplete(function(_) {
+        return Actuate.tween(arrow.color, 0.2, { a: 1 }).onComplete(function(_) {
+            Actuate.tween(arrow.pos, 0.5, { y: y }).onComplete(function(_) {
             //    new Sprite({
             //         pos: entity.pos,
             //         texture: Luxe.resources.texture('assets/images/symbols/circle.png'),
@@ -133,15 +133,15 @@ class TutorialBox extends Sprite {
             shadow.visible = true;
             label.visible = true;
             label.text = '';
-            Actuate.tween(this.pos, 0.5, { y: pos_y }).ease(luxe.tween.easing.Sine.easeInOut).onComplete(function(_) {
-                var delay = 0.2;
+            Actuate.tween(this.pos, 0.3, { y: pos_y }).ease(luxe.tween.easing.Sine.easeInOut).onComplete(function(_) {
+                var delay = 0.1;
                 for (point in points) {
                     point_to(point).delay(delay);
-                    delay += 0.4;
+                    delay += 0.3;
                 }
 
                 tutorial_texts = data.texts;
-                proceed(delay + 0.7);
+                proceed(delay + 0.4);
                 // Actuate.timer(delay + 0.5).onComplete(function(_) {
                 //     if (data.do_func != null) data.do_func();
                 //     if (data.must_be_dismissed == null || data.must_be_dismissed == false) {
@@ -155,7 +155,7 @@ class TutorialBox extends Sprite {
         return promise;
     }
 
-    public function proceed(dismiss_time :Float = 1.2) :Promise {
+    public function proceed(dismiss_time :Float = 1.0) :Promise {
         var nextText = tutorial_texts.shift();
         if (nextText == null) {
             dismiss();

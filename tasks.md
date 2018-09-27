@@ -65,7 +65,6 @@ END BETA FEEDBACK
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
-* Speed up text and arrows in tutorial
 * Remove tutorial saying "your get three new gems each turn" + "you get a new quest each turn"
 * Make the background take up the entire screen (?)
 

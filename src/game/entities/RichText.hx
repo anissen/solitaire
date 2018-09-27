@@ -43,8 +43,8 @@ typedef LabelOptions = {
 class RichText extends Text
 {
 
-	public var delay:Float = 1.5 / 60;
-	public var fade_in:Float = 0.25;
+	public var delay:Float = 1.3 / 60;
+	public var fade_in:Float = 0.20;
 	public var tags:Array<TagOptions> = new Array();
 	
 	public var state(default, null):LabelState = LabelState.none;
