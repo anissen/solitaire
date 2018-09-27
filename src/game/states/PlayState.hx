@@ -31,8 +31,6 @@ enum TutorialStep {
     Welcome;
     WhatIsTheGoal;
     Inventory;
-    DrawingCards;
-    DrawingSets;
     PlacingCards;
     PlacingCards2;
     StackingTiles;
@@ -86,7 +84,7 @@ class PlayState extends State {
     var highlighted_tile :Sprite;
     
     var tutorial_box :game.entities.TutorialBox;
-    var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, PlacingCards3, PlacingCards4, CollectingSets, CollectingSets2, DragToCollectSets, Scoring, DrawingSets, DrawingCards, StackingTiles, GoodLuck];
+    var tutorial_steps :Array<TutorialStep> = [Welcome, Inventory, PlacingCards, PlacingCards2, PlacingCards3, PlacingCards4, CollectingSets, CollectingSets2, DragToCollectSets, Scoring, StackingTiles, GoodLuck];
     var tutorial_step_index :Int;
     var tutorial_can_drop :{ x :Int, y :Int };
     var tutorial_can_collect :Bool;
@@ -650,7 +648,7 @@ class PlayState extends State {
         pe_burst_color_life_module.end_color_max = new sparkler.data.Color(1, 1, 1, 0);
         pe_burst.start();
 
-        tutorial(TutorialStep.CollectingSets, { texts: ['You collect adjacent\n{brown}gemstones{default} to form {brown}sets{default}.'], pos_y: (Settings.HEIGHT * (3/4) - 40) });
+        tutorial(TutorialStep.CollectingSets, { texts: ['You collect adjacent\n{brown}gemstones{default} to form {brown}sets{default}.', 'collect_adjacent.png'], pos_y: (Settings.HEIGHT * (3/4) - 40) });
 
         tutorial(TutorialStep.CollectingSets2, { texts: ['You can now\ncollect this {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
 
@@ -779,12 +777,9 @@ class PlayState extends State {
             });
         });
 
-        tutorial(TutorialStep.Scoring, { texts: ['Completing {brown}sets{default}\nincreases your score.', '{brown}Gemstones{default} can be\ncollected in any order.', 'Collecting in the correct\norder doubles the points.'], entities: [scoreText] });
+        tutorial(TutorialStep.Scoring, { texts: ['Complete {brown}sets{default} to\nincreases your score.', 'Collect in the correct\norder to double the points.', 'collect_order.png'], entities: [scoreText] });
 
-        tutorial(TutorialStep.DrawingSets, { texts: ['Each turn you\nget a new {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7), get_pos(1, tiles_y - 1.7), get_pos(2, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
-        tutorial(TutorialStep.DrawingCards, { texts: ['And three new\n{brown}gemstones{default}.'], points: [ get_pos(0, tiles_y + 1.8), get_pos(1, tiles_y + 1.8), get_pos(2, tiles_y + 1.8) ] });
-
-        tutorial(TutorialStep.StackingTiles, { texts: ['This {brown}set{default} has a\n{brown}flawless{default} {ruby}ruby{default}.', '{brown}Flawless gemstones{default}\nmust be forged.', 'Combine three {brown}gemstones{default}\n of the same type...', 'And a {brown}flawless{default} version\nwill be forged.'], points: [ get_pos(1, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
+        tutorial(TutorialStep.StackingTiles, { texts: ['This {brown}set{default} has a\n{brown}flawless{default} {ruby}ruby{default}.', '{brown}Flawless gemstones{default}\nmust be forged.', 'stack.png'], points: [ get_pos(1, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
 
         tutorial(TutorialStep.GoodLuck, { texts: ['Now go make your\nfortune in {brown}Stoneset{default}.', 'Good luck!'], do_func: function() {
             finish_tutorial();

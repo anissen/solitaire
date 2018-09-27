@@ -21,19 +21,13 @@ Tasks:
 
 BETA FEEDBACK
 Doom:
-[ ] Man kan ikke tage felter på skrå?
-[-] Flawless gems kan ikke bruges som alm. gems
 [ ] Game mode unlock: Jeg troede at man skulle have det i ét spil
-[ ] Det er ikke tydeligt at man kan samle i ikke-lige linjer
 [ ] Disable Settings and Abort state while main menu tutorial is active
 [ ] Strive regler ikke helt forstået (Sean)
 [ ] Audio var disabled men blev pludseligt enabled (Sean)
 
 GOLD Niels & Daniel:
 [ ] Vis back button efter Strive tutorial (glæder måske også for Survival?)
-
-GOLD Rene:
-[ ] Bedre forklaring af flawless gems
 
 Kim:
 [ ] Flyt + klik på symbol sætter åbenbart en ny origin for symbolet
@@ -56,7 +50,6 @@ END BETA FEEDBACK
     [ ] LATER: View all high scores
 * Being able to view highscore list without having to finish a game
 * [No default font]
-* Images in tutorial to explain "collecting", "correct set order", "make a flawless gem"
 * Clean up bundled resources
 * "Invalid sound" should play when making a valid but non-matching selecting
 * Music:
@@ -65,7 +58,6 @@ END BETA FEEDBACK
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
-* Remove tutorial saying "your get three new gems each turn" + "you get a new quest each turn"
 * Make the background take up the entire screen (?)
 
 Bugs:

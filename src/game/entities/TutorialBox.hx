@@ -3,6 +3,7 @@ package game.entities;
 import luxe.Color;
 import luxe.Vector;
 import luxe.Sprite;
+import luxe.Scene;
 import luxe.tween.Actuate;
 import snow.api.Promise;
 import game.misc.Settings;
@@ -11,16 +12,24 @@ typedef TutorialBoxOptions = {
     @:optional var depth :Float;
 }
 
-typedef TutorialData = { texts :Array<String>, ?entities :Array<luxe.Visual>, ?points :Array<Vector>, ?pos_y :Float, ?do_func :Void->Void, ?must_be_dismissed :Bool };
+typedef TutorialData = { 
+    texts :Array<String>, 
+    ?entities :Array<luxe.Visual>, 
+    ?points :Array<Vector>,
+    ?pos_y :Float,
+    ?do_func :Void->Void,
+    ?must_be_dismissed :Bool
+};
 
 class TutorialBox extends Sprite {
     var label :game.entities.RichText;
     var tutorial_texts :Array<String> = [];
+    var tutorial_sprite :Sprite = null;
     var promise :Promise;
     var promise_resolve :Void->Void = null;
     var do_func :Void->Void = null;
-    var tutorial_scene :luxe.Scene = new luxe.Scene();
-    var tutorial_temp_scene :luxe.Scene = new luxe.Scene();
+    var tutorial_scene :Scene = new Scene();
+    var tutorial_temp_scene :Scene = new Scene();
     var tutorial_dismissable :Bool;
     var tutorial_must_be_dismissed :Bool;
     var tutorial_active :Bool;
@@ -137,7 +146,7 @@ class TutorialBox extends Sprite {
                 var delay = 0.1;
                 for (point in points) {
                     point_to(point).delay(delay);
-                    delay += 0.3;
+                    delay += 0.2;
                 }
 
                 tutorial_texts = data.texts;
@@ -178,7 +187,26 @@ class TutorialBox extends Sprite {
                 tutorial_dismissable = true;
             }
         });
-        label.text = nextText;
+
+        var is_tutorial_image = (nextText.substr(-4, 4) == '.png');
+
+        if (tutorial_sprite != null && !tutorial_sprite.destroyed) {
+            Actuate.stop(tutorial_sprite.color);
+            tutorial_sprite.destroy();
+        }
+        if (is_tutorial_image) {
+            tutorial_sprite = new Sprite({
+                parent: this,
+                pos: Vector.Divide(this.size, 2),
+                texture: Luxe.resources.texture('assets/images/tutorial/$nextText'),
+                scale: new Vector(1/3, 1/3),
+                depth: this.depth + 1,
+                color: new Color(1, 1, 1, 0)
+            });
+            Actuate.tween(tutorial_sprite.color, 0.5, { a: 1 });
+        }
+
+        label.text = (is_tutorial_image ? '' : nextText);
         label.play();
         return get_promise();
     }
@@ -206,6 +234,10 @@ class TutorialBox extends Sprite {
         this.visible = false;
         shadow.visible = false;
         label.visible = false;
+        if (tutorial_sprite != null && !tutorial_sprite.destroyed) {
+            Actuate.stop(tutorial_sprite.color);
+            tutorial_sprite.destroy();
+        }
         tutorial_temp_scene.empty();
         tutorial_dismissable = false;
         tutorial_active = false;
