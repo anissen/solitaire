@@ -1,8 +1,6 @@
 
 Tasks:
-* Put on Google Play beta program
 * More tweeting!
-* Screenshots on Google Play: Use the images to explain how the game works and what's special about it
 * Email list
     * https://tinyletter.com
 * Landing page (stoneset.info?/stoneset.dk?)
@@ -16,6 +14,7 @@ Tasks:
 * Notify dkgame (twitter)
 * Create facebook page
 * Update Google Play screenshots (they are outdated)
+* Screenshots on Google Play: Use the images to explain how the game works and what's special about it
 
 ===== Beta launch line =====
 
@@ -33,8 +32,8 @@ Kim:
 [ ] Flyt + klik på symbol sætter åbenbart en ny origin for symbolet
 [ ] "Audio off" bliver deaktiveret ved at minimere/restore app'en
 [ ] Knapper kan flyttes ved at holde en finger på knappen og tappe andetsteds
-[ ] Knapper på "change name" skærmen kan trykkes før de er tween'et ind
-[ ] Crash ved klik på "Play" på game over skærm, efter skift til local highscore
+[ ] Knapper på "change name" skærmen kan trykkes før de er tween'et ind [FIXED?]
+[ ] Crash ved klik på "Play" på game over skærm, efter skift til local highscore [FIXED?]
 END BETA FEEDBACK
 
 * Use a logging package for heroku to be able to see logs
@@ -59,6 +58,15 @@ END BETA FEEDBACK
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
 * Make the background take up the entire screen (?)
+* TRY to make the deck start with only two colors
+* Rename "Normal" mode?
+* Make Strive tutorial point to score label
+* Make Survival tutorial point to score label
+* Add some tutorial for wins/rank on the menu screen
+* Make highlight tweets of
+   * Wins/ranking juicy effects (e.g. plus show ranking screen)
+   * Images in tutorial
+   * Stars in highscore list?
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
@@ -68,9 +76,11 @@ Bugs:
 * Random crash when play
 * Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
 * Crash when resuming app (on android) after being inactive for a long time. Resuming on the menu screen in poor network conditions.
-* Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
+* [FIXED?] Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
 * Possible bug: Resetting tutorial would cause a player to get multiple scores on that game seed
+* Disabled audio is re-enabled when app is resumed (Sean, Kim, Anne)
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
+* Spelling error in tutorial ("Collect to increase[s] your score")
 
 iOS specific:
 * iOS app icon
