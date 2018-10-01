@@ -136,6 +136,7 @@ class SettingsState extends State {
             text: 'Reset Tutorial',
             on_click: function() {
                 reset_tutorial_button.enabled = false;
+                Luxe.io.string_save('tutorial_menu_complete', null);
                 Luxe.io.string_save('tutorial_complete', null);
                 Luxe.io.string_save('tutorial_complete_strive', null);
                 Luxe.io.string_save('tutorial_complete_timed', null);
