@@ -777,7 +777,7 @@ class PlayState extends State {
             });
         });
 
-        tutorial(TutorialStep.Scoring, { texts: ['Complete {brown}sets{default} to\nincreases your score.', 'Collect in the correct\norder to double the points.', 'collect_order.png'], entities: [scoreText] });
+        tutorial(TutorialStep.Scoring, { texts: ['Complete {brown}sets{default} to\nincrease your score.', 'Collect in the correct\norder to double the points.', 'collect_order.png'], entities: [scoreText] });
 
         tutorial(TutorialStep.StackingTiles, { texts: ['This {brown}set{default} has a\n{brown}flawless{default} {ruby}ruby{default}.', '{brown}Flawless gemstones{default}\nmust be forged.', 'stack.png'], points: [ get_pos(1, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
 

@@ -82,7 +82,6 @@ Bugs:
 * Possible bug: Resetting tutorial would cause a player to get multiple scores on that game seed
 * Disabled audio is re-enabled when app is resumed (Sean, Kim, Anne)
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
-* Spelling error in tutorial ("Collect to increase[s] your score")
 
 iOS specific:
 * iOS app icon
