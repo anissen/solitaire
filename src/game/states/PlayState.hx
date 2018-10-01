@@ -311,6 +311,11 @@ class PlayState extends State {
             }, drag_left));
         }
 
+        suits = switch (game_mode) {
+            case Strive(_) | Tutorial(Strive(_)): suits - 1;
+            default: suits;
+        };
+
         var deck_cards = [];
         for (suit in 0 ... suits) {
             for (value in 0 ... card_values) {
@@ -401,14 +406,26 @@ class PlayState extends State {
         }, random_func);
         deck.on_reshuffling = function() {
             reshuffle_count++;
-            if (reshuffle_count == 1) {
-                deck.add_cards([ for (value in 0 ... card_values) { suit: 3, stacked: (value >= 10) } ]);
-                quest_deck.add_cards([ for (value in 0 ... quest_values) { suit: 3, stacked: (value >= 10) } ]);
+            function add_cards(suit :Int) {
+                deck.add_cards([ for (value in 0 ... card_values) { suit: suit, stacked: (value >= 10) } ]);
+                quest_deck.add_cards([ for (value in 0 ... quest_values) { suit: suit, stacked: (value >= 10) } ]);
                 quest_deck.reshuffle();
-            } else if (reshuffle_count == 2) {
-                deck.add_cards([ for (value in 0 ... card_values) { suit: 4, stacked: (value >= 10) } ]);
-                quest_deck.add_cards([ for (value in 0 ... quest_values) { suit: 4, stacked: (value >= 10) } ]);
-                quest_deck.reshuffle();
+            }
+            switch (game_mode) {
+                case Strive(_) | Tutorial(Strive(_)):
+                    if (reshuffle_count == 1) {
+                        add_cards(2);
+                    } else if (reshuffle_count == 2) {
+                        add_cards(3);
+                    } else if (reshuffle_count == 3) {
+                        add_cards(4);
+                    }
+                default:
+                    if (reshuffle_count == 1) {
+                        add_cards(3);
+                    } else if (reshuffle_count == 2) {
+                        add_cards(4);
+                    }
             }
         };
 

@@ -58,7 +58,6 @@ END BETA FEEDBACK
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
 * Make the background take up the entire screen (?)
-* TRY to make the deck start with only two colors
 * TRY making normal fonts slightly smaller
 * EXPERIMENT with bloom (???)
 * Rename "Normal" mode?
