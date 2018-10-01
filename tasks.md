@@ -61,8 +61,6 @@ END BETA FEEDBACK
 * TRY making normal fonts slightly smaller
 * EXPERIMENT with bloom (???)
 * Rename "Normal" mode?
-* Make Strive tutorial point to score label
-* Make Survival tutorial point to score label
 * Add some tutorial for wins/rank on the menu screen
 * Make highlight tweets of
    * Wins/ranking juicy effects (e.g. plus show ranking screen)
