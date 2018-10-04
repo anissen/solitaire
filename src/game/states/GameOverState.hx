@@ -25,32 +25,32 @@ class HighscoreLine extends luxe.Entity {
         super({ name: '$rank.$score.$name', name_unique: true });
         rankText = new luxe.Text({
             parent: this,
-            pos: new Vector(60, 0),
+            pos: new Vector(85, 0),
             text: rank,
             point_size: 22,
             align: right,
             align_vertical: center,
-            color: new Color(0.7, 0.7, 0.7, 0.0),
+            color: new Color(0.6, 0.6, 0.6, 0.0),
             depth: 10
         });
         scoreText = new luxe.Text({
             parent: this,
-            pos: new Vector(115, 0),
+            pos: new Vector(130, 0),
             text: '$score',
             point_size: 22,
             align: right,
             align_vertical: center,
-            color: new Color(0.6, 0.6, 0.6, 0.0),
+            color: new Color(0.5, 0.5, 0.5, 0.0),
             depth: 10
         });
         nameText = new luxe.Text({
             parent: this,
-            pos: new Vector(125, 0),
+            pos: new Vector(140, 0),
             text: name,
             point_size: 22,
             align: left,
             align_vertical: center,
-            color: new Color(0.6, 0.6, 0.6, 0.0),
+            color: new Color(0.5, 0.5, 0.5, 0.0),
             depth: 10
         });
     }
@@ -395,7 +395,7 @@ class GameOverState extends State {
             if (score > highscore.score) {
                 highscore_line.icon = new Sprite({
                     parent: highscore_line,
-                    pos: new Vector(Settings.WIDTH - 30, 0),
+                    pos: new Vector(27, -3),
                     texture: Luxe.resources.texture('assets/ui/round-star.png'),
                     scale: new Vector(0.045, 0.045),
                     color: new Color().rgb(0x956416),
@@ -543,7 +543,7 @@ class GameOverState extends State {
         var count = 0;
         for (highscore_line in highscore_lines) {
             count++;
-            highscore_line.pos.y = count * 25 + 90;
+            highscore_line.pos.y = count * 25 + 100;
             highscore_line.alpha = 0;
             highscore_line.parent = score_container;
 
