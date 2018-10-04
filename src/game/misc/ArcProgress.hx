@@ -82,11 +82,13 @@ class ArcProgress extends ParcelProgress {
 
 	override public function onprogress(_state :ParcelChange) {
 		super.onprogress(_state);
-		Actuate.tween(this, 0.1, { value: _state.index / _state.total } );
+        value = _state.index / _state.total;
+		// Actuate.tween(this, 0.1, { value: _state.index / _state.total } );
 	}
 
 	override public function oncomplete(_parcel :Parcel) {
-		Actuate.tween(this, 0.1, { value: 1.0 } ).onComplete(complete);
+		// Actuate.tween(this, 0.1, { value: 1.0 } ).onComplete(complete);
 		//super.oncomplete(_parcel);
+        complete();
 	}
 }

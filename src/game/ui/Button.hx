@@ -114,7 +114,7 @@ class Button extends luxe.NineSlice {
 
         this.scale.y = 0;
         Actuate
-            .tween(this.scale, 0.3, { y: 1 })
+            .tween(this.scale, 0.2, { y: 1 })
             .delay(Math.random() * 0.2)
             .ease(luxe.tween.easing.Cubic.easeInOut)
             .onComplete((options.no_shake == true || !visible) ? function() {} : Luxe.camera.shake.bind(0.5));

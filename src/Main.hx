@@ -179,8 +179,8 @@ class Main extends luxe.Game {
             start_music();
         }
 
-        luxe.tween.Actuate.tween(nineslice.pos, 0.3, { x: 0, y: 0 });
-        luxe.tween.Actuate.tween(nineslice.size, 0.3, { x: Settings.WIDTH, y: Settings.HEIGHT }).onComplete(function() {
+        luxe.tween.Actuate.tween(nineslice.pos, 0.2, { x: 0, y: 0 });
+        luxe.tween.Actuate.tween(nineslice.size, 0.2, { x: Settings.WIDTH, y: Settings.HEIGHT }).onComplete(function() {
             var showTutorial = (Luxe.io.string_load('tutorial_complete') == null);
             if (showTutorial) {
                 SetState(PlayState.StateId, GameMode.Tutorial(GameMode.Normal));
