@@ -58,7 +58,6 @@ END BETA FEEDBACK
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
 * Make the background take up the entire screen (?)
-* EXPERIMENT with bloom (???)
 * Rename "Normal" mode?
 * Add some tutorial for wins/rank on the menu screen
 * Make highlight tweets of
