@@ -133,8 +133,8 @@ class Main extends luxe.Game {
         Luxe.renderer.font = Luxe.resources.font('assets/fonts/clemente/clemente.fnt');
 
         var end = haxe.Timer.stamp();
-        // trace('startup took ${end - start_time} seconds'); 
-        Analytics.event('startup', 'finished', 'duration', Std.int(end - start_time));
+        trace('startup took ${end - start_time} seconds');
+        Analytics.event('startup', 'finished', 'duration', Std.int((end - start_time) * 1000));
 
         luxe.tween.Actuate.defaultEase = luxe.tween.easing.Quad.easeIn;
 
