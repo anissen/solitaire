@@ -147,7 +147,6 @@ class Main extends luxe.Game {
         states.add(new TextInputState());
 
         if (Luxe.io.string_load('audio_enabled') == 'false') {
-            Luxe.audio.active = false;
             Luxe.audio.suspend();
         }
 

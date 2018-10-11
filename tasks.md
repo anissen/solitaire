@@ -23,7 +23,7 @@ Doom:
 [ ] Game mode unlock: Jeg troede at man skulle have det i ét spil
 [ ] Disable Settings and Abort state while main menu tutorial is active
 [ ] Strive regler ikke helt forstået (Sean)
-[ ] Audio var disabled men blev pludseligt enabled (Sean)
+[ ] Audio var disabled men blev pludseligt enabled (Sean) [FIXED?]
 
 GOLD Niels & Daniel:
 [ ] Vis back button efter Strive tutorial (glæder måske også for Survival?)
@@ -75,7 +75,7 @@ Bugs:
 * Crash when resuming app (on android) after being inactive for a long time. Resuming on the menu screen in poor network conditions.
 * [FIXED?] Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
 * Possible bug: Resetting tutorial would cause a player to get multiple scores on that game seed
-* Disabled audio is re-enabled when app is resumed (Sean, Kim, Anne)
+* [FIXED?] Disabled audio is re-enabled when app is resumed (Sean, Kim, Anne)
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:

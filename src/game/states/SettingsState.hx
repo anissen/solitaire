@@ -73,7 +73,6 @@ class SettingsState extends State {
             on_click: function() {
                 audio_enabled = (!audio_enabled);
                 audio_button.text = (audio_enabled ? 'Audio On' : 'Audio Off');
-                Luxe.audio.active = (!audio_enabled);
                 if (!audio_enabled) {
                     Luxe.audio.suspend();
                     music_enabled = false;
