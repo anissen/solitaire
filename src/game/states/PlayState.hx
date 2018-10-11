@@ -311,20 +311,20 @@ class PlayState extends State {
             }, drag_left));
         }
 
-        suits = switch (game_mode) {
+        var max_suits = switch (game_mode) {
             case Strive(_) | Tutorial(Strive(_)): suits - 1;
             default: suits;
         };
 
         var deck_cards = [];
-        for (suit in 0 ... suits) {
+        for (suit in 0 ... max_suits) {
             for (value in 0 ... card_values) {
                 deck_cards.push({ suit: suit, stacked: (value >= 10) });
             }
         }
 
         var quest_cards = [];
-        for (suit in 0 ... suits) {
+        for (suit in 0 ... max_suits) {
             for (value in 0 ... quest_values) {
                 quest_cards.push({ suit: suit, stacked: (value >= 10) });
             }

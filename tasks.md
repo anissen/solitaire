@@ -77,8 +77,6 @@ Bugs:
 * Possible bug: Resetting tutorial would cause a player to get multiple scores on that game seed
 * Disabled audio is re-enabled when app is resumed (Sean, Kim, Anne)
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
-* Strive *modifies* number of suits globally!
-* Strive games cannot be loaded (maybe something with how the decks are set-up?)
 
 iOS specific:
 * iOS app icon
