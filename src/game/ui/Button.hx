@@ -72,8 +72,6 @@ class Button extends luxe.NineSlice {
 
         Actuate.tween(label, 3.0, { letter_spacing: -0.5 }).reflect().repeat();
 
-        enabled = !disabled;
-
         particle_color = new sparkler.data.Color(1, 1, 1, 0.5);
         ps = new ParticleSystem();
         pe = new ParticleEmitter({
@@ -107,7 +105,7 @@ class Button extends luxe.NineSlice {
                 })
 			]
 		});
-        pe.stop();
+        if (!visible || disabled) pe.stop();
 		ps.add(pe);
         pe.position.x = options.pos.x;
         pe.position.y = options.pos.y;
@@ -117,7 +115,9 @@ class Button extends luxe.NineSlice {
             .tween(this.scale, 0.2, { y: 1 })
             .delay(Math.random() * 0.2)
             .ease(luxe.tween.easing.Cubic.easeInOut)
-            .onComplete((options.no_shake == true || !visible) ? function() {} : Luxe.camera.shake.bind(0.5));
+            .onComplete((options.no_shake == true || !visible || disabled) ? function() {} : Luxe.camera.shake.bind(0.5));
+        
+        enabled = !disabled;
     }
 
     public function get_top_pos() {
@@ -136,7 +136,7 @@ class Button extends luxe.NineSlice {
             if (!hovered) {
                 hovered = true;
                 color.tween(0.1, { r: 1.0, g: 0.9, b: 0.9 });
-                pe.start();
+                //pe.start();
                 Actuate
                     .tween(this.pos, 0.3, { y: this.pos.y + 2 })
                     .reflect()
@@ -146,7 +146,7 @@ class Button extends luxe.NineSlice {
         } else {
             if (hovered) {
                 hovered = false;
-                pe.stop();
+                // pe.stop();
                 Actuate.stop(this.pos);
                 Actuate.tween(this.pos, 0.3, { y: start_pos.y });
                 color.tween(0.1, { r: 1.0, g: 1.0, b: 1.0 });
@@ -175,6 +175,11 @@ class Button extends luxe.NineSlice {
     override public function set_visible(visible :Bool) {
         super.visible = false;
         label.visible = visible;
+        if (visible && is_enabled) {
+            if (pe != null) pe.start();
+        } else if (!visible) {
+            if (pe != null) pe.stop();
+        }
         return visible;
     }
 
@@ -212,6 +217,7 @@ class Button extends luxe.NineSlice {
         if (!visible) visible = true;
 
         if (value) {
+            if (pe != null) pe.start();
             color.tween(0.3, { a: 1.0 });
             label.outline_color.tween(0.3, { r: 0.65, g: 0.31, b: 0.02 });
         } else {
