@@ -74,6 +74,7 @@ Bugs:
 * Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
 * Crash when resuming app (on android) after being inactive for a long time. Resuming on the menu screen in poor network conditions.
 * [FIXED?] Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
+* Sometimes when going into Strive mode it only shows a blank screen and have to kill & reload the game (reported by Caribou)
 * Possible bug: Resetting tutorial would cause a player to get multiple scores on that game seed
 * Disabled audio is re-enabled when app is resumed (Sean, Kim, Anne)
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
