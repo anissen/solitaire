@@ -566,6 +566,13 @@ class MenuState extends State {
                 Main.SetState(PlayState.StateId, strive_mode);
             case luxe.Input.Key.key_3: Main.SetState(PlayState.StateId, Timed);
             case luxe.Input.Key.key_t: update_global_stats(5, 8, 7, 6);
+            case luxe.Input.Key.key_c: {
+                @SuppressWarning("checkstyle:Trace")
+                trace('debug: clears all saves');
+                for (game_mode in [GameMode.Normal, GameMode.Strive(0), GameMode.Timed]) {
+                    Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
+                }
+            }
         }
         #end
         if (event.keycode == luxe.Input.Key.ac_back) {

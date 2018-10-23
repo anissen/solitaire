@@ -61,7 +61,6 @@ END BETA FEEDBACK
 * Rename "Normal" mode?
 * Add some tutorial for wins/rank on the menu screen
 * Make highlight tweets of
-   * Wins/ranking juicy effects (e.g. plus show ranking screen)
    * Images in tutorial
    * Stars in highscore list?
 
@@ -76,7 +75,8 @@ Bugs:
 * [FIXED?] Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
 * Sometimes when going into Strive mode it only shows a blank screen and have to kill & reload the game (reported by Caribou)
 * Possible bug: Resetting tutorial would cause a player to get multiple scores on that game seed
-* [FIXED?] Disabled audio is re-enabled when app is resumed (Sean, Kim, Anne)
+* Disabled audio is re-enabled when app is resumed (Sean, Kim, Anne)
+* Crash when having poor/unstable internet connectivity
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:

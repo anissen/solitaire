@@ -420,7 +420,7 @@ class Game {
 
     public function is_collection_valid(tiles :Array<Card>) {
         for (tile in tiles) {
-            if (tile.grid_pos == null) {
+            if (tile == null || tile.grid_pos == null) {
                 // trace('Tile has no grid_pos -- how?');
                 return false;
             }
