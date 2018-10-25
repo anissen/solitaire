@@ -12,6 +12,7 @@ Tasks:
 * Notify Interactive Denmark
 * Notify haxe.io
 * Notify dkgame (twitter)
+* Notify reddit (indiegame)
 * Create facebook page
 * Update Google Play screenshots (they are outdated)
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
@@ -118,6 +119,12 @@ Nice:
     165 points  =>  20 star
     170 points  =>  20 star
     175 points  =>  50 star
+* Gem colors
+    * blue: sapphire
+    * green: emerald
+    * red: ruby
+    * yellow: topaz
+    * orange: sunstone
 * Achievements? { Intent: Gotta catch'em all }
 * Share score via twitter
 * Share picture of completion (see https://developer.android.com/training/sharing/send.html, https://github.com/Shin-NiL/Godot-Share/blob/master/share/android/GodotShare.java)

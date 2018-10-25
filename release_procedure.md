@@ -1,6 +1,8 @@
 
 # BETA Release Procedure
 
+0. Ensure that flow.gradle is building for release
+
 1. Make a new change log
 
 2. Update build number:
