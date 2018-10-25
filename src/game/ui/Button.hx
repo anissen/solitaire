@@ -72,11 +72,11 @@ class Button extends luxe.NineSlice {
 
         Actuate.tween(label, 3.0, { letter_spacing: -0.5 }).reflect().repeat();
 
-        particle_color = new sparkler.data.Color(1, 1, 1, 0.5);
+        particle_color = new sparkler.data.Color(252 / 255, 243 / 255, 232 / 255, 0.5);
         ps = new ParticleSystem();
         pe = new ParticleEmitter({
 			name: 'tile_particle_emitter', 
-			rate: 8,
+			rate: 6,
 			cache_size: 32,
 			cache_wrap: true,
             lifetime: 0.5,
@@ -136,6 +136,8 @@ class Button extends luxe.NineSlice {
             if (!hovered) {
                 hovered = true;
                 color.tween(0.1, { r: 1.0, g: 0.9, b: 0.9 });
+                pe.rate = 20;
+                particle_color.from_json({ r: 0.75, g: 0, b: 0.5, a: 0.75 });
                 //pe.start();
                 Actuate
                     .tween(this.pos, 0.3, { y: this.pos.y + 2 })
@@ -147,6 +149,8 @@ class Button extends luxe.NineSlice {
             if (hovered) {
                 hovered = false;
                 // pe.stop();
+                pe.rate = 8;
+                particle_color.from_json({ r: 252 / 255, g: 243 / 255, b: 232 / 255, a: 0.5 });
                 Actuate.stop(this.pos);
                 Actuate.tween(this.pos, 0.3, { y: start_pos.y });
                 color.tween(0.1, { r: 1.0, g: 1.0, b: 1.0 });
