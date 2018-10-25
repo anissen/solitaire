@@ -99,7 +99,6 @@ class SettingsState extends State {
             on_click: function() {
                 music_enabled = (!music_enabled);
                 music_button.text = (music_enabled ? 'Music On' : 'Music Off');
-                // Luxe.audio.stop();
                 Luxe.io.string_save('music_enabled', (music_enabled ? 'true' : 'false'));
                 if (music_enabled) {
                     Main.start_music();

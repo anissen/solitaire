@@ -1,0 +1,6 @@
+Strive now only starts with two colors instead of the usual three.
+Improved start-up time.
+Improved tutorial.
+More bling.
+Fixed issue where game seed was not unique.
+Fixed issue where disabled audio would be reenabled when resuming the app.

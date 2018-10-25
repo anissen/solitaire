@@ -4,6 +4,7 @@ import luxe.GameConfig;
 import luxe.States;
 import game.misc.Settings;
 import core.utils.Analytics;
+import snow.types.Types;
 import game.states.*;
 
 using game.misc.GameMode;
@@ -202,6 +203,19 @@ class Main extends luxe.Game {
 
     static public function GetStateId() :String {
         return current_state_id;
+    }
+
+    override public function onevent(event :SystemEvent) {
+        if (event.type == se_window) {
+            switch (event.window.type) {
+                case WindowEventType.we_restored:
+                    // crazy hack to ensure that audio is disabled when resuming
+                    if (Luxe.io.string_load('audio_enabled') == 'true') {
+                        Luxe.audio.suspend();
+                    }
+                default:
+            }
+        }
     }
 
     #if debug
