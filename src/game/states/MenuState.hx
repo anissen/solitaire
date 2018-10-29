@@ -23,6 +23,8 @@ class MenuState extends State {
     var rankText :Text;
     var winsIcon :Sprite;
     var winsText :Text;
+    var totalScoreIcon :Sprite;
+    var totalScoreText :Text;
     var counting_total_score :Float;
     var tutorial_box :game.entities.TutorialBox;
 
@@ -131,7 +133,7 @@ class MenuState extends State {
         });
 
         var rank_button = new game.ui.Icon({
-            pos: new Vector(87, 185),
+            pos: new Vector(87, 170),
             texture_path: 'assets/ui/circular_light.png',
             on_click: Main.SetState.bind(GameOverState.StateId, { 
                 user_id: Luxe.io.string_load('clientId'),
@@ -161,7 +163,7 @@ class MenuState extends State {
             .repeat();
         
         rankText = new Text({
-            pos: new Vector(115, 190),
+            pos: new Vector(115, 175),
             text: 'Rank ' + Luxe.io.string_load('rank'),
             align: TextAlign.left,
             align_vertical: TextAlign.center,
@@ -171,7 +173,7 @@ class MenuState extends State {
         rankText.color.a = 0.5;
 
         winsIcon = new Sprite({
-            pos: new Vector(87, 227),
+            pos: new Vector(87, 212),
             texture: Luxe.resources.texture('assets/ui/round-star.png'),
             scale: new Vector(0.06, 0.06),
             color: new Color().rgb(0x956416),
@@ -183,7 +185,7 @@ class MenuState extends State {
             .repeat();
 
         winsText = new Text({
-            pos: new Vector(115, 230),
+            pos: new Vector(115, 215),
             text: Luxe.io.string_load('wins'),
             align: TextAlign.left,
             align_vertical: TextAlign.center,
@@ -194,12 +196,38 @@ class MenuState extends State {
 
         get_rank();
 
+        var old_total_score = Settings.load_int('menu_last_total_score', 0);
+        var total_score = Settings.load_int('total_score', 0);
+
+        totalScoreIcon = new Sprite({
+            pos: new Vector(87, 252),
+            texture: Luxe.resources.texture('assets/ui/diamond.png'),
+            scale: new Vector(0.055, 0.055),
+            color: new Color().rgb(0x956416),
+            depth: 10
+        });
+        luxe.tween.Actuate
+            .tween(totalScoreIcon.scale, 4.0, { x: 0.065, y: 0.065 })
+            .ease(luxe.tween.easing.Linear.easeNone)
+            .reflect()
+            .repeat();
+
+        totalScoreText = new Text({
+            pos: new Vector(115, 255),
+            text: '$total_score',
+            align: TextAlign.left,
+            align_vertical: TextAlign.center,
+            color: new Color().rgb(0x956416),
+            point_size: 26
+        });
+        totalScoreText.color.a = 0.5;
+
         var normal_save = Luxe.io.string_load('save_normal');
 
         var button_height = 60;
         var button_count = 0;
         function get_button_y() {
-            return 285 + (button_count++) * button_height;
+            return 305 + (button_count++) * button_height;
         }
         var tutorial_completed = (Luxe.io.string_load('tutorial_complete') == 'true');
         var normal_game_mode = (tutorial_completed ? Normal : Tutorial(Normal));
@@ -217,8 +245,6 @@ class MenuState extends State {
         // play_stats.scale.set_xy(1/7, 1/7);
         // play_stats.depth = 200;
 
-        var old_total_score = Settings.load_int('menu_last_total_score', 0);
-        var total_score = Settings.load_int('total_score', 0);
         Luxe.io.string_save('menu_last_total_score', '$total_score');
 
         var timed_unlock = 1000;
@@ -304,23 +330,6 @@ class MenuState extends State {
             .then(tutorial_box.tutorial({ texts: ['Settings menu is here.'], pos_y: config_button.pos.y + 85 + 15, points: [Vector.Add(config_button.pos, new Vector(0, 15))] }))
             .then(tutorial_box.tutorial({ texts: ['About {brown}Stoneset{default}.', 'Go here to {brown}donate{default}\ntowards the game.'], pos_y: about_button.pos.y + 85 + 15, points: [Vector.Add(about_button.pos, new Vector(0, 15))], do_func: complete_tutorial }));
         }
-
-        var link = new Text({
-            pos: new Vector(Settings.WIDTH / 2, get_button_y() - 10),
-            text: 'Beta Feedback',
-            align: TextAlign.center,
-            align_vertical: TextAlign.center,
-            color: new Color(0.75, 0.0, 0.5),
-            point_size: 26
-        });
-        new Sprite({
-            parent: link,
-            size: new Vector(link.text_bounds.w, link.text_bounds.h),
-            color: new Color(1.0, 0.0, 0.0, 0.0)
-        }).add(new game.components.MouseUp(function(s) {
-            var url_open_func = #if android Main.SnowActivity.url_open #else Luxe.io.url_open #end ;
-            url_open_func('mailto:andnis+stoneset@gmail.com');
-        }));
 
         plays_for_game_mode(Normal, play_button);
         if (tutorial_completed && (total_score >= timed_unlock)) plays_for_game_mode(Timed, timed_button);

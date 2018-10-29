@@ -66,6 +66,7 @@ class PlayState extends State {
     var collection :Array<Card>;
 
     var scoreText :luxe.Text;
+    var scoreIcon :Sprite;
     var counting_score :Float;
     var time_penalty :Float;
     var score :Int;
@@ -353,6 +354,14 @@ class PlayState extends State {
             shader: Luxe.renderer.shaders.bitmapfont.shader.clone('title-shader'),
             outline: 0.7,
             outline_color: new Color().rgb(0xa55004)
+        });
+
+        scoreIcon = new Sprite({
+            pos: get_pos(2, -0.68),
+            texture: Luxe.resources.texture('assets/ui/diamond.png'),
+            scale: new Vector(0.06, 0.06),
+            color: new Color().rgb(0x956416),
+            depth: 10
         });
 
         // TODO: Make a different deck/quest_deck/game for puzzle mode
@@ -749,17 +758,25 @@ class PlayState extends State {
             if (textScale < 1.5) {
                 textScale += 0.1 * card_score;
                 scoreText.scale.set_xy(textScale, textScale);
+                scoreIcon.scale.set_xy(textScale * 0.06, textScale * 0.06);
             }
             var ring_symbol = new Sprite({
                 texture: Luxe.resources.texture('assets/images/symbols/ring.png'),
                 size: new Vector(tile_size / 2, tile_size / 2),
                 pos: scoreText.pos,
-                color: card.color
+                color: card.get_original_color()
             });
             Actuate.tween(ring_symbol.color, 0.1, { a: 1.0 });
             Actuate.tween(ring_symbol.color, 0.1, { a: 0.0 }).delay(0.1);
             Actuate.tween(ring_symbol.size, 0.2, { x: tile_size * 2, y: tile_size * 2 }).onComplete(function() {
                 if (!ring_symbol.destroyed) ring_symbol.destroy();
+            });
+
+            var originalColor = new Color().rgb(0x956416);
+            var new_color = card.get_original_color();
+            //Actuate.stop(scoreIcon.color);
+            Actuate.tween(scoreIcon.color, 0.1, { r: (originalColor.r + new_color.r) / 2, g: (originalColor.g + new_color.g) / 2, b: (originalColor.b + new_color.b) / 2 }, true).onComplete(function(_) {
+                Actuate.tween(scoreIcon.color, 0.3, { r: originalColor.r, g: originalColor.g, b: originalColor.b });
             });
 
             Luxe.camera.shake(card_score * (1 / 2));
@@ -1030,7 +1047,10 @@ class PlayState extends State {
         if (game_over) return;
         ps.update(dt);
         var textScale = scoreText.scale.x; 
-        if (textScale > 1) scoreText.scale.set_xy(textScale - dt, textScale - dt);
+        if (textScale > 1) {
+            scoreText.scale.set_xy(textScale - dt, textScale - dt);
+            scoreIcon.scale.set_xy((textScale - dt) * 0.06, (textScale - dt) * 0.06);
+        }
         switch (game_mode) {
             case Timed | Tutorial(Timed) if (!game_over && (tutorial_box == null || !tutorial_box.is_active())):
                 time_penalty += dt;

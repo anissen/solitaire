@@ -18,6 +18,7 @@ class HighscoreLine extends luxe.Entity {
     var scoreText :Text;
     var nameText :Text;
     public var icon :Sprite = null;
+    public var point_icon :Sprite = null;
     public var alpha(get, set) :Float;
     public var color(get, set) :Color;
 
@@ -27,7 +28,7 @@ class HighscoreLine extends luxe.Entity {
             parent: this,
             pos: new Vector(80, 0),
             text: rank,
-            point_size: 22,
+            point_size: 20,
             align: right,
             align_vertical: center,
             color: new Color(0.6, 0.6, 0.6, 0.0),
@@ -35,9 +36,9 @@ class HighscoreLine extends luxe.Entity {
         });
         scoreText = new luxe.Text({
             parent: this,
-            pos: new Vector(125, 0),
+            pos: new Vector(120, 0),
             text: '$score',
-            point_size: 22,
+            point_size: 20,
             align: right,
             align_vertical: center,
             color: new Color(0.5, 0.5, 0.5, 0.0),
@@ -45,9 +46,9 @@ class HighscoreLine extends luxe.Entity {
         });
         nameText = new luxe.Text({
             parent: this,
-            pos: new Vector(135, 0),
+            pos: new Vector(145, 0),
             text: name,
-            point_size: 22,
+            point_size: 20,
             align: left,
             align_vertical: center,
             color: new Color(0.5, 0.5, 0.5, 0.0),
@@ -60,6 +61,7 @@ class HighscoreLine extends luxe.Entity {
         scoreText.color.a = alpha;
         nameText.color.a = alpha;
         if (icon != null) icon.color.a = alpha / 2;
+        if (point_icon != null) point_icon.color.a = alpha;
         return alpha;
     }
 
@@ -71,6 +73,7 @@ class HighscoreLine extends luxe.Entity {
         rankText.color = color.clone();
         scoreText.color = color.clone();
         nameText.color = color.clone();
+        if (point_icon != null) point_icon.color = color.clone();
         return color;
     }
 
@@ -391,6 +394,13 @@ class GameOverState extends State {
         for (highscore in global_highscores) {
             count++;
             var highscore_line = new HighscoreLine('$count.', highscore.score, '' + highscore.user_name);
+            highscore_line.point_icon = new Sprite({
+                parent: highscore_line,
+                pos: new Vector(132, -3),
+                texture: Luxe.resources.texture('assets/ui/diamond.png'),
+                scale: new Vector(0.037, 0.037),
+                color: new Color().rgb(0x956416)
+            });
             if (highscore.user_id == clientId) highscore_line.color = new Color(0.75, 0.0, 0.5);
             if (score > highscore.score) {
                 highscore_line.icon = new Sprite({
@@ -466,6 +476,13 @@ class GameOverState extends State {
                         description = (won_game ? 'Won!' : 'Lost!');
                     }
                     var highscore_line = new HighscoreLine('', strive_mode.get_strive_score(), description);
+                    highscore_line.point_icon = new Sprite({
+                        parent: highscore_line,
+                        pos: new Vector(132, -3),
+                        texture: Luxe.resources.texture('assets/ui/diamond.png'),
+                        scale: new Vector(0.037, 0.037),
+                        color: new Color().rgb(0x956416)
+                    });
                     highscore_line.color = color;
                     if (game_mode.equals(strive_mode)) {
                         var won_game = (score >= game_mode.get_strive_score());
@@ -487,6 +504,13 @@ class GameOverState extends State {
                 for (highscore in local_highscores) {
                     count++;
                     var highscore_line = new HighscoreLine('$count.', highscore.score, highscore.name);
+                    highscore_line.point_icon = new Sprite({
+                        parent: highscore_line,
+                        pos: new Vector(132, -3),
+                        texture: Luxe.resources.texture('assets/ui/diamond.png'),
+                        scale: new Vector(0.037, 0.037),
+                        color: new Color().rgb(0x956416)
+                    });
                     if (highscore.current) highscore_line.color = new Color(0.75, 0.0, 0.5);
                     highscore_lines.push(highscore_line);
                 }
