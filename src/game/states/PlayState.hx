@@ -435,7 +435,7 @@ class PlayState extends State {
             case Tutorial(Normal): tutorial(TutorialStep.Welcome, { texts: ['Welcome to {brown}Stoneset{default}.', 'In {brown}Stoneset{default} you\nforge {brown}gemstones.', 'And complete {brown}sets{default}\nto collect riches!'] }).then(function() {
                     Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
                 });
-            case Tutorial(Strive(_)): tutorial(TutorialStep.Welcome, { texts: ['Welcome to the\n{brown}Strive{default} game mode.', 'In {brown}Strive{default} you need\nto fulfill a {brown}goal{default}.', 'If you succeed, the {brown}goal{default}\nwill be increased.', 'If you fail, the {brown}goal{default}\nwill be decreased.', 'Strive to complete\nthe highest {brown}goal{default}.', 'Good luck.'] }).then(function() {
+            case Tutorial(Strive(_)): tutorial(TutorialStep.Welcome, { texts: ['Welcome to the\n{brown}Journey{default} game mode.', 'In {brown}Journey{default} you need\nto fulfill a {brown}goal{default}.', 'If you succeed, the {brown}goal{default}\nwill be increased.', 'If you fail, the {brown}goal{default}\nwill be decreased.', 'Journey to complete\nthe highest {brown}goal{default}.', 'Good luck.'] }).then(function() {
                     finish_tutorial();
                     Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
                 });
@@ -817,7 +817,7 @@ class PlayState extends State {
                 var win = (score >= 0); // strive score starts negative
                 var new_level = (win ? level + 1 : level - 1);
                 if (new_level < 1) new_level = 1;
-                Luxe.io.string_save('strive_level', '$new_level');
+                Luxe.io.string_save('journey_level', '$new_level');
                 new_game_mode = Strive(new_level);
                 play_sound(win ? 'won' : 'lost');
             case Normal:
@@ -1092,7 +1092,7 @@ class PlayState extends State {
         tutorial_can_collect = true;
         switch (game_mode) {
             case Tutorial(Normal): Luxe.io.string_save('tutorial_complete', 'true');
-            case Tutorial(Strive(_)): Luxe.io.string_save('tutorial_complete_strive', 'true');
+            case Tutorial(Strive(_)): Luxe.io.string_save('tutorial_complete_journey', 'true');
             case Tutorial(Timed): Luxe.io.string_save('tutorial_complete_timed', 'true');
             default: 
         }

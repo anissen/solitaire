@@ -99,13 +99,14 @@ class Main extends luxe.Game {
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'star.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png', 'ring.png'].map(function(i) return 'images/symbols/$i');
         var ui = ['ui/buttonLong_brown_pressed.png', 'ui/buttonLong_teal_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/circular_light.png', 'ui/cog.png', 'ui/book.png', 'ui/holy-grail.png', 'ui/egyptian-walk.png', 'ui/round-star.png'];
         var tutorial = ['images/tutorial/box_shadow.png', 'images/tutorial/arrow.png', 'images/tutorial/collect_order.png', 'images/tutorial/collect_adjacent.png', 'images/tutorial/stack.png'];
+        var journey = ['images/journey/egyptian-temple.png'];
         var sounds = ['invalid', 'lost', 'place', 'points_big', 'points_huge', 'points_small', 'points_devine', 'quest', 'slide', 'stack', 'tile_click', 'ui_click', 'won', 'collect', 'tutorial'];
         var music = ['Temple_of_the_Mystics' /*, 'desert-ambience-cropped.ogg' */];
 
         var parcel = new luxe.Parcel({
             load_time_spacing: 0,
             load_start_delay: 0,
-            textures: [ for (icon in icons.concat(ui).concat(tutorial)) { id: 'assets/' + icon } ],
+            textures: [ for (icon in icons.concat(ui).concat(tutorial).concat(journey)) { id: 'assets/' + icon } ],
             sounds: [ for (sound in sounds) { id: Settings.get_sound_file_path(sound), is_stream: false } ]
                     .concat([for (m in music) { id: Settings.get_music_file_path(m), is_stream: true }]),
             fonts: [{ id: 'assets/fonts/clemente/clemente.fnt' } ]
@@ -146,6 +147,7 @@ class Main extends luxe.Game {
         states.add(new PlayState());
         states.add(new GameOverState());
         states.add(new TextInputState());
+        states.add(new JourneyState());
 
         if (Luxe.io.string_load('audio_enabled') == 'false') {
             Luxe.audio.suspend();
@@ -185,7 +187,7 @@ class Main extends luxe.Game {
             if (showTutorial) {
                 SetState(PlayState.StateId, GameMode.Tutorial(GameMode.Normal));
             } else {
-                SetState(MenuState.StateId);
+                SetState(JourneyState.StateId);
             }
         });
     }
@@ -210,7 +212,7 @@ class Main extends luxe.Game {
             switch (event.window.type) {
                 case WindowEventType.we_restored:
                     // crazy hack to ensure that audio is disabled when resuming
-                    if (Luxe.io.string_load('audio_enabled') == 'true') {
+                    if (Luxe.io.string_load('audio_enabled') == 'false') {
                         Luxe.audio.suspend();
                     }
                 default:
@@ -222,7 +224,7 @@ class Main extends luxe.Game {
     override function onkeyup(event :luxe.Input.KeyEvent) {
         if (event.keycode == luxe.Input.Key.key_d) {
             Luxe.io.string_save('save_normal', null);
-            Luxe.io.string_save('save_strive', null);
+            Luxe.io.string_save('save_journey', null);
         }
     }
     #end

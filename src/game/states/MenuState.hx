@@ -221,21 +221,7 @@ class MenuState extends State {
         var total_score = Settings.load_int('total_score', 0);
         Luxe.io.string_save('menu_last_total_score', '$total_score');
 
-        var strive_save = Luxe.io.string_load('save_strive');
-        var strive_level = Luxe.io.string_load('strive_level');
-        var strive_tutorial_completed = (Luxe.io.string_load('tutorial_complete_strive') == 'true');
-        var strive_mode = Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
-        var strive_game_mode = (strive_tutorial_completed ? strive_mode : Tutorial(strive_mode));
-        var strive_text = (strive_save == null ? '' : '~ ') + (strive_level != null ? 'Strive for ${strive_mode.get_strive_score()}' : 'Strive') +(strive_save == null ? '' : ' ~');
-        var strive_unlock = 1000;
-        var strive_button = new Button({
-            pos: new Vector(Settings.WIDTH / 2, get_button_y()),
-            text: (total_score < strive_unlock ? 'Unlock: ${strive_unlock - total_score}' : strive_text),
-            on_click: Main.SetState.bind(PlayState.StateId, strive_game_mode),
-            disabled: (total_score < strive_unlock)
-        });
-
-        var timed_unlock = 2000;
+        var timed_unlock = 1000;
         var timed_tutorial_completed = (Luxe.io.string_load('tutorial_complete_timed') == 'true');
         var timed_game_mode = (timed_tutorial_completed ? Timed : Tutorial(Timed));
         var timed_button = new Button({
@@ -245,30 +231,40 @@ class MenuState extends State {
             disabled: (total_score < timed_unlock)
         });
 
+        var journey_save = Luxe.io.string_load('save_journey');
+        var journey_text = (journey_save == null ? '' : '~ ') + 'Journey' + (journey_save == null ? '' : ' ~');
+        var journey_unlock = 2000;
+        var journey_button = new Button({
+            pos: new Vector(Settings.WIDTH / 2, get_button_y()),
+            text: (total_score < journey_unlock ? 'Unlock: ${journey_unlock - total_score}' : journey_text),
+            on_click: Main.SetState.bind(JourneyState.StateId),
+            disabled: (total_score < journey_unlock)
+        });
+
         // trace('Old total score: $old_total_score, new total score: $total_score');
         
         counting_total_score = old_total_score;
         var count_down_duration = luxe.utils.Maths.clamp((total_score - old_total_score) / 50, 1.0, 3.0);
         if (total_score > old_total_score) {
-            if (!strive_button.enabled) strive_button.color_burst(count_down_duration);
             if (!timed_button.enabled) timed_button.color_burst(count_down_duration);
+            if (!journey_button.enabled) journey_button.color_burst(count_down_duration);
         }
         Actuate.tween(this, count_down_duration, { counting_total_score: total_score }, true).onUpdate(function () {
             // if (counting_total_score - old_total_score % 10 == 0) {
             //     Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('points_big').source);
             // }
-            strive_button.text = (counting_total_score < strive_unlock ? 'Unlock: ${Std.int(strive_unlock - counting_total_score)}' : strive_text);
-            var was_enabled = strive_button.enabled;
-            strive_button.enabled = tutorial_completed && (counting_total_score >= strive_unlock);
-            if (!was_enabled && strive_button.enabled) {
+            timed_button.text = (counting_total_score < timed_unlock ? 'Unlock: ${Std.int(timed_unlock - counting_total_score)}' : 'Survival');
+            var was_enabled = timed_button.enabled;
+            timed_button.enabled = tutorial_completed && (counting_total_score >= timed_unlock);
+            if (!was_enabled && timed_button.enabled) {
                 Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('points_devine')).source);
                 Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('ui_click')).source);
             }
 
-            timed_button.text = (counting_total_score < timed_unlock ? 'Unlock: ${Std.int(timed_unlock - counting_total_score)}' : 'Survival');
-            was_enabled = timed_button.enabled;
-            timed_button.enabled = tutorial_completed && (counting_total_score >= timed_unlock);
-            if (!was_enabled && timed_button.enabled) {
+            journey_button.text = (counting_total_score < journey_unlock ? 'Unlock: ${Std.int(journey_unlock - counting_total_score)}' : journey_text);
+            was_enabled = journey_button.enabled;
+            journey_button.enabled = tutorial_completed && (counting_total_score >= journey_unlock);
+            if (!was_enabled && journey_button.enabled) {
                 Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('points_devine')).source);
                 Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('ui_click')).source);
             }
@@ -288,22 +284,22 @@ class MenuState extends State {
         if (showTutorial) {
             tutorial_box = new game.entities.TutorialBox({ depth: 200 });
             play_button.enabled = false;
-            strive_button.enabled = false;
+            journey_button.enabled = false;
             timed_button.enabled = false;
 
             function complete_tutorial() {
                 Luxe.io.string_save('tutorial_menu_complete', 'true');
                 Luxe.timer.schedule(2.5, function() { // to avoid accidentally clicking on "Play"
                     play_button.enabled = true;
-                    strive_button.enabled = tutorial_completed && (counting_total_score >= strive_unlock);
+                    journey_button.enabled = tutorial_completed && (counting_total_score >= journey_unlock);
                     timed_button.enabled = tutorial_completed && (counting_total_score >= timed_unlock);
                 });
             }
 
             tutorial_box
             .tutorial({ texts: ['This is the normal\n{brown}Play{default} mode.', 'Here you compete for\nthe highscore.'], pos_y: play_button.get_top_pos().y - 85, points: [play_button.get_top_pos()] })
-            .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame modes.', 'Earn points to unlock.'], pos_y: strive_button.get_center_pos().y - 80, points: [Vector.Add(strive_button.get_center_pos(), new Vector(-35, 0)), Vector.Add(timed_button.get_top_pos(), new Vector(35, 0))] }))
-            // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #1.'], pos_y: strive_button.get_top_pos().y - 85, points: [strive_button.get_top_pos()] }))
+            .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame modes.', 'Earn points to unlock.'], pos_y: journey_button.get_center_pos().y - 80, points: [Vector.Add(journey_button.get_center_pos(), new Vector(-35, 0)), Vector.Add(timed_button.get_top_pos(), new Vector(35, 0))] }))
+            // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #1.'], pos_y: journey_button.get_top_pos().y - 85, points: [journey_button.get_top_pos()] }))
             // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #2.', 'Earn points to unlock.'], pos_y: timed_button.get_top_pos().y - 85, points: [timed_button.get_top_pos()] }))
             .then(tutorial_box.tutorial({ texts: ['Settings menu is here.'], pos_y: config_button.pos.y + 85 + 15, points: [Vector.Add(config_button.pos, new Vector(0, 15))] }))
             .then(tutorial_box.tutorial({ texts: ['About {brown}Stoneset{default}.', 'Go here to {brown}donate{default}\ntowards the game.'], pos_y: about_button.pos.y + 85 + 15, points: [Vector.Add(about_button.pos, new Vector(0, 15))], do_func: complete_tutorial }));
@@ -560,11 +556,12 @@ class MenuState extends State {
         #if debug
         switch (event.keycode) {
             case luxe.Input.Key.key_1: Main.SetState(PlayState.StateId, Normal);
-            case luxe.Input.Key.key_2:
-                var strive_level = Luxe.io.string_load('strive_level');
-                var strive_mode = Strive(strive_level != null ? Std.parseInt(strive_level) : 1);
-                Main.SetState(PlayState.StateId, strive_mode);
-            case luxe.Input.Key.key_3: Main.SetState(PlayState.StateId, Timed);
+            case luxe.Input.Key.key_2: Main.SetState(PlayState.StateId, Timed);
+            case luxe.Input.Key.key_3:
+                var journey_level = Luxe.io.string_load('journey_level');
+                var journey_mode = Strive(journey_level != null ? Std.parseInt(journey_level) : 1);
+                Main.SetState(PlayState.StateId, journey_mode);
+            case luxe.Input.Key.key_u: Luxe.io.string_save('total_score', '3000');
             case luxe.Input.Key.key_t: update_global_stats(5, 8, 7, 6);
             case luxe.Input.Key.key_c: {
                 @SuppressWarning("checkstyle:Trace")

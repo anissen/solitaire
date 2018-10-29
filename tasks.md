@@ -64,6 +64,7 @@ END BETA FEEDBACK
 * Make highlight tweets of
    * Images in tutorial
    * Stars in highscore list?
+* Show total score on the menu screen and award 1 star for each 1000 points
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game

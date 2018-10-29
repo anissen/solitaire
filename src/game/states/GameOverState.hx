@@ -227,7 +227,7 @@ class GameOverState extends State {
 
         var play_text = switch (next_game_mode) {
             case Normal: 'Play';
-            case Strive(level): 'Strive: ${next_game_mode.get_strive_score()}';
+            case Strive(level): 'Journey: ${next_game_mode.get_strive_score()}';
             case Timed: 'Survival';
             case Puzzle: 'Puzzle';
             case Tutorial(_): 'Tutorial'; // never shown
@@ -428,22 +428,22 @@ class GameOverState extends State {
         var highscore_lines = [];
         switch (game_mode) {
             case Strive(level) | Tutorial(Strive(level)):
-                var highest_level_played = Std.parseInt(Luxe.io.string_load('strive_highest_level_played'));
+                var highest_level_played = Std.parseInt(Luxe.io.string_load('journey_highest_level_played'));
                 if (highest_level_played == null) highest_level_played = 0;
-                if (level > highest_level_played)  Luxe.io.string_save('strive_highest_level_played', '$level');
+                if (level > highest_level_played)  Luxe.io.string_save('journey_highest_level_played', '$level');
 
-                var strive_highscore = Std.parseInt(Luxe.io.string_load('strive_highscore'));
+                var strive_highscore = Std.parseInt(Luxe.io.string_load('journey_highscore'));
                 if (strive_highscore == null) strive_highscore = 0;
-                var highest_level_won = Std.parseInt(Luxe.io.string_load('strive_highest_level_won'));
+                var highest_level_won = Std.parseInt(Luxe.io.string_load('journey_highest_level_won'));
                 if (highest_level_won == null) highest_level_won = 0;
                 if (score >= game_mode.get_strive_score()) {
                     if (level > highest_level_won) {
                         highest_level_won = level;
-                        Luxe.io.string_save('strive_highest_level_won', '$highest_level_won');
+                        Luxe.io.string_save('journey_highest_level_won', '$highest_level_won');
                     }
                     if (score > strive_highscore) {
                         strive_highscore = score;
-                        Luxe.io.string_save('strive_highscore', '$score');
+                        Luxe.io.string_save('journey_highscore', '$score');
                     }
                 }
 

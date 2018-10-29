@@ -136,7 +136,7 @@ class SettingsState extends State {
                 reset_tutorial_button.enabled = false;
                 Luxe.io.string_save('tutorial_menu_complete', null);
                 Luxe.io.string_save('tutorial_complete', null);
-                Luxe.io.string_save('tutorial_complete_strive', null);
+                Luxe.io.string_save('tutorial_complete_journey', null);
                 Luxe.io.string_save('tutorial_complete_timed', null);
             },
             disabled: (!reset_tutorial_enabled)
