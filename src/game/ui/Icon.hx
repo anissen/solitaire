@@ -39,7 +39,7 @@ class Icon extends Sprite {
         if (!visible) return;
         
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
-        if (point_inside_AABB(world_pos)) {
+        if (point_inside(world_pos)) {
             if (!hovered) {
                 hovered = true;
                 color.tween(0.1, { a: 0.7 });
@@ -61,7 +61,7 @@ class Icon extends Sprite {
 
     override public function onmouseup(event :MouseEvent) {
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
-        if (point_inside_AABB(world_pos)) {
+        if (point_inside(world_pos)) {
             Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('tile_click')).source);
             on_click();
         }
