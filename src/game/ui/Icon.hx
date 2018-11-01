@@ -15,6 +15,8 @@ class Icon extends Sprite {
     var hovered :Bool = false;
     var on_click :Void->Void;
     var start_pos :Vector;
+    // @:isVar public var disabled (default, set) :Bool;
+    public var disabled :Bool;
 
     public function new(options :IconOptions) {
         super({
@@ -24,6 +26,7 @@ class Icon extends Sprite {
         });
         on_click = options.on_click;
         start_pos = options.pos.clone();
+        disabled = false;
     }
 
     override function init() {
@@ -36,7 +39,7 @@ class Icon extends Sprite {
     }
 
     override function onmousemove(event :MouseEvent) {
-        if (!visible) return;
+        if (!visible || disabled) return;
         
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (point_inside(world_pos)) {
@@ -60,10 +63,18 @@ class Icon extends Sprite {
     }
 
     override public function onmouseup(event :MouseEvent) {
+        if (!visible || disabled) return;
+
         var world_pos = Luxe.camera.screen_point_to_world(event.pos);
         if (point_inside(world_pos)) {
             Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('tile_click')).source);
             on_click();
         }
     }
+
+    // function set_disabled(value :Bool) :Bool {
+    //     disabled = value;
+
+    //     return disabled;
+    // }
 }

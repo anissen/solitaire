@@ -99,7 +99,7 @@ class Main extends luxe.Game {
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'star.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png', 'ring.png'].map(function(i) return 'images/symbols/$i');
         var ui = ['ui/buttonLong_brown_pressed.png', 'ui/buttonLong_teal_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/circular_light.png', 'ui/cog.png', 'ui/book.png', 'ui/holy-grail.png', 'ui/egyptian-walk.png', 'ui/round-star.png', 'ui/diamond.png'];
         var tutorial = ['images/tutorial/box_shadow.png', 'images/tutorial/arrow.png', 'images/tutorial/collect_order.png', 'images/tutorial/collect_adjacent.png', 'images/tutorial/stack.png'];
-        var journey = ['images/journey/egyptian-temple.png', 'images/journey/path1.png', 'images/journey/path2.png'];
+        var journey = ['images/journey/egyptian-temple.png', 'images/journey/great-pyramid.png', 'images/journey/path1.png', 'images/journey/path2.png'];
         var sounds = ['invalid', 'lost', 'place', 'points_big', 'points_huge', 'points_small', 'points_devine', 'quest', 'slide', 'stack', 'tile_click', 'ui_click', 'won', 'collect', 'tutorial'];
         var music = ['Temple_of_the_Mystics' /*, 'desert-ambience-cropped.ogg' */];
 

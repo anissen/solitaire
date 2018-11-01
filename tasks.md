@@ -79,6 +79,8 @@ Bugs:
 * Possible bug: Resetting tutorial would cause a player to get multiple scores on that game seed
 * [FIXED?] Disabled audio is re-enabled when app is resumed (Sean, Kim, Anne)
 * Crash when having poor/unstable internet connectivity
+* Clicking the About button while the tutorial is *active* causes a crash (reported by Christoffer)
+* Scores ending in '1' are slightly offset to the left
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:
