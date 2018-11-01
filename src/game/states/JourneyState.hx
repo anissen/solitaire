@@ -53,17 +53,20 @@ class JourneyState extends State {
         var journey_tutorial_completed = (Luxe.io.string_load('tutorial_complete_journey') == 'true');
         var journey_mode = Strive(journey_level);
         var journey_game_mode = (journey_tutorial_completed ? journey_mode : Tutorial(journey_mode));
+        
+        var journey_highest_level_played = Settings.load_int('journey_highest_level_played', 0);
+        var journey_highest_level_won = Settings.load_int('journey_highest_level_won', 0);
 
-        new game.ui.Button({
-            pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT - 40),
-            text: journey_game_mode.getName(),
-            on_click: function() {
-                Main.SetState(PlayState.StateId, journey_game_mode);
-            }
-        });
+        // new game.ui.Button({
+        //     pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT - 40),
+        //     text: journey_game_mode.getName(),
+        //     on_click: function() {
+        //         Main.SetState(PlayState.StateId, journey_game_mode);
+        //     }
+        // });
 
         var points = [0, 1, 1, 1, 1, 5, 2, 2, 2, 2, 10, 5, 5, 5, 5, 20, 10, 10, 10, 10, 40, 20, 20, 20, 20, 50, 40, 40, 40, 40, 100];
-        var major  = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0,  1, 0, 0, 0, 0,  1,  0,  0,  0,  0,  1,  0,  0,  0,  0,  1,  0,  0,  0,  0, 1];
+        var major  = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0,  1, 0, 0, 0, 0,  1,  0,  0,  0,  0,  1,  0,  0,  0,  0,  1,  0,  0,  0,  0, 2];
 
         var max_levels = 30; // 200 points
         var container_height = 0.0;
@@ -71,21 +74,23 @@ class JourneyState extends State {
         for (i in 0 ... max_levels) {
             var level = i + 1;
             var level_points = (level < 10) ? level * 10 : 10 * 10 + (level - 10) * 5; // 10 interval to 100, then 5
-            var icon = create_icon(level_points, points[level], (level == journey_level), major[level] > 0);
+            var icon = create_icon(level_points, points[level], (level == journey_level), major[level], (level > journey_highest_level_played), (level <= journey_highest_level_won), (level == journey_highest_level_played));
             var level_pos = max_levels - level;
             icon.pos.y = 100 + level_pos * 125;
             container_height = (icon.pos.y > container_height ? icon.pos.y : container_height);
             if (level == journey_level) scroll_to = -icon.pos.y + Settings.HEIGHT / 2;
             icon.parent = scroll_container;
 
+            if (i == max_levels - 1) break; // don't show the last path
             var rand = 1 + Std.random(2); // between 1 and 2
-            new Sprite({
+            var path = new Sprite({
                 parent: scroll_container,
                 texture: Luxe.resources.texture('assets/images/journey/path${rand}.png'),
                 pos: new Vector(Settings.WIDTH / 2, 100 + (level_pos - 0.5) * 125),
                 scale: new Vector((Std.random(2) < 1 ? 0.3 : -0.3), (Std.random(2) < 1 ? 0.3 : -0.3)),
                 color: new Color().rgb(0x956416)
             });
+            if (level >= journey_highest_level_played) path.color.a = 0.5;
         }
 
         var pan = new game.components.DragPan({ name: 'DragPan' });
@@ -97,7 +102,7 @@ class JourneyState extends State {
         scroll_container.pos.y = scroll_to; //pan.y_top;
     }
 
-    function create_icon(goal :Int, stars :Int, active_level :Bool, major_level :Bool) :luxe.Visual {
+    function create_icon(goal :Int, stars :Int, active_level :Bool, level_category :Int, grayed_out :Bool, stars_taken :Bool, flag :Bool) :luxe.Visual {
         var container = new luxe.Visual({});
         container.color.a = 0;
 
@@ -108,15 +113,21 @@ class JourneyState extends State {
         });
         rank_button.parent = container;
         rank_button.scale.set_xy(1/4, 1/4);
-        rank_button.color.a = 0.75;
         rank_button.disabled = !active_level;
 
         var color = (active_level ? new Color(0.75, 0.0, 0.5) : new Color().rgb(0x956416));
+        if (grayed_out) color.a = 0.25;
+
+        var level_icon = switch (level_category) {
+            case 1: 'assets/images/journey/egyptian-temple.png';
+            case 2: 'assets/ui/holy-grail.png';
+            case _: 'assets/images/journey/great-pyramid.png';
+        };
 
         var levelIcon = new Sprite({
             parent: rank_button,
             pos: Vector.Multiply(rank_button.size, 0.5),
-            texture: Luxe.resources.texture('assets/images/journey/${major_level ? 'egyptian-temple' : 'great-pyramid'}.png'),
+            texture: Luxe.resources.texture(level_icon),
             scale: new Vector(0.05 * 5, 0.05 * 5),
             color: color,
             depth: 10
@@ -126,21 +137,42 @@ class JourneyState extends State {
             .ease(luxe.tween.easing.Linear.easeNone)
             .reflect()
             .repeat();
+
+        if (flag) {
+            var flagIcon = new Sprite({
+                parent: container,
+                pos: new Vector(Settings.WIDTH / 2 + 5, -30),
+                texture: Luxe.resources.texture('assets/images/journey/flying-flag.png'),
+                scale: new Vector(0.1, 0.1),
+                color: new Color(0.75, 0.0, 0.5),
+                depth: 50
+            });
+            luxe.tween.Actuate
+                .tween(flagIcon.scale, 4.0, { x: 0.09, y: 0.09 })
+                .ease(luxe.tween.easing.Linear.easeNone)
+                .reflect()
+                .repeat();
+            flagIcon.rotation_z = 7.5;
+            luxe.tween.Actuate
+                .tween(flagIcon, 2.0, { rotation_z: 12.5 })
+                .ease(luxe.tween.easing.Linear.easeNone)
+                .reflect()
+                .repeat();
+        }
         
         var goalText = new Text({
             parent: container,
-            pos: new Vector(60, 2),
+            pos: new Vector(65, 2),
             text: '$goal',
             align: TextAlign.right,
             align_vertical: TextAlign.center,
             color: color,
             point_size: 22
         });
-        goalText.color.a = 0.5;
 
         var scoreIcon = new Sprite({
             parent: container,
-            pos: new Vector(80, 0),
+            pos: new Vector(85, 0),
             texture: Luxe.resources.texture('assets/ui/diamond.png'),
             scale: new Vector(0.055, 0.055),
             color: color
@@ -153,27 +185,36 @@ class JourneyState extends State {
 
         var starsText = new Text({
             parent: container,
-            pos: new Vector(Settings.WIDTH - 80, 2),
+            pos: new Vector(Settings.WIDTH - 65, 2),
             text: '$stars',
-            align: TextAlign.right,
+            align: TextAlign.left,
             align_vertical: TextAlign.center,
             color: color,
             point_size: 22
         });
-        starsText.color.a = 0.5;
+        if (stars_taken) {
+            starsText.color = new Color().rgb(0x956416);
+            starsText.color.a = 0.25;
+        }
 
         var starIcon = new Sprite({
             parent: container,
-            pos: new Vector(Settings.WIDTH - 60, 0),
+            pos: new Vector(Settings.WIDTH - 85, 0),
             texture: Luxe.resources.texture('assets/ui/round-star.png'),
             scale: new Vector(0.06, 0.06),
-            color: color, //new Color().rgb(0x956416),
+            color: color,
             depth: 10
         });
-        luxe.tween.Actuate
-            .tween(starIcon, 10.0, { rotation_z: 360 })
-            .ease(luxe.tween.easing.Linear.easeNone)
-            .repeat();
+        if (stars_taken) {
+            starIcon.color = new Color().rgb(0x956416);
+            starIcon.color.a = 0.25;
+        }
+        if (!stars_taken) {
+            luxe.tween.Actuate
+                .tween(starIcon, 10.0, { rotation_z: 360 })
+                .ease(luxe.tween.easing.Linear.easeNone)
+                .repeat();
+        }
 
         return container;
     }
