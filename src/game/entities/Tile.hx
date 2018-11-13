@@ -83,6 +83,12 @@ class Tile extends Sprite implements core.models.Deck.ICard {
     }
     
     public function show_tile_graphics(show :Bool = true) {
+        if (show) {
+            var scale_value = this.scale.clone();
+            this.scale.set_xy(0.8, 0.8);
+            Actuate.tween(this.scale, 0.2, { x: scale_value.x, y: scale_value.y }).ease(luxe.tween.easing.Bounce.easeOut);
+        }
+
         bg.visible = true;
         var to_size = (show ? bg.size.clone() : new Vector(0, 0));
         if (show) bg.size.set_xy(0, 0);

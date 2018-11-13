@@ -245,7 +245,7 @@ class PlayState extends State {
             var back_button = new game.ui.Icon({
                 pos: new Vector(30, 30),
                 texture_path: 'assets/ui/arrowBeige_left.png',
-                on_click: Main.SetState.bind(MenuState.StateId)
+                on_click: go_back
             });
             back_button.scale.set_xy(1/4, 1/4);
         }
@@ -1129,6 +1129,15 @@ class PlayState extends State {
         Analytics.event('game', 'tutorial', 'finished');
     }
 
+    function go_back() {
+        if (tutorial_box != null && tutorial_box.is_active()) return;
+        
+        switch (game_mode) {
+            case Strive(_) | Tutorial(Strive(_)): Main.SetState(JourneyState.StateId);
+            default: Main.SetState(MenuState.StateId);
+        };
+    }
+
     var seed_number = 0;
     override function onkeyup(event :luxe.Input.KeyEvent) {
         switch (event.keycode) {
@@ -1162,8 +1171,8 @@ class PlayState extends State {
             // case luxe.Input.Key.key_q: tutorial.show(['This is tutorial', 'More text'], [tiles.first(), tiles[1], tiles.last()]);
             case luxe.Input.Key.key_t: Luxe.io.url_open('https://twitter.com/intent/tweet?original_referer=http://andersnissen.com&text=Stoneset tweet #Stoneset&url=http://andersnissen.com/');
             #end
-            case luxe.Input.Key.ac_back: if (tutorial_box == null || !tutorial_box.is_active()) Main.SetState(MenuState.StateId);
-            case luxe.Input.Key.escape: Main.SetState(MenuState.StateId);
+            case luxe.Input.Key.ac_back: go_back();
+            case luxe.Input.Key.escape: go_back();
         }
     }
 }

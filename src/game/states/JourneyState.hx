@@ -93,7 +93,7 @@ class JourneyState extends State {
                 level_category: major[level],
                 grayed_out: (level != journey_level && level > journey_highest_level_played),
                 stars_taken: (level <= journey_highest_level_won),
-                flag: (level == journey_highest_level_played),
+                flag: (level == journey_highest_level_won),
                 game_mode: journey_game_mode
             });
             var level_pos = max_levels - level;
