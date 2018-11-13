@@ -8,6 +8,7 @@ import luxe.Scene;
 import luxe.Sprite;
 import luxe.tween.Actuate;
 import game.misc.GameMode.GameMode;
+import game.misc.GameScore;
 import core.utils.AsyncHttpUtils;
 import core.utils.AsyncHttpUtils.HttpCallback;
 
@@ -256,6 +257,7 @@ class GameOverState extends State {
             // });
             // retry_button.visible = false;
 
+            /*
             var user_name = Luxe.io.string_load('user_name');
             if (user_name == null || user_name.length == 0) user_name = 'You';
 
@@ -283,6 +285,8 @@ class GameOverState extends State {
                 Luxe.io.string_save(game_mode.get_non_tutorial_game_mode_id() + '_plays_today', '$number_of_plays_today');
             }
             Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
+            */
+            local_highscores = GameScore.update_local_score(game_mode, score);
 
             if (is_strive_mode) {
                 show_local_highscores();
@@ -435,85 +439,28 @@ class GameOverState extends State {
         title.text = 'Local Highscores';
         highscore_mode = Local;
 
+        local_highscores.sort(function(a, b) {
+            if (a.score == b.score) {
+                if (a.current) return -1;
+                if (b.current) return 1;
+            }
+            return b.score - a.score;
+        });
+        
+        var count = 0;
         var highscore_lines = [];
-        switch (game_mode) {
-            case Strive(level) | Tutorial(Strive(level)):
-                var highest_level_played = Std.parseInt(Luxe.io.string_load('journey_highest_level_played'));
-                if (highest_level_played == null) highest_level_played = 0;
-                if (level > highest_level_played)  Luxe.io.string_save('journey_highest_level_played', '$level');
-
-                var strive_highscore = Std.parseInt(Luxe.io.string_load('journey_highscore'));
-                if (strive_highscore == null) strive_highscore = 0;
-                var highest_level_won = Std.parseInt(Luxe.io.string_load('journey_highest_level_won'));
-                if (highest_level_won == null) highest_level_won = 0;
-                if (score >= game_mode.get_strive_score()) {
-                    if (level > highest_level_won) {
-                        highest_level_won = level;
-                        Luxe.io.string_save('journey_highest_level_won', '$highest_level_won');
-                    }
-                    if (score > strive_highscore) {
-                        strive_highscore = score;
-                        Luxe.io.string_save('journey_highscore', '$score');
-                    }
-                }
-
-                var max_level = (level > highest_level_played ? level : highest_level_played);
-                for (i in 0 ... max_level) {
-                    var level_counter = (max_level - i);
-                    var strive_mode = Strive(level_counter);
-                    var description = 'Lost';
-                    var color = new Color(0.5, 0.0, 0.0);
-                    if (level_counter == highest_level_won) {
-                        description = 'Highscore';
-                        color = new Color(0.5, 0.0, 0.5);
-                    }
-                    if (level_counter < level) {
-                        description = 'Won';
-                        color = new Color(0.0, 0.5, 0.0);
-                    }
-                    if (game_mode.equals(strive_mode)) {
-                        var won_game = (score >= game_mode.get_strive_score());
-                        description = (won_game ? 'Won!' : 'Lost!');
-                    }
-                    var highscore_line = new HighscoreLine('', strive_mode.get_strive_score(), description);
-                    highscore_line.point_icon = new Sprite({
-                        parent: highscore_line,
-                        pos: new Vector(132, -3),
-                        texture: Luxe.resources.texture('assets/ui/diamond.png'),
-                        scale: new Vector(0.037, 0.037),
-                        color: new Color().rgb(0x956416)
-                    });
-                    highscore_line.color = color;
-                    if (game_mode.equals(strive_mode)) {
-                        var won_game = (score >= game_mode.get_strive_score());
-                        highscore_line.color = new Color(0.75, 0.1, 0.1);
-                        if (won_game) highscore_line.color = ((level_counter == highest_level_won) ? new Color(0.5, 0.0, 0.5) : new Color(0.1, 0.75, 0.1));
-                    }
-                    
-                    highscore_lines.push(highscore_line);
-                } 
-            default:
-                local_highscores.sort(function(a, b) {
-                    if (a.score == b.score) {
-                        if (a.current) return -1;
-                        if (b.current) return 1;
-                    }
-                    return b.score - a.score;
-                });
-                var count = 0;
-                for (highscore in local_highscores) {
-                    count++;
-                    var highscore_line = new HighscoreLine('$count.', highscore.score, highscore.name);
-                    highscore_line.point_icon = new Sprite({
-                        parent: highscore_line,
-                        pos: new Vector(132, -3),
-                        texture: Luxe.resources.texture('assets/ui/diamond.png'),
-                        scale: new Vector(0.037, 0.037),
-                        color: new Color().rgb(0x956416)
-                    });
-                    if (highscore.current) highscore_line.color = new Color(0.75, 0.0, 0.5);
-                    highscore_lines.push(highscore_line);
-                }
+        for (highscore in local_highscores) {
+            count++;
+            var highscore_line = new HighscoreLine('$count.', highscore.score, highscore.name);
+            highscore_line.point_icon = new Sprite({
+                parent: highscore_line,
+                pos: new Vector(132, -3),
+                texture: Luxe.resources.texture('assets/ui/diamond.png'),
+                scale: new Vector(0.037, 0.037),
+                color: new Color().rgb(0x956416)
+            });
+            if (highscore.current) highscore_line.color = new Color(0.75, 0.0, 0.5);
+            highscore_lines.push(highscore_line);
         }
 
         show_highscores(highscore_lines);

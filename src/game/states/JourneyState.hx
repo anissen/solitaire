@@ -5,9 +5,21 @@ import luxe.States.State;
 import luxe.Vector;
 import luxe.Color;
 import luxe.Sprite;
-import game.components.Clickable;
 import game.misc.GameMode.GameMode;
 import core.utils.Analytics;
+
+using game.misc.GameMode.GameModeTools;
+
+typedef CreateIconOptions = {
+    goal :Int,
+    stars :Int,
+    active_level :Bool,
+    level_category :Int,
+    grayed_out :Bool,
+    stars_taken :Bool,
+    flag :Bool,
+    game_mode :GameMode
+};
 
 class JourneyState extends State {
     static public var StateId :String = 'JourneyState';
@@ -74,10 +86,19 @@ class JourneyState extends State {
         for (i in 0 ... max_levels) {
             var level = i + 1;
             var level_points = (level < 10) ? level * 10 : 10 * 10 + (level - 10) * 5; // 10 interval to 100, then 5
-            var icon = create_icon(level_points, points[level], (level == journey_level), major[level], (level > journey_highest_level_played), (level <= journey_highest_level_won), (level == journey_highest_level_played));
+            var icon = create_icon({
+                goal: level_points,
+                stars: points[level],
+                active_level: (level == journey_level),
+                level_category: major[level],
+                grayed_out: (level != journey_level && level > journey_highest_level_played),
+                stars_taken: (level <= journey_highest_level_won),
+                flag: (level == journey_highest_level_played),
+                game_mode: journey_game_mode
+            });
             var level_pos = max_levels - level;
             icon.pos.y = 100 + level_pos * 125;
-            container_height = (icon.pos.y > container_height ? icon.pos.y : container_height);
+            container_height = (icon.pos.y > container_height ? icon.pos.y + 100 : container_height);
             if (level == journey_level) scroll_to = -icon.pos.y + Settings.HEIGHT / 2;
             icon.parent = scroll_container;
 
@@ -90,35 +111,36 @@ class JourneyState extends State {
                 scale: new Vector((Std.random(2) < 1 ? 0.3 : -0.3), (Std.random(2) < 1 ? 0.3 : -0.3)),
                 color: new Color().rgb(0x956416)
             });
-            if (level >= journey_highest_level_played) path.color.a = 0.5;
+            if (level >= journey_level) path.color.a = 0.25;
         }
 
         var pan = new game.components.DragPan({ name: 'DragPan' });
         var correct_drag_top = #if web 100 #else 40 #end;
         pan.y_top = Settings.HEIGHT - container_height - correct_drag_top;
         pan.y_bottom = 0;
-        scroll_container.add(pan);
-
         scroll_container.pos.y = scroll_to; //pan.y_top;
+        scroll_container.add(pan);
     }
 
-    function create_icon(goal :Int, stars :Int, active_level :Bool, level_category :Int, grayed_out :Bool, stars_taken :Bool, flag :Bool) :luxe.Visual {
+    function create_icon(options :CreateIconOptions) :luxe.Visual {
         var container = new luxe.Visual({});
         container.color.a = 0;
 
         var rank_button = new game.ui.Icon({
             pos: new Vector(Settings.WIDTH / 2, 0),
-            texture_path: 'assets/ui/circular_light.png',
-            on_click: function() { Main.SetState(PlayState.StateId, Strive(2)); }
+            texture_path: (options.active_level ? 'assets/ui/circular_highlight.png' : 'assets/ui/circular_light.png'),
+            on_click: function() {
+                Main.SetState(PlayState.StateId, options.game_mode);
+            }
         });
         rank_button.parent = container;
         rank_button.scale.set_xy(1/4, 1/4);
-        rank_button.disabled = !active_level;
+        rank_button.disabled = !options.active_level;
 
-        var color = (active_level ? new Color(0.75, 0.0, 0.5) : new Color().rgb(0x956416));
-        if (grayed_out) color.a = 0.25;
+        var color = (options.active_level ? new Color(0.75, 0.0, 0.5) : new Color().rgb(0x956416));
+        if (options.grayed_out) color.a = 0.2;
 
-        var level_icon = switch (level_category) {
+        var level_icon = switch (options.level_category) {
             case 1: 'assets/images/journey/egyptian-temple.png';
             case 2: 'assets/ui/holy-grail.png';
             case _: 'assets/images/journey/great-pyramid.png';
@@ -138,7 +160,7 @@ class JourneyState extends State {
             .reflect()
             .repeat();
 
-        if (flag) {
+        if (options.flag) {
             var flagIcon = new Sprite({
                 parent: container,
                 pos: new Vector(Settings.WIDTH / 2 + 5, -30),
@@ -163,7 +185,7 @@ class JourneyState extends State {
         var goalText = new Text({
             parent: container,
             pos: new Vector(65, 2),
-            text: '$goal',
+            text: '${options.goal}',
             align: TextAlign.right,
             align_vertical: TextAlign.center,
             color: color,
@@ -186,14 +208,15 @@ class JourneyState extends State {
         var starsText = new Text({
             parent: container,
             pos: new Vector(Settings.WIDTH - 65, 2),
-            text: '$stars',
+            text: '${options.stars}',
             align: TextAlign.left,
             align_vertical: TextAlign.center,
             color: color,
             point_size: 22
         });
-        if (stars_taken) {
-            starsText.color = new Color().rgb(0x956416);
+        if (options.stars_taken) {
+            // starsText.color = new Color().rgb(0x956416);
+            starsText.color = color.clone();
             starsText.color.a = 0.25;
         }
 
@@ -205,11 +228,12 @@ class JourneyState extends State {
             color: color,
             depth: 10
         });
-        if (stars_taken) {
-            starIcon.color = new Color().rgb(0x956416);
+        if (options.stars_taken) {
+            // starIcon.color = new Color().rgb(0x956416);
+            starIcon.color = color.clone();
             starIcon.color.a = 0.25;
         }
-        if (!stars_taken) {
+        if (!options.stars_taken) {
             luxe.tween.Actuate
                 .tween(starIcon, 10.0, { rotation_z: 360 })
                 .ease(luxe.tween.easing.Linear.easeNone)
@@ -222,7 +246,17 @@ class JourneyState extends State {
     override function onkeyup(event :luxe.Input.KeyEvent) {
         if (event.keycode == luxe.Input.Key.ac_back) {
             Main.SetState(MenuState.StateId);
+        } 
+        #if debug
+        if (event.keycode == luxe.Input.Key.key_r) {
+            Luxe.io.string_save('journey_level', null);
+            Luxe.io.string_save('journey_highest_level_played', null);
+            Luxe.io.string_save('journey_highest_level_won', null);
+            Luxe.io.string_save('journey_highscore', null);
+
+            Luxe.io.string_save('save_${Strive(1).get_game_mode_id()}', null); // clear the save
         }
+        #end
     }
 
     override function onleave(_) {

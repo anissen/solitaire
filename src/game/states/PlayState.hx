@@ -834,7 +834,6 @@ class PlayState extends State {
                 var win = (score >= 0); // strive score starts negative
                 var new_level = (win ? level + 1 : level - 1);
                 if (new_level < 1) new_level = 1;
-                Luxe.io.string_save('journey_level', '$new_level');
                 new_game_mode = Strive(new_level);
                 play_sound(win ? 'won' : 'lost');
             case Normal:
@@ -889,11 +888,21 @@ class PlayState extends State {
                 actions_data: Game.Instance.get_actions_data()
             };
 
+            switch (game_mode) { // TODO: Hack! Should be handled in one place for all game modes
+                case Strive(level) | Tutorial(Strive(level)): game.misc.GameScore.update_local_score(game_mode, the_score);
+                default:
+            };
+
+            var gameOverStateId = switch (game_mode) {
+                case Strive(level) | Tutorial(Strive(level)): JourneyState.StateId;
+                default: GameOverState.StateId;
+            };
+
             var name = Luxe.io.string_load('user_name');
             if (name == null || name.length == 0) {
-                Main.SetState(TextInputState.StateId, { done_func: Main.SetState.bind(GameOverState.StateId, data) });
+                Main.SetState(TextInputState.StateId, { done_func: Main.SetState.bind(gameOverStateId, data) });
             } else {
-                Main.SetState(GameOverState.StateId, data);
+                Main.SetState(gameOverStateId, data);
             }
         });
         return Promise.resolve();

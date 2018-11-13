@@ -35,6 +35,10 @@ class DragPan extends Component {
         if(visual == null) throw 'Invalid entity type';
     }
 
+    override function onadded() {
+        pos.y = luxe.utils.Maths.clamp(pos.y, y_top, y_bottom);
+    }
+
     override function onmousedown(event :MouseEvent) {
         if (!dragging && event.button == button) {
             mouse_down = true;
