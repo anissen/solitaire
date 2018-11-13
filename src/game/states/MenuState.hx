@@ -206,6 +206,7 @@ class MenuState extends State {
             color: new Color().rgb(0x956416),
             depth: 10
         });
+        totalScoreIcon.color.a = 0.7;
         luxe.tween.Actuate
             .tween(totalScoreIcon.scale, 4.0, { x: 0.065, y: 0.065 })
             .ease(luxe.tween.easing.Linear.easeNone)
@@ -220,7 +221,7 @@ class MenuState extends State {
             color: new Color().rgb(0x956416),
             point_size: 26
         });
-        totalScoreText.color.a = 0.5;
+        totalScoreText.color.a = 0.7;
 
         var normal_save = Luxe.io.string_load('save_normal');
 

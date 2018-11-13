@@ -362,7 +362,9 @@ class GameOverState extends State {
             align_vertical: center,
             color: new Color(0.75, 0.0, 0.0),
             depth: 10,
-            scene: highscore_lines_scene
+            scene: highscore_lines_scene,
+            bounds: new luxe.Rectangle(-Settings.WIDTH / 2 + 20, -Settings.HEIGHT / 2, Settings.WIDTH - 40, Settings.HEIGHT),
+            bounds_wrap: true
         });
     }
     

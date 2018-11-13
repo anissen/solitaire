@@ -9,6 +9,7 @@ Tasks:
     * https://startbootstrap.com/template-overviews/grayscale/
 * Update andersnissen.com
 * Notify spiludvikling.dk (facebook)
+* Notify indie game dev (facebook)
 * Notify Interactive Denmark
 * Notify haxe.io
 * Notify dkgame (twitter)
@@ -65,6 +66,9 @@ END BETA FEEDBACK
    * Images in tutorial
    * Stars in highscore list?
 * Show total score on the menu screen and award 1 star for each 1000 points
+* Animate total score on menu screen
+* Snap point icon to right of score?
+* Add stars icons to ranking screen
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
