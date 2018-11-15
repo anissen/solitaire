@@ -445,14 +445,39 @@ class MenuState extends State {
         });
     }
 
+    // function update_stars(old_stars :Int, stars :Int) {
+    //     var total_score = Settings.load_int('total_score', 0);
+    //     var score_stars = Std.int(total_score / 1000);
+    //     var journey_stars = 0;  // TODO: TEMP!
+
+    //     var stars = wins + score_stars + journey_stars;
+    //     var old_stars = old_wins; // TODO: TEMP!
+
+
+    //     var max_particles = ((stars - old_stars) <= 20 ? (stars - old_stars) : 20);
+
+    //     for (w in 0 ... max_particles) {
+    //         create_particle(w * 0.35, w, Math.ceil(old_stars + (w + 1) * (stars - old_stars) / max_particles));
+    //     }
+    // }
     
     function update_global_stats(old_wins :Int, wins :Int, old_rank :Int, rank :Int) {
+        var total_score = Settings.load_int('total_score', 0);
+        var score_stars = Std.int(total_score / 1000);
+        var journey_stars = 0;  // TODO: TEMP!
 
+        var stars = wins + score_stars + journey_stars;
+        var old_stars = old_wins; // TODO: TEMP!
+
+
+        var max_particles = ((stars - old_stars) <= 20 ? (stars - old_stars) : 20);
 
         for (w in 0 ... max_particles) {
+            create_particle(w * 0.35, w, Math.ceil(old_stars + (w + 1) * (stars - old_stars) / max_particles));
         }
 
         if (rank != old_rank) {
+            var delay = (stars > old_stars ? (max_particles * 0.35 + 0.5) : 0.0);
             Actuate.timer(delay).onComplete(function() {
                 pe_burst.position.x = Settings.WIDTH / 2;
                 pe_burst.position.y = rankText.pos.y;
@@ -528,7 +553,7 @@ class MenuState extends State {
                 if (!ring_symbol.destroyed) ring_symbol.destroy();
             });
 
-            Luxe.camera.shake(2);
+            Luxe.camera.shake(3);
 
             pe_burst.position.x = Settings.WIDTH / 2;
             pe_burst.position.y = winsText.pos.y;
