@@ -86,6 +86,7 @@ class JourneyState extends State {
         var scroll_to = 0.0;
         var scroll_from_level = Settings.load_int('old_journey_level', 1);
         var scroll_from = 0.0;
+
         for (i in 0 ... max_levels) {
             var level = i + 1;
             var level_points = (level < 10) ? level * 10 : 10 * 10 + (level - 10) * 5; // 10 interval to 100, then 5
@@ -125,7 +126,43 @@ class JourneyState extends State {
         scroll_container.pos.y = scroll_from;
         scroll_container.add(pan);
 
-        Actuate.tween(scroll_container.pos, 0.5, { y: scroll_to }).ease(luxe.tween.easing.Quad.easeOut);
+        var particle_delay = 0.5;
+        var particle_duration = 0.5;
+        create_particle(new Vector(Settings.WIDTH - 85, Settings.HEIGHT / 2), back_button.pos, particle_delay, particle_duration);
+        Actuate.tween(scroll_container.pos, 0.5, { y: scroll_to }).ease(luxe.tween.easing.Quad.easeOut).delay(particle_delay + particle_duration);
+    }
+
+    function create_particle(from_pos :Vector, to_pos :Vector, delay :Float, duration :Float) {
+        // var duration = 0.5;
+        // var delay = 0.0;
+        var size = 48;
+
+        var p = new game.entities.Particle({
+            pos: from_pos,
+            texture: Luxe.resources.texture('assets/ui/round-star.png'),
+            size: new Vector(size, size),
+            color: new Color().rgb(0x956416),
+            depth: 100,
+            rotation_z: Math.random() * 2 * Math.PI,
+
+            target: to_pos,
+            duration: duration,
+            delay: delay
+        });
+
+        var trail = new game.components.TrailRenderer();
+        trail.trailColor.fromColor(p.color);
+        trail.trailColor.a = 0.7;
+        trail.startSize = 6;
+        trail.maxLength = 75;
+        trail.depth = p.depth - 0.1;
+        p.add(trail);
+
+        Actuate.tween(p.size, duration, { x: size * 0.5, y: size * 0.5 }).delay(delay).onComplete(function() {
+            if (p != null && !p.destroyed) p.destroy();
+
+            Luxe.camera.shake(3);
+        });
     }
 
     function create_icon(options :CreateIconOptions) :luxe.Visual {
