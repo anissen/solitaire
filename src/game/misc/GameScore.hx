@@ -37,6 +37,8 @@ class GameScore {
 
         switch (game_mode) {
             case Strive(level) | Tutorial(Strive(level)):
+                Luxe.io.string_save('old_journey_level', '$level');
+
                 var won = (score >= game_mode.get_strive_score());
                 var new_level = (won ? level + 1 : level - 1);
                 if (new_level < 1) new_level = 1;

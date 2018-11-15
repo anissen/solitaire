@@ -5,6 +5,7 @@ import luxe.States.State;
 import luxe.Vector;
 import luxe.Color;
 import luxe.Sprite;
+import luxe.tween.Actuate;
 import game.misc.GameMode.GameMode;
 import core.utils.Analytics;
 
@@ -83,6 +84,8 @@ class JourneyState extends State {
         var max_levels = 30; // 200 points
         var container_height = 0.0;
         var scroll_to = 0.0;
+        var scroll_from_level = Settings.load_int('old_journey_level', 1);
+        var scroll_from = 0.0;
         for (i in 0 ... max_levels) {
             var level = i + 1;
             var level_points = (level < 10) ? level * 10 : 10 * 10 + (level - 10) * 5; // 10 interval to 100, then 5
@@ -100,6 +103,7 @@ class JourneyState extends State {
             icon.pos.y = 100 + level_pos * 125;
             container_height = (icon.pos.y > container_height ? icon.pos.y + 100 : container_height);
             if (level == journey_level) scroll_to = -icon.pos.y + Settings.HEIGHT / 2;
+            if (level == scroll_from_level) scroll_from = -icon.pos.y + Settings.HEIGHT / 2;
             icon.parent = scroll_container;
 
             if (i == max_levels - 1) break; // don't show the last path
@@ -118,8 +122,10 @@ class JourneyState extends State {
         var correct_drag_top = #if web 100 #else 40 #end;
         pan.y_top = Settings.HEIGHT - container_height - correct_drag_top;
         pan.y_bottom = 0;
-        scroll_container.pos.y = scroll_to; //pan.y_top;
+        scroll_container.pos.y = scroll_from;
         scroll_container.add(pan);
+
+        Actuate.tween(scroll_container.pos, 0.5, { y: scroll_to }).ease(luxe.tween.easing.Quad.easeOut);
     }
 
     function create_icon(options :CreateIconOptions) :luxe.Visual {
