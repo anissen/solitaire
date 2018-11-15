@@ -271,12 +271,30 @@ class MenuState extends State {
         // trace('Old total score: $old_total_score, new total score: $total_score');
         
         counting_total_score = old_total_score;
-        var count_down_duration = luxe.utils.Maths.clamp((total_score - old_total_score) / 50, 1.0, 3.0);
+        var count_down_duration = luxe.utils.Maths.clamp((total_score - old_total_score) / 50, 0.5, 2.0);
         if (total_score > old_total_score) {
             if (!timed_button.enabled) timed_button.color_burst(count_down_duration);
             if (!journey_button.enabled) journey_button.color_burst(count_down_duration);
         }
+        var old_total_score_in_thousands = Std.int(old_total_score / 1000);
         Actuate.tween(this, count_down_duration, { counting_total_score: total_score }, true).onUpdate(function () {
+            totalScoreText.text = '${Std.int(counting_total_score)}';
+            
+            var total_score_in_thousands = Std.int(counting_total_score / 1000);
+            if (total_score_in_thousands > old_total_score_in_thousands) {
+                old_total_score_in_thousands = total_score_in_thousands;
+
+                pe_burst.position.x = Settings.WIDTH / 2;
+                pe_burst.position.y = totalScoreText.pos.y;
+
+                pe_burst_color_life_module.initial_color.from_json(new sparkler.data.Color(0.584313, 0.392156, 0.086274));
+                pe_burst_color_life_module.end_color.from_json(new sparkler.data.Color(1, 1, 1, 1));
+
+                pe_burst.duration = 0.5;
+
+                pe_burst.start();
+            }
+            
             // if (counting_total_score - old_total_score % 10 == 0) {
             //     Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('points_big').source);
             // }
@@ -295,7 +313,7 @@ class MenuState extends State {
                 Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('points_devine')).source);
                 Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path('ui_click')).source);
             }
-        }).delay(0.1);
+        }).ease(luxe.tween.easing.Quad.easeOut).delay(0.1);
         
         
 
@@ -426,24 +444,15 @@ class MenuState extends State {
             }
         });
     }
+
     
     function update_global_stats(old_wins :Int, wins :Int, old_rank :Int, rank :Int) {
-        // trace('update_global_stats:: old_wins: $old_wins, wins: $wins, old_rank: $old_rank, rank: $rank');
-        // if (wins != old_wins) {
-        //     trace('wins_changed! old_wins: $old_wins, wins: $wins');
-        // }
-        // if (rank != old_rank) {
-        //     trace('rank_changed! old_rank: $old_rank, rank: $rank');
-        // }
 
-        var max_particles = ((wins - old_wins) <= 10 ? (wins - old_wins) : 10);
 
         for (w in 0 ... max_particles) {
-            create_particle(w * 0.35, w, Math.ceil(old_wins + (w + 1) * (wins - old_wins) / max_particles));
         }
 
         if (rank != old_rank) {
-            var delay = (wins > old_wins ? (max_particles * 0.35 + 0.5) : 0.0);
             Actuate.timer(delay).onComplete(function() {
                 pe_burst.position.x = Settings.WIDTH / 2;
                 pe_burst.position.y = rankText.pos.y;

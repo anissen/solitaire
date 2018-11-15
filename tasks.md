@@ -69,6 +69,13 @@ END BETA FEEDBACK
 * Animate total score on menu screen
 * Snap point icon to right of score?
 * Add stars icons to ranking screen
+* Handle scoring of stars in journey
+* Animate to the current level when entering journey state
+* Animate from the previous level to the current level when winning/losing in journey
+* Make some animation of gaining stars when returning to the level selection screen in journey
+* Fade out the top and bottom in journey
+* Increase the max amount of stars on the menu screen
+* Maybe start the journey at 0 stars and only gain stars at later levels?
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
