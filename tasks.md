@@ -64,6 +64,8 @@ END BETA FEEDBACK
 * Make highlight tweets of
    * Images in tutorial
    * Stars in highscore list?
+   * Journey mode
+* Experiment with using pop-labels on tiles when gaining points
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
