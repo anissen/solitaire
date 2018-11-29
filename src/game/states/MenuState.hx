@@ -464,20 +464,21 @@ class MenuState extends State {
     function update_global_stats(old_wins :Int, wins :Int, old_rank :Int, rank :Int) {
         var total_score = Settings.load_int('total_score', 0);
         var score_stars = Std.int(total_score / 1000);
-        var journey_stars = 0;  // TODO: TEMP!
+        var journey_stars = Settings.get_journey_points_accumulated(Settings.load_int('journey_highest_level_won', 0));
 
         var stars = wins + score_stars + journey_stars;
         var old_stars = old_wins; // TODO: TEMP!
 
 
         var max_particles = ((stars - old_stars) <= 20 ? (stars - old_stars) : 20);
+        var particle_delay = 0.20;
 
         for (w in 0 ... max_particles) {
-            create_particle(w * 0.35, w, Math.ceil(old_stars + (w + 1) * (stars - old_stars) / max_particles));
+            create_particle(w * particle_delay, w, Math.ceil(old_stars + (w + 1) * (stars - old_stars) / max_particles));
         }
 
         if (rank != old_rank) {
-            var delay = (stars > old_stars ? (max_particles * 0.35 + 0.5) : 0.0);
+            var delay = (stars > old_stars ? (max_particles * particle_delay + 0.5) : 0.0);
             Actuate.timer(delay).onComplete(function() {
                 pe_burst.position.x = Settings.WIDTH / 2;
                 pe_burst.position.y = rankText.pos.y;
@@ -568,9 +569,9 @@ class MenuState extends State {
             winsText.text = '$wins';
 
             var sound = switch (particleCount) {
-                case 0 | 1: 'points_small';
-                case 2 | 3: 'points_big';
-                case 4 | 5: 'points_huge';
+                case 0 | 1 | 2 | 3: 'points_small';
+                case 4 | 5 | 6 | 7: 'points_big';
+                case 8 | 9 | 10 | 11: 'points_huge';
                 default: 'points_devine';
             }
             Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path(sound)).source);
@@ -606,7 +607,7 @@ class MenuState extends State {
                 var journey_mode = Strive(journey_level != null ? Std.parseInt(journey_level) : 1);
                 Main.SetState(PlayState.StateId, journey_mode);
             case luxe.Input.Key.key_u: Luxe.io.string_save('total_score', '3000');
-            case luxe.Input.Key.key_t: update_global_stats(5, 8, 7, 6);
+            case luxe.Input.Key.key_t: update_global_stats(5, 11, 7, 6);
             case luxe.Input.Key.key_c: {
                 @SuppressWarning("checkstyle:Trace")
                 trace('debug: clears all saves');

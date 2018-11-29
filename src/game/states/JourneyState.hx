@@ -78,7 +78,6 @@ class JourneyState extends State {
         //     }
         // });
 
-        var points = [0, 1, 1, 1, 1, 5, 2, 2, 2, 2, 10, 5, 5, 5, 5, 20, 10, 10, 10, 10, 40, 20, 20, 20, 20, 50, 40, 40, 40, 40, 100];
         var major  = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0,  1, 0, 0, 0, 0,  1,  0,  0,  0,  0,  1,  0,  0,  0,  0,  1,  0,  0,  0,  0, 2];
 
         var max_levels = 30; // 200 points
@@ -92,7 +91,7 @@ class JourneyState extends State {
             var level_points = (level < 10) ? level * 10 : 10 * 10 + (level - 10) * 5; // 10 interval to 100, then 5
             var icon = create_icon({
                 goal: level_points,
-                stars: points[level],
+                stars: Settings.get_journey_points_for_level(level),
                 active_level: (level == journey_level),
                 level_category: major[level],
                 grayed_out: (level != journey_level && level > journey_highest_level_played),
@@ -126,13 +125,19 @@ class JourneyState extends State {
         scroll_container.pos.y = scroll_from;
         scroll_container.add(pan);
 
-        var particle_delay = 0.5;
-        var particle_duration = 0.5;
-        create_particle(new Vector(Settings.WIDTH - 85, Settings.HEIGHT / 2), back_button.pos, particle_delay, particle_duration);
-        Actuate.tween(scroll_container.pos, 0.5, { y: scroll_to }).ease(luxe.tween.easing.Quad.easeOut).delay(particle_delay + particle_duration);
+        // TODO: Only do this when a level has been won!
+        var scroll_delay = 0.0;
+        if (journey_highest_level_won > Settings.load_int('old_journey_highest_level_won', -1)) {
+            Settings.save_int('old_journey_highest_level_won', journey_highest_level_won);
+            var particle_delay = 0.5;
+            var particle_duration = 0.5;
+            create_particle(new Vector(Settings.WIDTH - 85, Settings.HEIGHT / 2), back_button.pos, particle_delay, particle_duration, Settings.get_journey_points_for_level(journey_highest_level_won));
+            scroll_delay = particle_delay + particle_duration;
+        }
+        Actuate.tween(scroll_container.pos, 0.5, { y: scroll_to }).ease(luxe.tween.easing.Quad.easeOut).delay(scroll_delay);
     }
 
-    function create_particle(from_pos :Vector, to_pos :Vector, delay :Float, duration :Float) {
+    function create_particle(from_pos :Vector, to_pos :Vector, delay :Float, duration :Float, points :Int) {
         // var duration = 0.5;
         // var delay = 0.0;
         var size = 48;
@@ -162,6 +167,14 @@ class JourneyState extends State {
             if (p != null && !p.destroyed) p.destroy();
 
             Luxe.camera.shake(3);
+
+            var sound = switch (points) {
+                case 0 | 1 | 2 | 3: 'points_small';
+                case 4 | 5 | 6 | 7: 'points_big';
+                case 8 | 9 | 10 | 11: 'points_huge';
+                default: 'points_devine';
+            }
+            Luxe.audio.play(Luxe.resources.audio(Settings.get_sound_file_path(sound)).source);
         });
     }
 

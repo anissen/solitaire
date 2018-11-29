@@ -31,6 +31,23 @@ class Settings {
         return value;
     }
 
+    static public function save_int(key :String, value :Int) {
+        Luxe.io.string_save(key, '$value');
+    }
+
+    static public function get_journey_points_for_level(level :Int) :Int {
+        var points = [0, 1, 1, 1, 1, 5, 2, 2, 2, 2, 10, 5, 5, 5, 5, 20, 10, 10, 10, 10, 40, 20, 20, 20, 20, 50, 40, 40, 40, 40, 100];
+        return points[level];
+    }
+
+    static public function get_journey_points_accumulated(level :Int) :Int {
+        var sum = 0;
+        for (l in 0 ... level) {
+            sum += get_journey_points_for_level(l);
+        }
+        return sum;
+    }
+
     // egypt theme:
     // static public var BACKGROUND_COLOR = new Color().rgb(0x914D50);
     // static public var CARD_COLOR = new Color().rgb(0xFFFFFF);

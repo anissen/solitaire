@@ -10,8 +10,7 @@ class GameScore {
         var user_name = Luxe.io.string_load('user_name');
         if (user_name == null || user_name.length == 0) user_name = 'You';
 
-        var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
-        if (total_score == null) total_score = 0;
+        var total_score = Settings.load_int('total_score', 0);
         total_score += score;
         Luxe.io.string_save('total_score', '$total_score');
 
@@ -44,14 +43,11 @@ class GameScore {
                 if (new_level < 1) new_level = 1;
                 Luxe.io.string_save('journey_level', '$new_level');
 
-                var highest_level_played = Std.parseInt(Luxe.io.string_load('journey_highest_level_played'));
-                if (highest_level_played == null) highest_level_played = 0;
+                var highest_level_played = Settings.load_int('journey_highest_level_played', 0);
                 if (level > highest_level_played)  Luxe.io.string_save('journey_highest_level_played', '$level');
 
-                var strive_highscore = Std.parseInt(Luxe.io.string_load('journey_highscore'));
-                if (strive_highscore == null) strive_highscore = 0;
-                var highest_level_won = Std.parseInt(Luxe.io.string_load('journey_highest_level_won'));
-                if (highest_level_won == null) highest_level_won = 0;
+                var strive_highscore = Settings.load_int('journey_highscore', 0);
+                var highest_level_won = Settings.load_int('journey_highest_level_won', 0);
                 if (won) {
                     if (level > highest_level_won) {
                         highest_level_won = level;
