@@ -37,12 +37,13 @@ class Settings {
 
     static public function get_journey_points_for_level(level :Int) :Int {
         var points = [0, 1, 1, 1, 1, 5, 2, 2, 2, 2, 10, 5, 5, 5, 5, 20, 10, 10, 10, 10, 40, 20, 20, 20, 20, 50, 40, 40, 40, 40, 100];
+        if (level > points.length) return 0;
         return points[level];
     }
 
     static public function get_journey_points_accumulated(level :Int) :Int {
         var sum = 0;
-        for (l in 0 ... level) {
+        for (l in 0 ... level + 1) {
             sum += get_journey_points_for_level(l);
         }
         return sum;

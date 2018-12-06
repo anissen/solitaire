@@ -65,6 +65,8 @@ END BETA FEEDBACK
 * Make highlight tweets of
    * Images in tutorial
    * Stars in highscore list?
+
+Journey branch:
 * Show total score on the menu screen and award 1 star for each 1000 points
 * Snap point icon to right of score?
 * Add stars icons to ranking screen
@@ -72,6 +74,9 @@ END BETA FEEDBACK
 * Make some animation of gaining stars when returning to the level selection screen in journey
 * Fade out the top and bottom in journey
 * Increase the max amount of stars on the menu screen
+* Start on the menu screen
+* NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
+* Show unlockable journey stars on button on the menu screen
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
