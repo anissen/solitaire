@@ -62,12 +62,14 @@ END BETA FEEDBACK
 * Make the background take up the entire screen (?)
 * Rename "Normal" mode?
 * Add some tutorial for wins/rank on the menu screen
+* Better menu screen loading indicator
+* NICE: Change menu screen to only make one call to server instead of three
+* Make a simple checksum test on the server to validate the scores, etc.
 * Make highlight tweets of
    * Images in tutorial
    * Stars in highscore list?
 
 Journey branch:
-* Show total score on the menu screen and award 1 star for each 1000 points
 * Snap point icon to right of score?
 * Add stars icons to ranking screen
 * Handle scoring of stars in journey
@@ -77,6 +79,8 @@ Journey branch:
 * Start on the menu screen
 * NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
 * Show unlockable journey stars on button on the menu screen
+* IMPORTANT: Set all players total_stars to their total_wins in the database
+    db.users.find().forEach(function(user) { user.total_stars = user.total_wins; db.users.save(user); })
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
