@@ -71,8 +71,7 @@ END BETA FEEDBACK
 
 Journey branch:
 * Handle global scoring of stars in journey (right now the JourneyState doesn't contact the server -- should be unified between GameOverState and JourneyState)
-* Fade out the top and bottom in journey
-* Start on the menu screen
+* NICE-TO-HAVE: Fade out the top and bottom in journey
 * NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
 * IMPORTANT: Set all players total_stars to their total_wins in the database
     db.users.find().forEach(function(user) { user.total_stars = user.total_wins; db.users.save(user); })
