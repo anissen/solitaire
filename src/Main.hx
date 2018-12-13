@@ -187,7 +187,7 @@ class Main extends luxe.Game {
             if (showTutorial) {
                 SetState(PlayState.StateId, GameMode.Tutorial(GameMode.Normal));
             } else {
-                SetState(JourneyState.StateId);
+                SetState(MenuState.StateId);
             }
         });
     }

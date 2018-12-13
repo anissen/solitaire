@@ -47,7 +47,7 @@ class GameScore {
                 if (level > highest_level_played)  Luxe.io.string_save('journey_highest_level_played', '$level');
 
                 var strive_highscore = Settings.load_int('journey_highscore', 0);
-                var highest_level_won = Settings.load_int('journey_highest_level_won', 0);
+                var highest_level_won = Settings.load_int('journey_highest_level_won', -1);
                 if (won) {
                     if (level > highest_level_won) {
                         highest_level_won = level;

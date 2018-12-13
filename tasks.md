@@ -70,10 +70,8 @@ END BETA FEEDBACK
    * Stars in highscore list?
 
 Journey branch:
-* Handle scoring of stars in journey
-* Make some animation of gaining stars when returning to the level selection screen in journey
+* Handle global scoring of stars in journey (right now the JourneyState doesn't contact the server -- should be unified between GameOverState and JourneyState)
 * Fade out the top and bottom in journey
-* Increase the max amount of stars on the menu screen
 * Start on the menu screen
 * NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
 * Show unlockable journey stars on button on the menu screen

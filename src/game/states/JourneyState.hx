@@ -125,7 +125,7 @@ class JourneyState extends State {
         scroll_container.pos.y = scroll_from;
         scroll_container.add(pan);
 
-        // TODO: Only do this when a level has been won!
+        // TODO: Only do this when a level has been won! [This is handled, I think!]
         var scroll_delay = 0.0;
         if (journey_highest_level_won > Settings.load_int('old_journey_highest_level_won', -1)) {
             Settings.save_int('old_journey_highest_level_won', journey_highest_level_won);

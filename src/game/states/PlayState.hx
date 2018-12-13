@@ -357,7 +357,7 @@ class PlayState extends State {
         });
 
         scoreIcon = new Sprite({
-            pos: get_pos(1.5, -0.68),
+            pos: get_pos(1.75, -0.68),
             texture: Luxe.resources.texture('assets/ui/diamond.png'),
             scale: new Vector(0.06, 0.06),
             color: new Color().rgb(0x956416),
@@ -879,6 +879,11 @@ class PlayState extends State {
             Analytics.event('game', 'over', game_mode.get_game_mode_id());
             Analytics.event('game', 'score', game_mode.get_game_mode_id(), the_score);
 
+            switch (game_mode) { // TODO: Hack! Should be handled in one place for all game modes
+                case Strive(level) | Tutorial(Strive(level)): game.misc.GameScore.update_local_score(game_mode, the_score);
+                default:
+            };
+
             var data = {
                 user_id: Luxe.io.string_load('clientId'),
                 seed: Std.int(Luxe.utils.random.initial),
@@ -887,12 +892,7 @@ class PlayState extends State {
                 next_game_mode: next_game_mode,
                 actions_data: Game.Instance.get_actions_data(),
                 total_score: Settings.load_int('total_score', 0),
-                highest_journey_level_won: Settings.load_int('journey_highest_level_won', -1),
-            };
-
-            switch (game_mode) { // TODO: Hack! Should be handled in one place for all game modes
-                case Strive(level) | Tutorial(Strive(level)): game.misc.GameScore.update_local_score(game_mode, the_score);
-                default:
+                highest_journey_level_won: Settings.load_int('journey_highest_level_won', -1)
             };
 
             var gameOverStateId = switch (game_mode) {
@@ -1059,7 +1059,7 @@ class PlayState extends State {
         ps.update(dt);
         var textScale = scoreText.scale.x; 
         if (textScale > 1) {
-            scoreIcon.pos.x = scoreText.pos.x + scoreText.geom.text_width + 10;
+            scoreIcon.pos.x = scoreText.pos.x + scoreText.geom.text_width + 10 * textScale;
             scoreText.scale.set_xy(textScale - dt, textScale - dt);
             scoreIcon.scale.set_xy((textScale - dt) * 0.06, (textScale - dt) * 0.06);
         }
