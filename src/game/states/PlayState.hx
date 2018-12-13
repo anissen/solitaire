@@ -885,7 +885,9 @@ class PlayState extends State {
                 score: the_score,
                 game_mode: game_mode,
                 next_game_mode: next_game_mode,
-                actions_data: Game.Instance.get_actions_data()
+                actions_data: Game.Instance.get_actions_data(),
+                total_score: Settings.load_int('total_score', 0),
+                highest_journey_level_won: Settings.load_int('journey_highest_level_won', -1),
             };
 
             switch (game_mode) { // TODO: Hack! Should be handled in one place for all game modes

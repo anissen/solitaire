@@ -41,14 +41,6 @@ class Settings {
         return points[level];
     }
 
-    static public function get_journey_points_accumulated(level :Int) :Int {
-        var sum = 0;
-        for (l in 0 ... level + 1) {
-            sum += get_journey_points_for_level(l);
-        }
-        return sum;
-    }
-
     // egypt theme:
     // static public var BACKGROUND_COLOR = new Color().rgb(0x914D50);
     // static public var CARD_COLOR = new Color().rgb(0xFFFFFF);

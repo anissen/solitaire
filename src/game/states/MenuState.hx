@@ -418,26 +418,25 @@ class MenuState extends State {
             return;
         }
 
-        var old_rank_str = Luxe.io.string_load('rank');
-        //var old_wins_str = Luxe.io.string_load('wins');
-
         var url = Settings.SERVER_URL + 'rank/$clientId';
         AsyncHttpUtils.get(url, function(data :HttpCallback) {
             if (Main.GetStateId() != MenuState.StateId) return;
 
             if (data.error == null) {
                 var json = data.json;
-                var rank :Int = json.rank + 1;
-                var wins :Int = json.wins;
+
                 var players :Int = json.players;
 
+                var old_rank = Settings.load_int('rank', players);
+                var old_stars = Settings.load_int('stars', 0);
+
+                var rank :Int = json.rank + 1;
+                var stars :Int = json.total_stars;
+
                 Luxe.io.string_save('rank', '$rank');
-                Luxe.io.string_save('wins', '$wins');
+                Luxe.io.string_save('stars', '$stars');
 
-                var old_rank = (old_rank_str != null ? Std.parseInt(old_rank_str) : players);
-                //var old_wins = (old_wins_str != null ? Std.parseInt(old_wins_str) : 0);
-
-                update_global_stats(wins, old_rank, rank);
+                update_global_stats(old_stars, stars, old_rank, rank);
             } else {
                 rankText.text = 'Rank N/A';
                 winsText.text = 'N/A';
@@ -445,15 +444,7 @@ class MenuState extends State {
         });
     }
     
-    function update_global_stats(wins :Int, old_rank :Int, rank :Int) {
-        var total_score = Settings.load_int('total_score', 0);
-        var score_stars = Std.int(total_score / 1000);
-        var journey_stars = Settings.get_journey_points_accumulated(Settings.load_int('journey_highest_level_won', 0));
-
-        var stars = wins + score_stars + journey_stars;
-        var old_stars = Settings.load_int('stars', 0);
-        Settings.save_int('stars', stars);
-
+    function update_global_stats(old_stars :Int, stars :Int, old_rank :Int, rank :Int) {
         var max_particles = ((stars - old_stars) <= 20 ? (stars - old_stars) : 20);
         var particle_delay = 0.20;
 
@@ -591,7 +582,7 @@ class MenuState extends State {
                 var journey_mode = Strive(journey_level != null ? Std.parseInt(journey_level) : 1);
                 Main.SetState(PlayState.StateId, journey_mode);
             case luxe.Input.Key.key_u: Luxe.io.string_save('total_score', '3000');
-            case luxe.Input.Key.key_t: update_global_stats(5, 7, 4);
+            case luxe.Input.Key.key_t: update_global_stats(5, 15, 7, 4);
             case luxe.Input.Key.key_c: {
                 @SuppressWarning("checkstyle:Trace")
                 trace('debug: clears all saves');

@@ -91,6 +91,8 @@ typedef DataType = {
     game_mode :GameMode,
     next_game_mode :GameMode,
     actions_data :String,
+    total_score :Int,
+    highest_journey_level_won :Int,
     ?highscore_mode :HighscoreMode
 };
 
@@ -326,7 +328,9 @@ class GameOverState extends State {
             'day' => '' + now.getDate(),
             'game_mode' => '' + game_mode.get_non_tutorial_game_mode_index(),
             'game_count' => '' + plays_today,
-            'actions' => '' // + data.actions_data
+            'actions' => '', // + data.actions_data
+            'total_score' => '' + data.total_score,
+            'highest_journey_level_won' => '' + data.highest_journey_level_won
         ];
 
         AsyncHttpUtils.post(url, data_map, function(data :HttpCallback) {
@@ -486,19 +490,20 @@ class GameOverState extends State {
                     show_error();
                 } else {
                     var clientId = Luxe.io.string_load('clientId');
-                    var json :Array<{ user_id :String, user_name :String, total_wins :Int }> = data.json;
+                    var json :Array<{ user_id :String, user_name :String, total_stars :Int, total_wins :Int }> = data.json;
                     var highscore_lines = [];
                     var rank = 0;
-                    var last_wins = -1;
+                    var last_stars = -1;
                     for (rankJson in json) {
-                        if (rankJson.total_wins != last_wins) rank++;
+                        var stars = (rankJson.total_stars != null ? rankJson.total_stars : rankJson.total_wins);
+                        if (rankJson.total_stars != last_stars) rank++;
                         if (rank > 100) break; // only show the first 100 ranked players (+ ties)
 
-                        var highscore_line = new HighscoreLine('$rank.', rankJson.total_wins, rankJson.user_name);
+                        var highscore_line = new HighscoreLine('$rank.', stars, rankJson.user_name);
                         if (rankJson.user_id == clientId) highscore_line.color = new Color(0.75, 0.0, 0.5);
                         highscore_line.color.a = 0;
                         highscore_lines.push(highscore_line);
-                        last_wins = rankJson.total_wins;
+                        last_stars = stars;
                     }
                     show_highscores(highscore_lines);
                 }
