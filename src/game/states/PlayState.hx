@@ -357,7 +357,7 @@ class PlayState extends State {
         });
 
         scoreIcon = new Sprite({
-            pos: get_pos(2, -0.68),
+            pos: get_pos(1.5, -0.68),
             texture: Luxe.resources.texture('assets/ui/diamond.png'),
             scale: new Vector(0.06, 0.06),
             color: new Color().rgb(0x956416),
@@ -1059,6 +1059,7 @@ class PlayState extends State {
         ps.update(dt);
         var textScale = scoreText.scale.x; 
         if (textScale > 1) {
+            scoreIcon.pos.x = scoreText.pos.x + scoreText.geom.text_width + 10;
             scoreText.scale.set_xy(textScale - dt, textScale - dt);
             scoreIcon.scale.set_xy((textScale - dt) * 0.06, (textScale - dt) * 0.06);
         }
