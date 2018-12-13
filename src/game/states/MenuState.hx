@@ -186,7 +186,7 @@ class MenuState extends State {
 
         winsText = new Text({
             pos: new Vector(115, 215),
-            text: Luxe.io.string_load('stars'), // + ' (' + Luxe.io.string_load('wins') + ')',
+            text: Settings.load_string('stars', '0'),
             align: TextAlign.left,
             align_vertical: TextAlign.center,
             color: new Color().rgb(0x956416),

@@ -500,6 +500,13 @@ class GameOverState extends State {
                         if (rank > 100) break; // only show the first 100 ranked players (+ ties)
 
                         var highscore_line = new HighscoreLine('$rank.', stars, rankJson.user_name);
+                        highscore_line.point_icon = new Sprite({
+                            parent: highscore_line,
+                            pos: new Vector(132, -3),
+                            texture: Luxe.resources.texture('assets/ui/round-star.png'),
+                            scale: new Vector(0.037, 0.037),
+                            color: new Color().rgb(0x956416)
+                        });
                         if (rankJson.user_id == clientId) highscore_line.color = new Color(0.75, 0.0, 0.5);
                         highscore_line.color.a = 0;
                         highscore_lines.push(highscore_line);

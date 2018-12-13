@@ -71,7 +71,6 @@ END BETA FEEDBACK
 
 Journey branch:
 * Snap point icon to right of score?
-* Add stars icons to ranking screen
 * Handle scoring of stars in journey
 * Make some animation of gaining stars when returning to the level selection screen in journey
 * Fade out the top and bottom in journey
