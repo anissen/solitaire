@@ -352,6 +352,12 @@ class MenuState extends State {
 
         plays_for_game_mode(Normal, play_button);
         if (tutorial_completed && (total_score >= timed_unlock)) plays_for_game_mode(Timed, timed_button);
+        if (tutorial_completed && (total_score >= journey_unlock)) {
+            var highest_won_level = Settings.load_int('journey_highest_level_won', -1);
+            var next_winnable_level = highest_won_level + 1;
+            var stars = Settings.get_journey_stars_for_level(next_winnable_level);
+            show_stars_on_button(stars, journey_button);
+        }
 
         #if debug
         new Text({
@@ -363,6 +369,35 @@ class MenuState extends State {
         #end
     }
 
+    function show_stars_on_button(stars :Int, button :Button) {
+        if (stars <= 0) return;
+            
+        var starIcon = new Sprite({
+            parent: button,
+            pos: new Vector(176, 22),
+            texture: Luxe.resources.texture('assets/ui/round-star.png'),
+            scale: new Vector(0.06, 0.06),
+            color: new Color().rgb(0xFFFFFF), // .rgb(0x956416)
+            depth: 150
+        });
+
+        var starsText = new Text({
+            parent: button,
+            pos: new Vector(176, 26),
+            text: (stars <= 99 ? '$stars' : '+'),
+            align: TextAlign.center,
+            align_vertical: TextAlign.center,
+            color: new Color().rgb(0x956416),
+            point_size: 18,
+            depth: 151
+        });
+
+        starIcon.scale.set_xy(0.0, 0.0);
+        starsText.scale.set_xy(0.0, 0.0);
+        Actuate.tween(starIcon.scale, 0.3, { x: 0.06, y: 0.06 });
+        Actuate.tween(starsText.scale, 0.3, { x: 1, y: 1 }).delay(0.1);
+    }
+
     function plays_for_game_mode(game_mode :GameMode, button :Button) {
         var url = Settings.SERVER_URL + 'plays/${next_game_seed(game_mode)}';
         AsyncHttpUtils.get(url, function(data :HttpCallback) {
@@ -372,32 +407,7 @@ class MenuState extends State {
 
             var json = data.json;
             var plays :Int = json.plays;
-            if (plays <= 0) return;
-            
-            var starIcon = new Sprite({
-                parent: button,
-                pos: new Vector(176, 22),
-                texture: Luxe.resources.texture('assets/ui/round-star.png'),
-                scale: new Vector(0.06, 0.06),
-                color: new Color().rgb(0xFFFFFF), // .rgb(0x956416)
-                depth: 150
-            });
-
-            var playsText = new Text({
-                parent: button,
-                pos: new Vector(176, 26),
-                text: (plays <= 99 ? '$plays' : '+'),
-                align: TextAlign.center,
-                align_vertical: TextAlign.center,
-                color: new Color().rgb(0x956416),
-                point_size: 18,
-                depth: 151
-            });
-
-            starIcon.scale.set_xy(0.0, 0.0);
-            playsText.scale.set_xy(0.0, 0.0);
-            Actuate.tween(starIcon.scale, 0.3, { x: 0.06, y: 0.06 });
-            Actuate.tween(playsText.scale, 0.3, { x: 1, y: 1 }).delay(0.1);
+            show_stars_on_button(plays, button);
         });
     }
 

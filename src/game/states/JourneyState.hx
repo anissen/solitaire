@@ -91,7 +91,7 @@ class JourneyState extends State {
             var level_points = (level < 10) ? level * 10 : 10 * 10 + (level - 10) * 5; // 10 interval to 100, then 5
             var icon = create_icon({
                 goal: level_points,
-                stars: Settings.get_journey_points_for_level(level),
+                stars: Settings.get_journey_stars_for_level(level),
                 active_level: (level == journey_level),
                 level_category: major[level],
                 grayed_out: (level != journey_level && level > journey_highest_level_played),
@@ -131,7 +131,7 @@ class JourneyState extends State {
             Settings.save_int('old_journey_highest_level_won', journey_highest_level_won);
             var particle_delay = 0.5;
             var particle_duration = 0.5;
-            create_particle(new Vector(Settings.WIDTH - 85, Settings.HEIGHT / 2), back_button.pos, particle_delay, particle_duration, Settings.get_journey_points_for_level(journey_highest_level_won));
+            create_particle(new Vector(Settings.WIDTH - 85, Settings.HEIGHT / 2), back_button.pos, particle_delay, particle_duration, Settings.get_journey_stars_for_level(journey_highest_level_won));
             scroll_delay = particle_delay + particle_duration;
         }
         Actuate.tween(scroll_container.pos, 0.5, { y: scroll_to }).ease(luxe.tween.easing.Quad.easeOut).delay(scroll_delay);

@@ -74,7 +74,6 @@ Journey branch:
 * Fade out the top and bottom in journey
 * Start on the menu screen
 * NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
-* Show unlockable journey stars on button on the menu screen
 * IMPORTANT: Set all players total_stars to their total_wins in the database
     db.users.find().forEach(function(user) { user.total_stars = user.total_wins; db.users.save(user); })
 
