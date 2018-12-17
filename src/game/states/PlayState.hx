@@ -748,6 +748,25 @@ class PlayState extends State {
             p.add(trail);
         }
 
+        if (!is_loading) {
+            new game.entities.PopText({
+                pos: Vector.Add(card_pos, new Vector(-11, 0)),
+                align: center,
+                align_vertical: center,
+                text: '$card_score',
+                letter_spacing: -1.4,
+                sdf: true,
+                shader: Luxe.renderer.shaders.bitmapfont.shader.clone('title-shader'),
+                outline: 0.6,
+                outline_color: new Color().rgb(0xa55004),
+                icon: new Sprite({
+                    texture: Luxe.resources.texture('assets/ui/diamond.png'),
+                    scale: new Vector(0.05, 0.05),
+                    color: new Color().rgb(0x956416)
+                })
+            });
+        }
+
         score += card_score;
         var temp_score = score;
 
@@ -1059,7 +1078,7 @@ class PlayState extends State {
         ps.update(dt);
         var textScale = scoreText.scale.x; 
         if (textScale > 1) {
-            scoreIcon.pos.x = scoreText.pos.x + scoreText.geom.text_width + 10 * textScale;
+            scoreIcon.pos.x = scoreText.pos.x + scoreText.geom.text_width / 2 + 10 + 15 * textScale;
             scoreText.scale.set_xy(textScale - dt, textScale - dt);
             scoreIcon.scale.set_xy((textScale - dt) * 0.06, (textScale - dt) * 0.06);
         }
