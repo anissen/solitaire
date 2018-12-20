@@ -282,8 +282,6 @@ class MenuState extends State {
             
             var total_score_in_thousands = Std.int(counting_total_score / 1000);
             if (total_score_in_thousands > old_total_score_in_thousands) {
-                old_total_score_in_thousands = total_score_in_thousands;
-
                 pe_burst.position.x = Settings.WIDTH / 2;
                 pe_burst.position.y = totalScoreText.pos.y;
 
@@ -293,6 +291,10 @@ class MenuState extends State {
                 pe_burst.duration = 0.5;
 
                 pe_burst.start();
+
+                create_pop_text_star('+${total_score_in_thousands - old_total_score_in_thousands}', Vector.Add(totalScoreIcon.pos, new Vector(-60, 2)));
+
+                old_total_score_in_thousands = total_score_in_thousands;
             }
             
             // if (counting_total_score - old_total_score % 10 == 0) {
@@ -367,6 +369,28 @@ class MenuState extends State {
             color: new Color(0.0, 0.0, 1.0)
         });
         #end
+    }
+
+    function create_pop_text_star(text :String, pos :Vector) {
+        new game.entities.PopText({
+            pos: pos.clone(),
+            align: center,
+            align_vertical: center,
+            text: text,
+            letter_spacing: -1.4,
+            sdf: true,
+            shader: Luxe.renderer.shaders.bitmapfont.shader.clone('title-shader'),
+            color: new Color().rgb(0x956416),
+            point_size: 22,
+            outline: 0.6,
+            outline_color: new Color().rgb(0xa55004),
+            duration: 2.0,
+            icon: new Sprite({
+                texture: Luxe.resources.texture('assets/ui/round-star.png'),
+                scale: new Vector(0.04, 0.04),
+                color: new Color().rgb(0x956416)
+            })
+        });
     }
 
     function show_stars_on_button(stars :Int, button :Button) {
@@ -473,6 +497,8 @@ class MenuState extends State {
                 pe_burst.duration = 0.5;
 
                 pe_burst.start();
+
+                create_pop_text_star('+${stars - old_stars}', Vector.Add(winsIcon.pos, new Vector(-60, 2)));
 
                 if (rank <= 0) { // player has no data yet
                     rankText.text = 'Rank';

@@ -6,6 +6,7 @@ import luxe.tween.Actuate;
 
 typedef PopTextOptions = {
     > luxe.options.TextOptions,
+    ?duration :Float,
     ?icon :Sprite
 }
 
@@ -17,8 +18,10 @@ class PopText extends Text {
     public function new(options :PopTextOptions) {
         super(options);
 
-        this.color.a = 0.8;
         icon = options.icon;
+        if (options.duration != null) fadeDuration = options.duration;
+
+        this.color.a = 0.8;
     }
 
     override public function init() {
@@ -29,7 +32,7 @@ class PopText extends Text {
             icon.pos = this.pos.clone();
             var text_width = this.geom.text_width;
             if (this.text == "1") text_width = text_width / 2;
-            icon.pos.x += text_width / 2 + 13;
+            icon.pos.x += text_width / 2 + icon.size.w / 2 + 12;
             icon.pos.y -= 3;
             Actuate.tween(icon.color, fadeDuration, { a: 0 }).delay(fadeDelay);
         }
