@@ -663,7 +663,7 @@ class PlayState extends State {
             card.add(new DragOver(tile_dragover));
         });
 
-        Analytics.event('game', 'place', '$x,$y');
+        // Analytics.event('game', 'place', '$x,$y'); // disabled to prevent sending many messages
 
         Luxe.camera.shake(0.5);
 

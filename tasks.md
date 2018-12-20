@@ -67,6 +67,7 @@ END BETA FEEDBACK
 * Make a simple checksum test on the server to validate the scores, etc.
 * Make highlight tweets of
    * Images in tutorial
+   * Pop text in play mode
    * Stars in highscore list?
 
 Journey branch:
