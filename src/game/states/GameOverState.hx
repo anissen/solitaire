@@ -127,7 +127,6 @@ class GameOverState extends State {
     var score_container :luxe.Visual;
     var play_button :game.ui.Button;
     // var retry_button :game.ui.Button;
-    var error_text :String;
     var loading_icon :Sprite;
     var loading_global_data :Bool;
 
@@ -144,7 +143,6 @@ class GameOverState extends State {
         global_highscores = null;
         highscore_lines_scene = new Scene();
         score_container = null;
-        error_text = '';
         loading_global_data = false;
 
         var data :DataType = cast d;
@@ -160,18 +158,14 @@ class GameOverState extends State {
         back_button.scale.set_xy(1/4, 1/4);
         back_button.depth = 100;
 
-        var is_strive_mode = switch (game_mode) {
-            case Strive(_): true;
-            default: false;
-        };
-        highscore_mode = (is_strive_mode ? Local : Global);
+        highscore_mode = Global;
         if (data.highscore_mode == Rank) highscore_mode = Rank;
         var is_rank_mode = switch (highscore_mode) {
             case Rank: true;
             default: false;
         };
 
-        if (!is_strive_mode && !is_rank_mode) { // TODO: Handle Strive global highscore mode
+        if (!is_rank_mode) {
             var highscores_button = new game.ui.Icon({
                 pos: new Vector(Settings.WIDTH - 35, 35),
                 texture_path: 'assets/ui/circular.png',
@@ -207,7 +201,7 @@ class GameOverState extends State {
         */
 
         title = new Text({
-            text: (is_strive_mode ? 'Local Highscores' : 'Global Highscores'),
+            text: 'Global Highscores',
             pos: new Vector(Settings.WIDTH / 2, 70),
             point_size: 26,
             align: luxe.Text.TextAlign.center,
@@ -259,108 +253,29 @@ class GameOverState extends State {
             // });
             // retry_button.visible = false;
 
-            /*
-            var user_name = Luxe.io.string_load('user_name');
-            if (user_name == null || user_name.length == 0) user_name = 'You';
+            loading_global_data = true;
+            loading_icon.visible = true;
+            Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
 
-            var total_score = Std.parseInt(Luxe.io.string_load('total_score'));
-            if (total_score == null) total_score = 0;
-            total_score += score;
-            Luxe.io.string_save('total_score', '$total_score');
-
-            var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
-            var local_scores = [];
-            if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
-
-            local_highscores = [ for (s in local_scores) { score: s, name: user_name, current: false } ];
-            local_highscores.push({ score: score, name: user_name, current: true });
-
-            local_scores.push(score); // code is HERE to prevent duplicate own scores
-
-            var now = Date.now();
-            var date_string = '' + now.getDate() + now.getMonth() + now.getFullYear();
-            if (Luxe.io.string_load(game_mode.get_non_tutorial_game_mode_id() + '_play_date') == date_string) { // only update plays today if it is still "today"
-                // Update the plays today value
-                var plays_today = Luxe.io.string_load(game_mode.get_non_tutorial_game_mode_id() + '_plays_today');
-                if (plays_today == null) plays_today = '0';
-                var number_of_plays_today = Std.parseInt(plays_today) + 1;
-                Luxe.io.string_save(game_mode.get_non_tutorial_game_mode_id() + '_plays_today', '$number_of_plays_today');
-            }
-            Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
-            */
-            local_highscores = GameScore.update_local_score(game_mode, score);
-
-            if (is_strive_mode) {
-                show_local_highscores();
-                update_global_highscores(data); // just update, don't show the global scores yet
-            } else {
-                update_global_highscores(data);
-            }
+            local_highscores = GameScore.add_highscore({
+                score: score,
+                seed: data.seed,
+                game_mode: game_mode,
+                global_highscores_callback: function(highscores :Array<GlobalHighscore>) {
+                    loading_global_data = false;
+                    global_highscores = highscores;
+                    show_global_highscores();
+                },
+                global_highscores_error_callback: show_error
+            });
         }
     }
 
-    function update_global_highscores(data :DataType) {
-        switch (highscore_mode) {
-            case Local: // don't show loading icon in local mode
-            case Global | Rank: {
-                loading_icon.visible = true;
-                Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
-            }
-        }
-        loading_global_data = true;
-        // retry_button.visible = false;
-
-        var plays_today = Std.parseInt(Luxe.io.string_load(game_mode.get_non_tutorial_game_mode_id() + '_plays_today'));
-        var now = Date.now();
-        var user_name = Luxe.io.string_load('user_name');
-        var strive_goal = data.game_mode.get_strive_score();
-
-        var url = Settings.SERVER_URL + 'scores/';
-
-        var data_map = [
-            'user_id' => '' + data.user_id,
-            'user_name' => user_name,
-            'score' => '' + data.score,
-            'strive_goal' => '' + strive_goal,
-            'seed' => '' + data.seed,
-            'year' => '' + now.getFullYear(),
-            'month' => '' + now.getMonth(),
-            'day' => '' + now.getDate(),
-            'game_mode' => '' + game_mode.get_non_tutorial_game_mode_index(),
-            'game_count' => '' + plays_today,
-            'actions' => '', // + data.actions_data
-            'total_score' => '' + data.total_score,
-            'highest_journey_level_won' => '' + data.highest_journey_level_won
-        ];
-
-        AsyncHttpUtils.post(url, data_map, function(data :HttpCallback) {
-            if (Main.GetStateId() != GameOverState.StateId) return;
-
-            loading_global_data = false;
-            if (data.error == null) {
-                global_highscores = data.json;
-                if (global_highscores == null) {
-                    error_text = 'Error';
-                    show_error();
-                } else {
-                    switch (highscore_mode) {
-                        case Local | Rank: // don't do anything
-                        case Global: show_global_highscores();
-                    }
-                }
-            } else {
-                error_text = data.error;
-                // retry_button.visible = true;
-                show_error();
-            }
-        });
-    }
-
-    function show_error() {
+    function show_error(text :String) {
         loading_icon.visible = false;
         new luxe.Text({
             pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2),
-            text: error_text,
+            text: text,
             point_size: 22,
             align: center,
             align_vertical: center,
@@ -373,6 +288,8 @@ class GameOverState extends State {
     }
     
     function show_global_highscores() {
+        if (Main.GetStateId() != GameOverState.StateId) return;
+
         if (score_container != null && !score_container.destroyed) {
             for (child in score_container.children) {
                 Actuate.stop(child);
@@ -389,11 +306,6 @@ class GameOverState extends State {
         if (loading_global_data) {
             loading_icon.visible = true;
             Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
-            return;
-        }
-
-        if (global_highscores == null) {
-            show_error();
             return;
         }
 
@@ -486,8 +398,7 @@ class GameOverState extends State {
             loading_icon.visible = false;
             if (data.error == null) {
                 if (data.json == null) {
-                    error_text = 'Error';
-                    show_error();
+                    show_error('Error');
                 } else {
                     var clientId = Luxe.io.string_load('clientId');
                     var json :Array<{ user_id :String, user_name :String, total_stars :Int, total_wins :Int }> = data.json;
@@ -515,8 +426,7 @@ class GameOverState extends State {
                     show_highscores(highscore_lines);
                 }
             } else {
-                error_text = data.error;
-                show_error();
+                show_error(data.error);
             }
         });
     }

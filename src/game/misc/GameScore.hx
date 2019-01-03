@@ -1,27 +1,50 @@
 package game.misc;
 
+import core.utils.AsyncHttpUtils;
 import game.misc.GameMode.GameMode;
 
 using game.misc.GameMode.GameModeTools;
 
+typedef HighscoreOptions = {
+    // user_id :Int,
+    // user_name :String,
+    score :Int,
+    // strive_goal :Int,
+    seed :Int,
+    // year :Int,
+    // month :Int,
+    // day :Int,
+    game_mode :GameMode.GameMode,
+    // game_count :Int,
+    // actions :Int,
+    // total_score :Int,
+    // highest_journey_level_won :Int,
+    global_highscores_callback :Dynamic -> Void,
+    global_highscores_error_callback :String -> Void
+}
+
+typedef LocalHighscores = Array<{ 
+    score :Int,
+    name :String,
+    current :Bool
+}>;
+
 class GameScore {
 
-    static public function update_local_score(game_mode :GameMode, score :Int) :Array<{ score :Int, name :String, current :Bool }> {
-        var user_name = Luxe.io.string_load('user_name');
-        if (user_name == null || user_name.length == 0) user_name = 'You';
+    // TODO: Make an update function that updates local AND global scores and call it from both GameOverState and Journey
 
+    static public function add_highscore(options :HighscoreOptions) :LocalHighscores {
+        update_settings(options);
+        add_global_highscore(options);
+        return add_local_highscore(options);
+    }
+
+    static function update_settings(options :HighscoreOptions) {
+        var game_mode = options.game_mode;
+        var score = options.score;
         var total_score = Settings.load_int('total_score', 0);
-        total_score += score;
+        total_score += options.score;
         Luxe.io.string_save('total_score', '$total_score');
-
-        var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
-        var local_scores = [];
-        if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
-
-        var local_highscores = [ for (s in local_scores) { score: s, name: user_name, current: false } ];
-        local_highscores.push({ score: score, name: user_name, current: true });
-
-        local_scores.push(score); // code is HERE to prevent duplicate own scores
 
         var now = Date.now();
         var date_string = '' + now.getDate() + now.getMonth() + now.getFullYear();
@@ -32,7 +55,6 @@ class GameScore {
             var number_of_plays_today = Std.parseInt(plays_today) + 1;
             Luxe.io.string_save(game_mode.get_non_tutorial_game_mode_id() + '_plays_today', '$number_of_plays_today');
         }
-        Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
 
         switch (game_mode) {
             case Strive(level) | Tutorial(Strive(level)):
@@ -60,8 +82,76 @@ class GameScore {
                 }
             default:
         }
+    }
+
+    static function add_global_highscore(options :HighscoreOptions) {
+        var game_mode = options.game_mode;
+        var plays_today = Settings.load_int(game_mode.get_non_tutorial_game_mode_id() + '_plays_today', 0);
+        var now = Date.now(); // TODO: Should be the date the the game is *STARTED*!
+        var url = Settings.SERVER_URL + 'scores/';
+
+        var data_map = [
+            'user_id' => '' + Luxe.io.string_load('clientId'),
+            'user_name' => Luxe.io.string_load('user_name'),
+            'score' => '' + options.score,
+            'strive_goal' => '' + game_mode.get_strive_score(),
+            'seed' => '' + options.seed,
+            'year' => '' + now.getFullYear(),
+            'month' => '' + now.getMonth(),
+            'day' => '' + now.getDate(),
+            'game_mode' => '' + game_mode.get_non_tutorial_game_mode_index(),
+            'game_count' => '' + plays_today,
+            'actions' => '', // + options.actions_data
+            'total_score' => '' + Settings.load_int('total_score', 0),
+            'highest_journey_level_won' => '' + Settings.load_int('journey_highest_level_won', -1)
+        ];
+
+        AsyncHttpUtils.post(url, data_map, function(data :HttpCallback) {
+            if (data.error == null) {
+                if (data.json == null) {
+                    trace('global_highscores_error_callback');
+                    options.global_highscores_error_callback('Error');
+                } else {
+                    trace('global_highscores_callback');
+                    trace(data.json);
+                    options.global_highscores_callback(data.json);
+                }
+            } else {
+                trace('global_highscores_error_callback');
+                trace(data.error);
+                options.global_highscores_error_callback(data.error);
+            }
+        }); 
+    }
+
+    static function add_local_highscore(options :HighscoreOptions) :LocalHighscores {
+        var game_mode = options.game_mode;
+        var score = options.score;
+        var user_name = Settings.load_string('user_name', 'You');
+
+        var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
+        var local_scores = [];
+        if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
+
+        var local_highscores = [ for (s in local_scores) { score: s, name: user_name, current: false } ];
+        local_highscores.push({ score: score, name: user_name, current: true });
+
+        local_scores.push(score); // code is HERE to prevent duplicate own scores
+        Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
 
         return local_highscores;
     }
     
+    // static function get_local_highscore(game_mode :GameMode) :Array<{ score :Int, name :String, current :Bool }> {
+    //     var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
+    //     var local_scores = [];
+    //     if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
+
+    //     var user_name = Settings.load_string('user_name', 'You');
+    //     return [ for (s in local_scores) { 
+    //         score: s,
+    //         name: user_name,
+    //         current: false
+    //     } ];
+    // }
 }

@@ -1,6 +1,7 @@
 
 package game.states;
 
+import game.misc.GameScore;
 import core.models.Deck.InfiniteDeck;
 import luxe.States.State;
 import luxe.Vector;
@@ -899,7 +900,14 @@ class PlayState extends State {
             Analytics.event('game', 'score', game_mode.get_game_mode_id(), the_score);
 
             switch (game_mode) { // TODO: Hack! Should be handled in one place for all game modes
-                case Strive(level) | Tutorial(Strive(level)): game.misc.GameScore.update_local_score(game_mode, the_score);
+                case Strive(level) | Tutorial(Strive(level)):
+                    GameScore.add_highscore({
+                        score: the_score,
+                        seed: Std.int(Luxe.utils.random.initial),
+                        game_mode: game_mode,
+                        global_highscores_callback: function(highscores) {},
+                        global_highscores_error_callback: function(error) {}
+                    });
                 default:
             };
 
