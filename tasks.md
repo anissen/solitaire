@@ -22,10 +22,8 @@ Tasks:
 
 BETA FEEDBACK
 Doom:
-[ ] Game mode unlock: Jeg troede at man skulle have det i ét spil
 [ ] Disable Settings and Abort state while main menu tutorial is active
 [ ] Strive regler ikke helt forstået (Sean)
-[ ] Audio var disabled men blev pludseligt enabled (Sean) [FIXED?]
 
 GOLD Niels & Daniel:
 [ ] Vis back button efter Strive tutorial (glæder måske også for Survival?)
@@ -88,7 +86,6 @@ Bugs:
 * [FIXED?] Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
 * Sometimes when going into Strive mode it only shows a blank screen and have to kill & reload the game (reported by Caribou)
 * Possible bug: Resetting tutorial would cause a player to get multiple scores on that game seed
-* [FIXED?] Disabled audio is re-enabled when app is resumed (Sean, Kim, Anne)
 * Crash when having poor/unstable internet connectivity
 * Clicking the About button while the tutorial is *active* causes a crash (reported by Christoffer)
 * Scores ending in '1' are slightly offset to the left
@@ -107,32 +104,6 @@ Nice:
 * Move external libs into the repository (e.g. as git submodules)
 * Add scoring information to home screen (or e.g. sub-screens)
 * Make the wins icon to a button that shows the changes since last time (#wins, #loses, MAYBE who you won over/lost to)
-* Make Strive into a "Journey" mode with a (linear) map
-    10 points   =>  1  star
-    20 points   =>  1  star
-    30 points   =>  1  star
-    40 points   =>  1  star
-    50 points   =>  5  star
-    60 points   =>  2  star
-    70 points   =>  2  star
-    80 points   =>  2  star
-    90 points   =>  2  star
-    100 points  =>  10 star
-    105 points  =>  5  star
-    110 points  =>  5  star
-    115 points  =>  5  star
-    120 points  =>  5  star
-    125 points  =>  20 star
-    130 points  =>  10 star
-    135 points  =>  10 star
-    140 points  =>  10 star
-    145 points  =>  10 star
-    150 points  =>  40 star
-    155 points  =>  20 star
-    160 points  =>  20 star
-    165 points  =>  20 star
-    170 points  =>  20 star
-    175 points  =>  50 star
 * Gem colors
     * blue: sapphire
     * green: emerald
