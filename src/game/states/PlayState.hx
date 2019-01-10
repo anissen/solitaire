@@ -1,6 +1,7 @@
 
 package game.states;
 
+import game.entities.PopText;
 import game.misc.GameScore;
 import core.models.Deck.InfiniteDeck;
 import luxe.States.State;
@@ -750,8 +751,9 @@ class PlayState extends State {
         }
 
         if (!is_loading) {
-            new game.entities.PopText({
+            new PopText({
                 pos: Vector.Add(card_pos, new Vector(-11, 0)),
+                fadeDelay: 0.75,
                 align: center,
                 align_vertical: center,
                 text: '$card_score',

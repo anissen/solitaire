@@ -1,5 +1,6 @@
 package game.states;
 
+import game.entities.PopText;
 import luxe.Text;
 import luxe.States.State;
 import luxe.Sprite;
@@ -372,7 +373,7 @@ class MenuState extends State {
     }
 
     function create_pop_text_star(text :String, pos :Vector) {
-        new game.entities.PopText({
+        new PopText({
             pos: pos.clone(),
             align: center,
             align_vertical: center,
@@ -384,7 +385,7 @@ class MenuState extends State {
             point_size: 22,
             outline: 0.6,
             outline_color: new Color().rgb(0xa55004),
-            duration: 2.0,
+            fadeDuration: 2.0,
             icon: new Sprite({
                 texture: Luxe.resources.texture('assets/ui/round-star.png'),
                 scale: new Vector(0.04, 0.04),
