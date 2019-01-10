@@ -330,7 +330,7 @@ class GameOverState extends State {
                     pos: new Vector(23, -4),
                     texture: Luxe.resources.texture('assets/ui/round-star.png'),
                     scale: new Vector(0.045, 0.045),
-                    color: new Color().rgb(0x956416),
+                    color: new Color().rgb(0x8C7D56),
                     depth: 5
                 });
                 luxe.tween.Actuate
@@ -416,7 +416,7 @@ class GameOverState extends State {
                             pos: new Vector(132, -3),
                             texture: Luxe.resources.texture('assets/ui/round-star.png'),
                             scale: new Vector(0.037, 0.037),
-                            color: new Color().rgb(0x956416)
+                            color: new Color().rgb(0x8C7D56)
                         });
                         if (rankJson.user_id == clientId) highscore_line.color = new Color(0.75, 0.0, 0.5);
                         highscore_line.color.a = 0;

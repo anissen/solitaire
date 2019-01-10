@@ -401,14 +401,14 @@ class MenuState extends State {
             parent: button,
             pos: new Vector(176, 22),
             texture: Luxe.resources.texture('assets/ui/round-star.png'),
-            scale: new Vector(0.06, 0.06),
+            scale: new Vector(0.07, 0.07),
             color: new Color().rgb(0xFFFFFF), // .rgb(0x956416)
             depth: 150
         });
 
         var starsText = new Text({
             parent: button,
-            pos: new Vector(176, 26),
+            pos: new Vector(175, 26),
             text: (stars <= 99 ? '$stars' : '+'),
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -419,8 +419,8 @@ class MenuState extends State {
 
         starIcon.scale.set_xy(0.0, 0.0);
         starsText.scale.set_xy(0.0, 0.0);
-        Actuate.tween(starIcon.scale, 0.3, { x: 0.06, y: 0.06 });
-        Actuate.tween(starsText.scale, 0.3, { x: 1, y: 1 }).delay(0.1);
+        Actuate.tween(starIcon.scale, 1.5, { x: 0.07, y: 0.07 }).ease(luxe.tween.easing.Elastic.easeOut);
+        Actuate.tween(starsText.scale, 1.5, { x: 1, y: 1 }).delay(0.1).ease(luxe.tween.easing.Elastic.easeOut);
     }
 
     function plays_for_game_mode(game_mode :GameMode, button :Button) {
