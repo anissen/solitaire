@@ -480,11 +480,16 @@ class MenuState extends State {
     }
     
     function update_global_stats(old_stars :Int, stars :Int, old_rank :Int, rank :Int) {
-        var max_particles = ((stars - old_stars) <= 20 ? (stars - old_stars) : 20);
+        var stars_diff = (stars - old_stars);
+        var max_particles = (stars_diff <= 20 ? stars_diff : 20);
         var particle_delay = 0.20;
 
         for (w in 0 ... max_particles) {
-            create_particle(w * particle_delay, w, Math.ceil(old_stars + (w + 1) * (stars - old_stars) / max_particles));
+            create_particle(w * particle_delay, w, Math.ceil(old_stars + (w + 1) * stars_diff / max_particles));
+        }
+
+        if (stars > old_stars) {
+            create_pop_text_star('+$stars_diff', Vector.Add(winsIcon.pos, new Vector(-60, 2)));
         }
 
         if (rank != old_rank) {
@@ -498,8 +503,6 @@ class MenuState extends State {
                 pe_burst.duration = 0.5;
 
                 pe_burst.start();
-
-                create_pop_text_star('+${stars - old_stars}', Vector.Add(winsIcon.pos, new Vector(-60, 2)));
 
                 if (rank <= 0) { // player has no data yet
                     rankText.text = 'Rank';

@@ -401,13 +401,13 @@ class GameOverState extends State {
                     show_error('Error');
                 } else {
                     var clientId = Luxe.io.string_load('clientId');
-                    var json :Array<{ user_id :String, user_name :String, total_stars :Int, total_wins :Int }> = data.json;
+                    var json :Array<{ user_id :String, user_name :String, total_stars :Null<Int>, total_wins :Int }> = data.json;
                     var highscore_lines = [];
                     var rank = 0;
                     var last_stars = -1;
                     for (rankJson in json) {
                         var stars = (rankJson.total_stars != null ? rankJson.total_stars : rankJson.total_wins);
-                        if (rankJson.total_stars != last_stars) rank++;
+                        if (stars != last_stars) rank++;
                         if (rank > 100) break; // only show the first 100 ranked players (+ ties)
 
                         var highscore_line = new HighscoreLine('$rank.', stars, rankJson.user_name);
