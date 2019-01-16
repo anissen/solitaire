@@ -67,6 +67,8 @@ END BETA FEEDBACK
    * Images in tutorial
    * Pop text in play mode
    * Stars in highscore list?
+   * Journey mode
+* Experiment with using pop-labels on tiles when gaining points
 
 Journey branch:
 * Handle global scoring of stars in journey (right now the JourneyState doesn't contact the server -- should be unified between GameOverState and JourneyState)
