@@ -115,7 +115,7 @@ class JourneyState extends State {
                 scale: new Vector((Std.random(2) < 1 ? 0.3 : -0.3), (Std.random(2) < 1 ? 0.3 : -0.3)),
                 color: new Color().rgb(0x956416)
             });
-            if (level >= journey_level) path.color.a = 0.25;
+            if (level >= journey_level) path.color.a = 0.20;
         }
 
         var pan = new game.components.DragPan({ name: 'DragPan' });
@@ -273,7 +273,7 @@ class JourneyState extends State {
         if (options.stars_taken) {
             // starsText.color = new Color().rgb(0x956416);
             starsText.color = color.clone();
-            starsText.color.a = 0.25;
+            starsText.color.a = 0.20;
         }
 
         var starIcon = new Sprite({
@@ -287,7 +287,7 @@ class JourneyState extends State {
         if (options.stars_taken) {
             // starIcon.color = new Color().rgb(0x956416);
             starIcon.color = color.clone();
-            starIcon.color.a = 0.25;
+            starIcon.color.a = 0.20;
         }
         if (!options.stars_taken) {
             luxe.tween.Actuate
