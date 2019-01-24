@@ -22,6 +22,10 @@ class CreditsState extends State {
     }
 
     override function onenter(data :Dynamic) {
+
+        var donationsEnabled = #if (!android && !ios) false #else true #end ;
+        var y_offset = (donationsEnabled ? 50 : 0);
+
         title = new Text({
             text: 'About',
             pos: new Vector(Settings.WIDTH / 2, 50),
@@ -49,7 +53,7 @@ class CreditsState extends State {
 
         var madeby = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 120),
+            pos: new Vector(Settings.WIDTH / 2, y_offset + 120),
             text: 'Made by',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -58,7 +62,7 @@ class CreditsState extends State {
         });
         var name = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 150),
+            pos: new Vector(Settings.WIDTH / 2, y_offset + 150),
             text: 'Anders Nissen',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -83,7 +87,7 @@ class CreditsState extends State {
 
         var link = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 180),
+            pos: new Vector(Settings.WIDTH / 2, y_offset + 180),
             text: 'andersnissen.com',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -101,7 +105,7 @@ class CreditsState extends State {
 
         var icons_by = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 245),
+            pos: new Vector(Settings.WIDTH / 2, y_offset + 245),
             text: 'Icons by',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
@@ -110,7 +114,7 @@ class CreditsState extends State {
         });
         var icons_link = new Text({
             //pos: new Vector(90, 190),
-            pos: new Vector(Settings.WIDTH / 2, 275),
+            pos: new Vector(Settings.WIDTH / 2, y_offset + 275),
             text: 'game-icons.net',
             align: TextAlign.center,
             align_vertical: TextAlign.center,
