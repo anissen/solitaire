@@ -138,6 +138,7 @@ class CreditsState extends State {
         //     url_open_func('https://anissen.itch.io/stoneset/donate');
         // }));
 
+        #if (!android && !ios)
         var donation_button = new game.ui.Button({
             pos: new Vector(Settings.WIDTH / 2, 350),
             width: 230,
@@ -160,6 +161,7 @@ class CreditsState extends State {
             color: new Color().rgb(0x956416),
             point_size: 14
         });
+        #end
     }
 
     override function onkeyup(event :luxe.Input.KeyEvent) {

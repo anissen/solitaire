@@ -1,0 +1,9 @@
+Big update!
+∙ Journey mode replaces Strive mode
+∙ Stars can now be earned by
+    ∙ Winning games over other players
+    ∙ Completing levels in Journey mode
+    ∙ Gaining points (1 star per 1000 points)
+∙ Indication of points gained
+∙ Removed donation button to comply with Google Play policies
+∙ Many minor changes and improvement

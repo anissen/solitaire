@@ -2,6 +2,13 @@ package core.utils;
 
 import core.utils.AsyncHttpUtils;
 
+#if android
+@:build(snow.api.JNI.declare('com.anissen.stoneset.AppActivity'))
+class AppActivity {
+    public static function analytics(category :String, action :String, label :String, value :Int) :Void;
+}
+#end
+
 class Analytics { 
     public static var tracking_id :String;
     public static var client_id :String;
@@ -11,10 +18,14 @@ class Analytics {
         var maybe_label = (label != null ? '&el=$label' : '');
         var maybe_value = (value != null ? '&ev=$value' : '');
         analytics_request('t=event&ec=$category&ea=$action$maybe_label$maybe_value');
+
+        #if android
+            AppActivity.analytics(category, action, (label != null ? label : ''), (value != null ? value : -1));
+        #end
     }
 
     public static function screen(screen :String) {
-        var version = '0.20.0';
+        var version = '0.21.0';
         analytics_request('t=screenview&an=Stoneset&av=$version&aid=com.anissen.stoneset&aiid=com.android.vending&cd=$screen');
     }
 

@@ -350,7 +350,12 @@ class MenuState extends State {
             // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #1.'], pos_y: journey_button.get_top_pos().y - 85, points: [journey_button.get_top_pos()] }))
             // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #2.', 'Earn points to unlock.'], pos_y: timed_button.get_top_pos().y - 85, points: [timed_button.get_top_pos()] }))
             .then(tutorial_box.tutorial({ texts: ['Settings menu is here.'], pos_y: config_button.pos.y + 85 + 15, points: [Vector.Add(config_button.pos, new Vector(0, 15))] }))
-            .then(tutorial_box.tutorial({ texts: ['About {brown}Stoneset{default}.', 'Go here to {brown}donate{default}\ntowards the game.'], pos_y: about_button.pos.y + 85 + 15, points: [Vector.Add(about_button.pos, new Vector(0, 15))], do_func: complete_tutorial }));
+            .then(tutorial_box.tutorial({ texts: [
+                'About {brown}Stoneset{default}.',
+            #if (!android && !ios)
+                'Go here to {brown}donate{default}\ntowards the game.'
+            #end
+            ], pos_y: about_button.pos.y + 85 + 15, points: [Vector.Add(about_button.pos, new Vector(0, 15))], do_func: complete_tutorial }));
         }
 
         plays_for_game_mode(Normal, play_button);
