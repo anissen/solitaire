@@ -126,7 +126,7 @@ class JourneyState extends State {
         scroll_container.add(pan);
 
         // TODO: Only do this when a level has been won! [This is handled, I think!]
-        var scroll_delay = 0.0;
+        var scroll_delay = 0.3;
         if (journey_highest_level_won > Settings.load_int('old_journey_highest_level_won', -1)) {
             Settings.save_int('old_journey_highest_level_won', journey_highest_level_won);
             var particle_delay = 0.5;
@@ -134,7 +134,7 @@ class JourneyState extends State {
             create_particle(new Vector(Settings.WIDTH - 85, Settings.HEIGHT / 2), back_button.pos, particle_delay, particle_duration, Settings.get_journey_stars_for_level(journey_highest_level_won));
             scroll_delay = particle_delay + particle_duration;
         }
-        Actuate.tween(scroll_container.pos, 0.5, { y: scroll_to }).ease(luxe.tween.easing.Quad.easeOut).delay(scroll_delay);
+        Actuate.tween(scroll_container.pos, 0.6, { y: scroll_to }).ease(luxe.tween.easing.Quad.easeOut).delay(scroll_delay);
     }
 
     function create_particle(from_pos :Vector, to_pos :Vector, delay :Float, duration :Float, points :Int) {
