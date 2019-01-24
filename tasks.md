@@ -48,7 +48,6 @@ END BETA FEEDBACK
     [ ] Handle Strive global highscore mode
     [ ] LATER: View all high scores
 * Being able to view highscore list without having to finish a game
-* [No default font]
 * Clean up bundled resources
 * "Invalid sound" should play when making a valid but non-matching selecting
 * Music:
@@ -57,23 +56,19 @@ END BETA FEEDBACK
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
-* Make the background take up the entire screen (?)
-* Rename "Normal" mode?
+* Make the background take up the entire screen
 * Add some tutorial for wins/rank on the menu screen
 * Better menu screen loading indicator
-* NICE: Change menu screen to only make one call to server instead of three
 * Make a simple checksum test on the server to validate the scores, etc.
+* Diamond symbol should always be to the right of score text (a problem in Timed, especially)
+* NICE-TO-HAVE: Change menu screen to only make one call to server instead of three
+* NICE-TO-HAVE: Fade out the top and bottom in journey
+* NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
 * Make highlight tweets of
    * Images in tutorial
    * Pop text in play mode
    * Stars in highscore list?
    * Journey mode
-
-Journey branch:
-* NICE-TO-HAVE: Fade out the top and bottom in journey
-* NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
-* IMPORTANT: Set all players total_stars to their total_wins in the database
-    db.users.find().forEach(function(user) { user.total_stars = user.total_wins; db.users.save(user); })
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
@@ -90,7 +85,6 @@ Bugs:
 * Clicking the About button while the tutorial is *active* causes a crash (reported by Christoffer)
 * Scores ending in '1' are slightly offset to the left
 * "Secret unlockable game modes" tutorial on menu screen has one arrow displaced
-* IMPORTANT: Users are not created on the server!
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:
@@ -98,20 +92,6 @@ iOS specific:
 * iOS launch icon
 * If sound is disabled, and the app is resumed, the sound (not music) is re-enabled. 
 * Links do not work on iOS and macOS
-* Donations must (probably) be removed
-    * Donation link
-    * Donation tutorial text
 
 Nice:
 * Move external libs into the repository (e.g. as git submodules)
-* Add scoring information to home screen (or e.g. sub-screens)
-* Make the wins icon to a button that shows the changes since last time (#wins, #loses, MAYBE who you won over/lost to)
-* Gem colors
-    * blue: sapphire
-    * green: emerald
-    * red: ruby
-    * yellow: topaz
-    * orange: sunstone
-* Achievements? { Intent: Gotta catch'em all }
-* Share score via twitter
-* Share picture of completion (see https://developer.android.com/training/sharing/send.html, https://github.com/Shin-NiL/Godot-Share/blob/master/share/android/GodotShare.java)
