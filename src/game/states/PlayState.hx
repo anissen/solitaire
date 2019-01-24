@@ -1084,14 +1084,14 @@ class PlayState extends State {
     }
 
     override function update(dt :Float) {
-        if (game_over) return;
         ps.update(dt);
         var textScale = scoreText.scale.x; 
         if (textScale > 1) {
-            scoreIcon.pos.x = scoreText.pos.x + scoreText.geom.text_width / 2 + 10 + 15 * textScale;
             scoreText.scale.set_xy(textScale - dt, textScale - dt);
             scoreIcon.scale.set_xy((textScale - dt) * 0.06, (textScale - dt) * 0.06);
         }
+        scoreIcon.pos.x = scoreText.pos.x + scoreText.geom.text_width / 2 + 10 + 15 * textScale;
+        if (game_over) return;
         switch (game_mode) {
             case Timed | Tutorial(Timed) if (!game_over && (tutorial_box == null || !tutorial_box.is_active())):
                 time_penalty += dt;

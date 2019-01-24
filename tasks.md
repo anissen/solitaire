@@ -60,7 +60,6 @@ END BETA FEEDBACK
 * Add some tutorial for wins/rank on the menu screen
 * Better menu screen loading indicator
 * Make a simple checksum test on the server to validate the scores, etc.
-* Diamond symbol should always be to the right of score text (a problem in Timed, especially)
 * NICE-TO-HAVE: Change menu screen to only make one call to server instead of three
 * NICE-TO-HAVE: Fade out the top and bottom in journey
 * NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
