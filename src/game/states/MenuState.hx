@@ -26,6 +26,7 @@ class MenuState extends State {
     var winsText :Text;
     var totalScoreIcon :Sprite;
     var totalScoreText :Text;
+    var loading_icon :Sprite;
     var counting_total_score :Float;
     var tutorial_box :game.entities.TutorialBox;
 
@@ -223,6 +224,16 @@ class MenuState extends State {
             point_size: 26
         });
         totalScoreText.color.a = 0.5;
+
+        loading_icon = new Sprite({
+            texture: Luxe.resources.texture('assets/ui/egyptian-walk.png'),
+            pos: Vector.Add(winsIcon.pos, new Vector(-50, 0)),
+            scale: new Vector(0.1, 0.1),
+            color: new Color().rgb(0xa55004)
+        });
+        loading_icon.color.a = 0.0;
+        Actuate.tween(loading_icon.color, 0.5, { a: 0.2 }).delay(0.3);
+        Actuate.tween(loading_icon.scale, 1.0, { x: -0.1 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat().delay(0.3);
 
         var normal_save = Luxe.io.string_load('save_normal');
 
@@ -462,7 +473,11 @@ class MenuState extends State {
         AsyncHttpUtils.get(url, function(data :HttpCallback) {
             if (Main.GetStateId() != MenuState.StateId) return;
 
+            Actuate.stop(loading_icon.scale);
+            Actuate.stop(loading_icon.color);
             if (data.error == null) {
+                loading_icon.visible = false;
+
                 var json = data.json;
 
                 var players :Int = json.players;
@@ -478,6 +493,8 @@ class MenuState extends State {
 
                 update_global_stats(old_stars, stars, old_rank, rank);
             } else {
+                loading_icon.color.a = 1.0;
+
                 rankText.text = 'Rank N/A';
                 winsText.text = 'N/A';
             }
@@ -608,6 +625,7 @@ class MenuState extends State {
     }
 
     override function onleave(_) {
+        Actuate.reset();
         Luxe.scene.empty();
         ps.destroy();
     }

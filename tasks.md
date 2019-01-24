@@ -58,7 +58,6 @@ END BETA FEEDBACK
 * Make a "retry"-button if the server cannot be contacted
 * Make the background take up the entire screen
 * Add some tutorial for wins/rank on the menu screen
-* Better menu screen loading indicator
 * Make a simple checksum test on the server to validate the scores, etc.
 * NICE-TO-HAVE: Change menu screen to only make one call to server instead of three
 * NICE-TO-HAVE: Fade out the top and bottom in journey
