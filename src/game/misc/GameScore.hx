@@ -1,24 +1,13 @@
 package game.misc;
 
 import core.utils.AsyncHttpUtils;
-import game.misc.GameMode.GameMode;
 
 using game.misc.GameMode.GameModeTools;
 
 typedef HighscoreOptions = {
-    // user_id :Int,
-    // user_name :String,
     score :Int,
-    // strive_goal :Int,
     seed :Int,
-    // year :Int,
-    // month :Int,
-    // day :Int,
     game_mode :GameMode.GameMode,
-    // game_count :Int,
-    // actions :Int,
-    // total_score :Int,
-    // highest_journey_level_won :Int,
     global_highscores_callback :Dynamic -> Void,
     global_highscores_error_callback :String -> Void
 }
@@ -30,9 +19,6 @@ typedef LocalHighscores = Array<{
 }>;
 
 class GameScore {
-
-    // TODO: Make an update function that updates local AND global scores and call it from both GameOverState and Journey
-
     static public function add_highscore(options :HighscoreOptions) :LocalHighscores {
         update_settings(options);
         add_global_highscore(options);
@@ -109,16 +95,11 @@ class GameScore {
         AsyncHttpUtils.post(url, data_map, function(data :HttpCallback) {
             if (data.error == null) {
                 if (data.json == null) {
-                    trace('global_highscores_error_callback');
                     options.global_highscores_error_callback('Error');
                 } else {
-                    trace('global_highscores_callback');
-                    trace(data.json);
                     options.global_highscores_callback(data.json);
                 }
             } else {
-                trace('global_highscores_error_callback');
-                trace(data.error);
                 options.global_highscores_error_callback(data.error);
             }
         }); 
@@ -141,17 +122,4 @@ class GameScore {
 
         return local_highscores;
     }
-    
-    // static function get_local_highscore(game_mode :GameMode) :Array<{ score :Int, name :String, current :Bool }> {
-    //     var local_scores_str = Luxe.io.string_load('scores_${game_mode.get_game_mode_id()}');
-    //     var local_scores = [];
-    //     if (local_scores_str != null) local_scores = haxe.Json.parse(local_scores_str);
-
-    //     var user_name = Settings.load_string('user_name', 'You');
-    //     return [ for (s in local_scores) { 
-    //         score: s,
-    //         name: user_name,
-    //         current: false
-    //     } ];
-    // }
 }
