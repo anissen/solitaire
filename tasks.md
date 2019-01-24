@@ -83,7 +83,6 @@ Bugs:
 * Crash when having poor/unstable internet connectivity
 * Clicking the About button while the tutorial is *active* causes a crash (reported by Christoffer)
 * Scores ending in '1' are slightly offset to the left
-* "Secret unlockable game modes" tutorial on menu screen has one arrow displaced
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:
