@@ -42,12 +42,6 @@ END BETA FEEDBACK
 * SERVER: Make a dedicated 'today' page grouped by game mode and game #
 * SERVER: Make a dedicated 'rankpage' page that can show scores and ties
 
-* Global highscores
-    [?] Handle Strive and Survival game modes
-    [ ] Highscore button in play mode
-    [ ] Handle Strive global highscore mode
-    [ ] LATER: View all high scores
-* Being able to view highscore list without having to finish a game
 * Clean up bundled resources
 * "Invalid sound" should play when making a valid but non-matching selecting
 * Music:
@@ -59,6 +53,8 @@ END BETA FEEDBACK
 * Make the background take up the entire screen
 * Add some tutorial for wins/rank on the menu screen
 * Make a simple checksum test on the server to validate the scores, etc.
+* Global highscores for Journey mode
+* Highscore button in Normal play mode
 * NICE-TO-HAVE: Change menu screen to only make one call to server instead of three
 * NICE-TO-HAVE: Fade out the top and bottom in journey
 * NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
@@ -66,7 +62,6 @@ END BETA FEEDBACK
    * Images in tutorial
    * Pop text in play mode
    * Stars in highscore list?
-   * Journey mode
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
