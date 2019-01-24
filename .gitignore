@@ -1,5 +1,4 @@
 bin
-android.project
 ios.project
 asset_sources
 
@@ -7,3 +6,22 @@ fastlane/Appfile
 src/highscores.json
 src/server/temp
 media/screenshots_appstore
+
+### AndroidStudio ###
+# Built application files
+*.apk
+*.ap_
+
+# Gradle files
+.gradle
+
+# Android Studio
+/*/build/
+/*/local.properties
+/*/*/build
+android.project/app/src/main/
+
+# User-specific configurations
+android.project/.idea/**.xml
+
+# End of https://www.gitignore.io/api/androidstudio
