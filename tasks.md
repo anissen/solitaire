@@ -51,7 +51,6 @@ END BETA FEEDBACK
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
 * Make the background take up the entire screen [tryed it, didn't work]
-* Add some tutorial for wins/rank on the menu screen
 * Global highscores for Journey mode
 * Highscore button in Normal play mode
 * Make Journey mode never bump you back levels -- it's annoying (reported by Rasmus)
@@ -78,6 +77,7 @@ Bugs:
 * Scores ending in '1' are slightly offset to the left
 * Wrong scores are sometimes awarded when collecting stacked tiles in incorrect order
 * The second level in journey mode was blank (reported by Caribou)
+* Gaining 10 stars in Journey seems to award 11 stars on the menu screen
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:

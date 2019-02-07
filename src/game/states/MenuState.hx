@@ -357,9 +357,12 @@ class MenuState extends State {
 
             tutorial_box
             .tutorial({ texts: ['This is the normal\n{brown}Play{default} mode.', 'Here you compete for\nthe highscore.'], pos_y: play_button.get_top_pos().y - 85, points: [play_button.get_top_pos()] })
-            .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame modes.', 'Earn points to unlock.'], pos_y: timed_button.get_center_pos().y - 80, points: [Vector.Add(journey_button.get_center_pos(), new Vector(-35, 0)), Vector.Add(timed_button.get_top_pos(), new Vector(35, 0))] }))
+            .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame modes.', 'Earn points to unlock.'], pos_y: timed_button.get_center_pos().y - 80, points: [Vector.Add(journey_button.get_top_pos(), new Vector(-35, 0)), Vector.Add(timed_button.get_center_pos(), new Vector(35, 0))] }))
             // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #1.'], pos_y: journey_button.get_top_pos().y - 85, points: [journey_button.get_top_pos()] }))
             // .then(tutorial_box.tutorial({ texts: ['Secret unlockable\ngame mode #2.', 'Earn points to unlock.'], pos_y: timed_button.get_top_pos().y - 85, points: [timed_button.get_top_pos()] }))
+            .then(tutorial_box.tutorial({ texts: ['{brown}Stars{default} are awarded from\nwinning against others.'], pos_y: winsText.pos.y + 85 + 15, points: [Vector.Add(winsText.pos, new Vector(0, 15))] }))
+            .then(tutorial_box.tutorial({ texts: ['You also gain 1 {brown}star{default}\nfor each 1000 {brown}points{default}.'], pos_y: totalScoreText.pos.y + 85 + 15, points: [Vector.Add(totalScoreText.pos, new Vector(0, 15))] }))
+            .then(tutorial_box.tutorial({ texts: ['Your {brown}rank{default} is your {brown}stars{default}\ncompared with others.'], pos_y: rankText.pos.y + 85 + 15, points: [Vector.Add(rankText.pos, new Vector(0, 15))] }))
             .then(tutorial_box.tutorial({ texts: ['Settings menu is here.'], pos_y: config_button.pos.y + 85 + 15, points: [Vector.Add(config_button.pos, new Vector(0, 15))] }))
             .then(tutorial_box.tutorial({ texts: [
                 'About {brown}Stoneset{default}.',

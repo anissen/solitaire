@@ -450,7 +450,7 @@ class PlayState extends State {
                     finish_tutorial();
                     Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
                 });
-            case Tutorial(Timed): tutorial(TutorialStep.Welcome, { texts: ['Welcome to the\n{brown}Survival{default} game mode.', 'In {brown}Survival{default} you need\nto act quickly.', 'Instead of points\nyou have seconds.', 'You must survive as\nlong as possible.', 'Good luck.'] }).then(function() {
+            case Tutorial(Timed): tutorial(TutorialStep.Welcome, { texts: ['Welcome to the\n{brown}Survival{default} game mode.', 'In {brown}Survival{default} you need\nto act quickly.', 'Instead of {brown}points{default}\nyou have {brown}seconds{default}.', 'You must survive as\nlong as possible.', 'Good luck.'] }).then(function() {
                     finish_tutorial();
                     Game.Instance.new_game(tiles_x, tiles_y, deck, quest_deck);
                 });
@@ -833,7 +833,7 @@ class PlayState extends State {
             });
         });
 
-        tutorial(TutorialStep.Scoring, { texts: ['Complete {brown}sets{default} to\nincrease your score.', 'Collect in the correct\norder to double the points.', 'collect_order.png'], entities: [scoreText] });
+        tutorial(TutorialStep.Scoring, { texts: ['Complete {brown}sets{default} to\nincrease your score.', 'Collect in the correct\norder to double the {brown}points{default}.', 'collect_order.png'], entities: [scoreText] });
 
         tutorial(TutorialStep.StackingTiles, { texts: ['This {brown}set{default} has a\n{brown}flawless{default} {ruby}ruby{default}.', '{brown}Flawless gemstones{default}\nmust be forged.', 'stack.png'], points: [ get_pos(1, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
 
