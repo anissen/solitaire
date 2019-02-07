@@ -62,6 +62,7 @@ END BETA FEEDBACK
    * Images in tutorial
    * Pop text in play mode
    * Stars in highscore list?
+   * Progression comparison
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
@@ -78,6 +79,8 @@ Bugs:
 * Clicking the About button while the tutorial is *active* causes a crash (reported by Christoffer)
 * Scores ending in '1' are slightly offset to the left
 * Wrong scores are sometimes awarded when collecting stacked tiles in incorrect order
+* The second level in journey mode was blank (reported by Caribou)
+* Journey scores are not update when the game is ended (due to a recent change!)
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:
