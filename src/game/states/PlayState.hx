@@ -775,7 +775,6 @@ class PlayState extends State {
 
         Actuate.tween(p.size, duration, { x: tile_size * 0.25, y: tile_size * 0.25 }).delay(delay).onComplete(function() {
             if (p != null && !p.destroyed) p.destroy();
-            if (game_over) return;
             
             var textScale = scoreText.scale.x;
             if (textScale < 1.5) {
@@ -830,7 +829,6 @@ class PlayState extends State {
             }
 
             Actuate.tween(this, (temp_score - counting_score) * 0.02, { counting_score: temp_score }, true).onUpdate(function() {
-                if (game_over) return;
                 scoreText.text = '${Std.int(counting_score - time_penalty)}';
             });
         });

@@ -50,19 +50,17 @@ END BETA FEEDBACK
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
-* Make the background take up the entire screen
+* Make the background take up the entire screen [tryed it, didn't work]
 * Add some tutorial for wins/rank on the menu screen
-* Make a simple checksum test on the server to validate the scores, etc.
 * Global highscores for Journey mode
 * Highscore button in Normal play mode
-* NICE-TO-HAVE: Change menu screen to only make one call to server instead of three
-* NICE-TO-HAVE: Fade out the top and bottom in journey
-* NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
+* Make Journey mode never bump you back levels -- it's annoying (reported by Rasmus)
+* Experiment with making stacked tiles slightly less frequent
+* Experiment with making color stavation (wrt. quests) less frequent somehow
 * Make highlight tweets of
    * Images in tutorial
    * Pop text in play mode
    * Stars in highscore list?
-   * Progression comparison
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
@@ -80,7 +78,6 @@ Bugs:
 * Scores ending in '1' are slightly offset to the left
 * Wrong scores are sometimes awarded when collecting stacked tiles in incorrect order
 * The second level in journey mode was blank (reported by Caribou)
-* Journey scores are not update when the game is ended (due to a recent change!)
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:
@@ -90,4 +87,8 @@ iOS specific:
 * Links do not work on iOS and macOS
 
 Nice:
-* Move external libs into the repository (e.g. as git submodules)
+* NICE-TO-HAVE: Make a simple checksum test on the server to validate the scores, etc.
+* NICE-TO-HAVE: Move external libs into the repository (e.g. as git submodules)
+* NICE-TO-HAVE: Change menu screen to only make one call to server instead of three
+* NICE-TO-HAVE: Fade out the top and bottom in journey
+* NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
