@@ -7,7 +7,7 @@
         "web",
         "--debug"
     ],
-    "version": "0.1.0",
+    "version": "2.0.0",
     "problemMatcher": {
         "owner": "haxe",
         "pattern": {
@@ -21,5 +21,9 @@
             "message": 7
         }
     },
-    "chooserIndex": 1
+    "chooserIndex": 1,
+    "group": {
+        "kind": "build",
+        "isDefault": true
+    }
 }
