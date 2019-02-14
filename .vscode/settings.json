@@ -16,10 +16,11 @@
 
     "files.exclude": {
         "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
         "**/.DS_Store": true,
         "bin": true,
-        "android.project": true
+        "android.project": true,
+        "assets_audio": true,
+        "ios.project": true,
+        "media": true
     }
 }

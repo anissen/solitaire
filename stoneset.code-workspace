@@ -1,0 +1,32 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "/Users/nissen/code/snowkit/stoneset-server"
+		}
+	],
+    "settings": {
+        "haxe.displayConfigurations": [
+            [
+                "build.hxml"
+            ],
+            [
+                "bin/mac64.build/snow.hxml"
+            ],
+            [
+                "bin/web.build/build.debug.hxml"
+            ],
+            [
+                "bin/web.build/build.hxml"
+            ],
+            [
+                "bin/web.build/snow.hxml"
+            ],
+            [
+                "tests.hxml"
+            ]
+        ]
+    }
+}

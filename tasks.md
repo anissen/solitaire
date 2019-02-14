@@ -54,7 +54,6 @@ END BETA FEEDBACK
 * Global highscores for Journey mode
 * Highscore button in Normal play mode
 * Make Journey mode never bump you back levels -- it's annoying (reported by Rasmus)
-* Experiment with making stacked tiles slightly less frequent
 * Experiment with making color stavation (wrt. quests) less frequent somehow
 * Make highlight tweets of
    * Images in tutorial
