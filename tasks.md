@@ -51,10 +51,10 @@ END BETA FEEDBACK
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
 * Make the background take up the entire screen [tryed it, didn't work]
-* Global highscores for Journey mode
 * Highscore button in Normal play mode
 * Make Journey mode never bump you back levels -- it's annoying (reported by Rasmus)
 * Experiment with making color stavation (wrt. quests) less frequent somehow
+    * E.g. compare the draws between the quest and card decks to see if the quests colors are covered by the card draws
 * Make highlight tweets of
    * Images in tutorial
    * Pop text in play mode

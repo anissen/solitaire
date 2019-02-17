@@ -62,6 +62,30 @@ class JourneyState extends State {
             outline_color: new Color().rgb(0xa55004),
         });
 
+        var highscores_button = new game.ui.Icon({
+            pos: new Vector(Settings.WIDTH - 35, 35),
+            texture_path: 'assets/ui/circular.png',
+            on_click: Main.SetState.bind(GameOverState.StateId, { 
+                user_id: Luxe.io.string_load('clientId'),
+                seed: 0,
+                score: 0,
+                game_mode: Strive(-1),
+                next_game_mode: Strive(-1),
+                actions_data: [],
+                highscore_mode: GameOverState.HighscoreMode.Global
+            })
+        });
+        highscores_button.scale.set_xy(1/5, 1/5);
+        highscores_button.color.a = 0.75;
+        new Sprite({
+            texture: Luxe.resources.texture('assets/ui/holy-grail.png'),
+            parent: highscores_button,
+            pos: new Vector(128, 128),
+            scale: new Vector(0.3, 0.3),
+            color: new Color().rgb(0x8C7D56),
+            depth: 110
+        });
+
         var journey_level = Settings.load_int('journey_level', 1);
         var journey_tutorial_completed = (Luxe.io.string_load('tutorial_complete_journey') == 'true');
         var journey_mode = Strive(journey_level);

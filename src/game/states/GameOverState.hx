@@ -165,7 +165,12 @@ class GameOverState extends State {
             default: false;
         };
 
-        if (!is_rank_mode) {
+        var is_journey_mode = switch (game_mode) {
+            case Strive(_) | Tutorial(Strive(_)): true;
+            default: false;
+        };
+
+        if (!is_rank_mode && !is_journey_mode) {
             var highscores_button = new game.ui.Icon({
                 pos: new Vector(Settings.WIDTH - 35, 35),
                 texture_path: 'assets/ui/circular.png',
@@ -240,9 +245,13 @@ class GameOverState extends State {
                 Main.SetState(PlayState.StateId, next_game_mode);
             }
         });
+
         if (is_rank_mode) {
             play_button.visible = false;
             show_rank();
+        } else if (is_journey_mode) {
+            play_button.visible = false;
+            show_journey_highscores();
         } else {
             // retry_button = new game.ui.Button({
             //     pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2 + 60),
@@ -257,17 +266,28 @@ class GameOverState extends State {
             loading_icon.visible = true;
             Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
 
-            local_highscores = GameScore.add_highscore({
-                score: score,
-                seed: data.seed,
-                game_mode: game_mode,
-                global_highscores_callback: function(highscores :Array<GlobalHighscore>) {
-                    loading_global_data = false;
-                    global_highscores = highscores;
-                    show_global_highscores();
-                },
-                global_highscores_error_callback: show_error
-            });
+            // if (is_journey_mode) {
+            //     GameScore.get_journey_highscores({
+            //         global_highscores_callback: function(highscores :Array<GlobalHighscore>) {
+            //             loading_global_data = false;
+            //             global_highscores = highscores;
+            //             show_global_highscores();
+            //         },
+            //         global_highscores_error_callback: show_error
+            //     });
+            // } else {
+                local_highscores = GameScore.add_highscore({
+                    score: score,
+                    seed: data.seed,
+                    game_mode: game_mode,
+                    global_highscores_callback: function(highscores :Array<GlobalHighscore>) {
+                        loading_global_data = false;
+                        global_highscores = highscores;
+                        show_global_highscores();
+                    },
+                    global_highscores_error_callback: show_error
+                });
+            // }
         }
     }
 
@@ -422,6 +442,54 @@ class GameOverState extends State {
                         highscore_line.color.a = 0;
                         highscore_lines.push(highscore_line);
                         last_stars = stars;
+                    }
+                    show_highscores(highscore_lines);
+                }
+            } else {
+                show_error(data.error);
+            }
+        });
+    }
+
+    function show_journey_highscores() {
+        loading_icon.visible = true;
+        Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
+
+        title.text = 'Journey Highscores';
+        highscore_mode = Global;
+
+        var url = Settings.SERVER_URL + 'strive_highscores';
+        AsyncHttpUtils.get(url, function(data :HttpCallback) {
+            if (Main.GetStateId() != GameOverState.StateId) return;
+
+            loading_icon.visible = false;
+            if (data.error == null) {
+                if (data.json == null) {
+                    show_error('Error');
+                } else {
+                    var clientId = Luxe.io.string_load('clientId');
+                    var json :Array<{ user_id :String, user_name :String, highest_journey_level_won :Int, highest_journey_score_won :Null<Int> }> = data.json;
+                    var highscore_lines = [];
+                    var rank = 0;
+                    var last_level_won = -1;
+                    for (highscoreJson in json) {
+                        var level_won = highscoreJson.highest_journey_level_won;
+                        if (level_won != last_level_won) rank++;
+                        if (rank > 100) break; // only show the first 100 ranked players (+ ties)
+
+                        var strive_score = GameModeTools.get_strive_score(Strive(highscoreJson.highest_journey_level_won));
+                        var highscore_line = new HighscoreLine('$rank.', strive_score, highscoreJson.user_name);
+                        highscore_line.point_icon = new Sprite({
+                            parent: highscore_line,
+                            pos: new Vector(132, -3),
+                            texture: Luxe.resources.texture('assets/ui/diamond.png'),
+                            scale: new Vector(0.037, 0.037),
+                            color: new Color().rgb(0x8C7D56)
+                        });
+                        if (highscoreJson.user_id == clientId) highscore_line.color = new Color(0.75, 0.0, 0.5);
+                        highscore_line.color.a = 0;
+                        highscore_lines.push(highscore_line);
+                        last_level_won = level_won;
                     }
                     show_highscores(highscore_lines);
                 }

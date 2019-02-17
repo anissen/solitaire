@@ -4,12 +4,18 @@ import core.utils.AsyncHttpUtils;
 
 using game.misc.GameMode.GameModeTools;
 
-typedef HighscoreOptions = {
-    score :Int,
-    seed :Int,
-    game_mode :GameMode.GameMode,
+typedef Callbacks = {
     global_highscores_callback :Dynamic -> Void,
     global_highscores_error_callback :String -> Void
+}
+
+typedef HighscoreOptions = {
+    > Callbacks,
+    score :Int,
+    seed :Int,
+    game_mode :GameMode.GameMode
+    // global_highscores_callback :Dynamic -> Void,
+    // global_highscores_error_callback :String -> Void
 }
 
 typedef LocalHighscores = Array<{ 
@@ -56,10 +62,14 @@ class GameScore {
 
                 var strive_highscore = Settings.load_int('journey_highscore', 0);
                 var highest_level_won = Settings.load_int('journey_highest_level_won', -1);
+                var highest_score_won = Settings.load_int('journey_highest_score_won', -1);
                 if (won) {
                     if (level > highest_level_won) {
                         highest_level_won = level;
                         Luxe.io.string_save('journey_highest_level_won', '$highest_level_won');
+                    }
+                    if (level >= highest_level_won && score >= highest_score_won) {
+                        Luxe.io.string_save('journey_highest_score_won', '$score');
                     }
                     if (score > strive_highscore) {
                         strive_highscore = score;
@@ -89,7 +99,8 @@ class GameScore {
             'game_count' => '' + plays_today,
             'actions' => '', // + options.actions_data
             'total_score' => '' + Settings.load_int('total_score', 0),
-            'highest_journey_level_won' => '' + Settings.load_int('journey_highest_level_won', -1)
+            'highest_journey_level_won' => '' + Settings.load_int('journey_highest_level_won', -1),
+            'highest_journey_score_won' => '' + Settings.load_int('journey_highest_score_won', -1)
         ];
 
         AsyncHttpUtils.post(url, data_map, function(data :HttpCallback) {
@@ -121,5 +132,19 @@ class GameScore {
         Luxe.io.string_save('scores_${game_mode.get_game_mode_id()}', haxe.Json.stringify(local_scores));
 
         return local_highscores;
+    }
+
+    static public function get_journey_highscores(callbacks :Callbacks) {
+        AsyncHttpUtils.get(Settings.SERVER_URL + 'strive_highscores', function(data :HttpCallback) {
+            if (data.error == null) {
+                if (data.json == null) {
+                    callbacks.global_highscores_error_callback('Error');
+                } else {
+                    callbacks.global_highscores_callback(data.json);
+                }
+            } else {
+                callbacks.global_highscores_error_callback(data.error);
+            }
+        }); 
     }
 }
