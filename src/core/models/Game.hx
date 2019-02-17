@@ -23,6 +23,7 @@ enum Event {
     Stacked(card :Card);
     Score(score :Int, card :Card, correct_order :Bool);
     GameOver();
+    Achievement(name :String, description :String);
 }
 
 class Game {
@@ -493,6 +494,7 @@ class Game {
         update_score(cards, best_quest);
         for (tile in tiles) remove_tile(tile);
         messageSystem.emit(Collected(cards, best_quest, calculate_score(cards, best_quest)));
+        messageSystem.emit(Achievement('Collected', 'Completed a quest.'));
         return true;
     }
 
@@ -517,7 +519,9 @@ class Game {
         for (i in 0 ... tiles.length - 1) remove_tile(tiles[i]);
 
         messageSystem.emit(Stacked(cards.last()));
-
+        //messageSystem.emit(Achievement('Stacked', 'Made a stack.'));
+        var last_grid_pos = cards.last().grid_pos;
+        if (last_grid_pos.x == 1 && last_grid_pos.y == 1) messageSystem.emit(Achievement('Center Piece', 'Made a {brown}flawless{default} gem\nat the center.'));
         return true;
     }
 

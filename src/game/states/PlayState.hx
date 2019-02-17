@@ -92,6 +92,8 @@ class PlayState extends State {
     var tutorial_can_drop :{ x :Int, y :Int };
     var tutorial_can_collect :Bool;
 
+    var achievement_box :game.entities.TutorialBox;
+
     var sounds_playing :Int;
     
     public function new() {
@@ -378,6 +380,7 @@ class PlayState extends State {
         Quest: XYZ
         Quest: ZYZ
         */
+        achievement_box = new game.entities.TutorialBox({});
 
         switch (game_mode) {
             case Tutorial(_):
@@ -514,6 +517,7 @@ class PlayState extends State {
             case Stacked(card): handle_stacked(card);
             case Score(score, card, correct_order): handle_score(score, card, correct_order);
             case GameOver: handle_game_over();
+            case Achievement(name, description): handle_achievement(name, description);
         }
     }
 
@@ -840,6 +844,15 @@ class PlayState extends State {
         tutorial(TutorialStep.GoodLuck, { texts: ['Now go make your\nfortune in {brown}Stoneset{default}.', 'Good luck!'], do_func: function() {
             finish_tutorial();
         } });
+
+        return Promise.resolve();
+    }
+
+    function handle_achievement(name :String, description :String) {
+        trace('achievement: $name');
+        achievement_box.show({
+            texts: ['Achievement unlocked:\n{brown}$name{default}', '$description']
+        });
 
         return Promise.resolve();
     }
