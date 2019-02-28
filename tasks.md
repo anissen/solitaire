@@ -77,6 +77,8 @@ Bugs:
 * Wrong scores are sometimes awarded when collecting stacked tiles in incorrect order
 * The second level in journey mode was blank (reported by Caribou)
 * Gaining 10 stars in Journey seems to award 11 stars on the menu screen
+* Journey mode: Closing the app when the level is lost (before journey screen) then the progress is not updated (reported by Rasmus)
+* Strive mode: Collecting tiles just after the timer runs out, can cause the score to be invalid and the game to hang (reported by Rasmus) [FIXED?]
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:
@@ -91,3 +93,4 @@ Nice:
 * NICE-TO-HAVE: Change menu screen to only make one call to server instead of three
 * NICE-TO-HAVE: Fade out the top and bottom in journey
 * NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
+* NICE-TO-HAVE: Being able to see all-time-highscores for Strive & Normal
