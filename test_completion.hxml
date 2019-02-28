@@ -1,0 +1,4 @@
+-cp test
+-cp src
+-main CompletionTest
+--interp
