@@ -164,6 +164,16 @@ class Main extends luxe.Game {
             Luxe.io.string_save(GameMode.Timed.get_game_mode_id() + '_plays_today', '0');
         }
 
+        var current_save_version = 1;
+        var save_version = Settings.load_int('save_version', -1);
+        if (save_version != current_save_version) {
+            trace('Outdated save version: Clearing save games');
+            Settings.save_int('save_version', current_save_version);
+            for (game_mode in [GameMode.Normal, GameMode.Strive(0), GameMode.Timed]) {
+                Luxe.io.string_save('save_${game_mode.get_game_mode_id()}', null); // clear the save
+            }
+        }
+
         // Luxe.audio.loop(Luxe.resources.audio('assets/music/ogg/desert-ambience-cropped.ogg').source);
         // var handle = Luxe.audio.loop(Luxe.resources.audio('assets/music/ogg/Temple_of_the_Mystics.ogg').source);
         // handle.

@@ -87,4 +87,8 @@ class InfiniteDeck extends GenericDeck<CardData> {
         }
         return [ for (card in taken_cards) instatiate_func(card) ];
     }
+
+    public function create_custom(data :CardData) {
+        return instatiate_func(data);
+    }
 }

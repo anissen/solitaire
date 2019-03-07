@@ -59,8 +59,8 @@ class PlayState extends State {
     var margin = 10;
 
     var suits = 3;
-    var quest_values = 12; // 13
-    var card_values  = 8;  // 10
+    var quest_values = 12;
+    var card_values  = 6;
     var reshuffle_count :Int;
 
     var quests :Array<Card>;
@@ -71,7 +71,7 @@ class PlayState extends State {
     var scoreIcon :Sprite;
     var counting_score :Float;
     var time_penalty :Float;
-    var score :Int;
+    var score :Float;
 
     var game_over :Bool;
     var game_mode :GameMode;
@@ -770,7 +770,10 @@ class PlayState extends State {
             });
         }
 
-        score += card_score;
+        score += switch (game_mode) {
+            case Timed | Tutorial(Timed): card_score * 0.75; // Hack to reduce survival time in timed mode
+            default: card_score;
+        };
         var temp_score = score;
 
         Actuate.tween(p.size, duration, { x: tile_size * 0.25, y: tile_size * 0.25 }).delay(delay).onComplete(function() {
@@ -828,9 +831,11 @@ class PlayState extends State {
                 default: 
             }
 
-            Actuate.tween(this, (temp_score - counting_score) * 0.02, { counting_score: temp_score }, true).onUpdate(function() {
-                scoreText.text = '${Std.int(counting_score - time_penalty)}';
-            });
+            if (!game_over) {
+                Actuate.tween(this, (temp_score - counting_score) * 0.02, { counting_score: temp_score }, true).onUpdate(function() {
+                    scoreText.text = '${Std.int(counting_score - time_penalty)}';
+                });
+            }
         });
 
         tutorial(TutorialStep.Scoring, { texts: ['Complete {brown}sets{default} to\nincrease your score.', 'Collect in the correct\norder to double the {brown}points{default}.', 'collect_order.png'], entities: [scoreText] });
@@ -893,11 +898,11 @@ class PlayState extends State {
 
     function switch_to_game_over_state(next_game_mode :GameMode) {
         Luxe.timer.schedule(2.0, function() {
-            var the_score :Int = switch (game_mode) {
-                case Timed | Tutorial(Timed): Std.int(counting_score);
+            var the_score :Int = Std.int(switch (game_mode) {
+                case Timed | Tutorial(Timed): counting_score;
                 case Strive(level) | Tutorial(Strive(level)): game_mode.get_strive_score() + score;
                 default: score;
-            };
+            });
             Analytics.event('game', 'over', game_mode.get_game_mode_id());
             Analytics.event('game', 'score', game_mode.get_game_mode_id(), the_score);
 
@@ -1095,8 +1100,9 @@ class PlayState extends State {
         switch (game_mode) {
             case Timed | Tutorial(Timed) if (!game_over && (tutorial_box == null || !tutorial_box.is_active())):
                 time_penalty += dt;
-                scoreText.text = '${Std.int(counting_score - time_penalty)}';
-                if ((counting_score - time_penalty) < 0) {
+                var time_left = counting_score - time_penalty;
+                scoreText.text = '${Std.int(time_left)}';
+                if ((time_left) < 0) {
                     scoreText.color.tween(0.3, { r: 1, g: 0.2, b: 0.2 });
                     handle_game_over();
                 }

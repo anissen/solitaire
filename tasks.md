@@ -53,6 +53,8 @@ END BETA FEEDBACK
 * Make the background take up the entire screen [tryed it, didn't work]
 * Highscore button in Normal play mode
 * Make Journey mode never bump you back levels -- it's annoying (reported by Rasmus)
+* Show icon when winning/losing a Journey game
+* Indicate low time in Survival somehow
 * Experiment with making color stavation (wrt. quests) less frequent somehow
     * E.g. compare the draws between the quest and card decks to see if the quests colors are covered by the card draws
 * Make highlight tweets of
@@ -78,7 +80,7 @@ Bugs:
 * The second level in journey mode was blank (reported by Caribou)
 * Gaining 10 stars in Journey seems to award 11 stars on the menu screen
 * Journey mode: Closing the app when the level is lost (before journey screen) then the progress is not updated (reported by Rasmus)
-* Strive mode: Collecting tiles just after the timer runs out, can cause the score to be invalid and the game to hang (reported by Rasmus) [FIXED?]
+* Strive mode: Collecting tiles just after the timer runs out, can cause the score to be invalid and the game to hang (reported by Rasmus)
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 iOS specific:

@@ -290,8 +290,41 @@ class Game {
                 messageSystem.emit(NewQuest(newQuest));
             }
         }
-        hand = deck.take(3);
+        hand = deck.take(2);
+        var helper_card = deck.create_custom(get_most_appearing_suit());
+        hand.push(helper_card);
         messageSystem.emit(Draw(hand));
+    }
+
+    function get_most_appearing_suit() {
+        var total_suits = [0, 0, 0, 0, 0];
+        for (quest in quests) {
+            for (quest_card in quest) {
+                total_suits[quest_card.suit] += (quest_card.stacked ? 3 : 1);
+            }
+        }
+        for (card in hand) {
+            total_suits[card.suit] -= 1;
+        }
+        for (x in 0 ... grid.get_width()) {
+            for (y in 0 ... grid.get_height()) {
+                var tile = grid.get_tile(x, y);
+                if (tile != null) {
+                    total_suits[tile.suit] -= (tile.stacked ? 3 : 1);
+                }
+            }
+        }
+        // trace('Total suits: $total_suits');
+        var max_suit_value = 0;
+        var most_appearing_suit = 0;
+        for (suit_index in 0 ... total_suits.length) {
+            var current_suits = total_suits[suit_index];
+            if (current_suits > max_suit_value) {
+                max_suit_value = current_suits;
+                most_appearing_suit = suit_index;
+            }
+        }
+        return { suit: most_appearing_suit, stacked: false };
     }
 
     function handle_place(cardId :CardId, x :Int, y :Int) {
