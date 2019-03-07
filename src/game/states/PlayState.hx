@@ -93,6 +93,9 @@ class PlayState extends State {
     var tutorial_can_collect :Bool;
 
     var sounds_playing :Int;
+
+    var flash_overlay :Sprite;
+    var flash_timer :Float;
     
     public function new() {
         super({ name: StateId });
@@ -237,6 +240,18 @@ class PlayState extends State {
 		});
         pe_continous.stop();
 		ps.add(pe_continous);
+
+        flash_overlay = new Sprite({
+            texture: Luxe.resources.texture('assets/ui/inner-border.png'),
+            size: Vector.Multiply(Luxe.screen.size, 0.75),
+            color: new Color(1.0, 1.0, 1.0, 0.0),
+            centered: false,
+            //no_scene: true,
+            depth: 999
+        });
+        flash_overlay.blend_src = phoenix.Batcher.BlendMode.src_alpha;
+        flash_overlay.blend_dest = phoenix.Batcher.BlendMode.one;
+        flash_timer = 0;
 
         var show_back_button = switch (game_mode) {
             case Tutorial(_): false;
@@ -1105,6 +1120,27 @@ class PlayState extends State {
                 if ((time_left) < 0) {
                     scoreText.color.tween(0.3, { r: 1, g: 0.2, b: 0.2 });
                     handle_game_over();
+                } else {
+                    flash_timer -= dt;
+                    if (flash_timer <= 0) {
+                        if (time_left <= 3) {
+                            flash_overlay.color.r = 1.0;
+                            flash_overlay.color.g = 0.5;
+                            flash_overlay.color.b = 0.5;
+                            flash_overlay.color.tween(0.2, { a: 0.3 }).ease(luxe.tween.easing.Linear.easeNone).onComplete(function(_) {
+                                flash_overlay.color.tween(0.2, { a: 0 }).ease(luxe.tween.easing.Linear.easeNone).delay(0.1);
+                            });
+                            flash_timer += 0.75;
+                        } else if (time_left <= 10) {
+                            flash_overlay.color.r = 1.0;
+                            flash_overlay.color.g = 1.0;
+                            flash_overlay.color.b = 1.0;
+                            flash_overlay.color.tween(0.3, { a: 0.2 }).ease(luxe.tween.easing.Linear.easeNone).onComplete(function(_) {
+                                flash_overlay.color.tween(0.3, { a: 0 }).ease(luxe.tween.easing.Linear.easeNone).delay(0.2);
+                            });
+                            flash_timer += 1.5;
+                        }
+                    }
                 }
             default:
         }
