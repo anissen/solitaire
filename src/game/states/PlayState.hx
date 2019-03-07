@@ -878,6 +878,20 @@ class PlayState extends State {
                 if (new_level < 1) new_level = 1;
                 new_game_mode = Strive(new_level);
                 play_sound(win ? 'won' : 'lost');
+
+                var icon_path = (win ? 'assets/ui/holy-grail.png' : 'assets/images/journey/camel.png');
+                if (win && new_level > Settings.load_int('journey_highest_level_won', 0)) {
+                    icon_path = 'assets/images/journey/flying-flag.png';
+                }
+                var game_over_icon = new Sprite({
+                    texture: Luxe.resources.texture(icon_path),
+                    pos: new Vector(Settings.WIDTH / 2, Settings.HEIGHT / 2),
+                    scale: new Vector(0.0, 0.0),
+                    color: new Color().rgb(0xa55004),
+                    depth: 100
+                });
+                Actuate.tween(game_over_icon.scale, 0.3, { x: 0.4, y: 0.4 }).delay(0.1);
+                Actuate.tween(game_over_icon.color, 0.3, { a: 1.0 }).delay(0.1);
             case Normal:
                 play_sound('won');
             case Timed | Tutorial(Timed):
