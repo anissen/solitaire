@@ -303,9 +303,6 @@ class Game {
                 total_suits[quest_card.suit] += (quest_card.stacked ? 3 : 1);
             }
         }
-        for (card in hand) {
-            total_suits[card.suit] -= 1;
-        }
         for (x in 0 ... grid.get_width()) {
             for (y in 0 ... grid.get_height()) {
                 var tile = grid.get_tile(x, y);
@@ -314,6 +311,9 @@ class Game {
                 }
             }
         }
+        // for (card in hand) {
+        //     total_suits[card.suit] -= 1;
+        // }
         // trace('Total suits: $total_suits');
         var max_suit_value = 0;
         var most_appearing_suit = 0;

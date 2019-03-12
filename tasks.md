@@ -55,8 +55,7 @@ END BETA FEEDBACK
 * Make Journey mode never bump you back levels -- it's annoying (reported by Rasmus)
 * Show icon when winning/losing a Journey game
 * Indicate low time in Survival somehow
-* Experiment with making color stavation (wrt. quests) less frequent somehow
-    * E.g. compare the draws between the quest and card decks to see if the quests colors are covered by the card draws
+* Use Kenneys backgrounds (+ maybe a blue color as highlight)?
 * Make highlight tweets of
    * Images in tutorial
    * Pop text in play mode
