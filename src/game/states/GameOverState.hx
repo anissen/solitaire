@@ -93,6 +93,7 @@ typedef DataType = {
     actions_data :String,
     total_score :Int,
     highest_journey_level_won :Int,
+    ?back_to_state :String,
     ?highscore_mode :HighscoreMode
 };
 
@@ -129,6 +130,7 @@ class GameOverState extends State {
     // var retry_button :game.ui.Button;
     var loading_icon :Sprite;
     var loading_global_data :Bool;
+    var back_to_state :String;
 
     public function new() {
         super({ name: StateId });
@@ -148,12 +150,13 @@ class GameOverState extends State {
         var data :DataType = cast d;
         score = data.score;
         game_mode = data.game_mode;
+        back_to_state = (data.back_to_state != null ? data.back_to_state : MenuState.StateId);
         var next_game_mode = data.next_game_mode;
 
         var back_button = new game.ui.Icon({
             pos: new Vector(30, 30),
             texture_path: 'assets/ui/arrowBeige_left.png',
-            on_click: Main.SetState.bind(MenuState.StateId)
+            on_click: Main.SetState.bind(back_to_state)
         });
         back_button.scale.set_xy(1/4, 1/4);
         back_button.depth = 100;
@@ -550,7 +553,7 @@ class GameOverState extends State {
 
     override function onkeyup(event :luxe.Input.KeyEvent) {
         if (event.keycode == luxe.Input.Key.ac_back) {
-            Main.SetState(MenuState.StateId);
+            Main.SetState(back_to_state);
         }
     }
 

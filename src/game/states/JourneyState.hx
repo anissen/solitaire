@@ -72,7 +72,8 @@ class JourneyState extends State {
                 game_mode: Strive(-1),
                 next_game_mode: Strive(-1),
                 actions_data: [],
-                highscore_mode: GameOverState.HighscoreMode.Global
+                highscore_mode: GameOverState.HighscoreMode.Global,
+                back_to_state: JourneyState.StateId
             })
         });
         highscores_button.scale.set_xy(1/5, 1/5);
