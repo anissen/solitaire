@@ -56,6 +56,7 @@ END BETA FEEDBACK
 * Show icon when winning/losing a Journey game
 * Indicate low time in Survival somehow
 * Use Kenneys backgrounds (+ maybe a blue color as highlight)?
+* Indicate Journey game in-progress on menu screen
 * Make highlight tweets of
    * Images in tutorial
    * Pop text in play mode

@@ -837,16 +837,19 @@ class PlayState extends State {
             } else { // score: 6
                 play_sound('points_huge', card_pos);
             }
+
+            var timed_mode = false;
             switch (game_mode) {
                 case Strive(_) | Tutorial(Strive(_)):
                     if (score >= 0) {
                         scoreText.color.tween(0.3, { r: 0.2, g: 0.8, b: 0.2 });
                         handle_game_over();
                     }
+                case Timed | Tutorial(Timed): timed_mode = true;
                 default: 
             }
 
-            if (!game_over) {
+            if (!game_over || !timed_mode) {
                 Actuate.tween(this, (temp_score - counting_score) * 0.02, { counting_score: temp_score }, true).onUpdate(function() {
                     scoreText.text = '${Std.int(counting_score - time_penalty)}';
                 });
@@ -897,7 +900,7 @@ class PlayState extends State {
             case Timed | Tutorial(Timed):
                 new_game_mode = Timed;
                 score = Std.int(time_penalty); // set the score to be the time survived
-                play_sound((counting_score - time_penalty > 0) ? 'won' : 'lost');
+                play_sound('won');
             case Puzzle:
                 play_sound('won');
             case Tutorial(mode):
@@ -913,7 +916,7 @@ class PlayState extends State {
 
         switch (game_mode) {
             case Timed | Tutorial(Timed):
-                scoreText.color.tween(0.3, { r: 0.0, g: 0.0, b: 0.0 });
+                scoreText.color.tween(0.3, { r: 0.2, g: 0.2, b: 0.2 });
                 var remaining_time = (counting_score - time_penalty);
                 counting_score = remaining_time;
                 var tween = Actuate.tween(this, time_penalty * 0.05, { counting_score: remaining_time + time_penalty }, true).onUpdate(function() {
@@ -1114,7 +1117,7 @@ class PlayState extends State {
     }
 
     override function onrender() {
-
+        
     }
 
     override function update(dt :Float) {
