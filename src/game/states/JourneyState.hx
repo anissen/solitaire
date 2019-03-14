@@ -102,9 +102,9 @@ class JourneyState extends State {
         //     }
         // });
 
-        var major  = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0,  1, 0, 0, 0, 0,  1,  0,  0,  0,  0,  1,  0,  0,  0,  0,  1,  0,  0,  0,  0, 2];
+        var major = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2];
 
-        var max_levels = 30; // 200 points
+        var max_levels = 40; // 250 points
         var container_height = 0.0;
         var scroll_to = 0.0;
         var scroll_from_level = Settings.load_int('old_journey_level', 1);

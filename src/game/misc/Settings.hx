@@ -37,7 +37,7 @@ class Settings {
  
     static public function get_journey_stars_for_level(level :Int) :Int {
         if (level < 0) return 0;
-        var stars = [0, 1, 1, 1, 1, 5, 2, 2, 2, 2, 10, 5, 5, 5, 5, 20, 10, 10, 10, 10, 40, 20, 20, 20, 20, 50, 40, 40, 40, 40, 100];
+        var stars = [0, 1, 1, 1, 1, 3, 1, 1, 1, 1, 5, 2, 2, 2, 2, 10, 5, 5, 5, 5, 20, 10, 10, 10, 10, 30, 20, 20, 20, 20, 50, 40, 40, 40, 40, 70, 60, 60, 60, 60, 100];
         if (level > stars.length) return 0;
         return stars[level];
     }
