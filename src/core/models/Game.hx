@@ -289,42 +289,83 @@ class Game {
                 quests.push(newQuest);
                 messageSystem.emit(NewQuest(newQuest));
             }
+            hand = deck.take(3);
+        } else {
+            if (get_total_tile_values_on_board() > 10) { // Extra help the player cannot complete quests and has limited options (e.g. 2 stacked and 5 tiles and 2 empty tiles == 11)
+                // 3 stacked and 2 tiles and 4 empty tiles == 11
+                // trace('super help');
+                hand = deck.take(1);
+                var helper_card1 = deck.create_custom(get_most_needed_suit());
+                hand.push(helper_card1);
+                var helper_card2 = deck.create_custom(get_most_needed_suit());
+                hand.push(helper_card2);
+            } else { // A bit of help if the player cannot complete quests
+                // trace('helping hand');
+                hand = deck.take(2);
+                var helper_card = deck.create_custom(get_most_needed_suit());
+                hand.push(helper_card);
+            }
         }
-        hand = deck.take(2);
-        var helper_card = deck.create_custom(get_most_appearing_suit());
-        hand.push(helper_card);
         messageSystem.emit(Draw(hand));
     }
 
-    function get_most_appearing_suit() {
-        var total_suits = [0, 0, 0, 0, 0];
+    function get_most_needed_suit() {
+        var total_stacked = [0, 0, 0, 0, 0];
+        var total_unstacked = [0, 0, 0, 0, 0];
         for (quest in quests) {
             for (quest_card in quest) {
-                total_suits[quest_card.suit] += (quest_card.stacked ? 3 : 1);
+                if (quest_card.stacked) {
+                    total_stacked[quest_card.suit] += 1;
+                } else {
+                    total_unstacked[quest_card.suit] += 1;
+                }
             }
         }
         for (x in 0 ... grid.get_width()) {
             for (y in 0 ... grid.get_height()) {
                 var tile = grid.get_tile(x, y);
                 if (tile != null) {
-                    total_suits[tile.suit] -= (tile.stacked ? 3 : 1);
+                    if (tile.stacked) {
+                        total_stacked[tile.suit] -= 1;
+                    } else {
+                        total_unstacked[tile.suit] -= 1;
+                    }
                 }
             }
         }
-        // for (card in hand) {
-        //     total_suits[card.suit] -= 1;
-        // }
-        // trace('Total suits: $total_suits');
-        var max_suit_value = 0;
-        var most_appearing_suit = 0;
-        for (suit_index in 0 ... total_suits.length) {
-            var current_suits = total_suits[suit_index];
-            if (current_suits > max_suit_value) {
-                max_suit_value = current_suits;
-                most_appearing_suit = suit_index;
+        for (card in hand) {
+            total_unstacked[card.suit] -= 1;
+        }
+
+        var total = [0, 0, 0, 0, 0];
+        for (i in 0 ... total.length) {
+            if (total_stacked[i] > 0) total[i] += total_stacked[i] * 3;
+            total[i] += total_unstacked[i];
+        }
+        // trace('Total value: $total');
+        var max_total_value = 0;
+        var most_needed_suit = 0;
+        for (suit_index in 0 ... total.length) {
+            var current_value = total[suit_index];
+            if (current_value > max_total_value) {
+                max_total_value = current_value;
+                most_needed_suit = suit_index;
             }
         }
-        return { suit: most_appearing_suit, stacked: false };
+        return { suit: most_needed_suit, stacked: false };
+    }
+
+    function get_total_tile_values_on_board() :Int {
+        var sum = 0;
+        for (x in 0 ... grid.get_width()) {
+            for (y in 0 ... grid.get_height()) {
+                var tile = grid.get_tile(x, y);
+                if (tile != null) {
+                    sum += (tile.stacked ? 3 : 1);
+                }
+            }
+        }
+        return sum;
     }
 
     function handle_place(cardId :CardId, x :Int, y :Int) {
