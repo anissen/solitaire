@@ -52,8 +52,6 @@ END BETA FEEDBACK
 * Make a "retry"-button if the server cannot be contacted
 * Make the background take up the entire screen [tryed it, didn't work]
 * Highscore button in Normal play mode
-* Make Journey mode never bump you back levels -- it's annoying (reported by Rasmus)
-* Show icon when winning/losing a Journey game
 * Indicate low time in Survival somehow
 * Use Kenneys backgrounds (+ maybe a blue color as highlight)?
 * Indicate Journey game in-progress on menu screen

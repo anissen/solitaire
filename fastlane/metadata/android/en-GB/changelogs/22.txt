@@ -1,0 +1,7 @@
+Big update!
+∙ Now you'll get more needed gems when you're in trouble
+∙ Journey highscore list
+∙ Journey mode goal increased from 200 to 250 points
+∙ Added more tutorial
+∙ Added indicator for when time is running out in Survival mode
+∙ Many minor changes and improvement

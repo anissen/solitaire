@@ -11,6 +11,8 @@
     * Android Studio: Version number
     * Android Studio: Build number
 
-3. Run fastlane beta
+3. Commit and push
 
-4. Commit and push
+4. Run `fastlane beta`
+
+5. Run `./push_to_itch.sh`
