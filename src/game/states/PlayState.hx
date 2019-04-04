@@ -785,10 +785,11 @@ class PlayState extends State {
             });
         }
 
-        score += switch (game_mode) {
-            case Timed | Tutorial(Timed): card_score * 0.75; // Hack to reduce survival time in timed mode
-            default: card_score;
-        };
+        score += card_score;
+        // score += switch (game_mode) {
+        //     case Timed | Tutorial(Timed): card_score; // Hack to reduce survival time in timed mode
+        //     default: card_score;
+        // };
         var temp_score = score;
 
         Actuate.tween(p.size, duration, { x: tile_size * 0.25, y: tile_size * 0.25 }).delay(delay).onComplete(function() {
