@@ -270,8 +270,8 @@ class MenuState extends State {
             disabled: (total_score < timed_unlock)
         });
 
-        var journey_save = Luxe.io.string_load('save_journey');
-        var journey_text = (journey_save == null ? '' : '~ ') + 'Journey' + (journey_save == null ? '' : ' ~');
+        var journey_save = Luxe.io.string_load('save_strive');
+        var journey_text = (journey_save == null ? '' : '~ ') + 'Journey' + (journey_save == null ? '' : ' ~  ');
         var journey_unlock = 2000;
         var journey_button = new Button({
             pos: new Vector(Settings.WIDTH / 2, get_button_y()),

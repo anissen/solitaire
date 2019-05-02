@@ -50,11 +50,9 @@ END BETA FEEDBACK
     * theme-3 plays on survival
     * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
-* Make the background take up the entire screen [tryed it, didn't work]
 * Highscore button in Normal play mode
 * Indicate low time in Survival somehow
 * Use Kenneys backgrounds (+ maybe a blue color as highlight)?
-* Indicate Journey game in-progress on menu screen
 * Make highlight tweets of
    * Images in tutorial
    * Pop text in play mode
