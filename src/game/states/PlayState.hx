@@ -119,6 +119,13 @@ class PlayState extends State {
             default: Analytics.screen('PlayState/' + game_mode.get_game_mode_id());
         }
 
+        switch (game_mode) {
+            case Tutorial(Timed) | Timed: 
+                trace('playing theme-3');
+                Main.start_timed_music();
+            case _:
+        }
+
         var could_load_game = load_game();
         if (!could_load_game) start_new_game();
     }

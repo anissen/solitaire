@@ -22,7 +22,9 @@ class Main extends luxe.Game {
     static var current_state_id :String = "";
     static var fade :game.components.Fader;
     // static var music_handles :Array<luxe.Audio.AudioHandle> = [];
-    static var music_handle :luxe.Audio.AudioHandle;
+    static var music_handle_default :luxe.Audio.AudioHandle;
+    static var music_handle_timed :luxe.Audio.AudioHandle;
+    // static var music_handles :Map<String, luxe.Audio.AudioHandle>;
     var start_time :Float;
     var nineslice :luxe.NineSlice;
 
@@ -101,35 +103,84 @@ class Main extends luxe.Game {
         var tutorial = ['images/tutorial/box_shadow.png', 'images/tutorial/arrow.png', 'images/tutorial/collect_order.png', 'images/tutorial/collect_adjacent.png', 'images/tutorial/stack.png'];
         var journey = ['images/journey/egyptian-temple.png', 'images/journey/great-pyramid.png', 'images/journey/flying-flag.png', 'images/journey/path1.png', 'images/journey/path2.png', 'images/journey/camel.png'];
         var sounds = ['invalid', 'lost', 'place', 'points_big', 'points_huge', 'points_small', 'points_devine', 'quest', 'slide', 'stack', 'tile_click', 'ui_click', 'won', 'collect', 'tutorial'];
-        var music = ['Temple_of_the_Mystics' /*, 'desert-ambience-cropped.ogg' */];
+        var music = ['Temple_of_the_Mystics', 'theme-3' /*, 'desert-ambience-cropped.ogg' */];
 
         var parcel = new luxe.Parcel({
             load_time_spacing: 0,
             load_start_delay: 0,
             textures: [ for (icon in icons.concat(ui).concat(tutorial).concat(journey)) { id: 'assets/' + icon } ],
             sounds: [ for (sound in sounds) { id: Settings.get_sound_file_path(sound), is_stream: false } ]
-                    .concat([for (m in music) { id: Settings.get_music_file_path(m), is_stream: true }]),
+                    .concat([for (m in music) { id: Settings.get_music_file_path(m), is_stream: false }]),
             fonts: [{ id: 'assets/fonts/clemente/clemente.fnt' } ]
         });
 
         new game.misc.ArcProgress(parcel, new luxe.Color().rgb(0x914D50), start);
     }
 
-    static public function start_music() {
-        var state = Luxe.audio.state_of(music_handle);
-        if (state == luxe.Audio.AudioState.as_playing) return;
+    // static public function ensure_music_plays(id :String = 'Temple_of_the_Mystics') {
+    //     for (music_id in music_handles.keys()) {
+    //         var handle = music_handles[music_id];
+    //         var state = Luxe.audio.state_of(handle);
+    //         if (music_id == id) {
+    //             if (state != luxe.Audio.AudioState.as_playing) {
+    //                 var music_source = Luxe.resources.audio(Settings.get_music_file_path(id)).source;
+    //                 music_handles[id] = Luxe.audio.loop(music_source);
+    //                 Luxe.audio.volume(music_handle, 0.2);
+    //             }
+    //         }
+    //     }
+    // }
+
+    static public function start_default_music() {
+        var state_timed = Luxe.audio.state_of(music_handle_timed);
+        if (state_timed == luxe.Audio.AudioState.as_playing) Luxe.audio.stop(music_handle_timed);
+
+        var state_default = Luxe.audio.state_of(music_handle_default);
+        if (state_default == luxe.Audio.AudioState.as_playing) return;
 
         var music_source = Luxe.resources.audio(Settings.get_music_file_path('Temple_of_the_Mystics')).source;
-        music_handle = Luxe.audio.loop(music_source);
-        Luxe.audio.volume(music_handle, 0.2);
+        music_handle_default = Luxe.audio.loop(music_source);
+        Luxe.audio.volume(music_handle_default, 0.2);
     }
+
+    static public function start_timed_music() {
+        var state_default = Luxe.audio.state_of(music_handle_default);
+        if (state_default == luxe.Audio.AudioState.as_playing) Luxe.audio.stop(music_handle_default);
+
+        var state_timed = Luxe.audio.state_of(music_handle_timed);
+        if (state_timed == luxe.Audio.AudioState.as_playing) return;
+
+        var music_source = Luxe.resources.audio(Settings.get_music_file_path('theme-3')).source;
+        music_handle_timed = Luxe.audio.loop(music_source);
+        Luxe.audio.volume(music_handle_timed, 0.2);
+    }
+
+    // static public function start_music(id :String = 'Temple_of_the_Mystics') {
+    //     if (music_handles.exists(id)) {
+    //         var state = Luxe.audio.state_of(music_handle);
+    //         if (state == luxe.Audio.AudioState.as_playing) return;
+    //     }
+
+    //     var music_source = Luxe.resources.audio(Settings.get_music_file_path(id)).source;
+    //     music_handles[id] = Luxe.audio.loop(music_source);
+    //     Luxe.audio.volume(music_handle, 0.2);
+    // }
 
     static public function stop_music() {
-        var state = Luxe.audio.state_of(music_handle);
-        if (state != luxe.Audio.AudioState.as_playing) return;
-
-        Luxe.audio.stop(music_handle);
+        var state_default = Luxe.audio.state_of(music_handle_default);
+        if (state_default == luxe.Audio.AudioState.as_playing) Luxe.audio.stop(music_handle_default);
+        
+        var state_timed = Luxe.audio.state_of(music_handle_timed);
+        if (state_timed == luxe.Audio.AudioState.as_playing) Luxe.audio.stop(music_handle_timed);
     }
+
+    // static public function stop_all_music() {
+    //     for (handle in music_handles) {
+    //         var state = Luxe.audio.state_of(handle);
+    //         if (state != luxe.Audio.AudioState.as_playing) continue;
+    //         Luxe.audio.stop(music_handle);
+    //     }
+    // }
 
     function start() {
         Luxe.renderer.font = Luxe.resources.font('assets/fonts/clemente/clemente.fnt');
@@ -186,10 +237,12 @@ class Main extends luxe.Game {
         //     Luxe.audio.volume(handle, 0.2);
         // }
 
-        var music_enabled = Luxe.io.string_load('music_enabled');
-        if (music_enabled == null || music_enabled == 'true') {
-            start_music();
-        }
+        // music_handles = new Map();
+
+        // var music_enabled = Luxe.io.string_load('music_enabled');
+        // if (music_enabled == null || music_enabled == 'true') {
+        //     start_default_music();
+        // }
 
         luxe.tween.Actuate.tween(nineslice.pos, 0.2, { x: 0, y: 0 });
         luxe.tween.Actuate.tween(nineslice.size, 0.2, { x: Settings.WIDTH, y: Settings.HEIGHT }).onComplete(function() {

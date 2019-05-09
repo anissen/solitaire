@@ -80,6 +80,11 @@ class MenuState extends State {
         pe_burst.stop();
 		ps.add(pe_burst);
 
+        var music_enabled = Luxe.io.string_load('music_enabled');
+        if (music_enabled == null || music_enabled == 'true') {
+            Main.start_default_music();
+        }
+
         var icon = new Sprite({
             pos: new Vector(Settings.WIDTH / 2 - 20, 80),
             texture: Luxe.resources.texture('assets/ui/pyramids.png'),
