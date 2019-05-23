@@ -42,3 +42,11 @@ platform :android do
     upload_to_play_store
   end
 end
+
+platform :ios do
+  lane :beta do
+    #sync_code_signing(type: "appstore")    # see code signing guide for more information
+    build_app(scheme: "stoneset", project: "./ios.project/stoneset.ios.xcodeproj", include_bitcode: true)
+    upload_to_testflight
+  end
+end

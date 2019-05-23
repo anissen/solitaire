@@ -10,6 +10,7 @@
     * Analytics.hx
     * Android Studio: Version number
     * Android Studio: Build number
+    * Xcode: Version number
 
 3. Commit and push
 

@@ -42,17 +42,10 @@ END BETA FEEDBACK
 * SERVER: Make a dedicated 'today' page grouped by game mode and game #
 * SERVER: Make a dedicated 'rankpage' page that can show scores and ties
 
-* Clean up bundled resources
 * "Invalid sound" should play when making a valid but non-matching selecting
-* Music:
-    * desert ambience always looping
-    * temple of the mystics starting on main menu and playing in normal and strive
-    * theme-3 plays on survival
-    * theme-5 plays on puzzle
 * Make a "retry"-button if the server cannot be contacted
 * Highscore button in Normal play mode
 * Indicate low time in Survival somehow
-* Use Kenneys backgrounds (+ maybe a blue color as highlight)?
 * Make highlight tweets of
    * Images in tutorial
    * Pop text in play mode

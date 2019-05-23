@@ -98,6 +98,8 @@ class Main extends luxe.Game {
 
         var icons = ['square.png', 'circle.png', 'triangle.png', 'diamond.png', 'hex.png', 'star.png', 'tile.png', 'tile_bg.png', 'tile_stacked.png', 'ring.png'].map(function(i) return 'images/symbols/$i');
         var ui = ['ui/buttonLong_brown_pressed.png', 'ui/buttonLong_teal_pressed.png', 'ui/arrowBeige_left.png', 'ui/panelInset_beige.png', 'ui/pyramids.png', 'ui/circular.png', 'ui/circular_light.png', 'ui/circular_highlight.png', 'ui/cog.png', 'ui/book.png', 'ui/holy-grail.png', 'ui/egyptian-walk.png', 'ui/round-star.png', 'ui/diamond.png', 'ui/inner-border.png'];
+        
+        //, 'ui/backgroundColorDesertClean.png'
         var tutorial = ['images/tutorial/box_shadow.png', 'images/tutorial/arrow.png', 'images/tutorial/collect_order.png', 'images/tutorial/collect_adjacent.png', 'images/tutorial/stack.png'];
         var journey = ['images/journey/egyptian-temple.png', 'images/journey/great-pyramid.png', 'images/journey/flying-flag.png', 'images/journey/path1.png', 'images/journey/path2.png', 'images/journey/camel.png'];
         var sounds = ['invalid', 'lost', 'place', 'points_big', 'points_huge', 'points_small', 'points_devine', 'quest', 'slide', 'stack', 'tile_click', 'ui_click', 'won', 'collect', 'tutorial'];
@@ -139,6 +141,15 @@ class Main extends luxe.Game {
         Analytics.event('startup', 'finished', 'duration', Std.int((end - start_time) * 1000));
 
         luxe.tween.Actuate.defaultEase = luxe.tween.easing.Quad.easeIn;
+
+        // var bg = new luxe.Sprite({
+        //     texture: Luxe.resources.texture('assets/ui/backgroundColorDesertClean.png'),
+        //     //size: new Vector(tile_size, tile_size),
+        //     pos: new luxe.Vector(Settings.WIDTH / 4, Settings.HEIGHT / 5),
+        //     scale: new luxe.Vector(0.45, 0.45),
+        //     depth: -999,
+        //     no_scene: true
+        // });
 
         states = new States({ name: 'state_machine' });
         states.add(new MenuState());
