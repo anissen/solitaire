@@ -114,6 +114,7 @@ enum HighscoreMode {
     Global;
     Local;
     Rank;
+    BestHighscores;
 }
 
 class GameOverState extends State {
@@ -173,7 +174,7 @@ class GameOverState extends State {
             default: false;
         };
 
-        if (!is_rank_mode && !is_journey_mode) {
+        if (!is_journey_mode) {
             var highscores_button = new game.ui.Icon({
                 pos: new Vector(Settings.WIDTH - 35, 35),
                 texture_path: 'assets/ui/circular.png',
@@ -181,14 +182,19 @@ class GameOverState extends State {
                     switch (highscore_mode) {
                         case Global: show_local_highscores();
                         case Local:  show_global_highscores();
-                        case Rank:
+                        case Rank:   show_best_highscores();
+                        case BestHighscores: show_rank();
                     }
                 }
             });
             highscores_button.scale.set_xy(1/5, 1/5);
             highscores_button.color.a = 0.75;
+            var texturePath = switch (highscore_mode) {
+                case Rank: 'assets/ui/diamond.png';
+                default: 'assets/ui/holy-grail.png';
+            }
             new Sprite({
-                texture: Luxe.resources.texture('assets/ui/holy-grail.png'),
+                texture: Luxe.resources.texture(texturePath),
                 parent: highscores_button,
                 pos: new Vector(128, 128),
                 scale: new Vector(0.3, 0.3),
@@ -408,6 +414,17 @@ class GameOverState extends State {
     }
 
     function show_rank() {
+        if (Main.GetStateId() != GameOverState.StateId) return;
+
+        if (score_container != null && !score_container.destroyed) {
+            for (child in score_container.children) {
+                Actuate.stop(child);
+                var highscore_line = cast (child, HighscoreLine);
+                if (highscore_line != null && highscore_line.icon != null) Actuate.stop(highscore_line.icon);
+            }
+        }
+        highscore_lines_scene.empty();
+        
         loading_icon.visible = true;
         Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
 
@@ -493,6 +510,64 @@ class GameOverState extends State {
                         highscore_line.color.a = 0;
                         highscore_lines.push(highscore_line);
                         last_level_won = level_won;
+                    }
+                    show_highscores(highscore_lines);
+                }
+            } else {
+                show_error(data.error);
+            }
+        });
+    }
+
+    function show_best_highscores() {
+        if (Main.GetStateId() != GameOverState.StateId) return;
+
+        if (score_container != null && !score_container.destroyed) {
+            for (child in score_container.children) {
+                Actuate.stop(child);
+                var highscore_line = cast (child, HighscoreLine);
+                if (highscore_line != null && highscore_line.icon != null) Actuate.stop(highscore_line.icon);
+            }
+        }
+        highscore_lines_scene.empty();
+        
+        loading_icon.visible = true;
+        Actuate.tween(loading_icon.scale, 1.0, { x: -0.3 }).ease(luxe.tween.easing.Elastic.easeInOut).reflect().repeat();
+
+        title.text = 'Best Highscores';
+        highscore_mode = BestHighscores;
+
+        var url = Settings.SERVER_URL + 'best_highscores';
+        AsyncHttpUtils.get(url, function(data :HttpCallback) {
+            if (Main.GetStateId() != GameOverState.StateId) return;
+
+            loading_icon.visible = false;
+            if (data.error == null) {
+                if (data.json == null) {
+                    show_error('Error');
+                } else {
+                    var clientId = Luxe.io.string_load('clientId');
+                    var json :Array<{ user_id :String, user_name :String, score :Int }> = data.json;
+                    var highscore_lines = [];
+                    var rank = 0;
+                    var last_score = -1;
+                    for (highscoreJson in json) {
+                        var score = highscoreJson.score;
+                        if (score != last_score) rank++;
+                        if (rank > 100) break; // only show the first 100 ranked players (+ ties)
+
+                        var highscore_line = new HighscoreLine('$rank.', score, highscoreJson.user_name);
+                        highscore_line.point_icon = new Sprite({
+                            parent: highscore_line,
+                            pos: new Vector(132, -3),
+                            texture: Luxe.resources.texture('assets/ui/diamond.png'),
+                            scale: new Vector(0.037, 0.037),
+                            color: new Color().rgb(0x8C7D56)
+                        });
+                        if (highscoreJson.user_id == clientId) highscore_line.color = new Color(0.75, 0.0, 0.5);
+                        highscore_line.color.a = 0;
+                        highscore_lines.push(highscore_line);
+                        last_score = score;
                     }
                     show_highscores(highscore_lines);
                 }

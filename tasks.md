@@ -74,7 +74,6 @@ Bugs:
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 
-* Make a top-100 list of all time highest scores
 * Better explaination of "adjacent tiles" (versus straight lines)
 * Better explaination of how the global scoring system works (ie. a score per game played)
 * "Fix" my Journey score
