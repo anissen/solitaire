@@ -25,7 +25,7 @@ class Analytics {
     }
 
     public static function screen(screen :String) {
-        var version = '1.0.0';
+        var version = '1.0.1';
         analytics_request('t=screenview&an=Stoneset&av=$version&aid=com.anissen.stoneset&aiid=com.android.vending&cd=$screen');
     }
 
