@@ -133,18 +133,4 @@ class GameScore {
 
         return local_highscores;
     }
-
-    static public function get_journey_highscores(callbacks :Callbacks) {
-        AsyncHttpUtils.get(Settings.SERVER_URL + 'strive_highscores', function(data :HttpCallback) {
-            if (data.error == null) {
-                if (data.json == null) {
-                    callbacks.global_highscores_error_callback('Error');
-                } else {
-                    callbacks.global_highscores_callback(data.json);
-                }
-            } else {
-                callbacks.global_highscores_error_callback(data.error);
-            }
-        }); 
-    }
 }
