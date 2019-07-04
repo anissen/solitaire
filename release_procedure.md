@@ -1,5 +1,5 @@
 
-# BETA Release Procedure
+# Release Procedure
 
 0. Ensure that flow.gradle is building for release
 
