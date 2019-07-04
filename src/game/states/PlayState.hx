@@ -334,6 +334,11 @@ class PlayState extends State {
             default: suits;
         };
 
+        switch (game_mode) {
+            case Tutorial(Normal): card_values = 8;
+            default:
+        }
+
         var deck_cards = [];
         for (suit in 0 ... max_suits) {
             for (value in 0 ... card_values) {
