@@ -10,54 +10,40 @@ Tasks:
     * [ ] Notify spiludvikling.dk (facebook)
     * [ ] Notify indie game dev (facebook)
     * [ ] Notify Interactive Denmark
-    * [x] Notify haxe.io
-    * [x] Notify dkgame (twitter)
-    * [x] Notify reddit (indiegame)
+    * [ ] Notify haxe.io
+    * [ ] Notify dkgame (twitter)
+    * [ ] Notify reddit (indiegame)
     * [ ] Notify touch arcade
     * [ ] Notify pocket tactics
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
 
-HOOK: Build your own match-3
+HOOK: Unique color matching game
 
 ===== Beta launch line =====
 
 BETA FEEDBACK
 Doom:
 [ ] Disable Settings and Abort state while main menu tutorial is active
-[ ] Strive regler ikke helt forstået (Sean)
 
 GOLD Niels & Daniel:
 [ ] Vis back button efter Strive tutorial (glæder måske også for Survival?)
 
 Kim:
 [ ] Flyt + klik på symbol sætter åbenbart en ny origin for symbolet
-[ ] "Audio off" bliver deaktiveret ved at minimere/restore app'en
-[ ] Knapper kan flyttes ved at holde en finger på knappen og tappe andetsteds
-[ ] Knapper på "change name" skærmen kan trykkes før de er tween'et ind [FIXED?]
-[ ] Crash ved klik på "Play" på game over skærm, efter skift til local highscore [FIXED?]
 END BETA FEEDBACK
 
 * Use a logging package for heroku to be able to see logs
-* Implement ability to view all highscores for a game mode, sorted by day (and maybe also by game count)
 * SERVER: Implement crash handler (pm2/forever)
-* SERVER: Make a dedicated 'today' page grouped by game mode and game #
-* SERVER: Make a dedicated 'rankpage' page that can show scores and ties
 
 * "Invalid sound" should play when making a valid but non-matching selecting
 * Make a "retry"-button if the server cannot be contacted
 * Highscore button in Normal play mode
-* Indicate low time in Survival somehow
-* Make highlight tweets of
-   * Images in tutorial
-   * Pop text in play mode
-   * Stars in highscore list?
 
 Bugs:
 * Crash when starting a normal game, then finishing another game mode and resuming the normal game
 * In some cases, two tiles can be collected and simply disappears (reported by Niels and Daniel)
 * If quest has [a, b, b] and [a, b] is collected the first [a, b, \_] should be highlighted in quests matched
 * Clicking on grid selects multiple tiles
-* Random crash when play
 * Gems can be placed behind other gems in the hand (probably due to grabbed_card) (reported by Niels)
 * Crash when resuming app (on android) after being inactive for a long time. Resuming on the menu screen in poor network conditions.
 * [FIXED?] Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
@@ -73,17 +59,12 @@ Bugs:
 * Strive mode: Collecting tiles just after the timer runs out, can cause the score to be invalid and the game to hang (reported by Rasmus)
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
-
-* Better explaination of "adjacent tiles" (versus straight lines)
-* Better explaination of how the global scoring system works (ie. a score per game played)
-* "Fix" my Journey score
-* Backup the directory
-* Feedback:
-    * It's not clear that you can collect in non-straight lines
-    * It's not clear what the global game-over scores represent
+* Post-release:
+    * Better explaination of "adjacent tiles" (versus straight lines)
+    * Better explaination of how the global scoring system works (ie. a score per game played)
+    * "Fix" my Journey score
     * Reduce the minimum required SDK for Android
     * Use pre-multiplied alpha to avoid blending along sprite edges
-
 
 iOS specific:
 * If sound is disabled, and the app is resumed, the sound (not music) is re-enabled. 
