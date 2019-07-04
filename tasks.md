@@ -78,6 +78,11 @@ Bugs:
 * Better explaination of how the global scoring system works (ie. a score per game played)
 * "Fix" my Journey score
 * Backup the directory
+* Feedback:
+    * It's not clear that you can collect in non-straight lines
+    * It's not clear what the global game-over scores represent
+    * Reduce the minimum required SDK for Android
+    * Use pre-multiplied alpha to avoid blending along sprite edges
 
 
 iOS specific:
