@@ -46,7 +46,9 @@ end
 platform :ios do
   lane :beta do
     #sync_code_signing(type: "appstore")    # see code signing guide for more information
+    cert(username: "andnis@gmail.com", team_name: "Anders Nissen")
+    sigh(username: "andnis@gmail.com", app_identifier: "com.anissen.stoneset")
     build_app(scheme: "stoneset", project: "./ios.project/stoneset.ios.xcodeproj", include_bitcode: true)
-    upload_to_testflight
+    upload_to_testflight(username: "andnis@gmail.com", team_name: "Anders Nissen")
   end
 end
