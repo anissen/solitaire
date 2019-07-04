@@ -1,22 +1,23 @@
 
 Tasks:
 * More tweeting!
-* Email list
-    * https://tinyletter.com
 * Landing page (stoneset.info?/stoneset.dk?)
     * https://startbootstrap.com/template-overviews/new-age/
     * https://startbootstrap.com/template-overviews/freelancer/
     * https://startbootstrap.com/template-overviews/grayscale/
 * Update andersnissen.com
-* Notify spiludvikling.dk (facebook)
-* Notify indie game dev (facebook)
-* Notify Interactive Denmark
-* Notify haxe.io
-* Notify dkgame (twitter)
-* Notify reddit (indiegame)
-* Create facebook page
-* Update Google Play screenshots (they are outdated)
+* Android release:
+    * [ ] Notify spiludvikling.dk (facebook)
+    * [ ] Notify indie game dev (facebook)
+    * [ ] Notify Interactive Denmark
+    * [x] Notify haxe.io
+    * [x] Notify dkgame (twitter)
+    * [x] Notify reddit (indiegame)
+    * [ ] Notify touch arcade
+    * [ ] Notify pocket tactics
 * Screenshots on Google Play: Use the images to explain how the game works and what's special about it
+
+HOOK: Build your own match-3
 
 ===== Beta launch line =====
 
@@ -72,9 +73,15 @@ Bugs:
 * Strive mode: Collecting tiles just after the timer runs out, can cause the score to be invalid and the game to hang (reported by Rasmus)
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
+
+* Make a top-100 list of all time highest scores
+* Better explaination of "adjacent tiles" (versus straight lines)
+* Better explaination of how the global scoring system works (ie. a score per game played)
+* "Fix" my Journey score
+* Backup the directory
+
+
 iOS specific:
-* iOS app icon
-* iOS launch icon
 * If sound is disabled, and the app is resumed, the sound (not music) is re-enabled. 
 * Links do not work on iOS and macOS
 
