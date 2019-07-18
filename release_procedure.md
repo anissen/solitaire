@@ -14,6 +14,8 @@
 
 3. Commit and push
 
-4. Run `fastlane beta`
+4. Run `fastlane android deploy`
 
-5. Run `./push_to_itch.sh`
+5. Run `fastlane ios deploy`
+
+6. Run `./push_to_itch.sh`

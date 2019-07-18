@@ -9,7 +9,7 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
-default_platform(:android)
+#default_platform(:android)
 
 platform :android do
   desc "Submit a new Beta Build to Google Play"
@@ -50,5 +50,12 @@ platform :ios do
     sigh(username: "andnis@gmail.com", app_identifier: "com.anissen.stoneset")
     build_app(scheme: "stoneset", project: "./ios.project/stoneset.ios.xcodeproj", include_bitcode: true)
     upload_to_testflight(username: "andnis@gmail.com", team_name: "Anders Nissen")
+  end
+
+  lane :deploy do
+    cert(username: "andnis@gmail.com", team_name: "Anders Nissen")
+    sigh(username: "andnis@gmail.com", app_identifier: "com.anissen.stoneset")
+    build_app(scheme: "stoneset", project: "./ios.project/stoneset.ios.xcodeproj", include_bitcode: true)
+    upload_to_app_store(username: "andnis@gmail.com", team_name: "Anders Nissen")
   end
 end
