@@ -696,7 +696,7 @@ class PlayState extends State {
         pe_burst_color_life_module.end_color_max = new sparkler.data.Color(1, 1, 1, 0);
         pe_burst.start();
 
-        tutorial(TutorialStep.CollectingSets, { texts: ['You collect adjacent\n{brown}gemstones{default} to form {brown}sets{default}.', 'collect_adjacent.png'], pos_y: (Settings.HEIGHT * (3/4) - 40) });
+        tutorial(TutorialStep.CollectingSets, { texts: ['You collect adjacent\n{brown}gemstones{default} to form {brown}sets{default}.', 'You don\'t have to\ncollect in straight lines.', 'collect_adjacent.png'], pos_y: (Settings.HEIGHT * (3/4) - 40) });
 
         tutorial(TutorialStep.CollectingSets2, { texts: ['You can now\ncollect this {brown}set{default}.'], points: [ get_pos(0, tiles_y - 1.7) ], pos_y: (Settings.HEIGHT / 2) + 30 });
 

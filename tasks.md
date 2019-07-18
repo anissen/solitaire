@@ -60,7 +60,6 @@ Bugs:
 * MORE BUGS IN "BETA FEEDBACK"-SECTION!
 
 * Post-release:
-    * Better explaination of "adjacent tiles" (versus straight lines)
     * Better explaination of how the global scoring system works (ie. a score per game played)
     * Use pre-multiplied alpha to avoid blending along sprite edges
     * More items on rank page?
