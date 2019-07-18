@@ -444,11 +444,17 @@ class GameOverState extends State {
                     var json :Array<{ user_id :String, user_name :String, total_stars :Null<Int>, total_wins :Int }> = data.json;
                     var highscore_lines = [];
                     var rank = 0;
+                    var tie_count = 0;
                     var last_stars = -1;
                     for (rankJson in json) {
                         var stars = (rankJson.total_stars != null ? rankJson.total_stars : rankJson.total_wins);
-                        if (stars != last_stars) rank++;
-                        if (rank > 100) break; // only show the first 100 ranked players (+ ties)
+                        if (stars == last_stars) {
+                            tie_count++;
+                        } else {
+                            rank += 1 + tie_count;
+                            tie_count = 0;
+                        }
+                        if (rank > 250) break; // only show the first 250 ranked players
 
                         var highscore_line = new HighscoreLine('$rank.', stars, rankJson.user_name);
                         highscore_line.point_icon = new Sprite({
@@ -491,11 +497,17 @@ class GameOverState extends State {
                     var json :Array<{ user_id :String, user_name :String, highest_journey_level_won :Int, highest_journey_score_won :Null<Int> }> = data.json;
                     var highscore_lines = [];
                     var rank = 0;
+                    var tie_count = 0;
                     var last_level_won = -1;
                     for (highscoreJson in json) {
                         var level_won = highscoreJson.highest_journey_level_won;
-                        if (level_won != last_level_won) rank++;
-                        if (rank > 100) break; // only show the first 100 ranked players (+ ties)
+                        if (level_won == last_level_won) {
+                            tie_count++;
+                        } else {
+                            rank += 1 + tie_count;
+                            tie_count = 0;
+                        }
+                        if (rank > 250) break; // only show the first 250 ranked players
 
                         var strive_score = GameModeTools.get_strive_score(Strive(highscoreJson.highest_journey_level_won));
                         var highscore_line = new HighscoreLine('$rank.', strive_score, highscoreJson.user_name);
@@ -550,11 +562,17 @@ class GameOverState extends State {
                     var json :Array<{ user_id :String, user_name :String, score :Int }> = data.json;
                     var highscore_lines = [];
                     var rank = 0;
+                    var tie_count = 0;
                     var last_score = -1;
                     for (highscoreJson in json) {
                         var score = highscoreJson.score;
-                        if (score != last_score) rank++;
-                        if (rank > 100) break; // only show the first 100 ranked players (+ ties)
+                        if (score == last_score) {
+                            tie_count++;
+                        } else {
+                            rank += 1 + tie_count;
+                            tie_count = 0;
+                        }
+                        if (rank > 250) break; // only show the first 250 ranked players
 
                         var highscore_line = new HighscoreLine('$rank.', score, highscoreJson.user_name);
                         highscore_line.point_icon = new Sprite({
