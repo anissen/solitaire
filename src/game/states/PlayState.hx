@@ -944,6 +944,12 @@ class PlayState extends State {
             Analytics.event('game', 'over', game_mode.get_game_mode_id());
             Analytics.event('game', 'score', game_mode.get_game_mode_id(), the_score);
 
+            if (Luxe.io.string_load('tutorial_has_been_reset') == 'true') { // to prevent tutorial-replay exploit
+                Luxe.io.string_save('tutorial_has_been_reset', null);
+                Main.SetState(MenuState.StateId);
+                return;
+            }
+
             switch (game_mode) { // TODO: Hack! Should be handled in one place for all game modes
                 case Strive(level) | Tutorial(Strive(level)):
                     GameScore.add_highscore({

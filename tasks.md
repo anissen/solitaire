@@ -62,10 +62,7 @@ Bugs:
 * Post-release:
     * Better explaination of "adjacent tiles" (versus straight lines)
     * Better explaination of how the global scoring system works (ie. a score per game played)
-    * "Fix" my Journey score
-    * Reduce the minimum required SDK for Android
     * Use pre-multiplied alpha to avoid blending along sprite edges
-    * Fix exploit where you can reset the tutorial to gain points by retrying (skip game over screen when tutorial has been reset)
     * More items on rank page?
     * Fix ranking such that it's 1-2-2-4-5 instead of 1-2-2-3-4?
 
