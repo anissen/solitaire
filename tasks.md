@@ -48,9 +48,7 @@ Bugs:
 * Crash when resuming app (on android) after being inactive for a long time. Resuming on the menu screen in poor network conditions.
 * [FIXED?] Starting a game on day 1 and finishing on day 2+ causes gameoverstate to increment plays for current day when it shouldn't
 * Sometimes when going into Strive mode it only shows a blank screen and have to kill & reload the game (reported by Caribou)
-* Possible bug: Resetting tutorial would cause a player to get multiple scores on that game seed
 * Crash when having poor/unstable internet connectivity
-* Clicking the About button while the tutorial is *active* causes a crash (reported by Christoffer)
 * Scores ending in '1' are slightly offset to the left
 * Wrong scores are sometimes awarded when collecting stacked tiles in incorrect order
 * The second level in journey mode was blank (reported by Caribou)
@@ -75,4 +73,3 @@ Nice:
 * NICE-TO-HAVE: Change menu screen to only make one call to server instead of three
 * NICE-TO-HAVE: Fade out the top and bottom in journey
 * NICE-TO-HAVE: Screen showing where the stars come from (wins, journey, score)
-* NICE-TO-HAVE: Being able to see all-time-highscores for Strive & Normal
