@@ -2,7 +2,7 @@
   project : {
     //These first two are required
     name : 'Stoneset',
-    version : '1.0.1',
+    version : '1.0.2',
     author : 'Anders Nissen',
 
     //This configures your app.

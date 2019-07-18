@@ -1,0 +1,3 @@
+∙ Added a Top 100 highscores screen
+∙ Improved tutorial
+∙ Minor bug fixes
