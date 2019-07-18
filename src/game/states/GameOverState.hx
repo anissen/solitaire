@@ -215,7 +215,7 @@ class GameOverState extends State {
         */
 
         title = new Text({
-            text: 'Global Highscores',
+            text: 'Level Highscores',
             pos: new Vector(Settings.WIDTH / 2, 70),
             point_size: 26,
             align: luxe.Text.TextAlign.center,
@@ -329,7 +329,7 @@ class GameOverState extends State {
         highscore_lines_scene.empty();
         loading_icon.visible = false;
 
-        title.text = 'Global Highscores';
+        title.text = 'Level Highscores';
         highscore_mode = Global;
 
         if (loading_global_data) {
@@ -383,7 +383,7 @@ class GameOverState extends State {
         highscore_lines_scene.empty();
         loading_icon.visible = false;
 
-        title.text = 'Local Highscores';
+        title.text = 'Your Highscores';
         highscore_mode = Local;
 
         local_highscores.sort(function(a, b) {
