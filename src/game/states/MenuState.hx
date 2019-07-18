@@ -105,7 +105,12 @@ class MenuState extends State {
         var config_button = new game.ui.Icon({
             pos: new Vector(35, 35),
             texture_path: 'assets/ui/circular.png',
-            on_click: Main.SetState.bind(SettingsState.StateId)
+            on_click: function() {
+                var tutorialFinished = (Luxe.io.string_load('tutorial_menu_complete') == 'true');
+                if (tutorialFinished) {
+                    Main.SetState(SettingsState.StateId);
+                }
+            }
         });
         config_button.scale.set_xy(1/5, 1/5);
         config_button.color.a = 0.75;
@@ -121,7 +126,12 @@ class MenuState extends State {
         var about_button = new game.ui.Icon({
             pos: new Vector(Settings.WIDTH - 35, 35),
             texture_path: 'assets/ui/circular.png',
-            on_click: Main.SetState.bind(CreditsState.StateId)
+            on_click: function() {
+                var tutorialFinished = (Luxe.io.string_load('tutorial_menu_complete') == 'true');
+                if (tutorialFinished) {
+                    Main.SetState(CreditsState.StateId);
+                }
+            }
         });
         about_button.scale.set_xy(1/5, 1/5);
         about_button.color.a = 0.75;
@@ -352,6 +362,7 @@ class MenuState extends State {
                     play_button.enabled = true;
                     journey_button.enabled = tutorial_completed && (counting_total_score >= journey_unlock);
                     timed_button.enabled = tutorial_completed && (counting_total_score >= timed_unlock);
+                    
                 });
             }
 
